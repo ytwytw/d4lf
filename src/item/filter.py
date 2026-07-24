@@ -3,7 +3,7 @@ import pathlib
 import sys
 import time
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 from src.config.loader import IniConfigLoader
 from src.config.profile_document import ProfileDocumentError, ProfileDocumentStore
@@ -23,6 +23,7 @@ from src.config.profile_models import (
     TributeFilterModel,
 )
 from src.config.settings_models import AspectFilterType, CosmeticFilterType, UnfilteredUniquesType
+from src.dataloader import Dataloader
 from src.item.data.affix import Affix, AffixType
 from src.item.data.item_type import ItemType, is_sigil
 from src.item.data.rarity import ItemRarity
@@ -30,15 +31,57 @@ from src.item.sigil_rules import SigilRules
 from src.scripts.common import ASPECT_UPGRADES_LABEL
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
+
     from src.item.data.aspect import Aspect
     from src.item.models import Item
 
 LOGGER = logging.getLogger(__name__)
 
 
+class OverlayMatchName(str):  # noqa: FURB189 - match names must retain the existing str API.
+    """A match label whose built-in segments can be localized without parsing user text."""
+
+    __slots__ = ("rule_name", "section_name", "unique_name", "user_profile")
+
+    user_profile: str
+    section_name: str | None
+    rule_name: str | None
+    unique_name: str | None
+
+    def __new__(
+        cls,
+        value: str,
+        *,
+        user_profile: str,
+        section_name: str | None = None,
+        rule_name: str | None = None,
+        unique_name: str | None = None,
+    ) -> Self:
+        result = super().__new__(cls, value)
+        result.user_profile = user_profile
+        result.section_name = section_name
+        result.rule_name = rule_name
+        result.unique_name = unique_name
+        return result
+
+    @classmethod
+    def for_section(cls, user_profile: str, section_name: str, rule_name: str) -> Self:
+        return cls(
+            f"{user_profile}.{section_name}.{rule_name}",
+            user_profile=user_profile,
+            section_name=section_name,
+            rule_name=rule_name,
+        )
+
+    @classmethod
+    def for_unique(cls, user_profile: str, unique_name: str) -> Self:
+        return cls(f"{user_profile}.{unique_name}", user_profile=user_profile, unique_name=unique_name)
+
+
 @dataclass
 class MatchedFilter:
-    profile: str
+    profile: str | OverlayMatchName
     matched_affixes: list[Affix] = field(default_factory=list)
     aspect_match: bool = False
     set_match: bool = False
@@ -51,19 +94,19 @@ class FilterResult:
 
 
 class Filter:
-    affix_filters = {}
-    aspect_upgrade_filters = {}
+    affix_filters: dict[str, list[DynamicItemFilterModel]] = {}
+    aspect_upgrade_filters: dict[str, list[str]] = {}
     paragon_filters: dict[str, ParagonPayloadModel] = {}
-    global_unique_filters = {}
-    seal_filters = {}
-    charm_filters = {}
-    sigil_filters = {}
-    tribute_filters = {}
+    global_unique_filters: dict[str, list[GlobalUniqueModel]] = {}
+    seal_filters: dict[str, list[DynamicSealFilterModel]] = {}
+    charm_filters: dict[str, list[DynamicCharmFilterModel]] = {}
+    sigil_filters: dict[str, SigilFilterModel] = {}
+    tribute_filters: dict[str, TributeFilterModel] = {}
 
-    files_loaded = False
-    all_file_paths = []
-    last_loaded = None
-    last_profile_list = None
+    files_loaded: bool = False
+    all_file_paths: list[pathlib.Path] = []
+    last_loaded: float | None = None
+    last_profile_list: list[str] | None = None
 
     _initialized: bool = False
     _instance = None
@@ -86,11 +129,12 @@ class Filter:
         if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic] and not matched_unique_aspect:
             return False
         # check the aspect matches the min percent. We only check the one that passed the previous check
-        return not (
-            matched_unique_aspect
-            and not self._match_item_roll_is_in_percent_range(
-                expected_percent=matched_unique_aspect.min_percent_of_aspect, item_aspect_or_affix=item.aspect
-            )
+        if matched_unique_aspect is None:
+            return True
+        if item.aspect is None:
+            return False
+        return self._match_item_roll_is_in_percent_range(
+            expected_percent=matched_unique_aspect.min_percent_of_aspect, item_aspect_or_affix=item.aspect
         )
 
     def _check_affixes(self, item: Item) -> FilterResult:
@@ -162,7 +206,8 @@ class Filter:
             # See if the item matches any legendary aspects that were in the profile
             for profile_name, profile_filter in self.aspect_upgrade_filters.items():
                 if item.aspect and any(
-                    legendary_aspect_name == item.aspect.name for legendary_aspect_name in profile_filter
+                    Dataloader().aspect_names_equivalent(legendary_aspect_name, item.aspect.name)
+                    for legendary_aspect_name in profile_filter
                 ):
                     LOGGER.info(f"{item.original_name} -- Matched build-specific aspects that updates codex")
                     res.keep = True
@@ -240,7 +285,7 @@ class Filter:
     def _check_seal_charm_filters(
         self,
         seal_or_charm: Item,
-        seal_or_charm_filters: dict[str, list[DynamicSealFilterModel | DynamicCharmFilterModel]],
+        seal_or_charm_filters: Mapping[str, Sequence[DynamicSealFilterModel | DynamicCharmFilterModel]],
         section_name: str,
         mythic_name: str,
     ) -> FilterResult:
@@ -296,7 +341,7 @@ class Filter:
                 res.keep = True
                 res.matched.append(
                     MatchedFilter(
-                        f"{profile_name}.{section_name}.{filter_name}",
+                        OverlayMatchName.for_section(profile_name, section_name, filter_name),
                         matched_affixes,
                         aspect_match=matched_aspect,
                         set_match=matched_set,
@@ -318,7 +363,11 @@ class Filter:
             res.matched.append(MatchedFilter("Tributes not filtered"))
 
         for profile_name, filter_item in self.tribute_filters.items():
-            name_match = bool(filter_item.name) and any(item.name.startswith(name) for name in filter_item.name)
+            name_match = (
+                item.name is not None
+                and bool(filter_item.name)
+                and any(item.name.startswith(name) for name in filter_item.name)
+            )
             rarity_match = bool(filter_item.rarities) and item.rarity in filter_item.rarities
 
             if not name_match and not rarity_match:
@@ -342,6 +391,9 @@ class Filter:
             return FilterResult(keep, [])
         for profile_name, profile_filter in self.global_unique_filters.items():
             for filter_item in profile_filter:
+                if item.aspect is None:
+                    continue
+                item_aspect = item.aspect
                 # check item power
                 if not self._match_item_power(min_power=filter_item.min_power, item_power=item.power):
                     continue
@@ -352,14 +404,13 @@ class Filter:
                     continue
                 # check aspect is in percent range
                 if not self._match_item_roll_is_in_percent_range(
-                    expected_percent=filter_item.min_percent_of_aspect, item_aspect_or_affix=item.aspect
+                    expected_percent=filter_item.min_percent_of_aspect, item_aspect_or_affix=item_aspect
                 ):
                     continue
-                LOGGER.info(f"{item.original_name} -- Matched {profile_name}.GlobalUniques: {item.aspect.name}")
+                LOGGER.info(f"{item.original_name} -- Matched {profile_name}.GlobalUniques: {item_aspect.name}")
                 res.keep = True
-                matched_full_name = f"{profile_name}.{item.aspect.name}"
-                if filter_item.profile_alias:
-                    matched_full_name = f"{filter_item.profile_alias}.{item.aspect.name}"
+                display_profile = filter_item.profile_alias or profile_name
+                matched_full_name = OverlayMatchName.for_unique(display_profile, item_aspect.name)
                 res.matched.append(MatchedFilter(matched_full_name, aspect_match=True))
 
         return res
@@ -461,23 +512,24 @@ class Filter:
 
     @staticmethod
     def _match_item_roll_is_in_percent_range(expected_percent: int, item_aspect_or_affix: Aspect | Affix) -> bool:
-        if expected_percent == 0 or item_aspect_or_affix.max_value is None or item_aspect_or_affix.min_value is None:
+        min_value = item_aspect_or_affix.min_value
+        max_value = item_aspect_or_affix.max_value
+        value = item_aspect_or_affix.value
+        if expected_percent == 0 or max_value is None or min_value is None:
             return True
+        if value is None:
+            return False
 
-        if item_aspect_or_affix.max_value == item_aspect_or_affix.min_value:
+        if max_value == min_value:
             return True
 
         if not Filter._is_smaller_roll_better(item_aspect_or_affix):
             percent_float = expected_percent / 100.0
-            return (item_aspect_or_affix.value - item_aspect_or_affix.min_value) / (
-                item_aspect_or_affix.max_value - item_aspect_or_affix.min_value
-            ) >= percent_float
+            return (value - min_value) / (max_value - min_value) >= percent_float
 
         # This is the case where a smaller number is better
         percent_float = (100 - expected_percent) / 100.0
-        return (item_aspect_or_affix.value - item_aspect_or_affix.max_value) / (
-            item_aspect_or_affix.min_value - item_aspect_or_affix.max_value
-        ) <= percent_float
+        return (value - max_value) / (min_value - max_value) <= percent_float
 
     @staticmethod
     def _is_smaller_roll_better(item_aspect_or_affix: Aspect | Affix) -> bool:
@@ -489,6 +541,8 @@ class Filter:
 
     @staticmethod
     def _match_item_value_threshold(expected_value: float, item_aspect_or_affix: Aspect | Affix) -> bool:
+        if item_aspect_or_affix.value is None:
+            return False
         if Filter._is_smaller_roll_better(item_aspect_or_affix):
             return item_aspect_or_affix.value <= expected_value
         return item_aspect_or_affix.value >= expected_value
@@ -503,7 +557,9 @@ class Filter:
             return True
         if item_aspect is None:
             return False
-        if expected_aspect.name != item_aspect.name:
+        if expected_aspect.name != item_aspect.name and not Dataloader().aspect_names_equivalent(
+            expected_aspect.name, item_aspect.name
+        ):
             return False
 
         if expected_aspect.value is not None:
@@ -524,11 +580,13 @@ class Filter:
         return True
 
     @staticmethod
-    def _match_item_power(min_power: int, item_power: int, max_power: int = sys.maxsize) -> bool:
+    def _match_item_power(min_power: int, item_power: int | None, max_power: int = sys.maxsize) -> bool:
+        if item_power is None:
+            return False
         return min_power <= item_power <= max_power
 
     @staticmethod
-    def _match_item_type(expected_item_types: list[ItemType], item_type: ItemType) -> bool:
+    def _match_item_type(expected_item_types: list[ItemType], item_type: ItemType | None) -> bool:
         if not expected_item_types:
             return True
         return item_type in expected_item_types

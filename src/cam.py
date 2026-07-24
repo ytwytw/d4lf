@@ -1,6 +1,7 @@
 import logging
 import threading
 import time
+from typing import TypedDict
 
 import mss
 import mss.windows
@@ -11,22 +12,31 @@ from src.utils.misc import convert_args_to_numpy
 
 LOGGER = logging.getLogger(__name__)
 
-mss.windows.CAPTUREBLT = 0
+# The mss Windows module consumes this Win32 flag at runtime, but its stubs omit it.
+mss.windows.__dict__["CAPTUREBLT"] = 0
 cached_img_lock = threading.Lock()
 
 
+class WindowROI(TypedDict):
+    top: int
+    left: int
+    width: int
+    height: int
+
+
 class Cam:
-    last_grab: int = None
-    cached_img: np.ndarray = None
+    last_grab: float | None = None
+    cached_img: np.ndarray | None = None
     window_offset_set: bool = False
-    window_roi: dict = {"top": 0, "left": 0, "width": 0, "height": 0}
-    monitor_x_range: tuple[int] = None
-    monitor_y_range: tuple[int] = None
+    window_roi: WindowROI = {"top": 0, "left": 0, "width": 0, "height": 0}
+    monitor_x_range: tuple[int, int] | None = None
+    monitor_y_range: tuple[int, int] | None = None
     res_key = ""
+    _rejected_res_key = ""
     _window_generation: int = 0
 
     _initialized: bool = False
-    _instance = None
+    _instance: Cam | None = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -34,6 +44,14 @@ class Cam:
         return cls._instance
 
     def update_window_pos(self, offset_x: int, offset_y: int, width: int, height: int):
+        res_key = f"{width}x{height}"
+        if width < height:
+            if self._rejected_res_key != res_key:
+                LOGGER.warning("Ignoring transient portrait Diablo IV window geometry: %s", res_key)
+            self._rejected_res_key = res_key
+            return
+        self._rejected_res_key = ""
+
         with cached_img_lock:
             if (
                 self.window_offset_set
@@ -43,7 +61,7 @@ class Cam:
                 and self.window_roi["height"] == height
             ):
                 return
-            self.res_key = f"{width}x{height}"
+            self.res_key = res_key
             self.res_p = f"{height}p"
             self.window_roi["top"] = offset_y
             self.window_roi["left"] = offset_x
@@ -61,7 +79,6 @@ class Cam:
             self._window_generation += 1
             self.last_grab = None
             self.cached_img = None
-            res_key = self.res_key
 
         LOGGER.debug(f"Found Window Res: {res_key}")
 
@@ -78,6 +95,7 @@ class Cam:
             self.monitor_x_range = None
             self.monitor_y_range = None
             self.res_key = ""
+            self._rejected_res_key = ""
             self.res_p = ""
             self._window_generation += 1
             self.last_grab = None

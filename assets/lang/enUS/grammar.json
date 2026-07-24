@@ -1,0 +1,106 @@
+{
+    "identifiers": {
+        "COMPASS": [
+            "compass"
+        ],
+        "ESCALATION_SIGIL": [
+            "escalation sigil"
+        ],
+        "NIGHTMARE_SIGIL": [
+            "nightmare sigil"
+        ],
+        "TRIBUTE": [
+            "tribute of"
+        ],
+        "WHISPERING_KEY": [
+            "whispering key"
+        ]
+    },
+    "labels": {
+        "affix_stop": [
+            "empty socket",
+            "requires level",
+            "properties lost when equipped",
+            "cannot salvage",
+            "sell value",
+            "rampage:",
+            "feast:",
+            "hunger:",
+            "right mouse button",
+            "left mouse button",
+            "action button"
+        ],
+        "affixes_header": [
+            "affixes"
+        ],
+        "all_resist": [
+            "all resist"
+        ],
+        "ancestral": [
+            "ancestral"
+        ],
+        "armor": [
+            "armor"
+        ],
+        "armory_loadout": [
+            "armory loadout"
+        ],
+        "bloodied": [
+            "bloodied"
+        ],
+        "charm_slot": [
+            "charm slot"
+        ],
+        "cost": [
+            "cost:",
+            "cost :"
+        ],
+        "damage_per_second": [
+            "damage per second"
+        ],
+        "imprinted": [
+            "imprinted:"
+        ],
+        "item_end_control": [
+            "mouse button",
+            "action button"
+        ],
+        "item_power": [
+            "item power"
+        ],
+        "item_start_ignored": [
+            "compass affixes",
+            "dungeon affixes",
+            "affixes",
+            "select all"
+        ],
+        "sanctified": [
+            "sanctified"
+        ]
+    },
+    "rarities": {
+        "Common": [
+            "common"
+        ],
+        "Legendary": [
+            "legendary"
+        ],
+        "Magic": [
+            "magic"
+        ],
+        "Mythic": [
+            "mythic unique",
+            "mythic"
+        ],
+        "Rare": [
+            "rare"
+        ],
+        "Set": [
+            "set"
+        ],
+        "Unique": [
+            "unique"
+        ]
+    },
+    "schema_version": 1
+}

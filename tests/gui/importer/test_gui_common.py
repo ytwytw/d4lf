@@ -7,6 +7,7 @@ from src.gui.importer.gui_common import (
     create_item_affix_pool,
     deduplicate_filters,
     is_unique_like_rarity,
+    match_set_aware_seal_affix,
     unique_filter_name,
 )
 from src.gui.importer.importer_config import DEFAULT_FILENAME_PARTS, FilenamePart, ImportConfig
@@ -132,6 +133,10 @@ def test_affix_dict_for_item_type_uses_context_specific_dict() -> None:
     assert affix_dict_for_item_type(None) is Dataloader().affix_dict
 
 
+def test_match_set_aware_seal_affix_returns_none_for_unknown_set() -> None:
+    assert match_set_aware_seal_affix("maximum resolve", Dataloader().seal_affix_dict, "unknown_set") is None
+
+
 def test_is_unique_like_rarity_handles_enum_and_string_values() -> None:
     assert is_unique_like_rarity(ItemRarity.Unique) is True
     assert is_unique_like_rarity(ItemRarity.Mythic) is True
@@ -149,7 +154,7 @@ def test_create_item_affix_pool_sets_expected_min_count_and_greater_flags() -> N
     non_unique_pool = create_item_affix_pool(affixes=affixes, unique_like=False)
 
     assert unique_like_pool[0].min_count == 1
-    assert non_unique_pool[0].min_count == 3
+    assert non_unique_pool[0].min_count == 2
     assert [affix.name for affix in unique_like_pool[0].count] == ["armor", "maximum_life"]
     assert unique_like_pool[0].count[0].want_greater is True
     assert unique_like_pool[0].count[1].want_greater is False

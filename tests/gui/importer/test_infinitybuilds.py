@@ -24,6 +24,8 @@ from src.gui.importer.paragon_export import (
 )
 
 if typing.TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
+
     from pytest_mock import MockerFixture
 IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
@@ -47,7 +49,7 @@ class _InfinityBuildsImportDriver:
         return None
 
 
-def _push_chunk(payload: dict) -> str:
+def _push_chunk(payload: Mapping[str, object]) -> str:
     # Mirrors InfinityBuilds' React Flight payload: a JSON-encoded string embedded in a
     # self.__next_f.push([id, "<json-string>"]) call, with the interesting data (classId, variants)
     # inside that string. Real payloads are minified (no spaces around separators), which matters
@@ -56,7 +58,9 @@ def _push_chunk(payload: dict) -> str:
     return f"self.__next_f.push([1,{json.dumps(inner)}])"
 
 
-def _infinitybuilds_page_source(class_id: str, variants: list[dict], title: str = "Test Build") -> str:
+def _infinitybuilds_page_source(
+    class_id: str, variants: Sequence[Mapping[str, object]], title: str = "Test Build"
+) -> str:
     payload = {"classId": class_id, "variants": variants}
     script = _push_chunk(payload)
     return f"<html><head><title>{title} | InfinityBuilds</title></head><body><script>{script}</script></body></html>"
@@ -64,7 +68,7 @@ def _infinitybuilds_page_source(class_id: str, variants: list[dict], title: str 
 
 def _gear_piece(
     slot: str, item_id: str, affix_ids: list[str], kind: str = "custom_legendary", aspect_id: str | None = None
-) -> dict:
+) -> dict[str, object]:
     piece = {
         "kind": kind,
         "slot": slot,
@@ -107,6 +111,33 @@ def test_extract_build_data_returns_none_when_no_matching_script() -> None:
 
 
 @pytest.mark.parametrize(
+    "url",
+    [
+        "https://infinitybuilds.gg.evil.example/en/builds/fake",
+        "http://infinitybuilds.gg/en/builds/fake",
+        "https://infinitybuilds.gg/en/not-a-build/fake",
+    ],
+)
+def test_import_infinitybuilds_rejects_untrusted_urls(url: str, mocker: MockerFixture) -> None:
+    driver = _InfinityBuildsImportDriver(page_source="")
+    get_with_retry = mocker.patch("src.gui.importer.infinitybuilds.get_with_retry")
+
+    import_infinitybuilds(
+        config=ImportConfig(
+            url=url,
+            import_aspect_upgrades=True,
+            add_to_profiles=False,
+            import_greater_affixes=True,
+            require_greater_affixes=False,
+        ),
+        driver=driver,
+    )
+
+    assert not driver.current_url
+    get_with_retry.assert_not_called()
+
+
+@pytest.mark.parametrize(
     ("name", "expected"),
     [
         ("Edgemaster's Aspect", "edgemasters"),
@@ -134,6 +165,43 @@ def test_convert_raw_to_affixes_skips_tempered_affixes() -> None:
     affixes = _convert_raw_to_affixes(raw_affixes, resolved_affixes)
 
     assert [a.name for a in affixes] == ["strength"]
+
+
+def test_convert_raw_to_affixes_is_independent_of_active_game_language(mocker: MockerFixture) -> None:
+    dataloader = Dataloader()
+    mocker.patch.object(
+        dataloader,
+        "affix_dict",
+        {
+            "abyss_damage": "深渊伤害",
+            "cold_damage_multiplier": "x 冰霜伤害增倍",
+            "all_damage_multiplier": "x 全伤害增倍",
+        },
+    )
+    raw_affixes = [
+        {"affixId": "affix-intelligence", "value": 100},
+        {"affixId": "affix-life", "value": 100},
+        {"affixId": "affix-armor", "value": 100},
+    ]
+    resolved_affixes = {
+        "affix-intelligence": {"label": "Intelligence", "greaterAffixEligible": False},
+        "affix-life": {"label": "Maximum Life", "greaterAffixEligible": False},
+        "affix-armor": {"label": "Armor", "greaterAffixEligible": False},
+    }
+
+    affixes = _convert_raw_to_affixes(raw_affixes, resolved_affixes)
+
+    assert [affix.name for affix in affixes] == ["intelligence", "maximum_life", "armor"]
+
+
+def test_convert_raw_to_affixes_skips_unknown_source_label_instead_of_guessing(caplog) -> None:
+    raw_affixes = [{"affixId": "affix-new-season", "value": 100}]
+    resolved_affixes = {"affix-new-season": {"label": "Brand New Season Mechanic Power", "greaterAffixEligible": False}}
+
+    affixes = _convert_raw_to_affixes(raw_affixes, resolved_affixes)
+
+    assert affixes == []
+    assert "skipping it instead of guessing" in caplog.text
 
 
 def test_resolve_gear_data_queries_view_endpoint_with_unique_sorted_ids(mocker: MockerFixture) -> None:

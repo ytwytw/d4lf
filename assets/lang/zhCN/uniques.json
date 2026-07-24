@@ -1,0 +1,1193 @@
+{
+    "100000_steps": {
+        "display_name": "十万加行",
+        "num_inherents": 0
+    },
+    "accord_of_the_wilds": {
+        "display_name": "荒野协议",
+        "num_inherents": 0
+    },
+    "aegroms_schism": {
+        "display_name": "艾格罗姆之裂",
+        "num_inherents": 0
+    },
+    "ahavarion_spear_of_lycander": {
+        "display_name": "阿瓦里昂，莱姗德之矛",
+        "num_inherents": 0
+    },
+    "airidahs_inexorable_will": {
+        "display_name": "艾蕊达的无羁意志",
+        "num_inherents": 0
+    },
+    "anathema_of_the_primes": {
+        "display_name": "魔神绝罚",
+        "num_inherents": 0
+    },
+    "ancients_oath": {
+        "display_name": "先祖之誓",
+        "num_inherents": 0
+    },
+    "andariels_visage": {
+        "display_name": "安达莉尔的仪容",
+        "num_inherents": 0
+    },
+    "arcadia": {
+        "display_name": "阿卡迪亚",
+        "num_inherents": 0
+    },
+    "argent_veil": {
+        "display_name": "银月帷幕",
+        "num_inherents": 0
+    },
+    "arreats_bearing": {
+        "display_name": "亚瑞特的承载",
+        "num_inherents": 0
+    },
+    "ashearas_khanjar": {
+        "display_name": "艾席拉的弯刀",
+        "num_inherents": 0
+    },
+    "assassins_stride": {
+        "display_name": "刺客的阔步靴",
+        "num_inherents": 0
+    },
+    "autumnal_crown": {
+        "display_name": "秋日冠冕",
+        "num_inherents": 0
+    },
+    "axial_conduit": {
+        "display_name": "布克拉尼决断",
+        "num_inherents": 0
+    },
+    "azurewrath": {
+        "display_name": "碧蓝怒火",
+        "num_inherents": 0
+    },
+    "balazans_maxtlatl": {
+        "display_name": "巴拉赞的缠腰布",
+        "num_inherents": 0
+    },
+    "band_of_first_breath": {
+        "display_name": "初息指环",
+        "num_inherents": 0
+    },
+    "bands_of_ichorous_rose": {
+        "display_name": "脓腐玫瑰腕带",
+        "num_inherents": 0
+    },
+    "bane_of_ahjad-den": {
+        "display_name": "阿扎登的灾厄",
+        "num_inherents": 0
+    },
+    "banished_lords_talisman": {
+        "display_name": "放逐领主的护身符",
+        "num_inherents": 0
+    },
+    "bastion_of_sir_matthias": {
+        "display_name": "马提亚斯男爵的堡垒",
+        "num_inherents": 2
+    },
+    "battle_trance": {
+        "display_name": "战斗冥思",
+        "num_inherents": 0
+    },
+    "beastfall_boots": {
+        "display_name": "屠兽之靴",
+        "num_inherents": 0
+    },
+    "bindings_of_attrition": {
+        "display_name": "损耗殆尽之缚",
+        "num_inherents": 0
+    },
+    "black_river": {
+        "display_name": "漆黑之河",
+        "num_inherents": 0
+    },
+    "blood-mad_idol": {
+        "display_name": "血狂神像",
+        "num_inherents": 0
+    },
+    "blood_artisans_cuirass": {
+        "display_name": "鲜血匠师的胸甲",
+        "num_inherents": 0
+    },
+    "blood_moon_breeches": {
+        "display_name": "血月马裤",
+        "num_inherents": 0
+    },
+    "blood_wake": {
+        "display_name": "鲜血尾迹",
+        "num_inherents": 0
+    },
+    "bloodless_scream": {
+        "display_name": "无血尖啸",
+        "num_inherents": 0
+    },
+    "blue_rose": {
+        "display_name": "蓝玫瑰",
+        "num_inherents": 0
+    },
+    "bridle_of_torbaalos": {
+        "display_name": "巴洛斯的辔头",
+        "num_inherents": 0
+    },
+    "cage_of_madness": {
+        "display_name": "癫狂牢笼",
+        "num_inherents": 0
+    },
+    "cassias_grace": {
+        "display_name": "卡西娅的恩典",
+        "num_inherents": 0
+    },
+    "cathedrals_song": {
+        "display_name": "大教堂圣歌",
+        "num_inherents": 2
+    },
+    "chainscourged_mail": {
+        "display_name": "锁链鞭笞锁甲",
+        "num_inherents": 0
+    },
+    "cluckeye": {
+        "display_name": "啄目弓",
+        "num_inherents": 0
+    },
+    "cluckonomicon": {
+        "display_name": "鸣典",
+        "num_inherents": 0
+    },
+    "condemnation": {
+        "display_name": "定罪",
+        "num_inherents": 0
+    },
+    "coop_de_grâce": {
+        "display_name": "鸡舍慈悲",
+        "num_inherents": 0
+    },
+    "cowl_of_malefic_torment": {
+        "display_name": "恶念折磨之冠",
+        "num_inherents": 0
+    },
+    "cowl_of_the_nameless": {
+        "display_name": "无名者兜帽",
+        "num_inherents": 0
+    },
+    "craze_of_the_dead_god": {
+        "display_name": "死去神灵的疯狂",
+        "num_inherents": 0
+    },
+    "crown_of_lucion": {
+        "display_name": "路西昂之冠",
+        "num_inherents": 0
+    },
+    "cruors_embrace": {
+        "display_name": "库虏尔之拥",
+        "num_inherents": 0
+    },
+    "dark_howl": {
+        "display_name": "黑暗嚎叫",
+        "num_inherents": 0
+    },
+    "dark_stalkers_medallion": {
+        "display_name": "黑暗追猎者的勋章",
+        "num_inherents": 0
+    },
+    "dawnfire": {
+        "display_name": "黎明之火",
+        "num_inherents": 0
+    },
+    "deathgrip": {
+        "display_name": "死亡之握",
+        "num_inherents": 0
+    },
+    "deathless_visage": {
+        "display_name": "不死之面",
+        "num_inherents": 0
+    },
+    "deathmask_of_nirmitruq": {
+        "display_name": "涅米特鲁克的死亡面具",
+        "num_inherents": 0
+    },
+    "deaths_pavane": {
+        "display_name": "死亡帕凡舞",
+        "num_inherents": 0
+    },
+    "deathspeakers_pendant": {
+        "display_name": "亡语者的吊坠",
+        "num_inherents": 0
+    },
+    "desperate_march": {
+        "display_name": "绝命行军",
+        "num_inherents": 0
+    },
+    "dirge_of_airidah": {
+        "display_name": "艾蕊达哀歌",
+        "num_inherents": 0
+    },
+    "dirge_of_odium": {
+        "display_name": "憎恶的哀怨挽歌",
+        "num_inherents": 0
+    },
+    "dolmen_stone": {
+        "display_name": "支石墓石",
+        "num_inherents": 0
+    },
+    "doombringer": {
+        "display_name": "末日使者",
+        "num_inherents": 0
+    },
+    "drognans_anguish": {
+        "display_name": "卓格楠的苦闷",
+        "num_inherents": 0
+    },
+    "eaglehorn": {
+        "display_name": "鹰之号角",
+        "num_inherents": 0
+    },
+    "earthbreaker": {
+        "display_name": "裂地者",
+        "num_inherents": 0
+    },
+    "ebonpiercer": {
+        "display_name": "黑檀穿孔符",
+        "num_inherents": 0
+    },
+    "echo_of_kwatli": {
+        "display_name": "库瓦特里的回音",
+        "num_inherents": 0
+    },
+    "eggcecutioner": {
+        "display_name": "卵之处决者",
+        "num_inherents": 0
+    },
+    "eggis": {
+        "display_name": "卵之神盾",
+        "num_inherents": 2
+    },
+    "eldruin_sword_of_justice": {
+        "display_name": "艾尔度因，正义之剑",
+        "num_inherents": 1
+    },
+    "elegy": {
+        "display_name": "挽歌",
+        "num_inherents": 0
+    },
+    "emberfury": {
+        "display_name": "余烬之怒",
+        "num_inherents": 0
+    },
+    "emblem_of_staalbreak": {
+        "display_name": "斯塔布雷克徽记",
+        "num_inherents": 0
+    },
+    "endurant_faith": {
+        "display_name": "忠贞信仰",
+        "num_inherents": 0
+    },
+    "esadoras_overflowing_cameo": {
+        "display_name": "艾瑟朵拉的流溢浮雕",
+        "num_inherents": 0
+    },
+    "esus_heirloom": {
+        "display_name": "艾苏的传家宝",
+        "num_inherents": 0
+    },
+    "etnas_lost_dagger": {
+        "display_name": "埃特娜的失落匕首",
+        "num_inherents": 0
+    },
+    "eye_of_baal": {
+        "display_name": "巴尔之眼",
+        "num_inherents": 0
+    },
+    "eyes_in_the_dark": {
+        "display_name": "暗夜凝望",
+        "num_inherents": 0
+    },
+    "fang_of_the_vipermagi": {
+        "display_name": "蝮蛇法妖之牙",
+        "num_inherents": 0
+    },
+    "fields_of_crimson": {
+        "display_name": "修罗场",
+        "num_inherents": 0
+    },
+    "fist_of_the_iron_rose": {
+        "display_name": "铁玫瑰之拳",
+        "num_inherents": 0
+    },
+    "fists_of_fate": {
+        "display_name": "命运之拳",
+        "num_inherents": 0
+    },
+    "flamescar": {
+        "display_name": "焰痕",
+        "num_inherents": 0
+    },
+    "flameweaver": {
+        "display_name": "织火者",
+        "num_inherents": 0
+    },
+    "fleshrender": {
+        "display_name": "血肉撕裂者",
+        "num_inherents": 0
+    },
+    "fleshwrit_carapace": {
+        "display_name": "血肉铭文甲壳",
+        "num_inherents": 0
+    },
+    "flickerstep": {
+        "display_name": "摇曳之步",
+        "num_inherents": 0
+    },
+    "footfalls_of_the_waning_world": {
+        "display_name": "衰亡世界的足音",
+        "num_inherents": 0
+    },
+    "fractured_runestone": {
+        "display_name": "破碎的符文石",
+        "num_inherents": 0
+    },
+    "fractured_winterglass": {
+        "display_name": "破碎冬镜",
+        "num_inherents": 0
+    },
+    "frostburn": {
+        "display_name": "霜燃",
+        "num_inherents": 0
+    },
+    "fury_of_the_wilds": {
+        "display_name": "荒野之怒",
+        "num_inherents": 0
+    },
+    "galvanic_azurite": {
+        "display_name": "流电石青",
+        "num_inherents": 0
+    },
+    "gate_of_the_red_dawn": {
+        "display_name": "赤红黎明之门",
+        "num_inherents": 2
+    },
+    "gathlens_birthright": {
+        "display_name": "加斯伦的天命",
+        "num_inherents": 0
+    },
+    "gauntlets_of_sheol": {
+        "display_name": "阴间幽冥护手",
+        "num_inherents": 0
+    },
+    "gift_of_frost": {
+        "display_name": "冰霜之赐",
+        "num_inherents": 0
+    },
+    "gladiators_triumph": {
+        "display_name": "角斗士的凯旋",
+        "num_inherents": 0
+    },
+    "gloves_of_the_illuminator": {
+        "display_name": "光照者之手",
+        "num_inherents": 0
+    },
+    "godslayer_crown": {
+        "display_name": "弑神者之冠",
+        "num_inherents": 0
+    },
+    "gohrs_devastating_grips": {
+        "display_name": "戈尔的毁灭之握",
+        "num_inherents": 0
+    },
+    "gospel_of_the_devotee": {
+        "display_name": "虔诚者福音",
+        "num_inherents": 0
+    },
+    "grasp_of_shadow": {
+        "display_name": "暗影之握",
+        "num_inherents": 0
+    },
+    "gravewalkers_hand": {
+        "display_name": "行墓者之手",
+        "num_inherents": 0
+    },
+    "greatstaff_of_the_crone": {
+        "display_name": "巫婆巨杖",
+        "num_inherents": 0
+    },
+    "greaves_of_the_empty_tomb": {
+        "display_name": "鬼墓空棺护胫",
+        "num_inherents": 0
+    },
+    "greenwalkers_oath": {
+        "display_name": "绿行者之誓",
+        "num_inherents": 0
+    },
+    "greenwalkers_signet": {
+        "display_name": "绿行者的玺戒",
+        "num_inherents": 0
+    },
+    "griswolds_opus": {
+        "display_name": "格里斯沃尔德的杰作",
+        "num_inherents": 0
+    },
+    "hail_of_verglas": {
+        "display_name": "激飞冻雨",
+        "num_inherents": 0
+    },
+    "hand_of_apotheosis": {
+        "display_name": "神化之手",
+        "num_inherents": 0
+    },
+    "hands_of_the_worldbreaker": {
+        "display_name": "灭世者之手",
+        "num_inherents": 0
+    },
+    "hangmans_hand": {
+        "display_name": "绞刑官之手",
+        "num_inherents": 0
+    },
+    "harlequin_crest": {
+        "display_name": "谐角之冠",
+        "num_inherents": 0
+    },
+    "harmony_of_ebewaka": {
+        "display_name": "埃贝瓦卡之睦",
+        "num_inherents": 0
+    },
+    "heart_of_azgar": {
+        "display_name": "阿兹加尔之心",
+        "num_inherents": 0
+    },
+    "hecaton_chasm": {
+        "display_name": "赫卡顿深渊",
+        "num_inherents": 0
+    },
+    "heir_of_perdition": {
+        "display_name": "堕狱传承",
+        "num_inherents": 0
+    },
+    "hellbrand_signet": {
+        "display_name": "狱印玺戒",
+        "num_inherents": 0
+    },
+    "hellhammer": {
+        "display_name": "地狱锤",
+        "num_inherents": 0
+    },
+    "hellhounds_sabatons": {
+        "display_name": "地狱犬马靴",
+        "num_inherents": 0
+    },
+    "herald_of_zakarum": {
+        "display_name": "萨卡兰姆的使者",
+        "num_inherents": 3
+    },
+    "heralds_morningstar": {
+        "display_name": "先驱的晨星",
+        "num_inherents": 0
+    },
+    "hesha_e_kesungi": {
+        "display_name": "哈夏·厄·克苏吉",
+        "num_inherents": 0
+    },
+    "hooves_of_the_mountain_god": {
+        "display_name": "山神的巨蹄",
+        "num_inherents": 0
+    },
+    "howl_from_below": {
+        "display_name": "地狱哀号",
+        "num_inherents": 0
+    },
+    "hunters_zenith": {
+        "display_name": "猎手的巅峰",
+        "num_inherents": 0
+    },
+    "iceheart_brais": {
+        "display_name": "冰心长裤",
+        "num_inherents": 0
+    },
+    "ifehs_dire_totem": {
+        "display_name": "伊菲的恐狼图腾",
+        "num_inherents": 0
+    },
+    "indiras_memory": {
+        "display_name": "英迪拉的记忆",
+        "num_inherents": 0
+    },
+    "infernal_homunculus": {
+        "display_name": "炼狱邪胎",
+        "num_inherents": 0
+    },
+    "insatiable_fury": {
+        "display_name": "无餍之怒",
+        "num_inherents": 0
+    },
+    "jacinth_shell": {
+        "display_name": "红锆石胄衣",
+        "num_inherents": 0
+    },
+    "judgment_of_auriel": {
+        "display_name": "奥莉尔的审判",
+        "num_inherents": 0
+    },
+    "judicants_glaivehelm": {
+        "display_name": "审判官的战刃盔",
+        "num_inherents": 0
+    },
+    "kabraxis_will": {
+        "display_name": "卡布拉西斯的意志",
+        "num_inherents": 0
+    },
+    "kessimes_legacy": {
+        "display_name": "凯希米的传承",
+        "num_inherents": 0
+    },
+    "khamsin_steppewalkers": {
+        "display_name": "热风步行靴",
+        "num_inherents": 0
+    },
+    "kilt_of_blackwing": {
+        "display_name": "黑翼幽裙",
+        "num_inherents": 0
+    },
+    "levin_grasp": {
+        "display_name": "闪电之握",
+        "num_inherents": 0
+    },
+    "lidless_wall": {
+        "display_name": "警戒之墙",
+        "num_inherents": 2
+    },
+    "lights_rebuke": {
+        "display_name": "圣光非难",
+        "num_inherents": 0
+    },
+    "litany_of_sable": {
+        "display_name": "黑岩祷文",
+        "num_inherents": 0
+    },
+    "locrans_talisman": {
+        "display_name": "洛克兰的护身符",
+        "num_inherents": 0
+    },
+    "loyaltys_mantle": {
+        "display_name": "忠诚斗篷",
+        "num_inherents": 0
+    },
+    "lurid_pact": {
+        "display_name": "骇人契约",
+        "num_inherents": 0
+    },
+    "mace_of_king_leoric": {
+        "display_name": "李奥瑞克王的钉锤",
+        "num_inherents": 0
+    },
+    "mad_wolfs_glee": {
+        "display_name": "疯狼的狂喜",
+        "num_inherents": 0
+    },
+    "malefic_crescent": {
+        "display_name": "凶邪新月",
+        "num_inherents": 0
+    },
+    "mantle_of_mountains_fury": {
+        "display_name": "山峦之怒斗篷",
+        "num_inherents": 0
+    },
+    "mantle_of_the_grey": {
+        "display_name": "灰者披肩",
+        "num_inherents": 0
+    },
+    "march_of_the_stalwart_soul": {
+        "display_name": "坚定灵魂的行军",
+        "num_inherents": 0
+    },
+    "mark_of_the_old_wolf": {
+        "display_name": "老狼的印记",
+        "num_inherents": 0
+    },
+    "melted_heart_of_selig": {
+        "display_name": "塞利格的溶解之心",
+        "num_inherents": 0
+    },
+    "might_of_qual-kehk": {
+        "display_name": "夸尔凯克的伟力",
+        "num_inherents": 0
+    },
+    "might_of_the_ursine": {
+        "display_name": "巨熊伟力",
+        "num_inherents": 0
+    },
+    "misericorde": {
+        "display_name": "慈悲短剑",
+        "num_inherents": 0
+    },
+    "mjölnic_ryng": {
+        "display_name": "雷神之戒",
+        "num_inherents": 0
+    },
+    "molochs_beating_flame": {
+        "display_name": "摩洛克的跳动之焰",
+        "num_inherents": 0
+    },
+    "molten_band": {
+        "display_name": "熔火指环",
+        "num_inherents": 0
+    },
+    "morlu_fleshward": {
+        "display_name": "魔奴血肉结界",
+        "num_inherents": 0
+    },
+    "mothers_embrace": {
+        "display_name": "圣母的拥抱",
+        "num_inherents": 0
+    },
+    "mutilator_plate": {
+        "display_name": "肢解者板甲",
+        "num_inherents": 0
+    },
+    "nails_of_the_gore-crowned": {
+        "display_name": "血冠者利爪",
+        "num_inherents": 0
+    },
+    "nesekem_the_herald": {
+        "display_name": "涅塞科姆，绝望先驱",
+        "num_inherents": 0
+    },
+    "night_terror": {
+        "display_name": "暗夜恐魔",
+        "num_inherents": 0
+    },
+    "nomads_longing_heart": {
+        "display_name": "游牧民的渴望之心",
+        "num_inherents": 0
+    },
+    "okuns_catalyst": {
+        "display_name": "奥库恩的催化器",
+        "num_inherents": 1
+    },
+    "omen_of_pain": {
+        "display_name": "痛苦之兆",
+        "num_inherents": 0
+    },
+    "onyx_soul": {
+        "display_name": "玛瑙之魂",
+        "num_inherents": 0
+    },
+    "ophidian_iris": {
+        "display_name": "蛇之幽瞳",
+        "num_inherents": 0
+    },
+    "orphan_maker": {
+        "display_name": "孤儿制造者",
+        "num_inherents": 0
+    },
+    "orsivane": {
+        "display_name": "奥希凡",
+        "num_inherents": 0
+    },
+    "overkill": {
+        "display_name": "虐杀",
+        "num_inherents": 0
+    },
+    "pact_of_bone": {
+        "display_name": "白骨契约",
+        "num_inherents": 0
+    },
+    "paingorgers_gauntlets": {
+        "display_name": "痛苦吞食者的护手",
+        "num_inherents": 0
+    },
+    "path_of_the_emissary": {
+        "display_name": "特使之路",
+        "num_inherents": 0
+    },
+    "path_of_tragoul": {
+        "display_name": "塔格奥的道途",
+        "num_inherents": 0
+    },
+    "peacemongers_signet": {
+        "display_name": "和平倡导者的玺戒",
+        "num_inherents": 0
+    },
+    "penitent_greaves": {
+        "display_name": "悔罪护胫",
+        "num_inherents": 0
+    },
+    "pitfighters_gull": {
+        "display_name": "深坑斗士的诈术",
+        "num_inherents": 0
+    },
+    "protean_heart": {
+        "display_name": "千变之心",
+        "num_inherents": 0
+    },
+    "protection_of_the_prime": {
+        "display_name": "先灵之佑",
+        "num_inherents": 0
+    },
+    "purified_lightbringer": {
+        "display_name": "净化之光明使者",
+        "num_inherents": 0
+    },
+    "rage_of_harrogath": {
+        "display_name": "哈洛加斯之怒",
+        "num_inherents": 0
+    },
+    "raiment_of_the_infinite": {
+        "display_name": "无限法衣",
+        "num_inherents": 0
+    },
+    "raiment_of_the_sea": {
+        "display_name": "苍海法衣",
+        "num_inherents": 0
+    },
+    "rakanoths_wake": {
+        "display_name": "拉卡诺斯的尾迹",
+        "num_inherents": 0
+    },
+    "ramaladnis_magnum_opus": {
+        "display_name": "拉玛兰迪的杰作",
+        "num_inherents": 0
+    },
+    "razorplate": {
+        "display_name": "剃刀甲",
+        "num_inherents": 0
+    },
+    "red_blessing": {
+        "display_name": "猩红祝福",
+        "num_inherents": 0
+    },
+    "red_sermon": {
+        "display_name": "血色布道",
+        "num_inherents": 0
+    },
+    "rictus_of_terror": {
+        "display_name": "骇怖苦笑",
+        "num_inherents": 0
+    },
+    "rimeblood": {
+        "display_name": "凛霜之血",
+        "num_inherents": 0
+    },
+    "ring_of_mendeln": {
+        "display_name": "孟德恩之戒",
+        "num_inherents": 0
+    },
+    "ring_of_red_furor": {
+        "display_name": "赤红狂怒之戒",
+        "num_inherents": 0
+    },
+    "ring_of_starless_skies": {
+        "display_name": "无星夜空之戒",
+        "num_inherents": 0
+    },
+    "ring_of_the_midday_hunt": {
+        "display_name": "正午狩猎之戒",
+        "num_inherents": 0
+    },
+    "ring_of_the_midnight_sun": {
+        "display_name": "午夜骄阳之戒",
+        "num_inherents": 0
+    },
+    "ring_of_the_ravenous": {
+        "display_name": "恶馋者之戒",
+        "num_inherents": 0
+    },
+    "ring_of_the_sacrilegious_soul": {
+        "display_name": "亵渎天性魂戒",
+        "num_inherents": 0
+    },
+    "ring_of_writhing_moon": {
+        "display_name": "扭曲月华之戒",
+        "num_inherents": 0
+    },
+    "rod_of_kepeleke": {
+        "display_name": "科佩莱克之杖",
+        "num_inherents": 0
+    },
+    "rotting_lightbringer": {
+        "display_name": "腐朽的驭光者",
+        "num_inherents": 0
+    },
+    "rustbitten_dirk": {
+        "display_name": "锈斑短匕",
+        "num_inherents": 0
+    },
+    "saboteurs_signet": {
+        "display_name": "破坏者的玺戒",
+        "num_inherents": 0
+    },
+    "sabre_of_tsasgal": {
+        "display_name": "萨斯加尔的马刀",
+        "num_inherents": 0
+    },
+    "sanctis_of_kethamar": {
+        "display_name": "凯萨玛的圣物",
+        "num_inherents": 0
+    },
+    "sanguivor_blade_of_zir": {
+        "display_name": "殷红飨宴，齐尔的巨刃",
+        "num_inherents": 0
+    },
+    "sashes_of_the_wretched": {
+        "display_name": "悲惨者束带",
+        "num_inherents": 0
+    },
+    "scepter_of_the_three": {
+        "display_name": "三神教杖锤",
+        "num_inherents": 0
+    },
+    "scorn_of_the_earth": {
+        "display_name": "大地的蔑视",
+        "num_inherents": 0
+    },
+    "scoundrels_kiss": {
+        "display_name": "痞子之吻",
+        "num_inherents": 0
+    },
+    "scoundrels_leathers": {
+        "display_name": "地痞的皮装",
+        "num_inherents": 0
+    },
+    "scourge_of_duriel": {
+        "display_name": "督瑞尔的灾祸",
+        "num_inherents": 0
+    },
+    "sea_lords_fine_gloves": {
+        "display_name": "海王精制手套",
+        "num_inherents": 0
+    },
+    "seal_of_the_diamond_mind": {
+        "display_name": "钻石之心封印",
+        "num_inherents": 0
+    },
+    "seal_of_the_golden_epiphany": {
+        "display_name": "金色顿悟封印",
+        "num_inherents": 0
+    },
+    "seal_of_the_ophanim": {
+        "display_name": "座天使符印",
+        "num_inherents": 0
+    },
+    "seal_of_the_second_trumpet": {
+        "display_name": "第二号角之印",
+        "num_inherents": 0
+    },
+    "seal_of_the_severed_finger": {
+        "num_inherents": 0
+    },
+    "seed_of_horazon": {
+        "display_name": "霍拉松之种",
+        "num_inherents": 0
+    },
+    "sepazontec": {
+        "display_name": "瑟帕佐泰克",
+        "num_inherents": 0
+    },
+    "shanars_resonance": {
+        "display_name": "莎娜的共鸣",
+        "num_inherents": 0
+    },
+    "shard_of_verathiel": {
+        "display_name": "维拉瑟尔的碎片",
+        "num_inherents": 0
+    },
+    "shattered_vow": {
+        "display_name": "破碎的誓言",
+        "num_inherents": 0
+    },
+    "shroud_of_false_death": {
+        "display_name": "虚假死亡之衣",
+        "num_inherents": 0
+    },
+    "shroud_of_khanduras": {
+        "display_name": "堪杜拉斯之衣",
+        "num_inherents": 0
+    },
+    "shrouded_gift": {
+        "display_name": "隐秘之赐",
+        "num_inherents": 0
+    },
+    "sidhe_bindings": {
+        "display_name": "仙灵裹手",
+        "num_inherents": 0
+    },
+    "signet_of_pelghain": {
+        "display_name": "佩尔甘玺戒",
+        "num_inherents": 0
+    },
+    "sire_of_sin": {
+        "display_name": "罪恶之父",
+        "num_inherents": 0
+    },
+    "skyhunter": {
+        "display_name": "猎天者",
+        "num_inherents": 0
+    },
+    "sliver_of_hate": {
+        "display_name": "憎恨碎条",
+        "num_inherents": 0
+    },
+    "soulbrand": {
+        "display_name": "灵魂烙印",
+        "num_inherents": 0
+    },
+    "spine_of_tathamet": {
+        "display_name": "塔萨迈特的脊骨",
+        "num_inherents": 0
+    },
+    "staff_of_endless_rage": {
+        "display_name": "无尽怒火法杖",
+        "num_inherents": 0
+    },
+    "staff_of_lam_esen": {
+        "display_name": "兰姆·艾森之杖",
+        "num_inherents": 0
+    },
+    "staff_of_zerae": {
+        "display_name": "泽瑞伊之杖",
+        "num_inherents": 0
+    },
+    "starfall_coronet": {
+        "display_name": "星陨冠冕",
+        "num_inherents": 0
+    },
+    "stone_of_vehemen": {
+        "display_name": "暴烈之石",
+        "num_inherents": 0
+    },
+    "storms_companion": {
+        "display_name": "风暴之友",
+        "num_inherents": 0
+    },
+    "strike_of_stormhorn": {
+        "display_name": "风暴利角之击",
+        "num_inherents": 0
+    },
+    "sunbirds_gorget": {
+        "display_name": "太阳鸟颈饰",
+        "num_inherents": 0
+    },
+    "sunbrand": {
+        "display_name": "阳炎烙印",
+        "num_inherents": 0
+    },
+    "sundered_night": {
+        "display_name": "撕裂长夜",
+        "num_inherents": 0
+    },
+    "sunstained_war-crozier": {
+        "display_name": "阳痕战争牧杖",
+        "num_inherents": 0
+    },
+    "supplication": {
+        "display_name": "祈愿",
+        "num_inherents": 0
+    },
+    "tal_rashas_iridescent_loop": {
+        "display_name": "塔·拉夏的虹彩指环",
+        "num_inherents": 0
+    },
+    "tassets_of_the_dawning_sky": {
+        "display_name": "破晓天空裙甲",
+        "num_inherents": 0
+    },
+    "temerity": {
+        "display_name": "骄狂",
+        "num_inherents": 0
+    },
+    "tempest_roar": {
+        "display_name": "风暴咆哮",
+        "num_inherents": 0
+    },
+    "the_basilisk": {
+        "display_name": "蛇怪之杖",
+        "num_inherents": 0
+    },
+    "the_blade_of_sight_aflame": {
+        "display_name": "燃目流火之刃",
+        "num_inherents": 0
+    },
+    "the_butchers_cleaver": {
+        "display_name": "屠夫的砍斧",
+        "num_inherents": 0
+    },
+    "the_eightfold_idol": {
+        "display_name": "八重神像",
+        "num_inherents": 0
+    },
+    "the_fecund_seal": {
+        "display_name": "丰饶符印",
+        "num_inherents": 0
+    },
+    "the_gloom_ward": {
+        "display_name": "幽暗结界",
+        "num_inherents": 2
+    },
+    "the_grandfather": {
+        "display_name": "祖父",
+        "num_inherents": 1
+    },
+    "the_hand_of_naz": {
+        "display_name": "纳兹之手",
+        "num_inherents": 0
+    },
+    "the_hemat_stone": {
+        "display_name": "赫马特之石",
+        "num_inherents": 0
+    },
+    "the_maestro": {
+        "display_name": "艺术大师",
+        "num_inherents": 0
+    },
+    "the_mortacrux": {
+        "display_name": "死亡匕首",
+        "num_inherents": 0
+    },
+    "the_oculus": {
+        "display_name": "法瞳",
+        "num_inherents": 0
+    },
+    "the_open_eye_of_gorgorra": {
+        "display_name": "戈戈拉的睁眼",
+        "num_inherents": 0
+    },
+    "the_relentless_heart": {
+        "display_name": "无情核心",
+        "num_inherents": 0
+    },
+    "the_third_blade": {
+        "display_name": "三重美德之锋",
+        "num_inherents": 0
+    },
+    "the_umbracrux": {
+        "display_name": "暗影匕首",
+        "num_inherents": 0
+    },
+    "the_undercrown": {
+        "display_name": "幽冥王冠",
+        "num_inherents": 0
+    },
+    "the_unmaker": {
+        "display_name": "废命者",
+        "num_inherents": 0
+    },
+    "thousand-eye_reaver": {
+        "display_name": "千眼劫掠者",
+        "num_inherents": 0
+    },
+    "thrice-woven_nightmare": {
+        "display_name": "三重编织噩梦",
+        "num_inherents": 0
+    },
+    "thundergods_blessing": {
+        "display_name": "雷神之赐",
+        "num_inherents": 0
+    },
+    "tibaults_will": {
+        "display_name": "迪博特的意志",
+        "num_inherents": 0
+    },
+    "tuskhelm_of_joritz_the_mighty": {
+        "display_name": "勇武的乔里茨的獠牙盔",
+        "num_inherents": 0
+    },
+    "twin_strikes": {
+        "display_name": "双重打击",
+        "num_inherents": 0
+    },
+    "tyraels_might": {
+        "display_name": "泰瑞尔之力",
+        "num_inherents": 1
+    },
+    "ugly_bastard_helm": {
+        "display_name": "丑陋私生子之盔",
+        "num_inherents": 0
+    },
+    "unbroken_chain": {
+        "display_name": "不破束链",
+        "num_inherents": 0
+    },
+    "unsung_ascetics_wraps": {
+        "display_name": "无名苦行僧的裹手",
+        "num_inherents": 0
+    },
+    "vasilys_prayer": {
+        "display_name": "瓦西里的祷告",
+        "num_inherents": 0
+    },
+    "vengeful_sinew": {
+        "display_name": "复仇肌腱",
+        "num_inherents": 0
+    },
+    "vision_of_the_firestorm": {
+        "display_name": "火焰风暴的幻象",
+        "num_inherents": 0
+    },
+    "vox_omnium": {
+        "display_name": "纷乱之声",
+        "num_inherents": 0
+    },
+    "ward_of_the_white_dove": {
+        "display_name": "白鸽结界",
+        "num_inherents": 2
+    },
+    "waxing_gibbous": {
+        "display_name": "盈月当空",
+        "num_inherents": 0
+    },
+    "wendigo_brand": {
+        "display_name": "温迪戈印戒",
+        "num_inherents": 0
+    },
+    "widows_web": {
+        "display_name": "寡妇织网",
+        "num_inherents": 0
+    },
+    "wildheart_hunger": {
+        "display_name": "野性之心的饥饿",
+        "num_inherents": 0
+    },
+    "will_of_rathma": {
+        "display_name": "拉斯玛的意志",
+        "num_inherents": 0
+    },
+    "will_of_stone": {
+        "display_name": "顽石意志",
+        "num_inherents": 0
+    },
+    "windforce": {
+        "display_name": "风之力",
+        "num_inherents": 0
+    },
+    "word_of_hakan": {
+        "display_name": "哈坎的口谕",
+        "num_inherents": 0
+    },
+    "wound_drinker": {
+        "display_name": "饮伤者",
+        "num_inherents": 0
+    },
+    "wreath_of_auric_laurel": {
+        "display_name": "金辉月桂之环",
+        "num_inherents": 0
+    },
+    "writhing_band_of_trickery": {
+        "display_name": "诡诈之盘曲指环",
+        "num_inherents": 0
+    },
+    "wushe_nak_pa": {
+        "display_name": "乌阇南帕",
+        "num_inherents": 0
+    },
+    "wyrdskin": {
+        "display_name": "诡邪之皮",
+        "num_inherents": 0
+    },
+    "xfals_corroded_signet": {
+        "display_name": "埃克斯法的锈蚀玺戒",
+        "num_inherents": 0
+    },
+    "yens_blessing": {
+        "display_name": "延的祝福",
+        "num_inherents": 0
+    }
+}

@@ -1,6 +1,8 @@
 import logging
+from typing import override
 
 from PyQt6.QtCore import QSettings, QSignalBlocker, Qt, pyqtSignal
+from PyQt6.QtGui import QStandardItemModel
 from PyQt6.QtWidgets import (
     QComboBox,
     QGroupBox,
@@ -27,11 +29,13 @@ from src.config.profile_session import (
     YamlError,
 )
 from src.dataloader import Dataloader
+from src.gui.i18n import translate, translate_widget_tree
 from src.gui.profile_editor.profile_editor import ProfileEditor
 
 LOGGER = logging.getLogger(__name__)
 
 PROFILE_TABNAME = "edit profile (beta)"
+I18N_LABEL_ROLE = int(Qt.ItemDataRole.UserRole) + 1
 
 
 class ProfileTab(QWidget):
@@ -61,19 +65,19 @@ class ProfileTab(QWidget):
         info_layout = QHBoxLayout()
         info_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        tools_groupbox = QGroupBox("Profile")
+        self.tools_groupbox = QGroupBox(translate("Profile"))
         tools_groupbox_layout = QHBoxLayout()
         self.profile_combo = QComboBox()
-        self.save_button = QPushButton("Save")
-        self.refresh_button = QPushButton("Undo Changes")
+        self.save_button = QPushButton(translate("Save"))
+        self.refresh_button = QPushButton(translate("Undo Changes"))
         self.profile_combo.currentIndexChanged.connect(self.profile_selection_changed)
         self.save_button.clicked.connect(self.save_yaml)
         self.refresh_button.clicked.connect(self.refresh)
         tools_groupbox_layout.addWidget(self.profile_combo)
         tools_groupbox_layout.addWidget(self.save_button)
         tools_groupbox_layout.addWidget(self.refresh_button)
-        tools_groupbox.setLayout(tools_groupbox_layout)
-        info_layout.addWidget(tools_groupbox)
+        self.tools_groupbox.setLayout(tools_groupbox_layout)
+        info_layout.addWidget(self.tools_groupbox)
         self.main_layout.addLayout(info_layout)
 
         self.itemTypes = Dataloader().item_types_dict
@@ -83,24 +87,27 @@ class ProfileTab(QWidget):
         scroll_widget.setLayout(self.scrollable_layout)
         scroll_area.setWidget(scroll_widget)
         self.main_layout.addWidget(scroll_area)
-        instructions_label = QLabel("Instructions")
-        self.main_layout.addWidget(instructions_label)
+        self.instructions_label = QLabel(translate("Instructions"))
+        self.main_layout.addWidget(self.instructions_label)
 
-        instructions_text = QTextBrowser()
-        instructions_text.append(
-            "Select a profile from the dropdown. Click 'Save' to save your changes. Click 'Undo Changes' to revert your changes."
+        self.instructions_text = QTextBrowser()
+        self.instructions_text.append(
+            translate(
+                "Select a profile from the dropdown. Click 'Save' to save your changes. "
+                "Click 'Undo Changes' to revert your changes."
+            )
         )
 
-        instructions_text.setFixedHeight(50)
-        self.main_layout.addWidget(instructions_text)
+        self.instructions_text.setFixedHeight(50)
+        self.main_layout.addWidget(self.instructions_text)
         self.setLayout(self.main_layout)
         self.populate_profile_dropdown()
 
     def confirm_discard_changes(self):
         reply = QMessageBox.warning(
             self,
-            "Unsaved Changes",
-            "You have unsaved changes. Do you want to save them before closing?",
+            translate("Unsaved Changes"),
+            translate("You have unsaved changes. Do you want to save them before closing?"),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel,
         )
         if reply == QMessageBox.StandardButton.Yes:
@@ -109,7 +116,7 @@ class ProfileTab(QWidget):
         return reply == QMessageBox.StandardButton.No
 
     def create_alert(self, msg: str):
-        reply = QMessageBox.warning(self, "Alert", msg, QMessageBox.StandardButton.Ok)
+        reply = QMessageBox.warning(self, translate("Alert"), msg, QMessageBox.StandardButton.Ok)
         return reply == QMessageBox.StandardButton.Ok
 
     def show_tab(self):
@@ -126,10 +133,16 @@ class ProfileTab(QWidget):
         previous_profile_name = self.current_profile_name
         self.file_path = self.profile_paths[profile_name]
         if self.load_yaml():
-            self._set_model_editor(self.loaded_profile)
+            loaded_profile = self.loaded_profile
+            root = self.root
+            if loaded_profile is None or root is None:
+                self.file_path = self.profile_paths.get(previous_profile_name)
+                self.set_current_profile_combo(previous_profile_name)
+                return
+            self._set_model_editor(loaded_profile)
             self.current_profile_name = profile_name
             self.set_current_profile_combo(profile_name)
-            LOGGER.info(f"Profile {self.root.name} loaded into profile editor.")
+            LOGGER.info(f"Profile {root.name} loaded into profile editor.")
             return
 
         self.file_path = self.profile_paths.get(previous_profile_name)
@@ -138,9 +151,15 @@ class ProfileTab(QWidget):
     def add_profile_combo_section(self, label, profiles):
         if not profiles:
             return
-        self.profile_combo.addItem(label, None)
+        self.profile_combo.addItem(f"--------- {translate(label)} ---------", None)
         section_index = self.profile_combo.count() - 1
-        section_item = self.profile_combo.model().item(section_index)
+        self.profile_combo.setItemData(section_index, label, I18N_LABEL_ROLE)
+        model = self.profile_combo.model()
+        if not isinstance(model, QStandardItemModel):
+            return
+        section_item = model.item(section_index)
+        if section_item is None:
+            return
         section_item.setEnabled(False)
         for profile_name in profiles:
             self.profile_combo.addItem(profile_name, profile_name)
@@ -158,14 +177,18 @@ class ProfileTab(QWidget):
 
         with QSignalBlocker(self.profile_combo):
             self.profile_combo.clear()
-            self.add_profile_combo_section("--------- Active Profiles ---------", self.active_profiles)
-            self.add_profile_combo_section("--------- Inactive Profiles ---------", self.inactive_profiles)
+            self.add_profile_combo_section("Active Profiles", self.active_profiles)
+            self.add_profile_combo_section("Inactive Profiles", self.inactive_profiles)
 
         if not self.active_profiles and not self.inactive_profiles:
             self.current_profile_name = ""
-            self.profile_combo.addItem("No profiles found", None)
-            no_profiles_item = self.profile_combo.model().item(0)
-            no_profiles_item.setEnabled(False)
+            self.profile_combo.addItem(translate("No profiles found"), None)
+            self.profile_combo.setItemData(0, "No profiles found", I18N_LABEL_ROLE)
+            model = self.profile_combo.model()
+            if isinstance(model, QStandardItemModel):
+                no_profiles_item = model.item(0)
+                if no_profiles_item is not None:
+                    no_profiles_item.setEnabled(False)
             self.profile_combo.setEnabled(False)
             self.save_button.setEnabled(False)
             self.refresh_button.setEnabled(False)
@@ -196,10 +219,12 @@ class ProfileTab(QWidget):
         self.load_selected_profile(self.inactive_profiles[0])
 
     def create_profile_editor(self):
-        if not self.profile_editor_created and self.root:
-            self._set_model_editor(self.loaded_profile)
+        loaded_profile = self.loaded_profile
+        root = self.root
+        if not self.profile_editor_created and loaded_profile is not None and root is not None:
+            self._set_model_editor(loaded_profile)
             self.profile_editor_created = True
-            LOGGER.info(f"Profile {self.root.name} loaded into profile editor.")
+            LOGGER.info(f"Profile {root.name} loaded into profile editor.")
 
     def load_yaml(self):
         if not self.file_path:
@@ -215,9 +240,9 @@ class ProfileTab(QWidget):
             return False
         if isinstance(load_result, ValidationError):
             if load_result.guidance:
-                QMessageBox.critical(self, "Profile Validation Failed", load_result.guidance)
+                QMessageBox.critical(self, translate("Profile Validation Failed"), load_result.guidance)
             else:
-                QMessageBox.critical(self, "Validation Error", load_result.message)
+                QMessageBox.critical(self, translate("Validation Error"), load_result.message)
             return False
         if not isinstance(load_result, Loaded):
             return False
@@ -231,38 +256,51 @@ class ProfileTab(QWidget):
             return
         save_result = self.session.save(self.model_editor.get_current_model())
         if isinstance(save_result, Saved):
-            QMessageBox.information(self, "Info", f"Profile saved successfully to {save_result.saved.path.name}")
+            QMessageBox.information(
+                self,
+                translate("Info"),
+                translate("Profile saved successfully to {name}", name=save_result.saved.path.name),
+            )
             self.profile_saved.emit(self.model_editor.get_current_model().name)
             self.root = self.model_editor.get_current_model()
             return
         if isinstance(save_result, ValidationDiffers):
             save_coerced = QMessageBox.warning(
                 self,
-                "Warning",
-                "The profile model might not be valid. Do you still want to save your changes ?",
+                translate("Warning"),
+                translate("The profile model might not be valid. Do you still want to save your changes?"),
                 QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard,
             )
             if save_coerced == QMessageBox.StandardButton.Save:
+                loaded_profile = self.loaded_profile
+                if loaded_profile is None:
+                    return
                 force_result = self.session.save(save_result.coerced_model, force=True)
                 if isinstance(force_result, Saved):
                     QMessageBox.information(
-                        self, "Info", f"Profile saved successfully to {force_result.saved.path.name}"
+                        self,
+                        translate("Info"),
+                        translate("Profile saved successfully to {name}", name=force_result.saved.path.name),
                     )
                     self.loaded_profile = LoadedProfile(
-                        path=self.loaded_profile.path, name=self.loaded_profile.name, profile=save_result.coerced_model
+                        path=loaded_profile.path, name=loaded_profile.name, profile=save_result.coerced_model
                     )
                     self._set_model_editor(self.loaded_profile)
                     self.root = save_result.coerced_model
                     self.profile_saved.emit(save_result.coerced_model.name)
                     return
                 if isinstance(force_result, Failed):
-                    QMessageBox.critical(self, "Error", f"Failed to save profile: {force_result.error}")
+                    QMessageBox.critical(
+                        self, translate("Error"), translate("Failed to save profile: {error}", error=force_result.error)
+                    )
                     return
             else:
-                QMessageBox.information(self, "Info", "Profile not saved.")
+                QMessageBox.information(self, translate("Info"), translate("Profile not saved."))
             return
         if isinstance(save_result, Failed):
-            QMessageBox.critical(self, "Error", f"Failed to save profile: {save_result.error}")
+            QMessageBox.critical(
+                self, translate("Error"), translate("Failed to save profile: {error}", error=save_result.error)
+            )
 
     def check_close_save(self):
         if self.root and self.model_editor and self.session.is_dirty(self.model_editor.get_current_model()):
@@ -272,8 +310,12 @@ class ProfileTab(QWidget):
     def refresh(self):
         if not self.load_yaml():
             return
-        self._set_model_editor(self.loaded_profile)
-        LOGGER.info(f"Profile {self.root.name} refreshed.")
+        loaded_profile = self.loaded_profile
+        root = self.root
+        if loaded_profile is None or root is None:
+            return
+        self._set_model_editor(loaded_profile)
+        LOGGER.info(f"Profile {root.name} refreshed.")
 
     def _set_model_editor(self, loaded_profile: LoadedProfile) -> None:
         if self.model_editor:
@@ -281,14 +323,39 @@ class ProfileTab(QWidget):
             self.model_editor.deleteLater()
         self.model_editor = ProfileEditor(loaded_profile)
         self.scrollable_layout.addWidget(self.model_editor)
+        if hasattr(self.model_editor, "retranslate_ui"):
+            self.model_editor.retranslate_ui()
+
+    def retranslate_ui(self) -> None:
+        self.tools_groupbox.setTitle(translate("Profile"))
+        self.save_button.setText(translate("Save"))
+        self.refresh_button.setText(translate("Undo Changes"))
+        self.instructions_label.setText(translate("Instructions"))
+        self.instructions_text.setText(
+            translate(
+                "Select a profile from the dropdown. Click 'Save' to save your changes. "
+                "Click 'Undo Changes' to revert your changes."
+            )
+        )
+        for index in range(self.profile_combo.count()):
+            if label_key := self.profile_combo.itemData(index, I18N_LABEL_ROLE):
+                label = translate(str(label_key))
+                if label_key in {"Active Profiles", "Inactive Profiles"}:
+                    label = f"--------- {label} ---------"
+                self.profile_combo.setItemText(index, label)
+        if self.model_editor is not None and hasattr(self.model_editor, "retranslate_ui"):
+            self.model_editor.retranslate_ui()
+        translate_widget_tree(self)
 
 
 class _QSettingsLastOpenedStore(ProfileLastOpenedStore):
     def __init__(self, settings: QSettings) -> None:
         self._settings = settings
 
+    @override
     def get(self) -> str | None:
         return self._settings.value("last_opened_profile", None, type=str)
 
+    @override
     def set(self, name: str) -> None:
         self._settings.setValue("last_opened_profile", name)

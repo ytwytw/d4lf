@@ -3,53 +3,91 @@ name: Release
 on:
   pull_request:
     types: [closed]
+    branches: [zhcn-v9]
   workflow_dispatch:
 
 concurrency:
   group: release
 
+permissions:
+  contents: write
+
 jobs:
   release:
     if: |
-      github.event_name != 'pull_request' ||
+      (
+        github.event_name == 'workflow_dispatch' &&
+        github.ref == 'refs/heads/zhcn-v9'
+      ) ||
         (
+          github.event_name == 'pull_request' &&
           github.event.pull_request.merged == true &&
+          github.event.pull_request.base.ref == 'zhcn-v9' &&
           contains(github.event.pull_request.labels.*.name, 'release')
         )
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || github.sha }}
+      - name: Validate release source
+        shell: powershell
+        run: |
+          $eventName = "${{ github.event_name }}"
+          if ($eventName -eq "workflow_dispatch" -and "${{ github.ref }}" -ne "refs/heads/zhcn-v9") {
+            throw "Manual releases must run from zhcn-v9."
+          }
+          if ($eventName -eq "pull_request" -and "${{ github.event.pull_request.base.ref }}" -ne "zhcn-v9") {
+            throw "Merged releases must target zhcn-v9."
+          }
       - name: Setup env
         uses: ./.github/actions/setup_env
+      - name: Run prek
+        uses: j178/prek-action@5337cb91e0fa35a7ff31b9ca345126d8bbbcdf16 # v2
+      - name: Pytest
+        shell: powershell
+        run: uv run pytest . -m "not selenium" -v -n logical
+      - name: Validate zhCN candidate lock
+        shell: powershell
+        run: >-
+          uv run python -m src.tools.locale_candidate_check
+          --source-lock assets/catalog/source-lock.json
+          --build-version assets/catalog/d4data-buildVersion.txt
+          --locale-manifest assets/lang/zhCN/manifest.json
+          --quality-report assets/lang/zhCN/quality-report.json
+      - name: Validate public release data and privacy gates
+        shell: powershell
+        run: >-
+          uv run python -m src.tools.public_safety
+          --tree HEAD
+          --require-third-party-redistribution
       - name: Build & Zip exe
         id: build_zip
+        uses: ./.github/actions/build_zip
+      - name: Validate release version
         shell: powershell
         run: |
-          python build.py
-          $version = python -c "from src import __version__; print(__version__)"
-          echo "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          $folderName = "d4lf"
-          $zipName = "d4lf_v" + $version
-          Compress-Archive -Path $folderName -DestinationPath "$zipName.zip"
-      - name: Create Tag
-        shell: powershell
-        run: |
-          git tag "v${{ env.VERSION }}"
-          git push origin "v${{ env.VERSION }}"
+          $version = "${{ steps.build_zip.outputs.version }}"
+          if ($version -notlike "*+zhcn.*") {
+            throw "Refusing to release non-zhCN version $version from the zhcn-v9 branch."
+          }
       - name: Check if beta
         id: check_beta
         shell: powershell
         run: |
-          if ($env:VERSION -like "*beta*" -or $env:VERSION -like "*alpha*") {
+          $version = "${{ steps.build_zip.outputs.version }}"
+          if ($version -like "*beta*" -or $version -like "*alpha*") {
             echo "IS_BETA=true" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
           } else {
             echo "IS_BETA=false" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
           }
-      - uses: softprops/action-gh-release@v3
+      - uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3
         with:
-          files: d4lf_v*.zip
+          fail_on_unmatched_files: true
+          files: ${{ steps.build_zip.outputs.zip_path }}
           generate_release_notes: true
-          name: "v${{ env.VERSION }}"
+          name: "v${{ steps.build_zip.outputs.version }}"
           prerelease: ${{ env.IS_BETA == 'true' }}
-          tag_name: "v${{ env.VERSION }}"
-          token: "${{ secrets.RELEASE_TOKEN }}"
+          tag_name: "v${{ steps.build_zip.outputs.version }}"
+          target_commitish: >-
+            ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || github.sha }}

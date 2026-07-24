@@ -2,10 +2,10 @@ import datetime
 import logging
 import re
 from html import escape
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from PyQt6.QtCore import QMimeData, QObject, Qt, pyqtSignal
-from PyQt6.QtGui import QDrag, QTextCursor
+from PyQt6.QtGui import QDrag, QDragEnterEvent, QDragMoveEvent, QDropEvent, QMouseEvent, QTextCursor
 from PyQt6.QtWidgets import (
     QFrame,
     QGraphicsOpacityEffect,
@@ -25,13 +25,32 @@ from PyQt6.QtWidgets import (
 from src.config.loader import IniConfigLoader
 from src.config.profile_document import ProfileDocumentError, ProfileDocumentStore
 from src.config.settings_models import IS_HOTKEY_KEY
+from src.gui.i18n import translate
+from src.gui.models.catalog_display import item_type_display_name
 from src.gui.models.checkmark_checkbox import CheckmarkCheckBox
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from collections.abc import Set as AbstractSet
     from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
+
+
+class DragHandleButton(QPushButton):
+    def __init__(
+        self,
+        row_widget: QWidget,
+        start_drag: Callable[[QMouseEvent | None, QWidget, QWidget], None],
+        parent: QWidget | None = None,
+    ):
+        super().__init__("⠿", parent)
+        self._row_widget = row_widget
+        self._start_drag = start_drag
+
+    @override
+    def mouseMoveEvent(self, a0: QMouseEvent | None) -> None:
+        self._start_drag(a0, self._row_widget, self)
 
 
 class ANSIConsoleWidget(QTextEdit):
@@ -100,7 +119,8 @@ class QtConsoleHandler(logging.Handler, QObject):
         logging.Handler.__init__(self)
         QObject.__init__(self)
 
-    def emit(self, record):
+    @override
+    def emit(self, record: logging.LogRecord) -> None:
         msg = self.format(record)
         self.log_signal.emit(msg)
 
@@ -125,18 +145,15 @@ class ActivityLogWidget(QWidget):
         profile_section = QVBoxLayout()
         profile_section.setSpacing(10)
 
-        profile_hdr = QLabel("ACTIVE PROFILES")
-        profile_hdr.setStyleSheet("font-weight: bold; color: #888; letter-spacing: 1px;")
-        profile_section.addWidget(profile_hdr)
+        self.profile_header = QLabel()
+        self.profile_header.setStyleSheet("font-weight: bold; color: #888; letter-spacing: 1px;")
+        profile_section.addWidget(self.profile_header)
 
         # Inline help text instead of a tooltip for better discovery and clarity
-        profile_help = QLabel(
-            "Toggle profiles to enable them. Drag <b>⠿</b> to set priority; "
-            "the top profile determines affix highlighting."
-        )
-        profile_help.setWordWrap(True)
-        profile_help.setObjectName("profile-help")
-        profile_section.addWidget(profile_help)
+        self.profile_help = QLabel()
+        self.profile_help.setWordWrap(True)
+        self.profile_help.setObjectName("profile-help")
+        profile_section.addWidget(self.profile_help)
 
         # Visual drop indicator for drag-and-drop
         self.drop_indicator = QFrame()
@@ -159,14 +176,13 @@ class ActivityLogWidget(QWidget):
 
         # Search bar for profiles
         self.profile_search_input = QLineEdit()
-        self.profile_search_input.setPlaceholderText("🔍 Filter profiles...")
         self.profile_search_input.textChanged.connect(self._filter_profiles)
 
         # Bulk selection buttons
         btn_layout = QHBoxLayout()
         btn_layout.setSpacing(10)
-        self.enable_all_btn = QPushButton("Enable All")
-        self.disable_all_btn = QPushButton("Disable All")
+        self.enable_all_btn = QPushButton()
+        self.disable_all_btn = QPushButton()
         self.enable_all_btn.clicked.connect(self._select_all)
         self.disable_all_btn.clicked.connect(self._deselect_all)
         btn_layout.addWidget(self.enable_all_btn)
@@ -180,9 +196,9 @@ class ActivityLogWidget(QWidget):
 
         # -- RIGHT: HOTKEY GRID --
         hotkey_section = QVBoxLayout()
-        hotkey_hdr = QLabel("KEYBOARD SHORTCUTS")
-        hotkey_hdr.setStyleSheet("font-weight: bold; color: #888; letter-spacing: 1px;")
-        hotkey_section.addWidget(hotkey_hdr)
+        self.hotkey_header = QLabel()
+        self.hotkey_header.setStyleSheet("font-weight: bold; color: #888; letter-spacing: 1px;")
+        hotkey_section.addWidget(self.hotkey_header)
 
         self.hotkey_grid = QGridLayout()
         self.hotkey_grid.setSpacing(10)
@@ -215,18 +231,18 @@ class ActivityLogWidget(QWidget):
         self.main_layout.addWidget(self.splitter, stretch=1)
 
         # Hidden button that appears when the log viewer is fully collapsed
-        self.show_log_btn = QPushButton("Show Activity Log")
+        self.show_log_btn = QPushButton()
         self.show_log_btn.setObjectName("secondary")
         self.show_log_btn.setVisible(False)
         self.main_layout.addWidget(self.show_log_btn)
 
         # === ACTION BAR ===
         action_layout = QHBoxLayout()
-        self.import_btn = QPushButton("Import Profile")
+        self.import_btn = QPushButton()
         self.import_btn.setObjectName("primary")
-        self.settings_btn = QPushButton("Settings")
+        self.settings_btn = QPushButton()
 
-        self.minimize_to_tray_cb = CheckmarkCheckBox("Minimize to Tray")
+        self.minimize_to_tray_cb = CheckmarkCheckBox()
         self.minimize_to_tray_cb.setObjectName("switch")
 
         for btn in [self.import_btn, self.settings_btn]:
@@ -239,18 +255,20 @@ class ActivityLogWidget(QWidget):
 
         self.main_layout.addLayout(action_layout)
         self._connect_signals()
-        self.refresh_profiles()
+        self.retranslate_ui()
 
     def _setup_hotkey_grid(self):
         """Build the hotkey grid dynamically from AdvancedOptionsModel metadata."""
         while self.hotkey_grid.count():
             item = self.hotkey_grid.takeAt(0)
+            if item is None:
+                continue
             if widget := item.widget():
                 widget.deleteLater()
             elif layout := item.layout():
                 while layout.count():
                     child = layout.takeAt(0)
-                    if w := child.widget():
+                    if child is not None and (w := child.widget()):
                         w.deleteLater()
 
         opts = self._config.advanced_options
@@ -264,7 +282,7 @@ class ActivityLogWidget(QWidget):
             if meta.get(IS_HOTKEY_KEY) == "True":
                 val = getattr(opts, key)
                 prop_meta = properties.get(key, {})
-                label = prop_meta.get("title") or key.replace("_", " ").title()
+                label = translate(prop_meta.get("title") or key.replace("_", " ").title())
                 hotkey_items.append((str(val), label))
 
         for i, (key_val, label) in enumerate(hotkey_items):
@@ -282,7 +300,7 @@ class ActivityLogWidget(QWidget):
         """Scan the profiles folder and update the list."""
         for i in reversed(range(self.profile_layout.count())):
             child = self.profile_layout.takeAt(i)
-            if w := child.widget():
+            if child is not None and (w := child.widget()):
                 w.deleteLater()
 
         self._checkboxes.clear()
@@ -314,7 +332,7 @@ class ActivityLogWidget(QWidget):
                 header_hbox.setSpacing(5)
 
                 toggle_btn = self._create_row_btn("▶")
-                drag_handle = self._create_row_btn("⠿")
+                drag_handle = DragHandleButton(row_widget, self._start_drag)
                 drag_handle.setCursor(Qt.CursorShape.SizeAllCursor)
 
                 cb = CheckmarkCheckBox(name.replace("_", " "))
@@ -328,14 +346,14 @@ class ActivityLogWidget(QWidget):
                 header_hbox.addWidget(cb)
                 header_hbox.addStretch()
 
-                edit_btn = self._create_row_btn("Edit")
-                edit_btn.setToolTip("Edit Profile")
+                edit_btn = self._create_row_btn(translate("Edit"))
+                edit_btn.setToolTip(translate("Edit Profile"))
                 edit_btn.clicked.connect(lambda _, n=name: self._edit_profile(n))
                 header_hbox.addWidget(edit_btn)
 
-                delete_btn = self._create_row_btn("Delete")
+                delete_btn = self._create_row_btn(translate("Delete"))
                 delete_btn.setObjectName("delete-profile-btn")
-                delete_btn.setToolTip("Delete Profile")
+                delete_btn.setToolTip(translate("Delete Profile"))
                 delete_btn.clicked.connect(lambda _, n=name: self._delete_profile(n))
                 header_hbox.addWidget(delete_btn)
 
@@ -346,9 +364,6 @@ class ActivityLogWidget(QWidget):
                 summary_lbl.setVisible(False)
                 toggle_btn.clicked.connect(lambda _, lbl=summary_lbl, btn=toggle_btn: self._toggle_row(lbl, btn))
 
-                # Connect drag handle
-                drag_handle.mouseMoveEvent = lambda e, w=row_widget, h=drag_handle: self._start_drag(e, w, h)
-
                 row_vbox.addWidget(header_container)
                 row_vbox.addWidget(summary_lbl)
                 self.profile_layout.addWidget(row_widget)
@@ -356,7 +371,7 @@ class ActivityLogWidget(QWidget):
                 self._rows[name] = row_widget
 
         if not self._rows:
-            empty_lbl = QLabel("No Profiles found. Please import a profile below.")
+            empty_lbl = QLabel(translate("No Profiles found. Please import a profile below."))
             empty_lbl.setStyleSheet("color: #888; font-style: italic; padding: 20px;")
             empty_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.profile_layout.addWidget(empty_lbl)
@@ -386,8 +401,8 @@ class ActivityLogWidget(QWidget):
     def _delete_profile(self, name: str):
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Icon.Warning)
-        msg.setWindowTitle("Delete Profile")
-        msg.setText(f"Are you sure you want to permanently delete the profile '{name}'?")
+        msg.setWindowTitle(translate("Delete Profile"))
+        msg.setText(translate("Are you sure you want to permanently delete the profile '{name}'?", name=name))
         msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
 
         if msg.exec() == QMessageBox.StandardButton.Yes:
@@ -412,7 +427,7 @@ class ActivityLogWidget(QWidget):
             stat = path.stat()
             mtime = datetime.datetime.fromtimestamp(stat.st_mtime, tz=datetime.UTC).strftime("%Y-%m-%d %H:%M")
             model = ProfileDocumentStore.default().load(path).profile
-            summary = [f"Last Modified: {mtime}"]
+            summary = [translate("Last Modified: {time}", time=mtime)]
 
             if model.affixes:
                 types = set()
@@ -420,29 +435,50 @@ class ActivityLogWidget(QWidget):
                     for item_filter in filter_dict.root.values():
                         if it := getattr(item_filter, "item_type", None):
                             if isinstance(it, list):
-                                types.update([str(t) for t in it])
+                                types.update(item_type_display_name(item_type) for item_type in it)
                             else:
-                                types.add(str(it))
+                                types.add(item_type_display_name(it))
                 if types:
-                    summary.append(f"📦 Items: {', '.join(sorted(types))}")
-                summary.append(f"🔍 Affix Filters: {len(model.affixes)}")
+                    summary.append(f"📦 {translate('Items: {items}', items=', '.join(sorted(types)))}")
+                summary.append(f"🔍 {translate('Affix Filters: {count}', count=len(model.affixes))}")
 
             if model.aspect_upgrades:
-                summary.append(f"✨ Aspect Upgrades: {len(model.aspect_upgrades)}")
+                summary.append(f"✨ {translate('Aspect Upgrades: {count}', count=len(model.aspect_upgrades))}")
             if model.global_uniques:
-                summary.append(f"💎 Global Uniques: {len(model.global_uniques)}")
+                summary.append(f"💎 {translate('Global Uniques: {count}', count=len(model.global_uniques))}")
             if model.sigils:
-                summary.append("📜 Sigils: Included")
+                summary.append(f"📜 {translate('Sigils: Included')}")
             if model.tributes:
-                summary.append("🏆 Tributes: Included")
+                summary.append(f"🏆 {translate('Tributes: Included')}")
             if model.paragon:
-                summary.append("🔱 Paragon Overlay: Data Found")
+                summary.append(f"🔱 {translate('Paragon Overlay: Data Found')}")
 
             return "\n".join(summary)
         except OSError, ProfileDocumentError:
-            return f"Path: {path}\n(Could not parse profile details)"
+            return translate("Path: {path}\n(Could not parse profile details)", path=path)
 
-    def _start_drag(self, event, row_widget: QWidget, handle: QWidget):
+    def retranslate_ui(self) -> None:
+        self.profile_header.setText(translate("ACTIVE PROFILES"))
+        self.profile_help.setText(
+            translate(
+                "Toggle profiles to enable them. Drag <b>⠿</b> to set priority; "
+                "the top profile determines affix highlighting."
+            )
+        )
+        self.profile_search_input.setPlaceholderText(f"🔍 {translate('Filter profiles...')}")
+        self.enable_all_btn.setText(translate("Enable All"))
+        self.disable_all_btn.setText(translate("Disable All"))
+        self.hotkey_header.setText(translate("KEYBOARD SHORTCUTS"))
+        self.show_log_btn.setText(translate("Show Activity Log"))
+        self.import_btn.setText(translate("Import Profile"))
+        self.settings_btn.setText(translate("Settings"))
+        self.minimize_to_tray_cb.setText(translate("Minimize to Tray"))
+        self._setup_hotkey_grid()
+        self.refresh_profiles()
+
+    def _start_drag(self, event: QMouseEvent | None, row_widget: QWidget, handle: QWidget) -> None:
+        if event is None:
+            return
         if event.buttons() != Qt.MouseButton.LeftButton:
             return
         click_pos = handle.mapTo(row_widget, event.position().toPoint())
@@ -463,29 +499,47 @@ class ActivityLogWidget(QWidget):
         row_widget.setGraphicsEffect(None)
         self.drop_indicator.hide()
 
-    def dragEnterEvent(self, event):  # noqa: N802
-        if event.mimeData().hasText():
-            event.acceptProposedAction()
+    @override
+    def dragEnterEvent(self, a0: QDragEnterEvent | None) -> None:
+        if a0 is None:
+            return
+        mime_data = a0.mimeData()
+        if mime_data is not None and mime_data.hasText():
+            a0.acceptProposedAction()
 
-    def dragMoveEvent(self, event):  # noqa: N802
-        source_id = event.mimeData().text()
+    @override
+    def dragMoveEvent(self, a0: QDragMoveEvent | None) -> None:
+        if a0 is None:
+            return
+        mime_data = a0.mimeData()
+        if mime_data is None:
+            return
+        source_id = mime_data.text()
 
         # Auto-scroll the list if dragging near the top or bottom edges
-        global_pos = self.mapToGlobal(event.position().toPoint())
-        viewport_pos = self.profile_scroll.viewport().mapFromGlobal(global_pos)
+        global_pos = self.mapToGlobal(a0.position().toPoint())
+        viewport = self.profile_scroll.viewport()
+        if viewport is None:
+            return
+        viewport_pos = viewport.mapFromGlobal(global_pos)
         margin = 40
         if viewport_pos.y() < margin:
             sb = self.profile_scroll.verticalScrollBar()
-            sb.setValue(sb.value() - 10)
-        elif viewport_pos.y() > self.profile_scroll.viewport().height() - margin:
+            if sb is not None:
+                sb.setValue(sb.value() - 10)
+        elif viewport_pos.y() > viewport.height() - margin:
             sb = self.profile_scroll.verticalScrollBar()
-            sb.setValue(sb.value() + 10)
+            if sb is not None:
+                sb.setValue(sb.value() + 10)
 
-        pos = self.profile_container.mapFrom(self, event.position().toPoint())
+        pos = self.profile_container.mapFrom(self, a0.position().toPoint())
         dragged_row = None
         current_idx = -1
         for i in range(self.profile_layout.count()):
-            w = self.profile_layout.itemAt(i).widget()
+            item = self.profile_layout.itemAt(i)
+            if item is None:
+                continue
+            w = item.widget()
             if w and str(id(w)) == source_id:
                 dragged_row = w
                 current_idx = i
@@ -493,7 +547,10 @@ class ActivityLogWidget(QWidget):
         if not dragged_row:
             return
         for i in range(self.profile_layout.count()):
-            target_row = self.profile_layout.itemAt(i).widget()
+            item = self.profile_layout.itemAt(i)
+            if item is None:
+                continue
+            target_row = item.widget()
             if not target_row or target_row in (dragged_row, self.drop_indicator):
                 continue
             rect = target_row.geometry()
@@ -502,21 +559,28 @@ class ActivityLogWidget(QWidget):
                 self.profile_layout.insertWidget(i, self.drop_indicator)
                 self.profile_layout.insertWidget(i, dragged_row)
                 break
-        event.acceptProposedAction()
+        a0.acceptProposedAction()
 
-    def dropEvent(self, event):  # noqa: N802
+    @override
+    def dropEvent(self, a0: QDropEvent | None) -> None:
         self._on_toggle()
         self._update_zebra_striping()
-        event.acceptProposedAction()
+        if a0 is not None:
+            a0.acceptProposedAction()
 
     def _update_zebra_striping(self):
         """Update alternating background colors for currently visible rows."""
         visible_count = 0
         for i in range(self.profile_layout.count()):
-            widget = self.profile_layout.itemAt(i).widget()
+            item = self.profile_layout.itemAt(i)
+            if item is None:
+                continue
+            widget = item.widget()
             if widget and widget.objectName() == "profile-row" and not widget.isHidden():
                 widget.setProperty("alt", visible_count % 2 == 0)
-                widget.style().polish(widget)
+                style = widget.style()
+                if style is not None:
+                    style.polish(widget)
                 visible_count += 1
 
     def _filter_profiles(self, text: str):
@@ -544,7 +608,10 @@ class ActivityLogWidget(QWidget):
     def _on_toggle(self):
         active: list[str] = []
         for i in range(self.profile_layout.count()):
-            widget = self.profile_layout.itemAt(i).widget()
+            item = self.profile_layout.itemAt(i)
+            if item is None:
+                continue
+            widget = item.widget()
             if widget:
                 name = widget.property("profile_name")
                 if name and self._checkboxes.get(name) and self._checkboxes[name].isChecked():

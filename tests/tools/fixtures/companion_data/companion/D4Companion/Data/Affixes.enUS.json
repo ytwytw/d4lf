@@ -1,0 +1,94 @@
+[
+    {
+        "AffixAttributes": [
+            {
+                "Localisation": "+[{VALUE}] Damage",
+                "LocalisationAttributeFormulaValue": "0",
+                "LocalisationId": "Damage",
+                "LocalisationParameter": 0
+            }
+        ],
+        "AffixType": 0,
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": 0,
+        "ClassRestriction": "",
+        "Description": "+# Damage",
+        "DescriptionClean": "Damage",
+        "Flags": 1,
+        "IdName": "Affix_Damage;Affix_Damage_Legacy",
+        "IdNameList": [
+            "Affix_Damage",
+            "Affix_Damage_Legacy"
+        ],
+        "IdSno": "100;101",
+        "IdSnoList": [
+            "100",
+            "101"
+        ],
+        "IsTemperingAvailable": false,
+        "MagicType": 0
+    },
+    {
+        "AffixAttributes": [
+            {
+                "Localisation": "+[{VALUE}] Vitality",
+                "LocalisationAttributeFormulaValue": "0",
+                "LocalisationId": "Vitality",
+                "LocalisationParameter": 0
+            }
+        ],
+        "AffixType": 0,
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": 0,
+        "ClassRestriction": "",
+        "Description": "+# Vitality",
+        "DescriptionClean": "Vitality",
+        "Flags": 1,
+        "IdName": "Affix_Vitality",
+        "IdNameList": [
+            "Affix_Vitality"
+        ],
+        "IdSno": "200",
+        "IdSnoList": [
+            "200"
+        ],
+        "IsTemperingAvailable": false,
+        "MagicType": 0
+    },
+    {
+        "AffixAttributes": [
+            {
+                "Localisation": "+[{VALUE}] Maximum Life",
+                "LocalisationAttributeFormulaValue": "0",
+                "LocalisationId": "MaximumLife",
+                "LocalisationParameter": 0
+            }
+        ],
+        "AffixType": 0,
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": 0,
+        "ClassRestriction": "",
+        "Description": "+# Maximum Life",
+        "DescriptionClean": "Maximum Life",
+        "Flags": 1,
+        "IdName": "Affix_Vitality_Copy",
+        "IdNameList": [
+            "Affix_Vitality_Copy"
+        ],
+        "IdSno": "200",
+        "IdSnoList": [
+            "200"
+        ],
+        "IsTemperingAvailable": false,
+        "MagicType": 0
+    }
+]

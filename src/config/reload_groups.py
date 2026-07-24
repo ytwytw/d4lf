@@ -44,6 +44,7 @@ def has_any_changed(changed_keys: AbstractSet[str], relevant_keys: set[str]) -> 
 
 
 HOTKEY_SETTING_KEYS = _collect_hotkey_setting_keys()
+DIAGNOSTICS_PAGE_SETTING_KEYS = _collect_reload_group_keys("general", GeneralModel, "diagnostics_page")
 LANGUAGE_SETTING_KEYS = _collect_reload_group_keys("general", GeneralModel, "language")
 LOG_LEVEL_SETTING_KEYS = _collect_reload_group_keys("advanced_options", AdvancedOptionsModel, "log_level")
 MANUAL_RESTART_SETTING_KEYS = _collect_reload_group_keys("general", GeneralModel, "restart_app")

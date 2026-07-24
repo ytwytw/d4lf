@@ -10,3 +10,8 @@
 *.sh text eol=lf
 *.yaml text eol=lf
 *.yml text eol=lf
+
+# Internal agent context is useful in the development repository but is not
+# needed in a clean public source archive.
+/AGENTS.md export-ignore
+/CONTEXT.md export-ignore

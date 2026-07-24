@@ -13,6 +13,11 @@ if typing.TYPE_CHECKING:
 WINDOWS_ONLY_MODULES = ["info_overlay_test.py", "paragon_overlay_test.py", "test_sigils_tab.py", "ui_thread_test.py"]
 
 
+def pytest_configure():
+    """Keep tests independent from the user's persisted App language."""
+    IniConfigLoader()._general.language = "enUS"
+
+
 def pytest_ignore_collect(collection_path, config):
     """Ignore Windows-only test files on non-Windows platforms during collection."""
     if sys.platform != "win32":

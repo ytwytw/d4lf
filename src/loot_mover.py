@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from src.cam import Cam
 from src.config.loader import IniConfigLoader
 from src.config.settings_models import MoveItemsType
+from src.scripts.common import game_input_allowed
 from src.ui.char_inventory import CharInventory
 from src.ui.stash import Stash
 from src.utils.custom_mouse import Mouse
@@ -15,6 +16,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 def move_items_to_stash():
+    if not game_input_allowed("move items to stash"):
+        return
+
     LOGGER.info("Move inventory items to stash")
 
     inv = CharInventory()
@@ -31,6 +35,8 @@ def move_items_to_stash():
         return
 
     for i in IniConfigLoader().general.check_chest_tabs:
+        if not game_input_allowed("switch stash tab"):
+            return
         stash.switch_to_tab(i)
 
         _, empty_chest = stash.get_item_slots()
@@ -43,11 +49,15 @@ def move_items_to_stash():
         if not unhandled_slots:
             break
 
-    Mouse.move(*Cam().abs_window_to_monitor((0, 0)))
+    if game_input_allowed("move pointer away"):
+        Mouse.move(*Cam().abs_window_to_monitor((0, 0)))
     LOGGER.info("Completed move")
 
 
 def move_items_to_inventory():
+    if not game_input_allowed("move items to inventory"):
+        return
+
     LOGGER.info("Move stash items to inventory")
 
     inv = CharInventory()
@@ -65,6 +75,8 @@ def move_items_to_inventory():
         return
 
     for i in IniConfigLoader().general.check_chest_tabs:
+        if not game_input_allowed("switch stash tab"):
+            return
         stash.switch_to_tab(i)
         unhandled_slots, _ = stash.get_item_slots()
 
@@ -79,7 +91,8 @@ def move_items_to_inventory():
         if empty_slot_count < 1:
             break
 
-    Mouse.move(*Cam().abs_window_to_monitor((0, 0)))
+    if game_input_allowed("move pointer away"):
+        Mouse.move(*Cam().abs_window_to_monitor((0, 0)))
     LOGGER.info("Completed move")
 
 
@@ -93,9 +106,14 @@ def _move_items(
     :param num_to_move: The maximum number of items to move
     :return: A tuple of the number of items that were moved and a list of unhandled occupied ItemSlots
     """
+    if not game_input_allowed("move items"):
+        return 0, occupied.copy()
+
     item_move_count = 0
     remaining_unhandled_slots = occupied.copy()
     for item in occupied:
+        if not game_input_allowed("move item"):
+            break
         remaining_unhandled_slots.remove(item)
 
         if (

@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QTabWidget
 
 from src.config.profile_models import TributeFilterModel
+from src.gui.i18n import translate, translate_widget_tree
 from src.gui.profile_editor.affixes_tab import AFFIXES_TABNAME, AffixesTab
 from src.gui.profile_editor.aspect_upgrades_tab import ASPECT_UPGRADES_TABNAME, AspectUpgradesTab
 from src.gui.profile_editor.charms_seals_group_tab import CHARMS_TABNAME, SEALS_TABNAME, CharmsTab, SealsTab
@@ -38,13 +39,13 @@ class ProfileEditor(QTabWidget):
 
         self.currentChanged.connect(self.tab_changed)
         # Add tabs with icons
-        self.addTab(self.affixes_tab, AFFIXES_TABNAME)
-        self.addTab(self.charms_tab, CHARMS_TABNAME)
-        self.addTab(self.seals_tab, SEALS_TABNAME)
-        self.addTab(self.aspect_upgrades_tab, ASPECT_UPGRADES_TABNAME)
-        self.addTab(self.sigils_tab, SIGILS_TABNAME)
-        self.addTab(self.tributes_tab, TRIBUTES_TABNAME)
-        self.addTab(self.uniques_tab, UNIQUES_TABNAME)
+        self.addTab(self.affixes_tab, translate(AFFIXES_TABNAME))
+        self.addTab(self.charms_tab, translate(CHARMS_TABNAME))
+        self.addTab(self.seals_tab, translate(SEALS_TABNAME))
+        self.addTab(self.aspect_upgrades_tab, translate(ASPECT_UPGRADES_TABNAME))
+        self.addTab(self.sigils_tab, translate(SIGILS_TABNAME))
+        self.addTab(self.tributes_tab, translate(TRIBUTES_TABNAME))
+        self.addTab(self.uniques_tab, translate(UNIQUES_TABNAME))
 
         # Configure tab widget properties
         self.setDocumentMode(True)
@@ -53,20 +54,40 @@ class ProfileEditor(QTabWidget):
         self.setElideMode(Qt.TextElideMode.ElideRight)
 
     def tab_changed(self, index):
-        if self.tabText(index) == AFFIXES_TABNAME:
+        current_widget = self.widget(index)
+        if current_widget is self.affixes_tab:
             self.affixes_tab.load()
-        elif self.tabText(index) == CHARMS_TABNAME:
+        elif current_widget is self.charms_tab:
             self.charms_tab.load()
-        elif self.tabText(index) == SEALS_TABNAME:
+        elif current_widget is self.seals_tab:
             self.seals_tab.load()
-        elif self.tabText(index) == ASPECT_UPGRADES_TABNAME:
+        elif current_widget is self.aspect_upgrades_tab:
             self.aspect_upgrades_tab.load()
-        elif self.tabText(index) == SIGILS_TABNAME:
+        elif current_widget is self.sigils_tab:
             self.sigils_tab.load()
-        elif self.tabText(index) == TRIBUTES_TABNAME:
+        elif current_widget is self.tributes_tab:
             self.tributes_tab.load()
-        elif self.tabText(index) == UNIQUES_TABNAME:
+        elif current_widget is self.uniques_tab:
             self.uniques_tab.load()
+        if current_widget is not None:
+            translate_widget_tree(current_widget)
+
+    def retranslate_ui(self) -> None:
+        tabs = (
+            (self.affixes_tab, AFFIXES_TABNAME),
+            (self.charms_tab, CHARMS_TABNAME),
+            (self.seals_tab, SEALS_TABNAME),
+            (self.aspect_upgrades_tab, ASPECT_UPGRADES_TABNAME),
+            (self.sigils_tab, SIGILS_TABNAME),
+            (self.tributes_tab, TRIBUTES_TABNAME),
+            (self.uniques_tab, UNIQUES_TABNAME),
+        )
+        for widget, source_label in tabs:
+            self.setTabText(self.indexOf(widget), translate(source_label))
+            refresh_catalog_labels = getattr(widget, "refresh_catalog_labels", None)
+            if callable(refresh_catalog_labels):
+                refresh_catalog_labels()
+        translate_widget_tree(self)
 
     def get_current_model(self) -> ProfileModel:
         return self.profile_model

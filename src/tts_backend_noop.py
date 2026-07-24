@@ -11,9 +11,16 @@ def create_pipe(_logger: logging.Logger):
 
 
 def read_pipe(
-    _create_pipe_fn: Callable[[], object], _data_queue, _logger: logging.Logger, _set_connected: Callable[[bool], None]
+    _create_pipe_fn: Callable[[], object],
+    _data_queue,
+    _logger: logging.Logger,
+    _set_connected: Callable[[bool], None],
+    _decode_payload: Callable[[bytes], str],
+    *,
+    stop_event=None,
+    reconnect_delay: float = 0.1,
 ) -> None:
-    return
+    del stop_event, reconnect_delay
 
 
 def start_connection(

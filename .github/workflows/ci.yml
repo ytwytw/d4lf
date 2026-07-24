@@ -2,9 +2,13 @@ name: CI
 
 on:
   pull_request:
+    branches: [zhcn-v9]
   push:
-    branches: [main]
+    branches: [zhcn-v9]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: "${{github.workflow}}-${{github.ref}}"
@@ -14,14 +18,25 @@ jobs:
   tests:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Setup env
         uses: ./.github/actions/setup_env
       - name: Run prek
-        uses: j178/prek-action@v2
+        uses: j178/prek-action@5337cb91e0fa35a7ff31b9ca345126d8bbbcdf16 # v2
+      - name: Scan tracked content for private data
+        shell: powershell
+        run: python -m src.tools.public_safety --tree HEAD --require-third-party-redistribution
       - name: Pytest
         shell: powershell
         run: pytest . -m "not selenium" -v -n logical
+      - name: Validate zhCN candidate lock
+        shell: powershell
+        run: >-
+          python -m src.tools.locale_candidate_check
+          --source-lock assets/catalog/source-lock.json
+          --build-version assets/catalog/d4data-buildVersion.txt
+          --locale-manifest assets/lang/zhCN/manifest.json
+          --quality-report assets/lang/zhCN/quality-report.json
 #      - name: Pytest selenium
 #        shell: powershell
 #        run: pytest . -m "selenium" -v

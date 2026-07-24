@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 import psutil
-from beautifultable import BeautifulTable
+from beautifultable import BeautifulTable, Style
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 
@@ -30,7 +30,7 @@ if sys.platform == "win32":
 BASE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent.parent
 
 ICON_PATH = BASE_DIR / "assets" / "logo.png"
-SETUP_INSTRUCTIONS_URL = "https://github.com/d4lfteam/d4lf/blob/main/README.md#how-to-setup"
+SETUP_INSTRUCTIONS_URL = "https://github.com/ytwytw/d4lf/blob/zhcn-v9/README.md#setup"
 
 LOGGER = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ def main():
     LOGGER.info("============ D4 Loot Filter %s ============", __version__)
 
     table = BeautifulTable()
-    table.set_style(BeautifulTable.STYLE_BOX_ROUNDED)
+    table.set_style(Style.STYLE_BOX_ROUNDED)
     adv = IniConfigLoader().advanced_options
     table.rows.append([adv.run_vision_mode, "Run/Stop Vision Mode"])
     table.rows.append([adv.info_overlay, "Info Panel Overlay"])

@@ -1,0 +1,50 @@
+[
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Description": "一个已翻译的暗金物品。",
+        "DescriptionClean": "一个已翻译的暗金物品。",
+        "IdName": "Unique_Known",
+        "IdNameItem": "Item_Unique_Known",
+        "IdNameItemActor": "Actor_Known",
+        "IdNameItemList": [
+            "Item_Unique_Known"
+        ],
+        "IdNameList": [
+            "Unique_Known"
+        ],
+        "IdSno": "500",
+        "IdSnoList": [
+            "500"
+        ],
+        "Localisation": "一个已翻译的暗金物品。",
+        "MagicType": 2,
+        "Name": "知名暗金"
+    },
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Description": "名称尚未翻译。",
+        "DescriptionClean": "名称尚未翻译。",
+        "IdName": "Unique_Placeholder",
+        "IdNameItem": "Item_Unique_Placeholder",
+        "IdNameItemActor": "Actor_Placeholder",
+        "IdNameItemList": [
+            "Item_Unique_Placeholder"
+        ],
+        "IdNameList": [
+            "Unique_Placeholder"
+        ],
+        "IdSno": "600",
+        "IdSnoList": [
+            "600"
+        ],
+        "Localisation": "名称尚未翻译。",
+        "MagicType": 2,
+        "Name": "Placeholder Sword"
+    }
+]

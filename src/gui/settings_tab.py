@@ -2,12 +2,7 @@ import enum
 import subprocess
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from pydantic import BaseModel
+from typing import TYPE_CHECKING, override
 
 from PyQt6.QtCore import QCoreApplication, QSignalBlocker, Qt, QTimer
 from PyQt6.QtGui import QKeySequence
@@ -23,6 +18,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QListWidgetItem,
     QMessageBox,
     QPushButton,
     QScrollArea,
@@ -38,26 +34,36 @@ from src.config.settings_models import (
     CATEGORY_ORDER,
     HIDE_FROM_GUI_KEY,
     IS_HOTKEY_KEY,
+    GeneralModel,
     MoveItemsType,
     SettingsCategory,
 )
+from src.gui.i18n import EN_US, ZH_CN, language_label, translate
 from src.gui.models.checkmark_checkbox import CheckmarkCheckBox
 from src.gui.settings_store import SettingsStore
 from src.utils.hotkeys import validate_hotkey
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from pydantic import BaseModel
+    from PyQt6.QtGui import QKeyEvent, QWheelEvent
 
 CONFIG_TABNAME = "config"
 
 
 class ConfigTab(QWidget):
-    def __init__(self, theme_changed_callback=None):
+    def __init__(self, theme_changed_callback=None, language_changed_callback=None):
         self._initializing = True
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.theme_changed_callback = theme_changed_callback
+        self.language_changed_callback = language_changed_callback
         self._settings_store = SettingsStore()
         self.model_to_parameter_value_map = {}
         self._all_rows = []
         self._group_boxes = {}  # Store group boxes to move them during search
+        self._category_pages = {}
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 10, 0, 0)
@@ -67,7 +73,7 @@ class ConfigTab(QWidget):
         search_hbox = QHBoxLayout(search_container)
         search_hbox.setContentsMargins(10, 0, 10, 0)
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("🔍 Search settings...")
+        self.search_input.setPlaceholderText(f"🔍 {translate('Search settings...')}")
         self.search_input.textChanged.connect(self._filter_settings)
         search_hbox.addWidget(self.search_input)
         layout.addWidget(search_container)
@@ -154,11 +160,11 @@ class ConfigTab(QWidget):
 
             # Determine a nice title for the group box
             if cat_name == SettingsCategory.HOTKEYS:
-                gb_title = "Key Bindings"
+                gb_title = translate("Key Bindings")
             elif cat_name == SettingsCategory.ADVANCED:
-                gb_title = "Technical Settings"
+                gb_title = translate("Technical Settings")
             else:
-                gb_title = str(cat_name).replace("&", "&&")
+                gb_title = translate(str(cat_name)).replace("&", "&&")
 
             gb = QGroupBox(gb_title)
             grid = QGridLayout(gb)
@@ -181,8 +187,11 @@ class ConfigTab(QWidget):
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         scroll.setWidget(container)
 
-        self.nav_list.addItem(name)
+        nav_item = QListWidgetItem(translate(str(name)))
+        nav_item.setData(Qt.ItemDataRole.UserRole, name)
+        self.nav_list.addItem(nav_item)
         self.stacked_widget.addWidget(scroll)
+        self._category_pages[name] = scroll
         return container
 
     def _add_setting_row(self, grid, row, model, section, key, val):
@@ -190,7 +199,8 @@ class ConfigTab(QWidget):
         if meta.get(HIDE_FROM_GUI_KEY):
             return
 
-        human_label = meta.get("title") or key.replace("_", " ").title()
+        human_label = translate(meta.get("title") or key.replace("_", " ").title())
+        description = translate(meta.get("description", ""))
 
         label_container = QWidget()
         label_vbox = QVBoxLayout(label_container)
@@ -201,7 +211,7 @@ class ConfigTab(QWidget):
         title_lbl.setObjectName("setting-title")
         title_lbl.setWordWrap(True)
 
-        desc_lbl = QLabel(meta.get("description", ""))
+        desc_lbl = QLabel(description)
         desc_lbl.setObjectName("description-label")
         desc_lbl.setWordWrap(True)
 
@@ -213,7 +223,7 @@ class ConfigTab(QWidget):
 
         grid.addWidget(label_container, row, 0, Qt.AlignmentFlag.AlignTop)
         grid.addWidget(control, row, 2, Qt.AlignmentFlag.AlignTop)
-        self._all_rows.append((human_label, meta.get("description", ""), label_container, control, grid.parentWidget()))
+        self._all_rows.append((human_label, description, label_container, control, grid.parentWidget()))
 
     def _filter_settings(self, text):
         query = text.lower().strip()
@@ -245,12 +255,11 @@ class ConfigTab(QWidget):
             self.stacked_widget.setCurrentIndex(self.nav_list.currentRow())
             for name, gb in self._group_boxes.items():
                 gb.setVisible(True)
-                # Find the original page by name
-                for i in range(self.nav_list.count()):
-                    page_scroll = self.stacked_widget.widget(i)
-                    if isinstance(page_scroll, QScrollArea) and self.nav_list.item(i).text() == name:
-                        page_scroll.widget().layout().addWidget(gb)
-                        break
+                page_scroll = self._category_pages.get(name)
+                if isinstance(page_scroll, QScrollArea):
+                    page_widget = page_scroll.widget()
+                    if page_widget is not None and (page_layout := page_widget.layout()) is not None:
+                        page_layout.addWidget(gb)
 
             for r in self._all_rows:
                 r[2].setVisible(True)
@@ -259,10 +268,10 @@ class ConfigTab(QWidget):
     def _prompt_restart_for_vision_mode_change(self) -> None:
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Icon.Question)
-        msg.setWindowTitle("Restart required")
-        msg.setText("Vision mode changes require restarting d4lf. Restart now?")
-        restart_button = msg.addButton("Restart now", QMessageBox.ButtonRole.AcceptRole)
-        msg.addButton("Later", QMessageBox.ButtonRole.RejectRole)
+        msg.setWindowTitle(translate("Restart required"))
+        msg.setText(translate("Vision mode changes require restarting d4lf. Restart now?"))
+        restart_button = msg.addButton(translate("Restart now"), QMessageBox.ButtonRole.AcceptRole)
+        msg.addButton(translate("Later"), QMessageBox.ButtonRole.RejectRole)
         msg.exec()
 
         if msg.clickedButton() is restart_button:
@@ -280,8 +289,8 @@ class ConfigTab(QWidget):
         except OSError:
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Icon.Critical)
-            msg.setWindowTitle("Restart failed")
-            msg.setText("d4lf could not be restarted automatically. Please restart it manually.")
+            msg.setWindowTitle(translate("Restart failed"))
+            msg.setText(translate("d4lf could not be restarted automatically. Please restart it manually."))
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
             return
@@ -295,7 +304,7 @@ class ConfigTab(QWidget):
         section_header,
         key,
         value,
-        method_to_reset_value: Callable | None = None,
+        method_to_reset_value: Callable[[object], None] | None = None,
         post_save_callback: Callable[[], None] | None = None,
     ) -> bool:
         result = self._settings_store.set_value(model, section_header, key, value)
@@ -303,16 +312,18 @@ class ConfigTab(QWidget):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Icon.Critical)
 
-            message = f"There was an error setting {key} to {value}. See error below.\n\n"
+            message = translate(
+                "There was an error setting {key} to {value}. See error below.\n\n", key=key, value=value
+            )
 
             # Only reset the widget if the field is NOT an enum
             if method_to_reset_value and key != "theme":
-                message = message + "Your value has been reset to its previous version.\n\n"
-                method_to_reset_value(str(result.previous_value))
+                message = message + translate("Your value has been reset to its previous version.\n\n")
+                method_to_reset_value(result.previous_value)
 
             message = message + str(result.validation_error)
             msg.setText(message)
-            msg.setWindowTitle("Error validating value")
+            msg.setWindowTitle(translate("Error validating value"))
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
             return False
@@ -336,25 +347,49 @@ class ConfigTab(QWidget):
     def _generate_parameter_value_widget(
         self, model: BaseModel, section_config_header, config_key, config_value, is_hotkey
     ):
-        if config_key == "check_chest_tabs":
+        if config_key == "language":
+
+            def on_language_changed(value):
+                self._save_setting_value(
+                    model,
+                    section_config_header,
+                    config_key,
+                    value,
+                    post_save_callback=(self.language_changed_callback if not self._initializing else None),
+                )
+
+            parameter_value_widget = SegmentedControl(
+                [EN_US, ZH_CN],
+                str(config_value),
+                on_language_changed,
+                labels={EN_US: language_label(EN_US), ZH_CN: language_label(ZH_CN)},
+            )
+        elif config_key == "check_chest_tabs":
+            if not isinstance(model, GeneralModel):
+                msg = "check_chest_tabs is only available in GeneralModel"
+                raise TypeError(msg)
             parameter_value_widget = QChestTabWidget(
                 model, section_config_header, config_key, config_value, self._save_setting_value
             )
         elif config_key == "max_stash_tabs":
+            if not isinstance(model, GeneralModel):
+                msg = "max_stash_tabs is only available in GeneralModel"
+                raise TypeError(msg)
+            settings_model = model
 
             def on_tabs_changed(val):
-                if self._save_setting_value(model, section_config_header, config_key, val):
+                if self._save_setting_value(settings_model, section_config_header, config_key, val):
                     # Refresh the stash tabs widget to show the correct number of checkboxes
                     tabs_widget = self.model_to_parameter_value_map.get(f"{section_config_header}.check_chest_tabs")
                     if isinstance(tabs_widget, QChestTabWidget):
-                        tabs_widget.reset_values(model.check_chest_tabs)
+                        tabs_widget.reset_values(settings_model.check_chest_tabs)
 
             parameter_value_widget = SegmentedControl(["6", "7"], str(config_value), on_tabs_changed)
         elif config_key in {"move_to_inv_item_type", "move_to_stash_item_type"}:
             items_map = {
-                "Favorites": MoveItemsType.favorites,
-                "Junk": MoveItemsType.junk,
-                "Unmarked": MoveItemsType.unmarked,
+                translate("Favorites"): MoveItemsType.favorites,
+                translate("Junk"): MoveItemsType.junk,
+                translate("Unmarked"): MoveItemsType.unmarked,
             }
 
             def on_move_changed(val_str):
@@ -387,23 +422,25 @@ class ConfigTab(QWidget):
             if len(options) <= 3:
                 parameter_value_widget = SegmentedControl(options, config_value, on_changed)
             else:
-                parameter_value_widget = IgnoreScrollWheelComboBox()
-                with QSignalBlocker(parameter_value_widget):
-                    parameter_value_widget.addItems(options)
-                    parameter_value_widget.setCurrentText(config_value)
-                parameter_value_widget.currentTextChanged.connect(on_changed)
+                combo_box = IgnoreScrollWheelComboBox()
+                with QSignalBlocker(combo_box):
+                    for option in options:
+                        combo_box.addItem(translate(str(option)), str(option))
+                    combo_box.setCurrentIndex(combo_box.findData(str(config_value)))
+                combo_box.currentIndexChanged.connect(lambda index: on_changed(combo_box.itemData(index)))
+                parameter_value_widget = combo_box
 
         elif isinstance(config_value, bool):
-            parameter_value_widget = CheckmarkCheckBox()
-            parameter_value_widget.setObjectName("switch")
-            parameter_value_widget.setChecked(config_value)
+            checkbox = CheckmarkCheckBox()
+            checkbox.setObjectName("switch")
+            checkbox.setChecked(config_value)
 
             def on_bool_changed():
                 self._save_setting_value(
                     model,
                     section_config_header,
                     config_key,
-                    str(parameter_value_widget.isChecked()),
+                    str(checkbox.isChecked()),
                     post_save_callback=(
                         self.theme_changed_callback
                         if config_key == "colorblind_mode" and not self._initializing
@@ -411,16 +448,16 @@ class ConfigTab(QWidget):
                     ),
                 )
 
-            parameter_value_widget.stateChanged.connect(on_bool_changed)
+            checkbox.stateChanged.connect(on_bool_changed)
+            parameter_value_widget = checkbox
         elif isinstance(config_value, int):
-            parameter_value_widget = QSpinBox()
-            parameter_value_widget.setRange(0, 10000)
-            parameter_value_widget.setValue(config_value)
-            parameter_value_widget.valueChanged.connect(
-                lambda: self._save_setting_value(
-                    model, section_config_header, config_key, parameter_value_widget.value()
-                )
+            spin_box = QSpinBox()
+            spin_box.setRange(0, 10000)
+            spin_box.setValue(config_value)
+            spin_box.valueChanged.connect(
+                lambda: self._save_setting_value(model, section_config_header, config_key, spin_box.value())
             )
+            parameter_value_widget = spin_box
         else:
             parameter_value_widget = QLineEdit(str(config_value))
             parameter_value_widget.editingFinished.connect(
@@ -429,7 +466,7 @@ class ConfigTab(QWidget):
                     section_config_header,
                     config_key,
                     parameter_value_widget.text(),
-                    method_to_reset_value=parameter_value_widget.setText,
+                    method_to_reset_value=lambda value: parameter_value_widget.setText(str(value)),
                 )
             )
 
@@ -447,14 +484,19 @@ class ConfigTab(QWidget):
             self._perform_global_reset()
             return
 
+        category = current_item.data(Qt.ItemDataRole.UserRole)
         tab_name = current_item.text()
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Icon.Question)
-        msg.setWindowTitle("Reset Settings")
-        msg.setText(f"Would you like to reset only the '{tab_name}' settings or all settings to defaults?")
+        msg.setWindowTitle(translate("Reset Settings"))
+        msg.setText(
+            translate(
+                "Would you like to reset only the '{tab_name}' settings or all settings to defaults?", tab_name=tab_name
+            )
+        )
 
-        btn_tab = msg.addButton(f"Reset {tab_name}", QMessageBox.ButtonRole.ActionRole)
-        btn_all = msg.addButton("Reset All Tabs", QMessageBox.ButtonRole.ActionRole)
+        btn_tab = msg.addButton(translate("Reset {tab_name}", tab_name=tab_name), QMessageBox.ButtonRole.ActionRole)
+        btn_all = msg.addButton(translate("Reset All Tabs"), QMessageBox.ButtonRole.ActionRole)
         msg.addButton(QMessageBox.StandardButton.Cancel)
 
         msg.exec()
@@ -463,13 +505,13 @@ class ConfigTab(QWidget):
         if clicked == btn_all:
             self._perform_global_reset(confirm=True)
         elif clicked == btn_tab:
-            self._reset_current_category(tab_name)
+            self._reset_current_category(category)
 
     def _perform_global_reset(self, confirm: bool = False):
         if confirm:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Icon.Warning)
-            msg.setText("This will reset ALL custom values in your params.ini. Are you sure?")
+            msg.setText(translate("This will reset ALL custom values in your params.ini. Are you sure?"))
             msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
             if msg.exec() != QMessageBox.StandardButton.Ok:
                 return
@@ -477,7 +519,7 @@ class ConfigTab(QWidget):
         self._settings_store.reset_all()
         self.show_tab()
 
-    def _reset_current_category(self, category_name: str):
+    def _reset_current_category(self, category_name):
         """Reset only the settings belonging to the active category."""
         target_gb = self._group_boxes.get(category_name)
         if not target_gb:
@@ -515,7 +557,11 @@ class ConfigTab(QWidget):
                 parameter_value_widget,
                 QChestTabWidget | QHotkeyWidget | SegmentedControl | MultiSegmentedControl | IgnoreScrollWheelComboBox,
             ):
-                parameter_value_widget.reset_values(config_value)  # type: ignore[attr-defined]
+                if isinstance(parameter_value_widget, QChestTabWidget):
+                    if isinstance(config_value, list) and all(isinstance(value, int) for value in config_value):
+                        parameter_value_widget.reset_values(config_value)
+                else:
+                    parameter_value_widget.reset_values(config_value)
             elif isinstance(parameter_value_widget, QCheckBox):
                 parameter_value_widget.setChecked(config_value)
             elif isinstance(parameter_value_widget, QSpinBox):
@@ -524,13 +570,15 @@ class ConfigTab(QWidget):
                 parameter_value_widget.setText(str(config_value))
 
     def _setup_reset_button(self) -> QPushButton:
-        reset_button = QPushButton("Reset to defaults")
+        reset_button = QPushButton(translate("Reset to defaults"))
         reset_button.clicked.connect(self.reset_button_click)
         return reset_button
 
 
 class MultiSegmentedControl(QWidget):
-    def __init__(self, items_map: dict[str, Any], current_values: list, callback):
+    def __init__(
+        self, items_map: dict[str, MoveItemsType], current_values: list[MoveItemsType], callback: Callable[[str], None]
+    ):
         super().__init__()
         self.callback = callback
         self.items_map = items_map
@@ -556,19 +604,20 @@ class MultiSegmentedControl(QWidget):
         val_str = ",".join([v.name for v in selected])
         self.callback(val_str)
 
-    def reset_values(self, values: list):
+    def reset_values(self, values: list[MoveItemsType]) -> None:
         for label, val in self.items_map.items():
             if label in self.buttons:
                 self.buttons[label].setChecked(val in values)
 
-    def setEnabled(self, enabled):  # noqa: N802
-        super().setEnabled(enabled)
+    @override
+    def setEnabled(self, a0: bool) -> None:
+        super().setEnabled(a0)
         for btn in self.buttons.values():
-            btn.setEnabled(enabled)
+            btn.setEnabled(a0)
 
 
 class SegmentedControl(QWidget):
-    def __init__(self, items, current_value, callback):
+    def __init__(self, items, current_value, callback, *, labels=None):
         super().__init__()
         self.callback = callback
         self.setObjectName("segmented-container")
@@ -578,35 +627,39 @@ class SegmentedControl(QWidget):
 
         self.group = QButtonGroup(self)
         self.buttons = {}
+        labels = labels or {}
 
         for text in items:
-            btn = QPushButton(str(text))
+            value = str(text)
+            btn = QPushButton(labels.get(value, translate(value)))
             btn.setObjectName("segment-btn")
             btn.setCheckable(True)
             btn.setFlat(True)
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+            btn.setProperty("option_value", value)
 
-            if text == current_value:
+            if value == str(current_value):
                 btn.setChecked(True)
 
             self.group.addButton(btn)
             layout.addWidget(btn)
-            self.buttons[str(text)] = btn
+            self.buttons[value] = btn
 
         self.group.buttonClicked.connect(self._on_btn_clicked)
 
     def _on_btn_clicked(self, btn):
-        self.callback(btn.text())
+        self.callback(str(btn.property("option_value")))
 
     def reset_values(self, value):
         val_str = str(value)
         if val_str in self.buttons:
             self.buttons[val_str].setChecked(True)
 
-    def setEnabled(self, enabled):  # noqa: N802
-        super().setEnabled(enabled)
+    @override
+    def setEnabled(self, a0: bool) -> None:
+        super().setEnabled(a0)
         for btn in self.buttons.values():
-            btn.setEnabled(enabled)
+            btn.setEnabled(a0)
 
 
 class IgnoreScrollWheelComboBox(QComboBox):
@@ -614,15 +667,22 @@ class IgnoreScrollWheelComboBox(QComboBox):
         super().__init__()
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
-    def wheelEvent(self, event):  # noqa: N802
+    @override
+    def wheelEvent(self, e: QWheelEvent | None) -> None:
         if self.hasFocus():
-            return QComboBox.wheelEvent(self, event)
+            super().wheelEvent(e)
+            return
 
-        return event.ignore()
+        if e is not None:
+            e.ignore()
 
     def reset_values(self, value):
         with QSignalBlocker(self):
-            self.setCurrentText(str(value))
+            data_index = self.findData(str(value))
+            if data_index >= 0:
+                self.setCurrentIndex(data_index)
+            else:
+                self.setCurrentText(str(value))
 
 
 class QChestTabWidget(QWidget):
@@ -633,15 +693,15 @@ class QChestTabWidget(QWidget):
         self.config_key = config_key
         self._save_setting_value = save_setting_value
         self.all_checkboxes: list[CheckmarkCheckBox] = []
-        self.layout = QHBoxLayout(self)
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self._layout = QHBoxLayout(self)
+        self._layout.setContentsMargins(0, 0, 0, 0)
         self.reset_values(chest_tab_config)
 
     def reset_values(self, chest_tab_config: list[int]):
         # Clear existing checkboxes
         while self.all_checkboxes:
             cb = self.all_checkboxes.pop()
-            self.layout.removeWidget(cb)
+            self._layout.removeWidget(cb)
             cb.deleteLater()
 
         max_tabs = self.model.max_stash_tabs
@@ -654,11 +714,22 @@ class QChestTabWidget(QWidget):
             stash_checkbox.stateChanged.connect(
                 lambda: self._save_changes_on_box_change(self.model, self.section_header, self.config_key)
             )
-            self.layout.addWidget(stash_checkbox)
+            self._layout.addWidget(stash_checkbox)
 
     def _save_changes_on_box_change(self, model, section_header, config_key):
         active_tabs = [check_box.text() for check_box in self.all_checkboxes if check_box.isChecked()]
-        self._save_setting_value(model, section_header, config_key, ",".join(active_tabs), self.reset_values)
+
+        def reset_chest_tabs(value: object) -> None:
+            if not isinstance(value, list):
+                return
+            tabs: list[int] = []
+            for tab in value:
+                if not isinstance(tab, int):
+                    return
+                tabs.append(tab)
+            self.reset_values(tabs)
+
+        self._save_setting_value(model, section_header, config_key, ",".join(active_tabs), reset_chest_tabs)
 
 
 class QHotkeyWidget(QWidget):
@@ -690,15 +761,17 @@ class QHotkeyWidget(QWidget):
                 self.open_picker_button.setText(new_hotkey)
 
 
-class HotkeyListenerDialog(QDialog):  # type: ignore[misc]
+class HotkeyListenerDialog(QDialog):
     def __init__(self, parent=None, hotkey=""):
         super().__init__(parent)
-        self.setWindowTitle("Set Hotkey")
+        self.setWindowTitle(translate("Set Hotkey"))
         self.setModal(True)
         self.setFixedSize(320, 180)
         main_layout = QVBoxLayout(self)
 
-        self.label = QLabel("Press the key or combination of keys you\nwant to use as a hotkey, then click save.", self)
+        self.label = QLabel(
+            translate("Press the key or combination of keys you\nwant to use as a hotkey, then click save."), self
+        )
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.label)
 
@@ -708,12 +781,12 @@ class HotkeyListenerDialog(QDialog):  # type: ignore[misc]
         main_layout.addWidget(self.hotkey_label)
 
         self.button_layout = QHBoxLayout()
-        self.save_button = QPushButton("Save", self)
+        self.save_button = QPushButton(translate("Save"), self)
         self.save_button.setEnabled(False)
         self.save_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.save_button.clicked.connect(self.accept)
 
-        self.cancel_button = QPushButton("Cancel", self)
+        self.cancel_button = QPushButton(translate("Cancel"), self)
         self.cancel_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.cancel_button.clicked.connect(self.reject)
 
@@ -724,21 +797,24 @@ class HotkeyListenerDialog(QDialog):  # type: ignore[misc]
 
         self.hotkey = hotkey
 
-    def keyPressEvent(self, event):  # noqa: N802
-        key = event.key()
+    @override
+    def keyPressEvent(self, a0: QKeyEvent | None) -> None:
+        if a0 is None:
+            return
+        key = a0.key()
         if key == Qt.Key.Key_Escape:
             self.reject()
             return
 
         modifiers = []
         # On macOS, Qt reports Command as ControlModifier and Control as MetaModifier.
-        if event.modifiers() & Qt.KeyboardModifier.ControlModifier or key == Qt.Key.Key_Control:
+        if a0.modifiers() & Qt.KeyboardModifier.ControlModifier or key == Qt.Key.Key_Control:
             modifiers.append("cmd" if sys.platform == "darwin" else "ctrl")
-        if event.modifiers() & Qt.KeyboardModifier.ShiftModifier or key == Qt.Key.Key_Shift:
+        if a0.modifiers() & Qt.KeyboardModifier.ShiftModifier or key == Qt.Key.Key_Shift:
             modifiers.append("shift")
-        if event.modifiers() & Qt.KeyboardModifier.AltModifier or key == Qt.Key.Key_Alt:
+        if a0.modifiers() & Qt.KeyboardModifier.AltModifier or key == Qt.Key.Key_Alt:
             modifiers.append("alt")
-        if event.modifiers() & Qt.KeyboardModifier.MetaModifier or key == Qt.Key.Key_Meta:
+        if a0.modifiers() & Qt.KeyboardModifier.MetaModifier or key == Qt.Key.Key_Meta:
             modifiers.append("ctrl" if sys.platform == "darwin" else "cmd")
 
         non_mod_key = ""

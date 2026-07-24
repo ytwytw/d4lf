@@ -6,9 +6,16 @@ from natsort import natsorted
 
 from src.config.loader import IniConfigLoader
 from src.config.profile_document import ProfileDocumentStore
-from src.config.profile_models import ParagonPayloadModel, ProfileModel, SigilPriority, TributeFilterModel
+from src.config.profile_models import (
+    AffixAspectFilterModel,
+    ParagonPayloadModel,
+    ProfileModel,
+    SigilPriority,
+    TributeFilterModel,
+)
 from src.config.settings_models import AspectFilterType
 from src.item.data.affix import Affix
+from src.item.data.aspect import Aspect
 from src.item.data.item_type import ItemType
 from src.item.data.rarity import ItemRarity
 from src.item.filter import Filter, FilterResult
@@ -72,6 +79,15 @@ def test_aspects(_name: str, result: list[str], item: Item, mocker: MockerFixtur
     assert natsorted([match.profile for match in test_filter.should_keep(item).matched]) == natsorted(result)
 
 
+def test_declared_localized_aspect_aliases_match_equivalent_canonical_ids(mocker: MockerFixture):
+    test_filter = _create_mocked_filter(mocker)
+    catalog = mocker.patch("src.item.filter.Dataloader").return_value
+    catalog.aspect_names_equivalent.side_effect = lambda left, right: {left, right} == {"malicious", "virulent"}
+    expected = AffixAspectFilterModel(name="virulent")
+
+    assert test_filter._match_item_aspect_or_affix(expected, Aspect(name="malicious"))
+
+
 @pytest.mark.parametrize(
     ("_name", "result", "item"), natsorted(global_uniques), ids=[name for name, _, _ in natsorted(global_uniques)]
 )
@@ -120,7 +136,10 @@ def test_mythic_sigil_always_kept(mocker: MockerFixture):
 )
 def test_tributes(_name: str, result: list[str], item: Item, mocker: MockerFixture):
     test_filter = _create_mocked_filter(mocker)
-    test_filter.tribute_filters = {filters.tributes.name: filters.tributes.tributes}
+    tribute_filter = filters.tributes.tributes
+    if tribute_filter is None:
+        pytest.fail("tribute fixture must define a filter")
+    test_filter.tribute_filters = {filters.tributes.name: tribute_filter}
     assert natsorted([match.profile for match in test_filter.should_keep(item).matched]) == natsorted(result)
 
 

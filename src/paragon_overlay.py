@@ -12,7 +12,7 @@ import time
 import tkinter as tk
 from contextlib import suppress
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, TypedDict
 
 from PIL import Image, ImageDraw, ImageFont
 from PyQt6.QtCore import QSettings
@@ -20,6 +20,7 @@ from PyQt6.QtCore import QSettings
 from src.cam import Cam
 from src.config.loader import IniConfigLoader
 from src.config.ui import ResManager
+from src.gui.i18n import EN_US, current_locale, translate
 from src.gui.importer.gui_common import (
     ACCENT_BLUE,
     ACCENT_GOLD,
@@ -34,6 +35,7 @@ from src.gui.importer.gui_common import (
     TRANSPARENT_KEY,
 )
 from src.item.filter import Filter
+from src.paragon_names import paragon_board_class_slug, translate_paragon_name
 from src.paragon_transform import GRID, NODES_LEN, nodes_to_grid, parse_rotation
 from src.ui_thread import call_on_ui_thread, get_root, is_alive, post_to_ui_thread
 from src.utils.window import WindowSpec, is_self_foreground, is_window_foreground
@@ -41,9 +43,6 @@ from src.utils.window import WindowSpec, is_self_foreground, is_window_foregroun
 if sys.platform == "win32":
     import win32con
     import win32gui
-else:
-    win32con = None  # type: ignore[assignment]
-    win32gui = None  # type: ignore[assignment]
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -53,7 +52,28 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-OverlaySettingT = TypeVar("OverlaySettingT", int, str, bool)
+
+class OverlaySettings(TypedDict, total=False):
+    cell_size: int | None
+    profile: str | None
+    build_name: str | None
+    build_idx: int | None
+    board_idx: int | None
+    grid_x: int | None
+    grid_y: int | None
+    is_collapsed: bool | None
+    cell_size_collapsed: int | None
+    grid_x_collapsed: int | None
+    grid_y_collapsed: int | None
+    grid_locked: bool | None
+    gold_frames: bool | None
+
+
+class BuildRow(TypedDict):
+    name: str
+    boards: list[ParagonBoardModel]
+    profile: str
+
 
 # =============================================================================
 # GLOBALS
@@ -73,6 +93,7 @@ NODE_GREEN = ACCENT_GREEN
 NODE_BLUE = ACCENT_BLUE
 
 PANEL_W = 370
+_TK_IMAGE_ATTRIBUTE = "image"
 
 FS_PANEL_TITLE, FS_MODE_LABEL, FS_BUTTON, FS_BOARD_CARD = 13, 9, 12, 10
 FS_BUILDS_MENU, FS_SETTINGS_ICON, FS_SETTINGS_LABEL, FS_ZOOM_BTN, FS_HINT = (12, 13, 10, 15, 10)
@@ -84,7 +105,7 @@ FS_CARD_FRAME, FS_GRID_FRAME = 1, 6
 # =============================================================================
 
 
-def _tk_btn(parent: tk.Misc, text: str = "", cmd: Callable | None = None, **kw) -> tk.Button:
+def _tk_btn(parent: tk.Misc, text: str = "", cmd: Callable[[], object] | None = None, **kw: object) -> tk.Button:
     """Creates a pre-styled Tkinter Button."""
     opts = {
         "bg": CARD_BG,
@@ -95,14 +116,17 @@ def _tk_btn(parent: tk.Misc, text: str = "", cmd: Callable | None = None, **kw) 
         "highlightthickness": 0,
     }
     opts.update(kw)
-    return tk.Button(parent, text=text, command=cmd, **opts)
+    button = tk.Button(parent, cnf=opts, text=text)
+    if cmd is not None:
+        button.configure(command=cmd)
+    return button
 
 
-def _tk_lbl(parent: tk.Misc, text: str = "", **kw) -> tk.Label:
+def _tk_lbl(parent: tk.Misc, text: str = "", **kw: object) -> tk.Label:
     """Creates a pre-styled Tkinter Label."""
     opts = {"bg": CARD_BG, "fg": TEXT}
     opts.update(kw)
-    return tk.Label(parent, text=text, **opts)
+    return tk.Label(parent, cnf=opts, text=text)
 
 
 # =============================================================================
@@ -131,7 +155,7 @@ def _params_ini_path() -> Path:
     return IniConfigLoader().user_dir / "params.ini"
 
 
-def _load_overlay_settings() -> dict[str, Any]:
+def _load_overlay_settings() -> OverlaySettings:
     """Load persisted overlay state from QSettings."""
     qs = QSettings("d4lf", "ParagonOverlay")
 
@@ -141,44 +165,51 @@ def _load_overlay_settings() -> dict[str, Any]:
         qs.setValue("migration_done", "true")
         qs.sync()  # Force write to registry
 
-    def parse(k: str, t: type[OverlaySettingT]) -> OverlaySettingT | None:
-        """Parse one QSettings value into the requested type or return None."""
+    def parse_int(k: str) -> int | None:
         v = qs.value(k)
         if v is None:
             return None
-        if t is bool:
-            if isinstance(v, bool):
-                return v
-            # Handle potential string representations from legacy INI migration
-            v_str = str(v).lower()
-            if v_str in ("true", "1", "yes", "on"):
-                return True
-            if v_str in ("false", "0", "no", "off"):
-                return False
-            return None
         try:
-            return t(v)
+            return int(v)
         except ValueError, TypeError:
             return None
 
+    def parse_str(k: str) -> str | None:
+        v = qs.value(k)
+        return None if v is None else str(v)
+
+    def parse_bool(k: str) -> bool | None:
+        v = qs.value(k)
+        if isinstance(v, bool):
+            return v
+        if v is None:
+            return None
+        # Handle potential string representations from legacy INI migration.
+        v_str = str(v).lower()
+        if v_str in ("true", "1", "yes", "on"):
+            return True
+        if v_str in ("false", "0", "no", "off"):
+            return False
+        return None
+
     return {
-        "cell_size": parse("cell_size", int),
-        "profile": parse("profile", str),
-        "build_name": parse("build_name", str),
-        "build_idx": parse("build_idx", int),
-        "board_idx": parse("board_idx", int),
-        "grid_x": parse("grid_x", int),
-        "grid_y": parse("grid_y", int),
-        "is_collapsed": parse("is_collapsed", bool),
-        "cell_size_collapsed": parse("cell_size_collapsed", int),
-        "grid_x_collapsed": parse("grid_x_collapsed", int),
-        "grid_y_collapsed": parse("grid_y_collapsed", int),
-        "grid_locked": parse("grid_locked", bool),
-        "gold_frames": parse("gold_frames", bool),
+        "cell_size": parse_int("cell_size"),
+        "profile": parse_str("profile"),
+        "build_name": parse_str("build_name"),
+        "build_idx": parse_int("build_idx"),
+        "board_idx": parse_int("board_idx"),
+        "grid_x": parse_int("grid_x"),
+        "grid_y": parse_int("grid_y"),
+        "is_collapsed": parse_bool("is_collapsed"),
+        "cell_size_collapsed": parse_int("cell_size_collapsed"),
+        "grid_x_collapsed": parse_int("grid_x_collapsed"),
+        "grid_y_collapsed": parse_int("grid_y_collapsed"),
+        "grid_locked": parse_bool("grid_locked"),
+        "gold_frames": parse_bool("gold_frames"),
     }
 
 
-def _save_overlay_settings(values: dict[str, Any]) -> None:
+def _save_overlay_settings(values: OverlaySettings) -> None:
     """Persist the current overlay state to QSettings."""
     qs = QSettings("d4lf", "ParagonOverlay")
     for k, v in values.items():
@@ -229,15 +260,25 @@ def _clamp_int(v: int | None, lo: int, hi: int, default: int) -> int:
         return default
 
 
-def _format_build_display_name(raw_name: object) -> str:
+def _translate_step_suffix(text: str, *, locale: str | None = None) -> str:
+    """Translate a generated build-step suffix without changing the build name."""
+    match = re.search(r"\s+-\s+Step\s+(?P<number>\d+)\s*$", text, flags=re.IGNORECASE)
+    if not match:
+        return translate(text, locale=locale) if text == "Unknown Build" else text
+    prefix = text[: match.start()].rstrip()
+    step = translate("Step {number}", locale=locale, number=match.group("number"))
+    return f"{prefix} - {step}" if prefix else step
+
+
+def _format_build_display_name(raw_name: object, *, locale: str | None = None) -> str:
     """Convert stored build/profile names into a cleaner title-card label."""
     text = str(raw_name or "").strip()
     if not text:
         return ""
 
-    step_suffix = ""
-    if step_match := re.search(r"(\s+-\s+Step\s+\d+)\s*$", text, flags=re.IGNORECASE):
-        step_suffix = step_match.group(1)
+    step_number = ""
+    if step_match := re.search(r"\s+-\s+Step\s+(?P<number>\d+)\s*$", text, flags=re.IGNORECASE):
+        step_number = step_match.group("number")
         text = text[: step_match.start()].rstrip()
 
     parts = [re.sub(r"\s+", " ", part).strip(" _-") for part in text.split("_")]
@@ -252,11 +293,16 @@ def _format_build_display_name(raw_name: object) -> str:
     if not display_name:
         display_name = re.sub(r"\s+", " ", text.replace("_", " ")).strip()
 
-    return f"{display_name}{step_suffix}" if step_suffix else display_name
+    if display_name == "Unknown Build":
+        display_name = translate(display_name, locale=locale)
+    if step_number:
+        step = translate("Step {number}", locale=locale, number=step_number)
+        return f"{display_name} - {step}"
+    return display_name
 
 
 def _resolve_build_index(
-    builds: list[dict[str, Any]],
+    builds: list[BuildRow],
     *,
     profile_name: str | None = None,
     build_name: str | None = None,
@@ -279,7 +325,7 @@ def _resolve_build_index(
     return _clamp_int(fallback_idx, 0, max(0, len(builds) - 1), 0)
 
 
-def load_builds_from_path(preset_path: str | None = None) -> list[dict[str, Any]]:
+def load_builds_from_path(preset_path: str | None = None) -> list[BuildRow]:
     """Collect all available builds and flatten them into overlay-friendly rows.
 
     Each returned entry contains the visible build name, its board list, and the
@@ -288,7 +334,7 @@ def load_builds_from_path(preset_path: str | None = None) -> list[dict[str, Any]
     _ = preset_path
     paragon_filters = Filter().get_paragon_filters()
 
-    builds: list[dict[str, Any]] = []
+    builds: list[BuildRow] = []
     for pname, payload in paragon_filters.items():
         steps = payload.paragon_boards_list
         bname = payload.name or "Unknown Build"
@@ -300,17 +346,19 @@ def load_builds_from_path(preset_path: str | None = None) -> list[dict[str, Any]
     return builds
 
 
-def format_board_display_text(board: ParagonBoardModel) -> str:
+def format_board_display_text(board: ParagonBoardModel, *, locale: str | None = None) -> str:
     """Build the readable label shown for a Paragon board card."""
+    target_locale = locale or current_locale()
     raw_name = str(board.name or "?")
     name_parts = raw_name.split("-", 1)
-    class_slug = (name_parts[0] if name_parts else raw_name).strip().lower()
+    class_slug = paragon_board_class_slug(board.board_id) or (name_parts[0] if name_parts else raw_name).strip().lower()
     board_slug = (name_parts[1] if len(name_parts) > 1 else raw_name).strip()
     class_name = {class_name: class_name.title() for class_name in PLAYER_CLASSES}.get(
         class_slug, class_slug.title() if class_slug else "?"
     )
+    class_name = translate(class_name, locale=target_locale)
 
-    glyph_name = "No Glyph"
+    glyph_name = translate("No Glyph", locale=target_locale)
     if board.glyph:
         glyph_parts = str(board.glyph).strip().split("-", 1)
         glyph_slug = (
@@ -318,9 +366,15 @@ def format_board_display_text(board: ParagonBoardModel) -> str:
             if len(glyph_parts) > 1 and glyph_parts[0].strip().lower() == class_slug
             else str(board.glyph).strip()
         )
-        glyph_name = re.sub(r"[-_]+", " ", glyph_slug).strip().title() if glyph_slug else "No Glyph"
+        readable_glyph = re.sub(r"[-_]+", " ", glyph_slug).strip().title() if glyph_slug else "No Glyph"
+        glyph_name = translate_paragon_name(
+            readable_glyph, kind="glyph", locale=target_locale, identifier=board.glyph_id
+        )
 
     readable_board = board_slug.replace("-", " ").strip().title() if board_slug else "?"
+    readable_board = translate_paragon_name(
+        readable_board, kind="board", locale=target_locale, identifier=board.board_id
+    )
     return f"{class_name} - {readable_board} - {glyph_name} - {parse_rotation(board.rotation)}°"
 
 
@@ -362,15 +416,33 @@ class ParagonOverlay(tk.Toplevel):
     def __init__(
         self,
         parent: tk.Misc,
-        builds: list[dict[str, Any]],
+        builds: list[BuildRow],
         *,
         cfg: OverlayConfig | None = None,
         on_close: Callable[[], None] | None = None,
     ) -> None:
         """Initialize the overlay window, restore settings, and build the UI."""
         super().__init__(parent)
-        self._settings = _load_overlay_settings()
-        self._cfg = cfg or OverlayConfig()
+        self._settings: OverlaySettings = _load_overlay_settings()
+        self._cfg: OverlayConfig = cfg or OverlayConfig()
+        self._on_close: Callable[[], None] | None = on_close
+        self._settings_popup: tk.Frame | None = None
+        self._settings_popup_refresh: Callable[[], None] | None = None
+        self._build_popup: tk.Toplevel | None = None
+        self._build_popup_refresh: Callable[[], None] | None = None
+        self._settings_popup_escape_bind_id: str | None = None
+        self._settings_popup_bind_id: str | None = None
+        self._build_popup_bind_id: str | None = None
+        self._build_popup_escape_bind_id: str | None = None
+        self._warmup_after_id: str | None = None
+        self._lock_img_cache: dict[bool, tk.PhotoImage | None]
+        self._last_roi: tuple[int, int, int, int] | None
+        self._last_res: tuple[int, int] | None
+        self._border_rect: tuple[int, int, int, int] | None
+        self._dragging_grid: bool = False
+        self._border_grab: int = 12
+        self._drag_start_xy: tuple[int, int] = (0, 0)
+        self._drag_start_grid: tuple[int, int] = (0, 0)
         self._apply_dpi_scaling()
 
         # Persisted size/position values are trusted only after clamping so a bad
@@ -388,15 +460,14 @@ class ParagonOverlay(tk.Toplevel):
             if isinstance(val, bool):
                 setattr(self._cfg, attr, val)
 
-        self._on_close = on_close
         self._config_loader = IniConfigLoader()
         self._config_listener = self._on_config_changed
         self._config_loader.register_change_listener(self._config_listener)
         self._cam = Cam()
         self._res = ResManager()
         self._win_spec = WindowSpec(self._config_loader.advanced_options.process_name)
-        self._supports_click_through = win32con is not None and win32gui is not None
-        self.builds = list(builds)
+        self._supports_click_through: bool = sys.platform == "win32"
+        self.builds: list[BuildRow] = list(builds)
 
         # Restore the previously selected build by its persisted identity first.
         # Falling back to profile and then index keeps older settings compatible.
@@ -406,7 +477,7 @@ class ParagonOverlay(tk.Toplevel):
             build_name=self._settings.get("build_name"),
             fallback_idx=self._settings.get("build_idx"),
         )
-        self.boards = self.builds[self.current_build_idx]["boards"] if self.builds else []
+        self.boards: list[ParagonBoardModel] = self.builds[self.current_build_idx]["boards"] if self.builds else []
         self.selected_board_idx = _clamp_int(self._settings.get("board_idx"), 0, max(0, len(self.boards) - 1), 0)
 
         gx_val = self._settings.get("grid_x")
@@ -427,7 +498,7 @@ class ParagonOverlay(tk.Toplevel):
             12,
         )
 
-        self.title("D4LF Paragon Overlay")
+        self.title(self._t("D4LF Paragon Overlay"))
         self.attributes("-topmost", 1)
         with suppress(tk.TclError):
             self.attributes("-alpha", float(self._cfg.window_alpha))
@@ -512,7 +583,7 @@ class ParagonOverlay(tk.Toplevel):
 
         self.lbl_mode = _tk_lbl(
             mode_frame,
-            text="Compact View" if self._cfg.is_collapsed else "Full View",
+            text=self._t("Compact View" if self._cfg.is_collapsed else "Full View"),
             fg=MUTED,
             font=("Segoe UI", int(FS_MODE_LABEL * self._cfg.ui_scale)),
             anchor="w",
@@ -544,7 +615,7 @@ class ParagonOverlay(tk.Toplevel):
 
         self.btn_settings = _tk_btn(
             btn_cont,
-            text="Settings⚙ ▼",
+            text=self._t("Settings⚙ ▼"),
             cmd=self._show_settings_dropdown,
             font=("Segoe UI", int(FS_BUTTON * self._cfg.ui_scale), "bold"),
             padx=int(10 * self._cfg.ui_scale),
@@ -554,7 +625,7 @@ class ParagonOverlay(tk.Toplevel):
 
         self.btn_build_menu = _tk_btn(
             btn_cont,
-            text="Builds ▼",
+            text=self._t("Builds ▼"),
             cmd=self._show_build_menu,
             font=("Segoe UI", int(FS_BUTTON * self._cfg.ui_scale), "bold"),
             padx=int(12 * self._cfg.ui_scale),
@@ -631,11 +702,20 @@ class ParagonOverlay(tk.Toplevel):
         finally:
             self.after(self._cfg.poll_ms, self._poll_window_state)
 
+    def _locale(self) -> str:
+        """Return the active App/game locale with a stable fallback."""
+        return str(getattr(self._config_loader.general, "language", EN_US) or EN_US)
+
+    def _t(self, source: str, **values: object) -> str:
+        """Translate one Paragon overlay label using the current locale."""
+        return translate(source, locale=self._locale(), **values)
+
     def _on_config_changed(self, changed_keys: set[str] | frozenset[str]) -> None:
         """Apply live overlay updates after runtime config changes."""
-        if "general.colorblind_mode" not in changed_keys:
-            return
-        post_to_ui_thread(self._apply_live_colorblind_change)
+        if "general.colorblind_mode" in changed_keys:
+            post_to_ui_thread(self._apply_live_colorblind_change)
+        if "general.language" in changed_keys:
+            post_to_ui_thread(self._apply_live_language_change)
 
     def _apply_live_colorblind_change(self) -> None:
         """Refresh overlay colors on the Tk UI thread after a colorblind change."""
@@ -647,6 +727,27 @@ class ParagonOverlay(tk.Toplevel):
             "Applied live Paragon overlay colorblind mode: %s",
             "on" if bool(getattr(self._config_loader.general, "colorblind_mode", False)) else "off",
         )
+
+    def _apply_live_language_change(self) -> None:
+        """Retranslate the Tk overlay after the shared language setting changes."""
+        if not is_alive(self):
+            return
+
+        settings_popup = self._settings_popup
+        self._close_settings_dropdown()
+        if settings_popup is not None:
+            with suppress(Exception):
+                settings_popup.destroy()
+        self._settings_popup = None
+        self._settings_popup_refresh = None
+        self._close_build_dropdown()
+
+        self.title(self._t("D4LF Paragon Overlay"))
+        self.lbl_mode.config(text=self._t("Compact View" if self._cfg.is_collapsed else "Full View"))
+        self.btn_settings.config(text=self._t("Settings⚙ ▼"))
+        self.btn_build_menu.config(text=self._t("Builds ▼"))
+        self._refresh_lists()
+        LOGGER.info("Applied live Paragon overlay language: %s", self._locale())
 
     def _select_build(self, idx: int) -> None:
         """Activate a build, reset the selected board, and redraw the overlay."""
@@ -714,20 +815,21 @@ class ParagonOverlay(tk.Toplevel):
         self._accent_frame_last, th = c, self._accent_frame_thickness()
 
         for w in (getattr(self, "card_title", None), getattr(self, "card_buttons", None)):
-            if is_alive(w):
+            if isinstance(w, tk.Frame) and is_alive(w):
                 with suppress(Exception):
                     w.configure(highlightthickness=th, highlightbackground=c, highlightcolor=c)
 
         bc = getattr(self, "board_container", None)
-        if is_alive(bc):
+        if isinstance(bc, tk.Frame) and is_alive(bc):
             for child in bc.winfo_children():
                 if isinstance(child, tk.Frame):
                     with suppress(Exception):
                         child.configure(highlightthickness=th, highlightbackground=c, highlightcolor=c)
 
         for p in ("_settings_popup", "_build_popup"):
-            if is_alive(getattr(self, p, None)):
-                getattr(self, p).configure(highlightthickness=th, highlightbackground=c, highlightcolor=c)
+            popup = getattr(self, p, None)
+            if isinstance(popup, tk.Misc) and is_alive(popup):
+                popup.configure(highlightthickness=th, highlightbackground=c, highlightcolor=c)
 
     def _reload_profiles(self) -> None:
         """Reload build data from disk and keep the current selection if possible."""
@@ -769,7 +871,7 @@ class ParagonOverlay(tk.Toplevel):
     def _close_popup(self, attr_name: str, btn_widget: tk.Button, escape_id_attr: str, click_id_attr: str) -> None:
         """Hide one popup and remove its temporary global event bindings."""
         popup = getattr(self, attr_name, None)
-        if popup:
+        if isinstance(popup, tk.Frame):
             with suppress(Exception):
                 popup.place_forget()
         with suppress(Exception):
@@ -780,24 +882,26 @@ class ParagonOverlay(tk.Toplevel):
                     self.unbind(evt, bid)
                 setattr(self, attr, None)
 
-    def _handle_global_click(self, e: tk.Event, attr_name: str, btn_widget: tk.Button, close_func: Callable) -> None:
+    def _handle_global_click(
+        self, e: tk.Event, attr_name: str, btn_widget: tk.Button, close_func: Callable[[], None]
+    ) -> None:
         """Close a popup when the user clicks outside of it and its button."""
         popup = getattr(self, attr_name, None)
-        if not is_alive(popup, mapped=True):
+        if not isinstance(popup, tk.Misc) or not is_alive(popup, mapped=True):
             return
-        w = None
+        w: tk.Misc | None = None
         with suppress(Exception):
             w = self.winfo_containing(e.x_root, e.y_root)
-        if not w or (w is not btn_widget and not self._is_descendant(w, popup)):
+        if w is None or (w is not btn_widget and not self._is_descendant(w, popup)):
             close_func()
 
     def _close_build_dropdown(self) -> None:
         """Destroy the floating builds popup and remove its temporary bindings."""
-        popup = getattr(self, "_build_popup", None)
+        popup = self._build_popup
         self._build_popup = None
         self._build_popup_refresh = None
 
-        if popup:
+        if popup is not None:
             with suppress(Exception):
                 popup.destroy()
 
@@ -820,11 +924,11 @@ class ParagonOverlay(tk.Toplevel):
         self,
         popup_attr: str,
         btn_widget: tk.Button,
-        build_func: Callable,
-        close_func: Callable,
+        build_func: Callable[[tk.Frame], Callable[[], None]],
+        close_func: Callable[[], None],
         escape_attr: str,
         click_attr: str,
-        click_handler: Callable,
+        click_handler: Callable[[tk.Event], None],
     ) -> None:
         """Open or close one of the overlay popups and position it near its button.
 
@@ -835,21 +939,22 @@ class ParagonOverlay(tk.Toplevel):
         self._close_build_dropdown()
 
         popup = getattr(self, popup_attr, None)
-        if is_alive(popup, mapped=True):
+        if isinstance(popup, tk.Frame) and is_alive(popup, mapped=True):
             close_func()
             return
 
         # The settings popup uses lock icons that may be generated lazily.
         # Warm them up once before the popup is shown so the first open feels
         # instant and does not flicker.
-        if getattr(self, "_warmup_after_id", None):
+        warmup_after_id = self._warmup_after_id
+        if warmup_after_id is not None:
             with suppress(Exception):
-                self.after_cancel(self._warmup_after_id)
+                self.after_cancel(warmup_after_id)
             self._warmup_after_id = None
         if not hasattr(self, "_lock_img_cache"):
             self._warmup_settings_assets()
 
-        if not is_alive(popup):
+        if not isinstance(popup, tk.Frame) or not is_alive(popup):
             c = self._accent_frame_color()
             popup = tk.Frame(
                 self,
@@ -863,6 +968,9 @@ class ParagonOverlay(tk.Toplevel):
             # The builder returns a refresh callback. We keep that callback so the
             # popup content can be rebuilt later without re-creating the container.
             setattr(self, f"{popup_attr}_refresh", build_func(popup))
+
+        if popup is None:
+            return
 
         self._apply_accent_frames()
         if callable(refresh := getattr(self, f"{popup_attr}_refresh", None)):
@@ -923,17 +1031,17 @@ class ParagonOverlay(tk.Toplevel):
             return
 
         self._close_settings_dropdown()
-        popup = getattr(self, "_build_popup", None)
-        if is_alive(popup, mapped=True):
+        popup = self._build_popup
+        if popup is not None and is_alive(popup, mapped=True):
             self._close_build_dropdown()
             return
 
-        if not is_alive(popup):
+        if popup is None or not is_alive(popup):
             c = self._accent_frame_color()
             popup = tk.Toplevel(self)
             popup.withdraw()
             popup.configure(
-                bg=CARD_BG,
+                background=CARD_BG,
                 bd=0,
                 highlightthickness=self._accent_frame_thickness(),
                 highlightbackground=c,
@@ -949,8 +1057,12 @@ class ParagonOverlay(tk.Toplevel):
             self._build_popup = popup
             self._build_popup_refresh = self._build_build_popup(popup)
 
+        if popup is None:
+            return
+
         self._apply_accent_frames()
-        if callable(refresh := getattr(self, "_build_popup_refresh", None)):
+        refresh = self._build_popup_refresh
+        if refresh is not None:
             refresh()
 
         popup.update_idletasks()
@@ -1080,9 +1192,10 @@ class ParagonOverlay(tk.Toplevel):
             # with the current overlay state.
             for w in lf.winfo_children():
                 w.destroy()
-            grps: dict[str, list[tuple[int, dict[str, Any]]]] = {}
+            grps: dict[str, list[tuple[int, BuildRow]]] = {}
             for i, b in enumerate(self.builds):
-                grps.setdefault(str(b.get("profile") or "Ungrouped"), []).append((i, b))
+                profile_name = str(b.get("profile") or self._t("Ungrouped"))
+                grps.setdefault(profile_name, []).append((i, b))
             mul = len(grps) > 1
 
             for p in sorted(grps):
@@ -1100,7 +1213,7 @@ class ParagonOverlay(tk.Toplevel):
                     act = i == self.current_build_idx
                     _tk_btn(
                         lf,
-                        text=str(b.get("name") or "Unknown Build"),
+                        text=_translate_step_suffix(str(b.get("name") or "Unknown Build"), locale=self._locale()),
                         cmd=lambda idx=i: (self._select_build(idx), self._close_build_dropdown()),
                         bg=SELECT_BG if act else CARD_BG,
                         fg=GOLD if act else TEXT,
@@ -1123,14 +1236,16 @@ class ParagonOverlay(tk.Toplevel):
 
         return _ref  # Initial fill is triggered by the shared popup helper.
 
-    def _build_settings_popup(self, host: tk.Misc) -> Callable[[], None]:
+    def _build_settings_popup(self, host: tk.Frame) -> Callable[[], None]:
         """Create the settings popup and return its refresh callback."""
         s = self._cfg.ui_scale
         c = tk.Frame(host, bg=CARD_BG, padx=int(14 * s), pady=int(10 * s))
         c.pack(fill="both", expand=True)
         imgs: dict[bool, tk.PhotoImage | None] = getattr(self, "_lock_img_cache", {})
 
-        def _row(txt: str, img: tk.PhotoImage | None, lbl_txt: str, cmd: Callable) -> tuple[tk.Button, tk.Label]:
+        def _row(
+            txt: str, img: tk.PhotoImage | None, lbl_txt: str, cmd: Callable[[], object]
+        ) -> tuple[tk.Button, tk.Label]:
             """Create one icon/text setting row with a button and description."""
             r = tk.Frame(c, bg=CARD_BG)
             r.pack(fill="x", pady=int(3 * s))
@@ -1147,7 +1262,7 @@ class ParagonOverlay(tk.Toplevel):
                 )
             )
             if img:
-                b.image = img
+                setattr(b, _TK_IMAGE_ATTRIBUTE, img)
             b.pack(side="left")
             lbl = _tk_lbl(r, text=lbl_txt, font=("Segoe UI", int(FS_SETTINGS_LABEL * s)), anchor="w")
             lbl.pack(side="left", padx=(int(8 * s), int(24 * s)))
@@ -1156,12 +1271,12 @@ class ParagonOverlay(tk.Toplevel):
         btn_lock, lbl_lock = _row(
             "🔒" if self._cfg.grid_locked else "🔓",
             imgs.get(self._cfg.grid_locked),
-            "Grid locked",
+            self._t("Grid locked"),
             lambda: (self._toggle_grid_lock(), _ref()),
         )
-        btn_gold, lbl_gold = _row("★", None, "Golden frames", lambda: (self._toggle_gold_frames(), _ref()))
-        _row("↻", None, "Reload profiles", self._reload_profiles)
-        _row("↺", None, "Reset grid defaults", lambda: (self._reset_grid_defaults(), _ref()))
+        btn_gold, lbl_gold = _row("★", None, self._t("Golden frames"), lambda: (self._toggle_gold_frames(), _ref()))
+        _row("↻", None, self._t("Reload profiles"), self._reload_profiles)
+        _row("↺", None, self._t("Reset grid defaults"), lambda: (self._reset_grid_defaults(), _ref()))
 
         tk.Frame(c, bg=MUTED, height=1).pack(fill="x", pady=int(6 * s))
 
@@ -1188,9 +1303,9 @@ class ParagonOverlay(tk.Toplevel):
             pady=int(2 * s),
         )
         btn_zp.pack(side="left")
-        _tk_lbl(zr, text="Grid Zoom", fg=MUTED, font=("Segoe UI", int(FS_SETTINGS_LABEL * s)), anchor="w").pack(
-            side="left", padx=(int(8 * s), 0)
-        )
+        _tk_lbl(
+            zr, text=self._t("Grid Zoom"), fg=MUTED, font=("Segoe UI", int(FS_SETTINGS_LABEL * s)), anchor="w"
+        ).pack(side="left", padx=(int(8 * s), 0))
 
         tk.Frame(c, bg=MUTED, height=1).pack(fill="x", pady=int(4 * s))
 
@@ -1247,13 +1362,20 @@ class ParagonOverlay(tk.Toplevel):
         ).pack(side="left", padx=1, pady=1)
         tk.Frame(r2, bg=CARD_BG, width=sp, height=1).pack(side="left")
 
-        _tk_lbl(dp, text="Move\nGrid", fg=MUTED, font=("Segoe UI", int(FS_HINT * s)), anchor="w", justify="left").pack(
-            side="left", padx=(int(8 * s), 0)
-        )
+        _tk_lbl(
+            dp, text=self._t("Move\nGrid"), fg=MUTED, font=("Segoe UI", int(FS_HINT * s)), anchor="w", justify="left"
+        ).pack(side="left", padx=(int(8 * s), 0))
         tk.Frame(c, bg=MUTED, height=1).pack(fill="x", pady=int(6 * s))
         _tk_lbl(
             c,
-            text="• Drag frame to move grid\n• D-Pad ↑ ↓ ← → moves grid per click\n• Use − + buttons to zoom\n• Use ★ to make all frames golden\n• Use ↺ to reset to default size/position\n• Use 🔓 to unlock/lock grid",
+            text=self._t(
+                "• Drag frame to move grid\n"
+                "• D-Pad ↑ ↓ ← → moves grid per click\n"
+                "• Use − + buttons to zoom\n"
+                "• Use ★ to make all frames golden\n"
+                "• Use ↺ to reset to default size/position\n"
+                "• Use 🔓 to unlock/lock grid"
+            ),
             fg=MUTED,
             font=("Segoe UI", int(FS_HINT * s)),
             anchor="w",
@@ -1265,19 +1387,22 @@ class ParagonOverlay(tk.Toplevel):
         def _ref():
             """Refresh labels, icons, and enabled states after a setting changes."""
             lk, gd = self._cfg.grid_locked, getattr(self._cfg, "gold_frames", False)
-            if imgs.get(lk):
-                btn_lock.configure(image=imgs[lk])
-                btn_lock.image = imgs[lk]
+            lock_image = imgs.get(lk)
+            if lock_image is not None:
+                btn_lock.configure(image=lock_image)
+                setattr(btn_lock, _TK_IMAGE_ATTRIBUTE, lock_image)
             else:
                 btn_lock.configure(text="🔒" if lk else "🔓", fg=GOLD if lk else TEXT)
-            lbl_lock.configure(text="Grid locked" if lk else "Grid unlocked", fg=GOLD if lk else TEXT)
+            lbl_lock.configure(text=self._t("Grid locked" if lk else "Grid unlocked"), fg=GOLD if lk else TEXT)
             btn_gold.configure(fg=GOLD if gd else TEXT)
-            lbl_gold.configure(text="Golden frames (on)" if gd else "Golden frames (off)", fg=GOLD if gd else TEXT)
+            lbl_gold.configure(
+                text=self._t("Golden frames (on)" if gd else "Golden frames (off)"), fg=GOLD if gd else TEXT
+            )
 
             for w in (btn_zm, btn_zp) + tuple(dc.winfo_children()):
                 for child in w.winfo_children():
                     if isinstance(child, tk.Button):
-                        child.configure(state=tk.DISABLED if lk else tk.NORMAL, fg=MUTED if lk else TEXT)
+                        child.configure({"state": tk.DISABLED if lk else tk.NORMAL, "fg": MUTED if lk else TEXT})
 
             lbl_cell.configure(
                 text=f"{int(self._cfg.cell_size_collapsed if self._cfg.is_collapsed else self._cfg.cell_size)}px",
@@ -1286,7 +1411,7 @@ class ParagonOverlay(tk.Toplevel):
             with suppress(Exception):
                 host.update_idletasks()
                 host.lift()
-                host.configure(bg=CARD_BG)
+                host.configure({"bg": CARD_BG})
 
         _ref()
         return _ref
@@ -1299,10 +1424,10 @@ class ParagonOverlay(tk.Toplevel):
             selected = i == self.selected_board_idx
             bg, fg = (SELECT_BG, GOLD) if selected else (CARD_BG, TEXT)
             with suppress(Exception):
-                card.configure(bg=bg)
+                card.configure({"bg": bg})
             for child in card.winfo_children():
                 with suppress(Exception):
-                    child.configure(bg=bg, fg=fg)
+                    child.configure({"bg": bg, "fg": fg})
 
     def _select_board_card(self, idx: int) -> None:
         """Select one board card, then redraw and persist the new state."""
@@ -1315,7 +1440,7 @@ class ParagonOverlay(tk.Toplevel):
         """Switch between the full and compact grid layouts."""
         self._cfg.is_collapsed = not self._cfg.is_collapsed
         with suppress(Exception):
-            self.lbl_mode.config(text="Compact View" if self._cfg.is_collapsed else "Full View")
+            self.lbl_mode.config(text=self._t("Compact View" if self._cfg.is_collapsed else "Full View"))
         if is_alive(getattr(self, "btn_view_switch", None)):
             self.btn_view_switch.config(text="⤢" if self._cfg.is_collapsed else "⤡")
         self.redraw()
@@ -1328,20 +1453,20 @@ class ParagonOverlay(tk.Toplevel):
 
         # The title prefers the profile name. When that is missing, a readable
         # fallback is derived from the build name.
-        t = "Paragon"
+        t = self._t("Paragon")
         if self.builds:
             b = self.builds[self.current_build_idx]
-            t = _format_build_display_name(b.get("name"))
+            t = _format_build_display_name(b.get("name"), locale=self._locale())
             if not t:
-                t = _format_build_display_name(b.get("profile"))
-        self.lbl_title.config(text=t or "Paragon")
+                t = _format_build_display_name(b.get("profile"), locale=self._locale())
+        self.lbl_title.config(text=t or self._t("Paragon"))
 
         if not self.boards:
             return
         acc = self._accent_frame_color()
 
         for idx, bd in enumerate(self.boards):
-            txt = format_board_display_text(bd)
+            txt = format_board_display_text(bd, locale=self._locale())
             sel = idx == self.selected_board_idx
             bg, fg = (SELECT_BG, GOLD) if sel else (CARD_BG, TEXT)
 
@@ -1490,6 +1615,9 @@ class ParagonOverlay(tk.Toplevel):
         Args:
             enabled: True to enable click-through, False to disable it.
         """
+        if sys.platform != "win32":
+            return
+
         try:
             hwnd = win32gui.GetAncestor(int(self.winfo_id()), win32con.GA_ROOT)
             styles = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
@@ -1531,7 +1659,7 @@ class ParagonOverlay(tk.Toplevel):
             over_panel = (rx <= px < rx + rw) and (ry <= py < ry + rh)
             target_enabled = not (over_panel or popup_active)
             self._set_click_through(enabled=target_enabled)
-        except (tk.TclError, AttributeError, ValueError, TypeError, win32gui.error) as e:
+        except (tk.TclError, AttributeError, ValueError, TypeError) as e:
             LOGGER.debug("Failed to update click-through state: %s", e)
 
     def _poll_click_through(self) -> None:

@@ -1,11 +1,13 @@
 import logging
 import sys
 from pathlib import Path
+from typing import override
 
 from PyQt6.QtCore import QPoint, QSettings, QSize, Qt, QTimer
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QCloseEvent, QIcon
 from PyQt6.QtWidgets import QMainWindow
 
+from src.gui.i18n import translate, translate_widget_tree
 from src.gui.profile_tab import ProfileTab
 
 BASE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent.parent
@@ -27,7 +29,7 @@ class ProfileEditorWindow(QMainWindow):
             self.setWindowIcon(QIcon(str(ICON_PATH)))
 
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, on=True)
-        self.setWindowTitle("Profile Editor")
+        self.setWindowTitle(translate("Profile Editor"))
 
         self.resize(self.settings.value("size", QSize(650, 800)))
         self.move(self.settings.value("pos", QPoint(0, 0)))
@@ -45,14 +47,24 @@ class ProfileEditorWindow(QMainWindow):
         self.setCentralWidget(self.profile_tab)
         self.profile_tab.show_tab()
 
-    def closeEvent(self, event):  # noqa: N802
+    def retranslate_ui(self) -> None:
+        self.setWindowTitle(translate("Profile Editor"))
+        translate_widget_tree(self)
+        if hasattr(self, "profile_tab"):
+            self.profile_tab.retranslate_ui()
+
+    @override
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
         """Save window size/position and check if profile needs saving."""
         if not self.isMaximized():
             self.settings.setValue("size", self.size())
             self.settings.setValue("pos", self.pos())
         self.settings.setValue("maximized", self.isMaximized())
 
-        if self.profile_tab.check_close_save():
-            event.accept()
+        if a0 is None:
+            return
+        profile_tab = getattr(self, "profile_tab", None)
+        if profile_tab is None or profile_tab.check_close_save():
+            a0.accept()
         else:
-            event.ignore()
+            a0.ignore()

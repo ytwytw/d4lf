@@ -3,9 +3,11 @@ import time
 from typing import TYPE_CHECKING
 
 import src.item.descr.read_descr_tts
+import src.tts
 from src.cam import Cam
 from src.config.loader import IniConfigLoader
 from src.config.settings_models import ItemRefreshType, UnfilteredUniquesType
+from src.diagnostics.auto_failure_capture import capture_failure
 from src.item.data.affix import AffixType
 from src.item.data.item_type import ItemType, is_sigil
 from src.item.data.rarity import ItemRarity
@@ -13,13 +15,13 @@ from src.item.filter import Filter
 from src.scripts.common import (
     ASPECT_UPGRADES_LABEL,
     drop_item_from_inventory,
+    game_input_allowed,
     is_ignored_item,
     mark_as_favorite,
     mark_as_junk,
     reset_item_status,
+    use_item_from_inventory,
 )
-from src.utils.custom_mouse import Mouse
-from src.utils.window import screenshot
 
 if TYPE_CHECKING:
     from src.ui.inventory_base import InventoryBase
@@ -30,6 +32,9 @@ LOGGER = logging.getLogger(__name__)
 def check_items(
     inv: InventoryBase, force_refresh: ItemRefreshType, stash_is_open: bool = False, no_match_action: str = "junk"
 ):
+    if not game_input_allowed("filter items"):
+        return
+
     occupied, _ = inv.get_item_slots()
 
     def _handle_no_match() -> None:
@@ -55,22 +60,34 @@ def check_items(
     for item in occupied:
         if item.is_junk or item.is_fav:
             continue
+        if not game_input_allowed("inspect item"):
+            return
         inv.hover_item_with_delay(item)
         time.sleep(0.1)
         img = Cam().grab()
         item_descr = None
-        retry_count = 0
+        parse_error = None
+        tts_trace, raw_tts_trace = src.tts.get_item_trace_snapshot()
 
-        while item_descr is None and retry_count != 2:
+        for retry_count in range(2):
             try:
                 item_descr = src.item.descr.read_descr_tts.read_descr()
                 LOGGER.debug(f"Attempt {retry_count} to parse item based on TTS: {item_descr}")
-                retry_count += 1
-            except Exception:
-                screenshot("tts_error", img=img)
+            except Exception as error:
+                parse_error = error
                 LOGGER.exception(f"Error in TTS read_descr. {src.tts.LAST_ITEM=}")
+            if item_descr is not None:
+                break
 
         if item_descr is None:
+            if src.tts.is_equipment_trace(tts_trace):
+                capture_failure(
+                    reason="tts-item-parse-failed",
+                    image=img,
+                    tts_lines=tts_trace,
+                    raw_tts_lines=raw_tts_trace,
+                    error=parse_error or "TTS parser returned no item after retries",
+                )
             continue
 
         # Hardcoded filters
@@ -80,7 +97,7 @@ def check_items(
                 and item_descr.item_type == ItemType.TemperManual
                 and IniConfigLoader().general.auto_use_temper_manuals
             ):
-                Mouse.click("right")
+                use_item_from_inventory()
             continue
 
         num_of_affixed_items_checked += 1

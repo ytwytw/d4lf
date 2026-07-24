@@ -1,4 +1,5 @@
 from src.config.reload_groups import (
+    DIAGNOSTICS_PAGE_SETTING_KEYS,
     HOTKEY_SETTING_KEYS,
     LOG_LEVEL_SETTING_KEYS,
     VISION_MODE_TYPE_SETTING_KEY,
@@ -16,6 +17,10 @@ def test_log_level_setting_keys_resolves_to_log_lvl_field():
 
 def test_vision_mode_type_setting_key():
     assert VISION_MODE_TYPE_SETTING_KEY == "general.vision_mode_type"
+
+
+def test_diagnostics_page_setting_keys_resolves_to_visibility_field():
+    assert {"general.show_diagnostics_tab"} == DIAGNOSTICS_PAGE_SETTING_KEYS
 
 
 def test_hotkey_setting_keys_are_namespaced_under_advanced_options():

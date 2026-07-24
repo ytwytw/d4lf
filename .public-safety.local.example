@@ -1,0 +1,6 @@
+# Copy this file to .public-safety.local and add one literal per line.
+# The real file is ignored and must contain any identity or path fragments
+# that must never appear in a tracked file or public export.
+your-github-handle
+developer@example.invalid
+example-user

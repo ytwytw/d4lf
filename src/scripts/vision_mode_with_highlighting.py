@@ -4,9 +4,10 @@ import queue
 import threading
 import time
 import tkinter as tk
+from dataclasses import dataclass
 from threading import Event, Thread
 from tkinter.font import Font
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 
@@ -16,12 +17,14 @@ from src.cam import Cam
 from src.config.helper import singleton
 from src.config.loader import IniConfigLoader
 from src.config.ui import ResManager
+from src.diagnostics.auto_failure_capture import capture_failure
 from src.gui.importer.gui_common import DARK_GRAY_BG
 from src.item.data.item_type import is_sigil
 from src.item.data.seasonal_attribute import SeasonalAttribute
 from src.item.filter import Filter, FilterResult
 from src.item.find_descr import find_descr
 from src.scripts.common import ASPECT_UPGRADES_LABEL, get_filter_colors, is_ignored_item, reset_canvas
+from src.scripts.overlay_text import display_profile_name, overlay_text
 from src.tts import Publisher
 from src.ui.char_inventory import CharInventory
 from src.ui.stash import Stash
@@ -29,30 +32,86 @@ from src.ui.vendor import Vendor
 from src.ui_thread import call_on_ui_thread, create_overlay_toplevel, get_root
 from src.utils.custom_mouse import Mouse
 from src.utils.image_operations import compare_histograms
-from src.utils.window import screenshot
 
 if TYPE_CHECKING:
     from src.item.models import Item
 
 LOGGER = logging.getLogger(__name__)
 
+type HighlightTask = (
+    tuple[Literal["clear"]]
+    | tuple[Literal["empty"], Item, tuple[int, int, int, int], str, str | None]
+    | tuple[Literal["match"], Item, tuple[int, int, int, int], FilterResult, Item]
+    | tuple[Literal["no_match"], Item, tuple[int, int, int, int]]
+    | tuple[Literal["codex_upgrade"], Item, tuple[int, int, int, int], FilterResult]
+)
+
 
 class CancellationRequestedError(Exception):
     """Exception raised when a cancellation is requested."""
+
+
+@dataclass(slots=True)
+class LocationParseResult:
+    item: Item | None
+    frame: np.ndarray
+    crop: np.ndarray
+    item_roi: tuple[int, int, int, int]
+    error: Exception | None = None
+
+
+def _read_item_locations_with_retries(
+    *,
+    initial_frame: np.ndarray,
+    initial_crop: np.ndarray,
+    initial_item_roi: tuple[int, int, int, int],
+    item_center: tuple[int, int],
+    expected_rarity,
+    cancel_event: Event,
+    max_attempts: int = 5,
+) -> LocationParseResult:
+    """Parse locations from each fresh tooltip crop while retaining the last valid context."""
+    result = LocationParseResult(item=None, frame=initial_frame, crop=initial_crop, item_roi=initial_item_roi)
+    for attempt in range(max_attempts):
+        if cancel_event.is_set():
+            raise CancellationRequestedError
+
+        if attempt:
+            time.sleep(0.05)
+            retry_frame = Cam().grab(force_new=True)
+            found, rarity, retry_crop, retry_roi = find_descr(retry_frame, item_center, expected_rarity=expected_rarity)
+            if not found or rarity != expected_rarity or retry_crop is None or retry_roi is None:
+                continue
+            result.frame = retry_frame
+            result.crop = retry_crop
+            result.item_roi = retry_roi
+
+        try:
+            result.item = src.item.descr.read_descr_tts.read_descr_mixed(result.crop)
+        except (IndexError, ValueError) as error:
+            result.error = error
+            result.item = None
+        if result.item is not None:
+            return result
+
+    return result
 
 
 @singleton
 class VisionModeWithHighlighting:
     def __init__(self):
         super().__init__()
-        self.clear_when_item_not_selected_thread = None
-        self.clear_when_item_not_selected_thread_cancel_event = None
-        self.evaluate_item_thread = None
-        self.evaluate_item_thread_cancel_event = None
-        self.current_item = None
-        self.is_cleared = True
-        self.queue = queue.Queue()
-        self.is_running = False
+        self.root: tk.Toplevel
+        self.canvas: tk.Canvas
+        self.clear_when_item_not_selected_thread: Thread | None = None
+        self.clear_when_item_not_selected_thread_cancel_event: Event | None = None
+        self.evaluate_item_thread: Thread | None = None
+        self.evaluate_item_thread_cancel_event: Event | None = None
+        self._worker_lock = threading.RLock()
+        self.current_item: Item | None = None
+        self.is_cleared: bool = True
+        self.queue: queue.Queue[HighlightTask] = queue.Queue()
+        self.is_running: bool = False
 
         def _build_ui() -> None:
             self.root, self.canvas = create_overlay_toplevel(get_root())
@@ -94,17 +153,19 @@ class VisionModeWithHighlighting:
         self.screen_off_x = Cam().window_roi["left"]
         self.screen_off_y = Cam().window_roi["top"]
 
-    def draw_rect(self, canvas: tk.Canvas, bullet_width, obj, off, color):
-        offset_loc = np.array(obj.loc) + off
+    def draw_rect(self, canvas: tk.Canvas, bullet_width: int, loc: tuple[int, int], off: int, color: str) -> None:
+        offset_loc = np.array(loc) + off
         x1 = int(offset_loc[0] - bullet_width / 2)
         y1 = int(offset_loc[1] - bullet_width / 2)
         x2 = int(offset_loc[0] + bullet_width / 2)
         y2 = int(offset_loc[1] + bullet_width / 2)
-        self.canvas.create_rectangle(x1, y1, x2, y2, fill=color)
+        canvas.create_rectangle(x1, y1, x2, y2, fill=color)
 
-    def draw_text(self, canvas, text, color, previous_text_y, offset, canvas_center_x) -> int:
+    def draw_text(
+        self, canvas: tk.Canvas, text: str, color: str, previous_text_y: int, offset: int, canvas_center_x: int
+    ) -> int:
         if not text:
-            return None
+            return previous_text_y
 
         font_name = "Courier New"
         minimum_font_size = IniConfigLoader().general.minimum_overlay_font_size
@@ -219,19 +280,19 @@ class VisionModeWithHighlighting:
         # show all info strings of the profiles
         text_y = h
         for match in reversed(should_keep_res.matched):
-            text = match.profile
+            text = display_profile_name(match.profile)
             if match.set_match:
-                text = text + " (incl. Set)"
+                text = overlay_text("{profile} (incl. Set)", profile=text)
             text_y = self.draw_text(self.canvas, text, get_filter_colors().matched, text_y, 5, w // 2)
         # Show matched bullets
         if item_descr and len(should_keep_res.matched) > 0:
             bullet_width = self.thick * 3
             for affix in should_keep_res.matched[0].matched_affixes:
                 if affix.loc:
-                    self.draw_rect(self.canvas, bullet_width, affix, off, get_filter_colors().matched)
+                    self.draw_rect(self.canvas, bullet_width, affix.loc, off, get_filter_colors().matched)
 
             if item_descr.aspect and item_descr.aspect.loc and any(m.aspect_match for m in should_keep_res.matched):
-                self.draw_rect(self.canvas, bullet_width, item_descr.aspect, off, get_filter_colors().matched)
+                self.draw_rect(self.canvas, bullet_width, item_descr.aspect.loc, off, get_filter_colors().matched)
 
         self.root.update_idletasks()
         self.root.update()
@@ -249,52 +310,91 @@ class VisionModeWithHighlighting:
 
         # show string indicating that this item upgrades the codex
         if len(should_keep_result.matched) == 1 and should_keep_result.matched[0].profile == ASPECT_UPGRADES_LABEL:
-            self.draw_text(self.canvas, "Codex Upgrade", get_filter_colors().codex_upgrade, h, 5, w // 2)
+            self.draw_text(self.canvas, overlay_text("Codex Upgrade"), get_filter_colors().codex_upgrade, h, 5, w // 2)
         else:
             # This matched an Aspects section in a profile, write the profiles
             text_y = h
             for match in reversed(should_keep_result.matched):
                 text_y = self.draw_text(
-                    self.canvas, match.profile, get_filter_colors().codex_upgrade, text_y, 5, w // 2
+                    self.canvas,
+                    display_profile_name(match.profile),
+                    get_filter_colors().codex_upgrade,
+                    text_y,
+                    5,
+                    w // 2,
                 )
 
         self.root.update_idletasks()
         self.root.update()
 
-    def on_tts(self, _):
+    def on_tts(self, tts_trace):
+        with self._worker_lock:
+            if not self.is_running:
+                return
+            try:
+                self._handle_tts(tts_trace)
+            except Exception:
+                self.current_item = None
+                self.request_clear()
+                LOGGER.exception("Error in highlighting vision mode while handling TTS")
+
+    def _handle_tts(self, tts_trace):
+        previous_thread = self.evaluate_item_thread
+        if previous_thread is not None:
+            self.stop_thread_and_wait(previous_thread, self.evaluate_item_thread_cancel_event)
+        self.evaluate_item_thread = None
+        self.evaluate_item_thread_cancel_event = None
+        self.current_item = None
+
         img = Cam().grab()
         item_descr = None
+        parse_error = None
+        tts_trace = list(tts_trace)
+        raw_tts_trace = src.tts.raw_trace_for(tts_trace)
         try:
             item_descr = src.item.descr.read_descr_tts.read_descr()
             LOGGER.debug(f"Parsed item based on TTS: {item_descr}")
-        except Exception:
-            screenshot("tts_error", img=img)
+        except Exception as error:
+            parse_error = error
             LOGGER.exception(f"Error in TTS read_descr. {src.tts.LAST_ITEM=}")
 
         if item_descr is None:
+            if src.tts.is_equipment_trace(tts_trace):
+                capture_failure(
+                    reason="tts-item-parse-failed",
+                    image=img,
+                    tts_lines=tts_trace,
+                    raw_tts_lines=raw_tts_trace,
+                    error=parse_error or "TTS parser returned no item",
+                )
             self.request_clear()
             return
 
         self.current_item = item_descr
-
-        # Kick off a thread that will evaluate the item and queue up the appropriate drawings.
-        # If one already exists we'll kill it since a new item has come in
-        if self.evaluate_item_thread:
-            self.stop_thread_and_wait(self.evaluate_item_thread, self.evaluate_item_thread_cancel_event)
-
-        self.evaluate_item_thread_cancel_event = threading.Event()
+        cancel_event = threading.Event()
+        self.evaluate_item_thread_cancel_event = cancel_event
         self.evaluate_item_thread = threading.Thread(
-            target=self.evaluate_item_and_queue_draw, args=(item_descr,), daemon=True
+            target=self.evaluate_item_and_queue_draw,
+            args=(item_descr, cancel_event, tts_trace, raw_tts_trace),
+            daemon=True,
         )
         self.evaluate_item_thread.start()
 
-    def evaluate_item_and_queue_draw(self, item_descr: Item):
+    def evaluate_item_and_queue_draw(
+        self,
+        item_descr: Item,
+        cancel_event: Event,
+        tts_trace: list[str] | None = None,
+        raw_tts_trace: list[str] | None = None,
+    ) -> None:
+        if tts_trace is None:
+            tts_trace, raw_tts_trace = src.tts.get_item_trace_snapshot()
+        raw_tts_trace = raw_tts_trace or tts_trace
         if not self.is_cleared:
             self.request_clear()
-        if self.clear_when_item_not_selected_thread:
-            self.stop_thread_and_wait(
-                self.clear_when_item_not_selected_thread, self.clear_when_item_not_selected_thread_cancel_event
-            )
+        selection_thread = self.clear_when_item_not_selected_thread
+        if selection_thread is not None:
+            self.stop_thread_and_wait(selection_thread, self.clear_when_item_not_selected_thread_cancel_event)
             self.clear_when_item_not_selected_thread = None
 
         last_top_left_corner = None
@@ -303,9 +403,12 @@ class VisionModeWithHighlighting:
         # getting in item while the fade-in animation and failing to read it properly
         is_confirmed = False
         retry_count = 0
+        ignored_item = False
+        last_frame = None
         try:
+            ignored_item = is_ignored_item(item_descr)
             while retry_count < 5 and not is_confirmed:
-                self.check_for_thread_cancellation(self.evaluate_item_thread_cancel_event)
+                self.check_for_thread_cancellation(cancel_event)
                 retry_count += 1
                 mouse_pos = Cam().monitor_to_window(Mouse.get_position())
                 # get closest pos to a item center
@@ -313,39 +416,61 @@ class VisionModeWithHighlighting:
                 delta = centers_to_use - mouse_pos
                 distances = np.linalg.norm(delta, axis=1)
                 closest_index = np.argmin(distances)
-                item_center = centers_to_use[closest_index]
+                item_center_array = centers_to_use[closest_index]
+                item_center = (int(item_center_array[0]), int(item_center_array[1]))
 
-                self.check_for_thread_cancellation(self.evaluate_item_thread_cancel_event)
-
+                self.check_for_thread_cancellation(cancel_event)
                 # Before we get the cropped_descr we need to ensure there is no previous overlay on screen
                 while not self.is_cleared:
+                    self.check_for_thread_cancellation(cancel_event)
                     time.sleep(0.10)
-                found, rarity, cropped_descr, item_roi = find_descr(Cam().grab(), item_center)
+                descr_frame = Cam().grab(force_new=True)
+                last_frame = descr_frame
+                found, rarity, cropped_descr, item_roi = find_descr(
+                    descr_frame, item_center, expected_rarity=item_descr.rarity
+                )
 
-                top_left_corner = None if not found else item_roi[:2]
-                if found:
+                top_left_corner = None if not found or item_roi is None else item_roi[:2]
+                if found and item_roi is not None and cropped_descr is not None:
                     if not is_confirmed:
-                        found_check, _, cropped_descr_check, _ = find_descr(Cam().grab(), item_center)
-                        if found_check:
-                            score = compare_histograms(cropped_descr, cropped_descr_check)
-                            if score < 0.99:
-                                continue
-                            is_confirmed = True
+                        descr_frame_check = Cam().grab(force_new=True)
+                        found_check, rarity_check, cropped_descr_check, item_roi_check = find_descr(
+                            descr_frame_check, item_center, expected_rarity=item_descr.rarity
+                        )
+                        if (
+                            not found_check
+                            or rarity_check != rarity
+                            or cropped_descr_check is None
+                            or item_roi_check is None
+                        ):
+                            continue
+                        score = compare_histograms(cropped_descr, cropped_descr_check)
+                        if score < 0.99:
+                            continue
+                        descr_frame = descr_frame_check
+                        cropped_descr = cropped_descr_check
+                        item_roi = item_roi_check
+                        is_confirmed = True
+                    top_left_corner = item_roi[:2]
 
-                    self.check_for_thread_cancellation(self.evaluate_item_thread_cancel_event)
+                    self.check_for_thread_cancellation(cancel_event)
 
-                    if (
+                    moved_to_new_item = (
                         last_top_left_corner is None
-                        or last_top_left_corner[0] != top_left_corner[0]
-                        or last_top_left_corner[1] != top_left_corner[1]
+                        or top_left_corner is None
+                        or last_top_left_corner != top_left_corner
                         or (last_center is not None and last_center[1] != item_center[1])
-                    ):
+                    )
+                    if moved_to_new_item:
                         ignored_item = is_ignored_item(item_descr)
                         # Make the canvas gray for "found the item" or blue for "ignored this item"
                         if ignored_item:
                             if item_descr.seasonal_attribute == SeasonalAttribute.sanctified:
                                 self.request_empty_outline(
-                                    item_descr, item_roi, get_filter_colors().unhandled, "Sanctified (Not Supported)"
+                                    item_descr,
+                                    item_roi,
+                                    get_filter_colors().unhandled,
+                                    overlay_text("Sanctified (Not Supported)"),
                                 )
                             else:
                                 self.request_empty_outline(item_descr, item_roi, get_filter_colors().unhandled)
@@ -355,11 +480,14 @@ class VisionModeWithHighlighting:
                         # Since we've now drawn something we kick off a thread to remove the drawing
                         # if the item is unselected. It is also automatically removed if a different
                         # TTS item comes in.
-                        self.check_for_thread_cancellation(self.evaluate_item_thread_cancel_event)
+                        self.check_for_thread_cancellation(cancel_event)
                         if not self.clear_when_item_not_selected_thread:
-                            self.clear_when_item_not_selected_thread_cancel_event = threading.Event()
+                            clear_cancel_event = threading.Event()
+                            self.clear_when_item_not_selected_thread_cancel_event = clear_cancel_event
                             self.clear_when_item_not_selected_thread = threading.Thread(
-                                target=self.check_for_item_still_selected, args=(item_center,), daemon=True
+                                target=self.check_for_item_still_selected,
+                                args=(item_center, clear_cancel_event),
+                                daemon=True,
                             )
                             self.clear_when_item_not_selected_thread.start()
 
@@ -376,23 +504,30 @@ class VisionModeWithHighlighting:
                                 # We won't highlight specific affixes for sigils. We'll see if people complain
                                 item_descr_with_loc = item_descr
                             else:
-                                item_descr_with_loc = None
-                                for _ in range(3):
-                                    try:
-                                        item_descr_with_loc = src.item.descr.read_descr_tts.read_descr_mixed(
-                                            cropped_descr
-                                        )
-                                    except IndexError:
-                                        item_descr_with_loc = None
-                                    if item_descr_with_loc is not None:
-                                        break
-                                    # Bullet point template matching can miss on a single frame
-                                    # (extra tooltip lines on mythics/tempered items are especially prone to this).
-                                    # Re-grab and retry before giving up on this item entirely.
-                                    time.sleep(0.05)
-                                    _, _, cropped_descr, _ = find_descr(Cam().grab(), item_center)
-                            if item_descr_with_loc is None:  # Item was likely mid-transition
-                                continue
+                                location_result = _read_item_locations_with_retries(
+                                    initial_frame=descr_frame,
+                                    initial_crop=cropped_descr,
+                                    initial_item_roi=item_roi,
+                                    item_center=tuple(item_center),
+                                    expected_rarity=rarity,
+                                    cancel_event=cancel_event,
+                                )
+                                item_descr_with_loc = location_result.item
+                                item_roi = location_result.item_roi
+                                if item_descr_with_loc is None:
+                                    capture_failure(
+                                        reason="visual-item-parse-failed",
+                                        image=location_result.frame,
+                                        detail_image=location_result.crop,
+                                        tts_lines=tts_trace,
+                                        raw_tts_lines=raw_tts_trace,
+                                        error=location_result.error or "Visual parser returned no item after retries",
+                                    )
+                                    LOGGER.warning(
+                                        "Visual affix locations were unavailable for %s; falling back to the TTS item",
+                                        item_descr.original_name,
+                                    )
+                                    item_descr_with_loc = item_descr
                             res = Filter().should_keep(item_descr_with_loc)
                             match = res.keep
 
@@ -406,13 +541,24 @@ class VisionModeWithHighlighting:
                                     self.request_match_box(item_descr, item_roi, res, item_descr_with_loc)
                             elif not match:
                                 self.request_no_match_box(item_descr, item_roi)
+                            self._start_selection_monitor(item_center)
                 else:
                     self.request_clear()
-                    self.check_for_thread_cancellation(self.evaluate_item_thread_cancel_event)
+                    self.check_for_thread_cancellation(cancel_event)
                     last_center = None
                     last_top_left_corner = None
                     is_confirmed = False
                     time.sleep(0.15)
+
+            if not is_confirmed and not ignored_item and last_frame is not None:
+                rarity_name = item_descr.rarity.name if item_descr.rarity is not None else "unknown-rarity"
+                capture_failure(
+                    reason="visual-tooltip-not-found",
+                    image=last_frame,
+                    tts_lines=tts_trace,
+                    raw_tts_lines=raw_tts_trace,
+                    error=f"Could not locate the {rarity_name} equipment tooltip after {retry_count} attempts",
+                )
         except CancellationRequestedError:
             pass
         except Exception:
@@ -420,30 +566,51 @@ class VisionModeWithHighlighting:
                 "Error in vision mode. If an item was mid-transition this is harmless; if it repeats, please create a bug report."
             )
         finally:
-            self.evaluate_item_thread = None
+            if self.evaluate_item_thread is threading.current_thread():
+                self.evaluate_item_thread = None
 
     @staticmethod
-    def check_for_thread_cancellation(cancel_event: Event):
-        if cancel_event.is_set():
+    def check_for_thread_cancellation(cancel_event: Event | None):
+        if cancel_event is not None and cancel_event.is_set():
             raise CancellationRequestedError
 
     @staticmethod
-    def stop_thread_and_wait(thread: Thread, cancel_event: Event):
-        cancel_event.set()
+    def stop_thread_and_wait(thread: Thread | None, cancel_event: Event | None):
+        if thread is None:
+            return
+        if cancel_event is not None:
+            cancel_event.set()
         thread.join()
 
-    def check_for_item_still_selected(self, item_center):
+    def check_for_item_still_selected(self, item_center: tuple[int, int], cancel_event: Event) -> None:
         try:
             while True:
-                self.check_for_thread_cancellation(self.clear_when_item_not_selected_thread_cancel_event)
-                found_check, _, _, _ = find_descr(Cam().grab(), item_center)
+                self.check_for_thread_cancellation(cancel_event)
+                expected_rarity = self.current_item.rarity if self.current_item is not None else None
+                found_check, _, _, _ = find_descr(Cam().grab(), item_center, expected_rarity=expected_rarity)
                 if not found_check:
                     self.request_clear()
-                    self.clear_when_item_not_selected_thread = None
                     break
                 time.sleep(0.15)
         except CancellationRequestedError:
-            self.clear_when_item_not_selected_thread = None
+            pass
+        except Exception:
+            LOGGER.exception("Error while checking whether the highlighted item is still selected")
+        finally:
+            if self.clear_when_item_not_selected_thread is threading.current_thread():
+                self.clear_when_item_not_selected_thread = None
+
+    def _start_selection_monitor(self, item_center) -> None:
+        self.check_for_thread_cancellation(self.evaluate_item_thread_cancel_event)
+        if self.clear_when_item_not_selected_thread:
+            return
+        self.clear_when_item_not_selected_thread_cancel_event = threading.Event()
+        self.clear_when_item_not_selected_thread = threading.Thread(
+            target=self.check_for_item_still_selected,
+            args=(item_center, self.clear_when_item_not_selected_thread_cancel_event),
+            daemon=True,
+        )
+        self.clear_when_item_not_selected_thread.start()
 
     def get_coords_from_roi(self, item_roi):
         x, y, w, h = item_roi
@@ -471,22 +638,28 @@ class VisionModeWithHighlighting:
 
     def start(self):
         LOGGER.info("Starting Vision Mode")
-        Publisher().subscribe_item(self.on_tts)
-        self.is_running = True
+        with self._worker_lock:
+            self.is_running = True
+            Publisher().subscribe_item(self.on_tts)
 
     def stop(self):
         LOGGER.info("Stopping Vision Mode")
-        self.request_clear()
-        if self.evaluate_item_thread:
-            self.stop_thread_and_wait(self.evaluate_item_thread, self.evaluate_item_thread_cancel_event)
+        with self._worker_lock:
+            self.is_running = False
+            Publisher().unsubscribe_item(self.on_tts)
+            self.current_item = None
+            self.request_clear()
+
+            evaluate_thread = self.evaluate_item_thread
+            self.stop_thread_and_wait(evaluate_thread, self.evaluate_item_thread_cancel_event)
             self.evaluate_item_thread = None
-        if self.clear_when_item_not_selected_thread:
-            self.stop_thread_and_wait(
-                self.clear_when_item_not_selected_thread, self.clear_when_item_not_selected_thread_cancel_event
-            )
+            self.evaluate_item_thread_cancel_event = None
+
+            selection_thread = self.clear_when_item_not_selected_thread
+            self.stop_thread_and_wait(selection_thread, self.clear_when_item_not_selected_thread_cancel_event)
             self.clear_when_item_not_selected_thread = None
-        Publisher().unsubscribe_item(self.on_tts)
-        self.is_running = False
+            self.clear_when_item_not_selected_thread_cancel_event = None
 
     def running(self):
-        return self.is_running
+        with self._worker_lock:
+            return self.is_running

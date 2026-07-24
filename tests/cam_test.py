@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from src.cam import Cam
+from src.config.ui import ResManager
 
 
 @pytest.fixture
@@ -12,6 +13,7 @@ def camera():
     cam.monitor_x_range = None
     cam.monitor_y_range = None
     cam.res_key = ""
+    cam._rejected_res_key = ""
     cam.res_p = ""
     cam.last_grab = None
     cam.cached_img = None
@@ -39,3 +41,16 @@ def test_grab_discards_frame_captured_before_window_restart(camera, mocker):
     image = camera.grab()
 
     np.testing.assert_array_equal(image, new_frame[:, :, :3])
+
+
+def test_update_window_pos_ignores_transient_portrait_geometry(camera, mocker):
+    set_resolution = mocker.patch.object(ResManager(), "set_resolution")
+    camera.update_window_pos(10, 20, 3840, 2160)
+    generation = camera._window_generation
+
+    camera.update_window_pos(30, 40, 2160, 3840)
+
+    assert camera.window_roi == {"top": 20, "left": 10, "width": 3840, "height": 2160}
+    assert camera.res_key == "3840x2160"
+    assert camera._window_generation == generation
+    set_resolution.assert_called_once_with("3840x2160")

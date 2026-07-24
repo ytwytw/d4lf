@@ -10,23 +10,21 @@ if TYPE_CHECKING:
 
 from src.cam import Cam
 from src.config.loader import IniConfigLoader
+from src.config.settings_models import is_read_only_language
+from src.config.ui import ResManager
+from src.diagnostics.tts_capture import is_diagnostic_capture_active
 from src.gui.importer.gui_common import ACCENT_BLUE, DARK_GRAY_BG
 from src.item.data.item_type import ItemType, is_consumable, is_non_sigil_mapping, is_socketable
 from src.utils import hotkeys
 from src.utils.custom_mouse import Mouse
-
-try:
-    from src.config.ui import ResManager
-except ImportError:  # pragma: no cover
-    ResManager = None  # type: ignore[assignment]
-
+from src.utils.window import WindowSpec, is_window_foreground
 
 if TYPE_CHECKING:
     from src.item.models import Item
 
 LOGGER = logging.getLogger(__name__)
 
-SETUP_INSTRUCTIONS_URL = "https://github.com/d4lfteam/d4lf/blob/main/README.md#how-to-setup"
+SETUP_INSTRUCTIONS_URL = "https://github.com/ytwytw/d4lf/blob/zhcn-v9/README.md#setup"
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,15 +71,37 @@ def get_filter_colors() -> FilterColors:
 ASPECT_UPGRADES_LABEL = "AspectUpgrades"
 
 
+def game_input_allowed(action: str, *, language: str | None = None) -> bool:
+    """Guard any operation that can send keyboard or mouse input to the game."""
+    if is_diagnostic_capture_active():
+        LOGGER.warning("Skipping %s while diagnostic TTS capture is active", action)
+        return False
+    config = IniConfigLoader()
+    active_language = language if language is not None else config.general.language
+    if is_read_only_language(active_language):
+        LOGGER.warning("Skipping %s because %s is read-only", action, active_language)
+        return False
+    if not is_window_foreground(WindowSpec(config.advanced_options.process_name)):
+        LOGGER.warning("Skipping %s because Diablo IV is not the foreground window", action)
+        return False
+    return True
+
+
 def mark_as_junk():
+    if not game_input_allowed("mark item as junk"):
+        return
     hotkeys.send("space")
     time.sleep(0.13)
 
 
 def mark_as_favorite():
+    if not game_input_allowed("mark item as favorite"):
+        return
     LOGGER.info("Mark as favorite")
     hotkeys.send("space")
     time.sleep(0.17)
+    if not game_input_allowed("mark item as favorite"):
+        return
     hotkeys.send("space")
     time.sleep(0.13)
 
@@ -95,29 +115,52 @@ def reset_canvas(root, canvas):
 
 
 def reset_item_status(occupied, inv):
+    if not game_input_allowed("reset item status"):
+        return
     for item_slot in occupied:
+        if not game_input_allowed("reset item status"):
+            return
         if item_slot.is_fav:
             inv.hover_item_with_delay(item_slot)
+            if not game_input_allowed("reset item status"):
+                return
             hotkeys.send("space")
         if item_slot.is_junk:
             inv.hover_item_with_delay(item_slot)
+            if not game_input_allowed("reset item status"):
+                return
             hotkeys.send("space")
             time.sleep(0.15)
+            if not game_input_allowed("reset item status"):
+                return
             hotkeys.send("space")
         time.sleep(0.15)
 
-    if occupied:
+    if occupied and game_input_allowed("move pointer away"):
         Mouse.move(*Cam().abs_window_to_monitor((0, 0)))
 
 
 def drop_item_from_inventory() -> None:
     """Drop the currently-hovered inventory item (Ctrl + Left Click in-game)."""
+    if not game_input_allowed("drop item"):
+        return
     hotkeys.press("ctrl")
-    time.sleep(0.03)
-    Mouse.click("left")
-    time.sleep(0.03)
-    hotkeys.release("ctrl")
+    try:
+        time.sleep(0.03)
+        if not game_input_allowed("drop item"):
+            return
+        Mouse.click("left")
+        time.sleep(0.03)
+    finally:
+        hotkeys.release("ctrl")
     time.sleep(0.10)
+
+
+def use_item_from_inventory() -> None:
+    """Use the currently-hovered inventory item with a right click."""
+    if not game_input_allowed("use item"):
+        return
+    Mouse.click("right")
 
 
 def is_ignored_item(item_descr: Item):
@@ -191,8 +234,7 @@ def draw_text_with_background(
     # If caller didn't provide window_height, attempt to fetch it lazily.
     if window_height is None:
         try:
-            if ResManager is not None:
-                window_height = ResManager().pos.window_dimensions[1]
+            window_height = ResManager().pos.window_dimensions[1]
         except Exception:
             LOGGER.debug("Failed to read overlay window height from ResManager.", exc_info=True)
             window_height = None

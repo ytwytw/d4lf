@@ -1,6 +1,4 @@
 import os
-import sys
-import types
 from typing import TYPE_CHECKING
 
 import pytest
@@ -9,6 +7,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PyQt6.QtWidgets import QApplication, QMessageBox, QWidget
 
+import src.gui.profile_tab as profile_tab_module
 from src.config.profile_document import LoadedProfile, SavedProfile
 from src.config.profile_models import ProfileModel
 from src.config.profile_session import (
@@ -21,12 +20,6 @@ from src.config.profile_session import (
     ValidationError,
     YamlError,
 )
-
-profile_editor_module = types.ModuleType("src.gui.profile_editor.profile_editor")
-profile_editor_module.ProfileEditor = QWidget
-sys.modules["src.gui.profile_editor.profile_editor"] = profile_editor_module
-
-import src.gui.profile_tab as profile_tab_module  # noqa: E402
 
 if TYPE_CHECKING:
     from pathlib import Path

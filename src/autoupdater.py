@@ -11,12 +11,14 @@ import src.logger
 from src import __version__
 
 LOGGER = logging.getLogger(__name__)
+AUTO_UPDATE_ENABLED = "zhcn" not in __version__.casefold()
 
 
 # This autoupdater was almost entirely provided by iAmPilcrow
 class D4LFUpdater:
     def __init__(self):
-        self.repo_owner = "d4lfteam"
+        self.update_enabled = AUTO_UPDATE_ENABLED
+        self.repo_owner = "ytwytw"
         self.repo_name = "d4lf"
         self.api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases/latest"
         self.changes_base_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/compare/"
@@ -33,6 +35,10 @@ class D4LFUpdater:
 
     def get_latest_release(self, silent=False):
         """Fetch latest release info from GitHub API."""
+        if not self.update_enabled:
+            if not silent:
+                LOGGER.warning("Automatic updates are disabled for this zhCN candidate build.")
+            return None
         if not silent:
             LOGGER.info("Checking for latest release...")
         try:
@@ -115,6 +121,9 @@ class D4LFUpdater:
         Additional updating and cleanup will be handled by the post process
         """
         self._print_header()
+        if not self.update_enabled:
+            LOGGER.warning("Automatic updates are disabled for this zhCN candidate build.")
+            return False
 
         # Get current installed version
         current_version = self.normalize_version(__version__)
@@ -239,11 +248,13 @@ def start_auto_update(postprocess=False):
 
 
 def notify_if_update():
+    updater = D4LFUpdater()
+    if not updater.update_enabled:
+        return
     if not _should_check_for_update():
         LOGGER.debug("Still within 4 hours of previous update check, skipping automatic update check.")
         return
 
-    updater = D4LFUpdater()
     current_version = updater.normalize_version(__version__)
 
     release = updater.get_latest_release(silent=True)
@@ -255,7 +266,7 @@ def notify_if_update():
     if current_version != latest_version:
         LOGGER.info("=" * 50)
         LOGGER.info(
-            f"An update has been detected. Run d4lf_autoupdater.exe to automatically update. Version {current_version} → {latest_version}"
+            f"An update has been detected. Run autoupdater.bat to automatically update. Version {current_version} → {latest_version}"
         )
         updater.print_changes_between_releases(current_version=current_version, latest_version=latest_version)
         LOGGER.info("=" * 50)

@@ -1,6 +1,10 @@
+from typing import override
+
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QMouseEvent
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QSpacerItem, QStackedLayout, QVBoxLayout, QWidget
+
+from src.gui.i18n import translate
 
 
 class Header(QWidget):
@@ -40,7 +44,7 @@ class Header(QWidget):
         # Create a font and a label for the header name
         font = QFont()
         font.setBold(True)
-        self.label = QLabel(name)
+        self.label = QLabel(translate(name))
         self.label.setStyleSheet("QLabel { margin-top: 5px; }")
         self.label.setFont(font)
 
@@ -55,7 +59,8 @@ class Header(QWidget):
         background.setMinimumHeight(int(layout.sizeHint().height() * 1.5))
         self.collapse()
 
-    def mousePressEvent(self, *args):  # noqa: N802
+    @override
+    def mousePressEvent(self, a0: QMouseEvent | None) -> None:
         """Handle mouse events, call the function to toggle groups."""
         # Toggle between expand and collapse based on the visibility of the content widget
         self.expand() if not self.content.isVisible() else self.collapse()
@@ -75,7 +80,7 @@ class Header(QWidget):
 
     def set_name(self, name):
         self.name = name
-        self.label.setText(name)
+        self.label.setText(translate(name))
 
 
 class Container(QWidget):

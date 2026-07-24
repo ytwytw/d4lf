@@ -1,6 +1,5 @@
 import logging
 from dataclasses import dataclass
-from functools import cache
 from typing import TYPE_CHECKING, Literal, Protocol
 
 from src.dataloader import Dataloader
@@ -19,7 +18,7 @@ SIGIL_RULE_TARGET_TYPES: tuple[SigilRuleTargetType, ...] = ("dungeon", "affix")
 
 class SigilRuleLike(Protocol):
     name: str
-    condition: Sequence[str]
+    condition: list[str]
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,7 +67,7 @@ class SigilRules:
 
     @classmethod
     def default(cls) -> SigilRules:
-        return _default_sigil_rules()
+        return cls()
 
     def targets(self, target_type: SigilRuleTargetType | None = None) -> tuple[SigilRuleTarget, ...]:
         if target_type is None:
@@ -141,8 +140,3 @@ class SigilRules:
             if affix_name in self._rarity_map:
                 return ItemRarity(self._rarity_map[affix_name].lower())
         return None
-
-
-@cache
-def _default_sigil_rules() -> SigilRules:
-    return SigilRules()

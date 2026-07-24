@@ -1,0 +1,1 @@
+"""Local diagnostic capture helpers."""

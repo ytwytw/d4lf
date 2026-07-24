@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 from pathlib import Path
 
 from src import __version__
@@ -8,10 +9,20 @@ EXE_NAME = "d4lf.exe"
 
 
 def build(release_dir: Path):
-    installer_cmd = (
-        f"pyinstaller --clean --onefile --icon=assets/logo.ico --distpath {release_dir} --paths src src\\main.py"
+    subprocess.run(
+        [
+            "pyinstaller",
+            "--clean",
+            "--onefile",
+            "--icon=assets/logo.ico",
+            "--distpath",
+            str(release_dir),
+            "--paths",
+            "src",
+            r"src\main.py",
+        ],
+        check=True,
     )
-    os.system(installer_cmd)
     (release_dir / "main.exe").rename(release_dir / EXE_NAME)
 
 
@@ -23,10 +34,13 @@ def clean_up():
 
 
 def copy_additional_resources(release_dir: Path):
-    (release_dir / "tts").mkdir()
+    shutil.copy("LICENSE.txt", release_dir)
+    shutil.copy("THIRD-PARTY-NOTICES.md", release_dir)
     shutil.copy("README.md", release_dir)
+    shutil.copy("README.en.md", release_dir)
     shutil.copy("tts/saapi64.dll", release_dir)
     shutil.copytree("assets", release_dir / "assets")
+    shutil.copytree("docs", release_dir / "docs")
     shutil.copy("tts/install_dll.cmd", release_dir)
 
 

@@ -1,7 +1,9 @@
 import os
+from types import SimpleNamespace
+from typing import cast
 
 import pytest
-from PyQt6.QtWidgets import QApplication, QDialog
+from PyQt6.QtWidgets import QApplication, QDialog, QWidget
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -14,7 +16,17 @@ from src.config.profile_models import (
     DynamicSealFilterModel,
     SealFilterModel,
 )
-from src.gui.profile_editor.charms_seals_group_tab import CharmGroupEditor, CharmsTab, SealGroupEditor, SealsTab
+from src.gui.models import catalog_display
+from src.gui.models import dialog as dialog_module
+from src.gui.models.dialog import SetPicker
+from src.gui.profile_editor.charms_seals_group_tab import (
+    BaseGroupEditor,
+    CharmGroupEditor,
+    CharmsTab,
+    SealGroupEditor,
+    SealsTab,
+    _set_summary,
+)
 from src.item.data.rarity import ItemRarity
 
 
@@ -27,14 +39,14 @@ def _create_mock_charm_model(name: str) -> DynamicCharmFilterModel:
     default_affix = AffixFilterModel(name="movement_speed", value=None)
     default_pool = AffixFilterCountModel(count=[default_affix], min_count=1, max_count=3)
     config = CharmFilterModel(affix_pool=[default_pool])
-    return DynamicCharmFilterModel(**{name: config})
+    return DynamicCharmFilterModel(root={name: config})
 
 
 def _create_mock_seal_model(name: str) -> DynamicSealFilterModel:
     default_affix = AffixFilterModel(name="all_stats", value=None)
     default_pool = AffixFilterCountModel(count=[default_affix], min_count=1, max_count=3)
     config = SealFilterModel(affix_pool=[default_pool])
-    return DynamicSealFilterModel(**{name: config})
+    return DynamicSealFilterModel(root={name: config})
 
 
 def test_charms_tab_close_tab_safely(qapp, mock_ini_loader):
@@ -45,7 +57,10 @@ def test_charms_tab_close_tab_safely(qapp, mock_ini_loader):
     config2 = CharmFilterModel(affix_pool=[default_pool], min_greater_affix_count=2)
 
     # Initial state with a grouped entry
-    charms_list = [DynamicCharmFilterModel(Charm1=config1, Charm2=config2), _create_mock_charm_model("Charm3")]
+    charms_list = [
+        DynamicCharmFilterModel(root={"Charm1": config1, "Charm2": config2}),
+        _create_mock_charm_model("Charm3"),
+    ]
 
     tab = CharmsTab(charms_list)
     tab.load()
@@ -73,7 +88,7 @@ def test_seals_tab_close_tab_safely(qapp, mock_ini_loader):
     config1 = SealFilterModel(affix_pool=[default_pool])
     config2 = SealFilterModel(affix_pool=[default_pool], min_greater_affix_count=2)
 
-    seals_list = [DynamicSealFilterModel(Seal1=config1, Seal2=config2), _create_mock_seal_model("Seal3")]
+    seals_list = [DynamicSealFilterModel(root={"Seal1": config1, "Seal2": config2}), _create_mock_seal_model("Seal3")]
 
     tab = SealsTab(seals_list)
     tab.load()
@@ -177,7 +192,32 @@ def test_charm_group_editor_rejects_multi_key_dynamic_model(qapp, mock_ini_loade
     default_pool = AffixFilterCountModel(count=[default_affix], min_count=1, max_count=3)
     config1 = CharmFilterModel(affix_pool=[default_pool])
     config2 = CharmFilterModel(affix_pool=[default_pool], min_greater_affix_count=2)
-    multi_key_model = DynamicCharmFilterModel(Charm1=config1, Charm2=config2)
+    multi_key_model = DynamicCharmFilterModel(root={"Charm1": config1, "Charm2": config2})
 
     with pytest.raises(ValueError, match="single-key"):
         CharmGroupEditor(multi_key_model)
+
+
+def test_set_picker_and_summaries_display_localized_names_but_keep_canonical_ids(qapp, mock_ini_loader, monkeypatch):
+    catalog = SimpleNamespace(
+        grammar=SimpleNamespace(locale="zhCN"),
+        set_list=["first_set", "second_set"],
+        set_dict={"first_set": "第一套装", "second_set": "第二套装"},
+        aspect_unique_dict={"seal_of_test": {"display_name": "测试暗金"}},
+        resolve_unique=lambda value: "seal_of_test" if value in {"seal_of_test", "测试暗金"} else None,
+    )
+    monkeypatch.setattr(catalog_display, "Dataloader", lambda: catalog)
+    monkeypatch.setattr(
+        catalog_display, "IniConfigLoader", lambda: SimpleNamespace(general=SimpleNamespace(language="zhCN"))
+    )
+    monkeypatch.setattr(dialog_module, "Dataloader", lambda: catalog)
+
+    parent = QWidget()
+    picker = SetPicker(parent, ["second_set"])
+    assert picker.checkboxes["first_set"].text() == "第一套装"
+    assert picker.checkboxes["second_set"].text() == "第二套装"
+    assert picker.get_selected_sets() == ["second_set"]
+    assert _set_summary(["first_set", "second_set"]) == "第一套装, 第二套装"
+
+    editor = SimpleNamespace(config=SimpleNamespace(unique_aspect=[SimpleNamespace(name="seal_of_test")]))
+    assert "测试暗金" in BaseGroupEditor._unique_aspects_title(cast("BaseGroupEditor[CharmFilterModel]", editor))

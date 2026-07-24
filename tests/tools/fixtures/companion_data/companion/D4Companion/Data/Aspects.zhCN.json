@@ -1,0 +1,71 @@
+[
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": "Offensive",
+        "Description": "通过 SNO 关联。",
+        "DescriptionClean": "通过 SNO 关联。",
+        "Dungeon": "",
+        "IdName": "Aspect_Chinese_Internal",
+        "IdNameList": [
+            "Aspect_Chinese_Internal"
+        ],
+        "IdSno": "400",
+        "IdSnoList": [
+            "400"
+        ],
+        "IsCodex": true,
+        "IsSeasonal": false,
+        "Localisation": "通过 SNO 关联。",
+        "MagicType": 1,
+        "Name": "共享威能"
+    },
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": "Utility",
+        "Description": "通过内部名称关联。",
+        "DescriptionClean": "通过内部名称关联。",
+        "Dungeon": "",
+        "IdName": "Aspect_Name_Join",
+        "IdNameList": [
+            "Aspect_Name_Join"
+        ],
+        "IdSno": "411",
+        "IdSnoList": [
+            "411"
+        ],
+        "IsCodex": true,
+        "IsSeasonal": false,
+        "Localisation": "通过内部名称关联。",
+        "MagicType": 1,
+        "Name": ""
+    },
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": "Utility",
+        "Description": "尚未翻译。",
+        "DescriptionClean": "尚未翻译。",
+        "Dungeon": "",
+        "IdName": "Aspect_Chinese_Placeholder",
+        "IdNameList": [
+            "Aspect_Chinese_Placeholder"
+        ],
+        "IdSno": "421",
+        "IdSnoList": [
+            "421"
+        ],
+        "IsCodex": false,
+        "IsSeasonal": false,
+        "Localisation": "尚未翻译。",
+        "MagicType": 1,
+        "Name": "Placeholder Aspect"
+    }
+]

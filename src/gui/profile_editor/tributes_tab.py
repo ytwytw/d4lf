@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QListWidgetItem,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
@@ -15,10 +16,10 @@ from PyQt6.QtWidgets import (
 
 from src.config.profile_models import TributeFilterModel
 from src.dataloader import Dataloader
+from src.gui.i18n import translate
 from src.gui.models.dialog import CreateTribute, RarityPicker, rarity_summary
 
 TRIBUTES_TABNAME = "Tributes"
-_TRIBUTE_PREFIX = "Tribute: "
 
 
 class TributesTab(QWidget):
@@ -77,7 +78,9 @@ class TributesTab(QWidget):
         self.list_widget.clear()
         for tribute_name in self.tributes.name:
             display_name = Dataloader().tribute_dict.get(tribute_name, tribute_name)
-            self.list_widget.addItem(f"{_TRIBUTE_PREFIX}{display_name}")
+            item = QListWidgetItem(translate("Tribute: {name}", name=display_name))
+            item.setData(Qt.ItemDataRole.UserRole, tribute_name)
+            self.list_widget.addItem(item)
 
     def _add_tribute(self):
         dialog = CreateTribute(self.tributes.name)
@@ -104,12 +107,11 @@ class TributesTab(QWidget):
             return
 
         for row in rows:
-            text = self.list_widget.item(row).text()
-            if text.startswith(_TRIBUTE_PREFIX):
-                selected_name = text.removeprefix(_TRIBUTE_PREFIX)
-                reverse_dict = {value: key for key, value in Dataloader().tribute_dict.items()}
-                normalized_name = reverse_dict.get(selected_name, selected_name)
-                if normalized_name in self.tributes.name:
-                    self.tributes.name.remove(normalized_name)
+            item = self.list_widget.item(row)
+            if item is None:
+                continue
+            tribute_name = item.data(Qt.ItemDataRole.UserRole)
+            if isinstance(tribute_name, str) and tribute_name in self.tributes.name:
+                self.tributes.name.remove(tribute_name)
 
         self._reload_list_widget()

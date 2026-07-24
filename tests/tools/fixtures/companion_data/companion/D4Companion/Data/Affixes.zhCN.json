@@ -1,0 +1,62 @@
+[
+    {
+        "AffixAttributes": [
+            {
+                "Localisation": "+[{VALUE}] 伤害",
+                "LocalisationAttributeFormulaValue": "0",
+                "LocalisationId": "Damage",
+                "LocalisationParameter": 0
+            }
+        ],
+        "AffixType": 0,
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": 0,
+        "ClassRestriction": "",
+        "Description": "+# 伤害",
+        "DescriptionClean": "伤害",
+        "Flags": 1,
+        "IdName": "Affix_Damage_Legacy",
+        "IdNameList": [
+            "Affix_Damage_Legacy"
+        ],
+        "IdSno": "102",
+        "IdSnoList": [
+            "102"
+        ],
+        "IsTemperingAvailable": false,
+        "MagicType": 0
+    },
+    {
+        "AffixAttributes": [
+            {
+                "Localisation": "+[{VALUE}] 护甲",
+                "LocalisationAttributeFormulaValue": "0",
+                "LocalisationId": "Armor",
+                "LocalisationParameter": 0
+            }
+        ],
+        "AffixType": 0,
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": 0,
+        "ClassRestriction": "",
+        "Description": "+# 护甲",
+        "DescriptionClean": "护甲",
+        "Flags": 1,
+        "IdName": "Affix_Armor_ZhOnly",
+        "IdNameList": [
+            "Affix_Armor_ZhOnly"
+        ],
+        "IdSno": "300",
+        "IdSnoList": [
+            "300"
+        ],
+        "IsTemperingAvailable": false,
+        "MagicType": 0
+    }
+]

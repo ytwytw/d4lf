@@ -1,3 +1,5 @@
+from typing import Protocol, runtime_checkable
+
 from PyQt6.QtCore import QSettings, QSignalBlocker, Qt, QTimer
 from PyQt6.QtGui import QDoubleValidator, QIntValidator
 from PyQt6.QtWidgets import (
@@ -34,7 +36,16 @@ from src.config.profile_models import (
     SealFilterModel,
 )
 from src.dataloader import Dataloader
+from src.gui.i18n import translate
 from src.gui.importer.gui_common import MAX_POWER
+from src.gui.models.catalog_display import (
+    catalog_group_label,
+    current_catalog,
+    item_type_display_name,
+    resolve_unique_canonical,
+    set_display_name,
+    unique_display_name,
+)
 from src.gui.models.collapsible_widget import Container
 from src.gui.models.dialog import (
     CreateItem,
@@ -54,12 +65,31 @@ AFFIXES_TABNAME = "Affixes"
 AFFIX_VALUE_MODE = "Value"
 AFFIX_PERCENT_MODE = "Min %"
 UNIQUE_ASPECTS_TITLE = "Unique Aspects"
+NO_SET_SELECTED = "(No Set Selected)"
+
+
+def _configure_mode_combo(combo: QComboBox, current_mode: str) -> None:
+    combo.setProperty("translate_items", True)  # noqa: FBT003
+    for mode in (AFFIX_VALUE_MODE, AFFIX_PERCENT_MODE):
+        combo.addItem(translate(mode), mode)
+    combo.setCurrentIndex(combo.findData(current_mode))
+
+
+def _mode_value(combo: QComboBox) -> str:
+    return str(combo.currentData() or combo.currentText())
+
+
+@runtime_checkable
+class GreaterCountParent(Protocol):
+    def update_greater_count_label(self) -> None: ...
+
+    def sync_min_greater_from_checkboxes(self) -> None: ...
 
 
 def _item_type_summary(item_types: list[ItemType]) -> str:
     if not item_types:
-        return "All item types"
-    return ", ".join(item_type.value for item_type in item_types)
+        return translate("All item types")
+    return ", ".join(item_type_display_name(item_type) for item_type in item_types)
 
 
 def _affix_dict_for_widget(widget: QWidget) -> dict[str, str]:
@@ -113,9 +143,13 @@ class ItemTypePicker(QDialog):
 
         layout = QVBoxLayout(self)
         picker_layout = QHBoxLayout()
-        picker_layout.addWidget(self._create_item_type_group("Weapons", weapon_item_types, selected_item_type_set))
         picker_layout.addWidget(
-            self._create_item_type_group("Non-weapons", non_weapon_item_types, selected_item_type_set)
+            self._create_item_type_group(catalog_group_label("Weapons"), weapon_item_types, selected_item_type_set)
+        )
+        picker_layout.addWidget(
+            self._create_item_type_group(
+                catalog_group_label("Non-weapons"), non_weapon_item_types, selected_item_type_set
+            )
         )
         layout.addLayout(picker_layout)
 
@@ -125,7 +159,8 @@ class ItemTypePicker(QDialog):
 
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         clear_button = button_box.addButton("Clear", QDialogButtonBox.ButtonRole.ResetRole)
-        clear_button.clicked.connect(self.clear_selection)
+        if clear_button is not None:
+            clear_button.clicked.connect(self.clear_selection)
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
@@ -143,7 +178,7 @@ class ItemTypePicker(QDialog):
         content_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         for item_type in item_types:
-            checkbox = QCheckBox(item_type.value)
+            checkbox = QCheckBox(item_type_display_name(item_type))
             checkbox.setChecked(item_type in selected_item_types)
             self.checkboxes[item_type] = checkbox
             content_layout.addWidget(checkbox)
@@ -356,8 +391,10 @@ class AffixGroupEditor(QWidget):
         self.content_layout.addWidget(self.unique_aspect_container)
 
     def _unique_aspects_title(self):
-        aspect_names = ", ".join(unique_aspect.name for unique_aspect in self.config.unique_aspect) or "None"
-        return f"{UNIQUE_ASPECTS_TITLE} - {aspect_names}"
+        aspect_names = ", ".join(
+            unique_display_name(unique_aspect.name) for unique_aspect in self.config.unique_aspect
+        ) or translate("None")
+        return translate("Unique Aspects - {names}", names=aspect_names)
 
     def refresh_unique_aspects_title(self):
         self.unique_aspect_container.header.set_name(self._unique_aspects_title())
@@ -381,7 +418,7 @@ class AffixGroupEditor(QWidget):
 
     def add_unique_aspect(self):
         existing_names = {unique_aspect.name for unique_aspect in self.config.unique_aspect}
-        for aspect_name in Dataloader().aspect_unique_dict:
+        for aspect_name in current_catalog().aspect_unique_dict:
             if aspect_name in existing_names:
                 continue
             new_unique_aspect = AspectUniqueFilterModel(name=aspect_name, value=None)
@@ -458,8 +495,11 @@ class AffixGroupEditor(QWidget):
             to_delete_list = []
             for i in range(layout_widget.count()):
                 item = layout_widget.itemAt(i)
-                if item and item.widget() is not None and item.widget().header.name in to_delete:
-                    to_delete_list.append((item.widget(), i))
+                if item is None:
+                    continue
+                widget = item.widget()
+                if isinstance(widget, Container) and widget.header.name in to_delete:
+                    to_delete_list.append((widget, i))
             to_delete_list.reverse()
             for widget, index in to_delete_list:
                 widget.setParent(None)
@@ -472,11 +512,22 @@ class AffixGroupEditor(QWidget):
     def reorganize_pool(self, layout_widget: QVBoxLayout):
         for i in range(layout_widget.count()):
             item = layout_widget.itemAt(i)
-            if item and item.widget() is not None:
-                item.widget().header.set_name(f"Count {i}")
+            if item is None:
+                continue
+            widget = item.widget()
+            if isinstance(widget, Container):
+                widget.header.set_name(f"Count {i}")
 
     def refresh_item_type_summary(self):
         self.item_type_line_edit.setText(_item_type_summary(self.config.item_type))
+
+    def refresh_catalog_labels(self) -> None:
+        self.refresh_item_type_summary()
+        self.refresh_unique_aspects_title()
+        for widget in self.findChildren(UniqueAspectWidget):
+            widget.refresh_catalog_labels()
+        for widget in self.findChildren(AffixWidget):
+            widget.refresh_catalog_labels()
 
     def edit_item_types(self):
         item_type_picker = ItemTypePicker(self, self.item_types, self.config.item_type)
@@ -545,10 +596,16 @@ class AffixGroupEditor(QWidget):
 
         # Inherents do not participate in Greater Affix auto-sync or bulk Min % updates.
         for i in range(self.affix_pool_layout.count()):
-            container = self.affix_pool_layout.itemAt(i).widget()
-            if container is None or not hasattr(container, "content_widget"):
+            item = self.affix_pool_layout.itemAt(i)
+            if item is None:
                 continue
-            pool_item = container.content_widget.layout().itemAt(0)
+            container = item.widget()
+            if not isinstance(container, Container):
+                continue
+            pool_layout = container.content_widget.layout()
+            if pool_layout is None:
+                continue
+            pool_item = pool_layout.itemAt(0)
             if pool_item is None:
                 continue
             pool_widget = pool_item.widget()
@@ -575,11 +632,11 @@ class AffixGroupEditor(QWidget):
     def update_greater_count_label(self):
         count = self.count_want_greater_affixes()
         if count == 0:
-            self.greater_count_label.setText("(no greater affixes marked)")
+            self.greater_count_label.setText(translate("(no greater affixes marked)"))
         elif count == 1:
-            self.greater_count_label.setText("(1 greater affix marked)")
+            self.greater_count_label.setText(translate("(1 greater affix marked)"))
         else:
-            self.greater_count_label.setText(f"({count} greater affixes marked)")
+            self.greater_count_label.setText(translate("({count} greater affixes marked)", count=count))
 
     def convert_all_to_min_percent_of_affix(self, percent: int):
         for affix_widget in self.iter_affix_widgets():
@@ -601,8 +658,8 @@ class UniqueAspectWidget(QWidget):
         self.create_aspect_name_combobox()
         self.create_mode_combobox()
         self.create_value_input()
-        self.mode_combo.currentTextChanged.connect(self.update_mode)
-        self.update_mode(self.mode_combo.currentText())
+        self.mode_combo.currentIndexChanged.connect(self.update_mode)
+        self.update_mode()
 
         layout.addWidget(self.name_combo)
         layout.addWidget(self.mode_combo)
@@ -615,25 +672,35 @@ class UniqueAspectWidget(QWidget):
         self.name_combo = IgnoreScrollWheelComboBox()
         self.name_combo.setEditable(True)
         self.name_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
-        self.name_combo.completer().setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
-        self.name_combo.completer().setFilterMode(Qt.MatchFlag.MatchContains)
-        aspects = (
-            self.allowed_aspects if self.allowed_aspects is not None else sorted(Dataloader().aspect_unique_dict.keys())
-        )
-        self.name_combo.addItems(aspects)
+        name_completer = self.name_combo.completer()
+        if name_completer is not None:
+            name_completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+            name_completer.setFilterMode(Qt.MatchFlag.MatchContains)
         self.name_combo.setMaximumWidth(600)
-        if self.unique_aspect.name in Dataloader().aspect_unique_dict:
-            self.name_combo.setCurrentText(self.unique_aspect.name)
+        self.refresh_catalog_labels()
         self.name_combo.currentTextChanged.connect(self.update_name)
+
+    def refresh_catalog_labels(self) -> None:
+        aspects = (
+            list(self.allowed_aspects)
+            if self.allowed_aspects is not None
+            else list(current_catalog().aspect_unique_dict)
+        )
+        if self.unique_aspect.name and self.unique_aspect.name not in aspects:
+            aspects.append(self.unique_aspect.name)
+        with QSignalBlocker(self.name_combo):
+            self.name_combo.clear()
+            for canonical in sorted(aspects, key=unique_display_name):
+                self.name_combo.addItem(unique_display_name(canonical), canonical)
+            current_index = self.name_combo.findData(self.unique_aspect.name)
+            if current_index >= 0:
+                self.name_combo.setCurrentIndex(current_index)
 
     def create_mode_combobox(self):
         self.mode_combo = IgnoreScrollWheelComboBox()
         self.mode_combo.setFixedSize(100, self.mode_combo.sizeHint().height())
-        self.mode_combo.addItems([AFFIX_VALUE_MODE, AFFIX_PERCENT_MODE])
-        if self.unique_aspect.min_percent_of_aspect:
-            self.mode_combo.setCurrentText(AFFIX_PERCENT_MODE)
-        else:
-            self.mode_combo.setCurrentText(AFFIX_VALUE_MODE)
+        current_mode = AFFIX_PERCENT_MODE if self.unique_aspect.min_percent_of_aspect else AFFIX_VALUE_MODE
+        _configure_mode_combo(self.mode_combo, current_mode)
 
     def create_value_input(self):
         self.value_edit = QLineEdit()
@@ -641,9 +708,21 @@ class UniqueAspectWidget(QWidget):
         self.value_edit.textChanged.connect(self.update_value)
 
     def update_name(self, current_text=None):
-        aspect_name = current_text or self.name_combo.currentText()
-        aspect_name = aspect_name.strip()
-        if aspect_name not in Dataloader().aspect_unique_dict:
+        current_value = current_text or self.name_combo.currentText()
+        current_index = self.name_combo.currentIndex()
+        current_data = self.name_combo.currentData()
+        aspect_name = (
+            current_data
+            if (
+                isinstance(current_data, str)
+                and current_index >= 0
+                and current_value == self.name_combo.itemText(current_index)
+            )
+            else resolve_unique_canonical(current_value.strip())
+        )
+        if aspect_name is None or aspect_name not in current_catalog().aspect_unique_dict:
+            return
+        if self.allowed_aspects is not None and aspect_name not in self.allowed_aspects:
             return
         self.unique_aspect.name = aspect_name
         self.update_parent_unique_aspects_title()
@@ -657,7 +736,7 @@ class UniqueAspectWidget(QWidget):
             parent = parent.parent()
 
     def refresh_value_input(self):
-        if self.mode_combo.currentText() == AFFIX_PERCENT_MODE:
+        if _mode_value(self.mode_combo) == AFFIX_PERCENT_MODE:
             self.value_edit.setPlaceholderText("Percent (0-100)")
             self.value_edit.setValidator(QIntValidator(0, 100, self.value_edit))
             display_value = (
@@ -671,8 +750,8 @@ class UniqueAspectWidget(QWidget):
         with QSignalBlocker(self.value_edit):
             self.value_edit.setText(display_value)
 
-    def update_mode(self, current_text=None):
-        mode = current_text or self.mode_combo.currentText()
+    def update_mode(self, _index=None):
+        mode = _mode_value(self.mode_combo)
         if mode == AFFIX_PERCENT_MODE:
             self.unique_aspect.value = None
         else:
@@ -680,7 +759,7 @@ class UniqueAspectWidget(QWidget):
         self.refresh_value_input()
 
     def update_value(self, value):
-        if self.mode_combo.currentText() == AFFIX_PERCENT_MODE:
+        if _mode_value(self.mode_combo) == AFFIX_PERCENT_MODE:
             try:
                 percent = int(value) if value else 0
             except ValueError:
@@ -853,8 +932,8 @@ class AffixWidget(QWidget):
         self.create_greater_checkbox()
         self.create_mode_combobox()
         self.create_value_input()
-        self.mode_combo.currentTextChanged.connect(self.update_mode)
-        self.update_mode(self.mode_combo.currentText())
+        self.mode_combo.currentIndexChanged.connect(self.update_mode)
+        self.update_mode()
 
         layout.addWidget(self.name_combo)
         layout.addWidget(self.greater_checkbox)
@@ -869,15 +948,25 @@ class AffixWidget(QWidget):
     def create_set_name_combobox(self):
         self.set_combo = IgnoreScrollWheelComboBox()
         self.set_combo.setFixedWidth(200)
-        self.set_combo.addItems(["(No Set Selected)"] + sorted(Dataloader().set_list))
-
-        curr_set, _ = get_set_and_base_for_key(self.affix.name, Dataloader().set_list)
-        if curr_set:
-            self.set_combo.setCurrentText(curr_set)
-        else:
-            self.set_combo.setCurrentText("(No Set Selected)")
-
+        self.set_combo.setProperty("translate_items", True)  # noqa: FBT003
+        self._populate_set_combo()
         self.set_combo.currentTextChanged.connect(self.on_set_changed)
+
+    def _populate_set_combo(self) -> None:
+        catalog = current_catalog()
+        curr_set, _ = get_set_and_base_for_key(self.affix.name, catalog.set_list)
+        selected_set = curr_set or NO_SET_SELECTED
+        with QSignalBlocker(self.set_combo):
+            self.set_combo.clear()
+            self.set_combo.addItem(translate(NO_SET_SELECTED), NO_SET_SELECTED)
+            for set_name in sorted(catalog.set_list, key=set_display_name):
+                self.set_combo.addItem(set_display_name(set_name), set_name)
+            self.set_combo.setCurrentIndex(self.set_combo.findData(selected_set))
+
+    def refresh_catalog_labels(self) -> None:
+        if hasattr(self, "set_combo"):
+            self._populate_set_combo()
+        self.populate_affix_combo()
 
     def on_set_changed(self):
         self.populate_affix_combo()
@@ -893,13 +982,14 @@ class AffixWidget(QWidget):
         affix_dict = self.get_affix_dict()
 
         if is_seal:
-            selected_set = self.set_combo.currentText()
-            target_set = None if selected_set == "(No Set Selected)" else selected_set
+            selected_set = str(self.set_combo.currentData() or self.set_combo.currentText())
+            target_set = None if selected_set == NO_SET_SELECTED else selected_set
 
-            self.filtered_affixes = get_affixes_for_set(affix_dict, Dataloader().set_list, target_set)
+            catalog = current_catalog()
+            self.filtered_affixes = get_affixes_for_set(affix_dict, catalog.set_list, target_set)
             self.name_combo.addItems(sorted(self.filtered_affixes.values()))
 
-            curr_set, _ = get_set_and_base_for_key(self.affix.name, Dataloader().set_list)
+            curr_set, _ = get_set_and_base_for_key(self.affix.name, catalog.set_list)
             if curr_set == target_set and self.affix.name in self.filtered_affixes:
                 self.name_combo.setCurrentText(self.filtered_affixes[self.affix.name])
             else:
@@ -919,8 +1009,10 @@ class AffixWidget(QWidget):
         self.name_combo = IgnoreScrollWheelComboBox()
         self.name_combo.setEditable(True)
         self.name_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
-        self.name_combo.completer().setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
-        self.name_combo.completer().setFilterMode(Qt.MatchFlag.MatchContains)
+        name_completer = self.name_combo.completer()
+        if name_completer is not None:
+            name_completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+            name_completer.setFilterMode(Qt.MatchFlag.MatchContains)
         self.name_combo.setMaximumWidth(600)
         self.populate_affix_combo()
         # currentIndexChanged misses some editable-combobox keyboard flows.
@@ -942,7 +1034,7 @@ class AffixWidget(QWidget):
     def update_parent_count_label(self):
         parent = self.parent()
         while parent:
-            if hasattr(parent, "update_greater_count_label") and hasattr(parent, "sync_min_greater_from_checkboxes"):
+            if isinstance(parent, GreaterCountParent):
                 parent.update_greater_count_label()
                 parent.sync_min_greater_from_checkboxes()
                 break
@@ -951,11 +1043,8 @@ class AffixWidget(QWidget):
     def create_mode_combobox(self):
         self.mode_combo = IgnoreScrollWheelComboBox()
         self.mode_combo.setFixedSize(100, self.mode_combo.sizeHint().height())
-        self.mode_combo.addItems([AFFIX_VALUE_MODE, AFFIX_PERCENT_MODE])
-        if self.affix.min_percent_of_affix:
-            self.mode_combo.setCurrentText(AFFIX_PERCENT_MODE)
-        else:
-            self.mode_combo.setCurrentText(AFFIX_VALUE_MODE)
+        current_mode = AFFIX_PERCENT_MODE if self.affix.min_percent_of_affix else AFFIX_VALUE_MODE
+        _configure_mode_combo(self.mode_combo, current_mode)
 
     def create_value_input(self):
         self.value_edit = QLineEdit()
@@ -976,7 +1065,7 @@ class AffixWidget(QWidget):
             self.affix.name = reverse_dict.get(text, "")
 
     def refresh_value_input(self):
-        if self.mode_combo.currentText() == AFFIX_PERCENT_MODE:
+        if _mode_value(self.mode_combo) == AFFIX_PERCENT_MODE:
             self.value_edit.setPlaceholderText("Percent (0-100)")
             self.value_edit.setValidator(QIntValidator(0, 100, self.value_edit))
             display_value = "" if self.affix.min_percent_of_affix == 0 else str(self.affix.min_percent_of_affix)
@@ -988,8 +1077,8 @@ class AffixWidget(QWidget):
         with QSignalBlocker(self.value_edit):
             self.value_edit.setText(display_value)
 
-    def update_mode(self, current_text=None):
-        mode = current_text or self.mode_combo.currentText()
+    def update_mode(self, _index=None):
+        mode = _mode_value(self.mode_combo)
         if mode == AFFIX_PERCENT_MODE:
             self.affix.value = None
         else:
@@ -997,7 +1086,7 @@ class AffixWidget(QWidget):
         self.refresh_value_input()
 
     def update_value(self, value):
-        if self.mode_combo.currentText() == AFFIX_PERCENT_MODE:
+        if _mode_value(self.mode_combo) == AFFIX_PERCENT_MODE:
             try:
                 percent = int(value) if value else 0
             except ValueError:
@@ -1020,9 +1109,9 @@ class AffixWidget(QWidget):
         self.affix.want_greater = self.greater_checkbox.isChecked()
 
     def set_min_percent(self, percent: int, convert_mode: bool = False):
-        if convert_mode and self.mode_combo.currentText() != AFFIX_PERCENT_MODE:
-            self.mode_combo.setCurrentText(AFFIX_PERCENT_MODE)
-        if self.mode_combo.currentText() != AFFIX_PERCENT_MODE:
+        if convert_mode and _mode_value(self.mode_combo) != AFFIX_PERCENT_MODE:
+            self.mode_combo.setCurrentIndex(self.mode_combo.findData(AFFIX_PERCENT_MODE))
+        if _mode_value(self.mode_combo) != AFFIX_PERCENT_MODE:
             return
         self.value_edit.setText(str(percent))
 
@@ -1037,6 +1126,14 @@ class AffixesTab(QWidget):
         if not self.loaded:
             self.setup_ui()
             self.loaded = True
+
+    def refresh_catalog_labels(self) -> None:
+        if not self.loaded:
+            return
+        for index in range(self.tab_widget.count()):
+            editor = self.tab_widget.widget(index)
+            if isinstance(editor, AffixGroupEditor):
+                editor.refresh_catalog_labels()
 
     def setup_ui(self):
         """Populate the grid layout with existing groups."""
@@ -1123,8 +1220,8 @@ class AffixesTab(QWidget):
         if dialog.exec() == QDialog.DialogCode.Accepted:
             min_greater_affix = dialog.get_value()
             for i in range(self.tab_widget.count()):
-                tab: AffixGroupEditor = self.tab_widget.widget(i)
-                if tab.auto_sync_checkbox.isChecked():
+                tab = self.tab_widget.widget(i)
+                if not isinstance(tab, AffixGroupEditor) or tab.auto_sync_checkbox.isChecked():
                     continue
                 tab.min_greater.setValue(min_greater_affix)
                 tab.update_min_greater_affix()
@@ -1141,6 +1238,8 @@ class AffixesTab(QWidget):
         if dialog.exec() == QDialog.DialogCode.Accepted:
             min_power = dialog.get_value()
             for i in range(self.tab_widget.count()):
-                tab: AffixGroupEditor = self.tab_widget.widget(i)
+                tab = self.tab_widget.widget(i)
+                if not isinstance(tab, AffixGroupEditor):
+                    continue
                 tab.min_power.setValue(min_power)
                 tab.update_min_power()

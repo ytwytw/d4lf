@@ -1,6 +1,7 @@
 import sys
 import threading
 import tkinter as tk
+from typing import override
 
 import pytest
 
@@ -18,8 +19,13 @@ class _FakeOverlay(tk.Toplevel):
     def __init__(self, parent):
         super().__init__(parent)
         self.withdraw()
+        self.retranslated = False
         _FakeOverlay.instances_created += 1
 
+    def retranslate(self):
+        self.retranslated = True
+
+    @override
     def destroy(self):
         super().destroy()
         with info_overlay._OVERLAY_LOCK:
@@ -68,3 +74,26 @@ def test_concurrent_open_requests_only_create_one_instance():
 def test_request_close_without_an_open_overlay_is_a_no_op():
     info_overlay.request_close()
     assert not info_overlay.is_info_overlay_open()
+
+
+def test_request_retranslate_refreshes_the_live_overlay():
+    info_overlay.open_boss_timer_overlay()
+    overlay = info_overlay._OVERLAY_INSTANCE
+    assert isinstance(overlay, _FakeOverlay)
+
+    info_overlay.request_retranslate()
+
+    assert overlay.retranslated is True
+
+
+def test_short_durations_localize_without_using_global_templates(monkeypatch):
+    active_locale = {"value": info_overlay.i18n.EN_US}
+    monkeypatch.setattr(info_overlay.i18n, "current_locale", lambda: active_locale["value"])
+
+    assert info_overlay._format_duration(minutes=3, seconds=5) == "3m 5s"
+    assert info_overlay._localize_duration_text("3分 5秒") == "3m 5s"
+
+    active_locale["value"] = info_overlay.i18n.ZH_CN
+
+    assert info_overlay._format_duration(hours=1, minutes=2) == "1小时 2分钟"
+    assert info_overlay._localize_duration_text("1h 2m") == "1小时 2分钟"

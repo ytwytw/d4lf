@@ -8,16 +8,17 @@ from src.item.data.item_type import ItemType
 
 
 def _config(**overrides) -> ImportConfig:
-    defaults = {
-        "url": "https://example.invalid/build",
-        "import_aspect_upgrades": True,
-        "add_to_profiles": False,
-        "import_greater_affixes": False,
-        "require_greater_affixes": False,
-        "export_paragon": False,
-    }
-    defaults.update(overrides)
-    return ImportConfig(**defaults)
+    config = ImportConfig(
+        url="https://example.invalid/build",
+        import_aspect_upgrades=True,
+        add_to_profiles=False,
+        import_greater_affixes=False,
+        require_greater_affixes=False,
+        export_paragon=False,
+    )
+    for key, value in overrides.items():
+        setattr(config, key, value)
+    return config
 
 
 def _item_filter(item_type: ItemType) -> ItemFilterModel:
@@ -183,3 +184,21 @@ def test_run_deduplicates_identical_affix_filters(mock_ini_loader, mocker) -> No
 
     assert len(saved["profile"].affixes) == 1
     assert next(iter(saved["profile"].affixes[0].root)) == "Ring(x2)"
+
+
+def test_run_skips_variant_when_no_supported_content_is_resolved(mock_ini_loader, mocker, caplog) -> None:
+    Dataloader()
+    profile_store = mocker.Mock()
+    mocker.patch("src.gui.importer.import_pipeline.ProfileDocumentStore.default", return_value=profile_store)
+
+    with caplog.at_level("WARNING"):
+        saved_file_names = ImportPipeline.run(
+            StaticBuildGuideAdapter(
+                url="https://example.invalid/build", build=_build(variants=[Variant(name="Unsupported")])
+            ),
+            _config(),
+        )
+
+    assert saved_file_names == []
+    profile_store.save_new.assert_not_called()
+    assert "Skipping empty" in caplog.text

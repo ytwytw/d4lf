@@ -2,9 +2,10 @@ import logging
 import sys
 import threading
 from pathlib import Path
+from typing import override
 
 from PyQt6.QtCore import QObject, QPoint, QRunnable, QSettings, QSize, Qt, QThreadPool, pyqtSignal, pyqtSlot
-from PyQt6.QtGui import QAction, QIcon
+from PyQt6.QtGui import QAction, QCloseEvent, QIcon
 from PyQt6.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
@@ -19,6 +20,8 @@ from PyQt6.QtWidgets import (
 )
 
 from src.config.loader import IniConfigLoader
+from src.gui.i18n import translate, translate_widget_tree
+from src.gui.importer.d2core import import_d2core
 from src.gui.importer.d4builds import import_d4builds
 from src.gui.importer.importer_config import DEFAULT_FILENAME_PARTS, FilenamePart, ImportConfig
 from src.gui.importer.infinitybuilds import import_infinitybuilds
@@ -44,6 +47,7 @@ IMPORTER_WINDOW_LOGGERS = (
     "src.gui.importer.mobalytics",
     "src.gui.importer.maxroll",
     "src.gui.importer.d4builds",
+    "src.gui.importer.d2core",
     "src.gui.importer.infinitybuilds",
     "src.gui.importer.gui_common",
     "src.gui.importer.import_pipeline",
@@ -52,7 +56,7 @@ IMPORTER_WINDOW_LOGGERS = (
 
 
 class ImporterWindow(QMainWindow):
-    """Standalone window for Maxroll/D4Builds/Mobalytics/InfinityBuilds importer."""
+    """Standalone window for the supported build-site importers."""
 
     import_completed = pyqtSignal()
 
@@ -68,7 +72,7 @@ class ImporterWindow(QMainWindow):
         self.settings = QSettings("d4lf", "ImporterWindow")
         self.is_generating = False
 
-        self.setWindowTitle("Profile Importer - Maxroll / D4Builds / Mobalytics / InfinityBuilds")
+        self.setWindowTitle(translate("Profile Importer - D2Core / Maxroll / D4Builds / Mobalytics / InfinityBuilds"))
         self.setMinimumSize(700, 600)
 
         # Restore window geometry
@@ -85,12 +89,12 @@ class ImporterWindow(QMainWindow):
 
         # URL input
         url_hbox = QHBoxLayout()
-        url_label = QLabel("URL:")
+        url_label = QLabel(translate("URL:"))
         url_hbox.addWidget(url_label)
         self.input_box = QLineEdit()
         self.input_box.textChanged.connect(self._update_generate_button_state)
         url_hbox.addWidget(self.input_box)
-        self.generate_button = QPushButton("Generate")
+        self.generate_button = QPushButton(translate("Generate"))
         self.generate_button.setEnabled(False)
         self.generate_button.clicked.connect(self._generate_button_click)
         url_hbox.addWidget(self.generate_button)
@@ -98,17 +102,17 @@ class ImporterWindow(QMainWindow):
 
         # Filename input
         filename_hbox = QHBoxLayout()
-        filename_label = QLabel("Custom file name:")
+        filename_label = QLabel(translate("Custom file name:"))
         filename_hbox.addWidget(filename_label)
         self.filename_input_box = QLineEdit()
-        self.filename_input_box.setPlaceholderText("Leave blank for default filename")
+        self.filename_input_box.setPlaceholderText(translate("Leave blank for default filename"))
         self.filename_input_box.textChanged.connect(self._update_generate_button_state)
         filename_hbox.addWidget(self.filename_input_box)
-        self.filename_parts_button = QPushButton("Default filename includes...")
+        self.filename_parts_button = QPushButton(translate("Default filename includes..."))
         self.filename_parts_menu = QMenu(self.filename_parts_button)
         self.filename_part_actions: dict[FilenamePart, QAction] = {}
         for filename_part in DEFAULT_FILENAME_PARTS:
-            action = QAction(FILENAME_PART_LABELS[filename_part], self.filename_parts_menu)
+            action = QAction(translate(FILENAME_PART_LABELS[filename_part]), self.filename_parts_menu)
             action.setCheckable(True)
             action.setChecked(self._filename_part_setting(filename_part))
             action.toggled.connect(
@@ -189,7 +193,7 @@ class ImporterWindow(QMainWindow):
         layout.addLayout(checkbox_grid)
 
         # Log output
-        log_label = QLabel("Log:")
+        log_label = QLabel(translate("Log:"))
         layout.addWidget(log_label)
 
         self.log_output = QTextEdit()
@@ -206,36 +210,48 @@ class ImporterWindow(QMainWindow):
             logger.addHandler(self.log_handler)
 
         # Instructions
-        instructions_label = QLabel("Instructions:")
+        instructions_label = QLabel(translate("Instructions:"))
         layout.addWidget(instructions_label)
 
-        instructions_text = QTextEdit()
-        instructions_text.setText(
-            "You can link either the build guide or a direct link to the specific planner.\n\n"
+        self.instructions_text = QTextEdit()
+        self.instructions_text.setText(self._instructions_content())
+        self.instructions_text.setReadOnly(True)
+        self.instructions_text.setMaximumHeight(200)
+        self.instructions_text.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        layout.addWidget(self.instructions_text)
+
+    @staticmethod
+    def _instructions_content() -> str:
+        return (
+            translate("You can link either the build guide or a direct link to the specific planner.") + "\n\n"
             "https://maxroll.gg/d4/build-guides/tornado-druid-guide\n"
-            "or\n"
+            f"{translate('or')}\n"
             "https://maxroll.gg/d4/planner/cm6pf0xa#5\n"
-            "or\n"
+            f"{translate('or')}\n"
             "https://d4builds.gg/builds/ef414fbd-81cd-49d1-9c8d-4938b278e2ee\n"
-            "or\n"
+            f"{translate('or')}\n"
             "https://mobalytics.gg/diablo-4/builds/barbarian/bash\n"
-            "or\n"
-            "https://infinitybuilds.gg/en/builds/barbarian-fL8P6vVSqI\n\n"
-            f"It will create a file based on the label of the build in the planner in: {IniConfigLoader().user_dir / 'profiles'}\n\n"
-            "For d4builds you need to specify your browser in the Settings window"
+            f"{translate('or')}\n"
+            "https://infinitybuilds.gg/en/builds/barbarian-fL8P6vVSqI\n"
+            f"{translate('or')}\n"
+            "https://www.d2core.com/d4/planner?bd=20eK\n\n"
+            + translate(
+                "It will create a file based on the label of the build in the planner in: {path}",
+                path=IniConfigLoader().user_dir / "profiles",
+            )
+            + "\n\n"
+            + translate("For D4Builds and D2Core you need to specify your browser in the Settings window")
         )
-        instructions_text.setReadOnly(True)
-        instructions_text.setMaximumHeight(200)
-        instructions_text.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        layout.addWidget(instructions_text)
 
     def _generate_checkbox(self, name, settings_value, desc, default_value="true") -> CheckmarkCheckBox:
         def save_setting_change(settings_value, value):
             self.settings.setValue(settings_value, value)
 
-        checkbox = CheckmarkCheckBox(name)
+        checkbox = CheckmarkCheckBox(translate(name))
+        checkbox.setProperty("i18n_name", name)
+        checkbox.setProperty("i18n_description", desc)
         checkbox.setChecked(self.settings.value(settings_value, default_value) == "true")
-        checkbox.setToolTip(desc)
+        checkbox.setToolTip(translate(desc))
         checkbox.stateChanged.connect(lambda: save_setting_change(settings_value, checkbox.isChecked()))
         return checkbox
 
@@ -252,9 +268,9 @@ class ImporterWindow(QMainWindow):
         return tuple(part for part in DEFAULT_FILENAME_PARTS if self.filename_part_actions[part].isChecked())
 
     def _update_filename_parts_summary(self):
-        selected_labels = [FILENAME_PART_LABELS[part] for part in self._selected_filename_parts()]
-        summary = "_".join(selected_labels) + ".yaml" if selected_labels else "none"
-        self.filename_parts_summary_label.setText(f"Default file name: {summary}")
+        selected_labels = [translate(FILENAME_PART_LABELS[part]) for part in self._selected_filename_parts()]
+        summary = "_".join(selected_labels) + ".yaml" if selected_labels else translate("none")
+        self.filename_parts_summary_label.setText(translate("Default file name: {summary}", summary=summary))
 
     def _update_generate_button_state(self):
         if self.is_generating:
@@ -264,9 +280,9 @@ class ImporterWindow(QMainWindow):
         filename_ready = bool(self.filename_input_box.text().strip()) or bool(self._selected_filename_parts())
         self.generate_button.setEnabled(url_ready and filename_ready)
         if url_ready and not filename_ready:
-            self.generate_button.setToolTip(GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP)
+            self.generate_button.setToolTip(translate(GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP))
         elif not url_ready:
-            self.generate_button.setToolTip("Enter a URL to generate a profile.")
+            self.generate_button.setToolTip(translate("Enter a URL to generate a profile."))
         else:
             self.generate_button.setToolTip("")
 
@@ -298,29 +314,51 @@ class ImporterWindow(QMainWindow):
             worker = _Worker(name="d4builds", fn=import_d4builds, config=importer_config)
         elif "infinitybuilds" in url:
             worker = _Worker(name="infinitybuilds", fn=import_infinitybuilds, config=importer_config)
+        elif "d2core" in url:
+            worker = _Worker(name="d2core", fn=import_d2core, config=importer_config)
         else:
             worker = _Worker(name="mobalytics", fn=import_mobalytics, config=importer_config)
 
         worker.signals.finished.connect(self._on_worker_finished)
         self.is_generating = True
         self.generate_button.setEnabled(False)
-        self.generate_button.setText("Generating...")
+        self.generate_button.setText(translate("Generating..."))
         THREADPOOL.start(worker)
 
     def _on_worker_finished(self):
         """Handle worker completion."""
         self.is_generating = False
-        self.generate_button.setText("Generate")
+        self.generate_button.setText(translate("Generate"))
         self.filename_input_box.clear()
         self._update_generate_button_state()
         self.import_completed.emit()
+
+    def retranslate_ui(self) -> None:
+        translate_widget_tree(self)
+        for part, action in self.filename_part_actions.items():
+            action.setText(translate(FILENAME_PART_LABELS[part]))
+        for checkbox in (
+            self.import_aspect_upgrades_checkbox,
+            self.add_to_profiles_checkbox,
+            self.import_gas_checkbox,
+            self.require_all_gas_checkbox,
+            self.export_paragon_checkbox,
+        ):
+            checkbox.setText(translate(str(checkbox.property("i18n_name"))))
+            checkbox.setToolTip(translate(str(checkbox.property("i18n_description"))))
+        self.instructions_text.setText(self._instructions_content())
+        self._update_filename_parts_summary()
+        self._update_generate_button_state()
 
     @staticmethod
     def _filename_part_setting_key(filename_part: FilenamePart) -> str:
         return f"filename_part_{filename_part.value}"
 
-    def closeEvent(self, event):  # noqa: N802
+    @override
+    def closeEvent(self, a0: QCloseEvent | None):
         """Cleanup when window closes and save geometry."""
+        # PyQt exposes `a0` as a keyword, so the override must retain that public name.
+        event = a0
         # Save window geometry
         if not self.isMaximized():
             self.settings.setValue("size", self.size())
@@ -330,7 +368,8 @@ class ImporterWindow(QMainWindow):
         # Cleanup log handler
         for name in IMPORTER_WINDOW_LOGGERS:
             logging.getLogger(name).removeHandler(self.log_handler)
-        event.accept()
+        if event is not None:
+            event.accept()
 
 
 class _GuiLogHandler(logging.Handler):
@@ -345,7 +384,8 @@ class _GuiLogHandler(logging.Handler):
         # Set log level to DEBUG to capture everything
         self.setLevel(logging.DEBUG)
 
-    def emit(self, record):
+    @override
+    def emit(self, record: logging.LogRecord):
         """Called from any thread - emit signal instead of direct GUI update."""
         log_entry = self.format(record)
         try:
@@ -379,6 +419,7 @@ class _Worker(QRunnable):
         self.signals = _WorkerSignals()
 
     @pyqtSlot()
+    @override
     def run(self):
         threading.current_thread().name = self.name
         self.fn(*self.args, **self.kwargs)

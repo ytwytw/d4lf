@@ -3,8 +3,6 @@ import logging
 import re
 from typing import TYPE_CHECKING
 
-import rapidfuzz
-
 import src.tts
 from src import TP
 from src.dataloader import Dataloader
@@ -29,8 +27,7 @@ from src.item.descr.texture import find_affix_bullets, find_aspect_bullet, find_
 from src.item.models import Item
 from src.item.sigil_rules import SigilRules
 from src.scripts import correct_name
-from src.tts import ItemIdentifiers
-from src.utils.window import screenshot
+from src.tts_framing import ItemIdentifiers
 
 if TYPE_CHECKING:
     import numpy as np
@@ -51,9 +48,12 @@ _ASPECT_RE = re.compile(
     r" - (?P<maxvalue>[0-9]+[.]?[0-9]*)]"
 )
 
-_FOR_SECONDS_RE = re.compile(r"for (?P<forsecondsvalue>\d+(?:\.\d+)?) Seconds")
+_DURATION_RES = (
+    re.compile(r"for (?P<durationvalue>\d+(?:\.\d+)?) seconds?", re.IGNORECASE),
+    re.compile(r"\u6301\u7eed\s*(?P<durationvalue>\d+(?:\.\d+)?)\s*\u79d2"),
+)
 
-_REPLACE_COMPARE_RE = re.compile(r"\(.*\)")
+_REPLACE_COMPARE_RE = re.compile(r"[\(（].*?[\)）]")
 
 _AFFIX_REPLACEMENTS = ["%", "+", ",", "[+]", "[x]", "per 5 Seconds"]
 _AFFIX_STOP_MARKERS = (
@@ -69,7 +69,82 @@ _AFFIX_STOP_MARKERS = (
     "left mouse button",
     "action button",
 )
+_SEASONAL_AFFIX_MARKERS = ("rampage:", "feast:", "hunger:")
 LOGGER = logging.getLogger(__name__)
+
+
+def _is_affix_stop_marker(line: str) -> bool:
+    normalized = line.lower()
+    return any(normalized.startswith(marker) for marker in _AFFIX_STOP_MARKERS) or Dataloader().grammar.startswith(
+        "affix_stop", line
+    )
+
+
+def _resolve_affix_name(text: str, item_type: ItemType | None = None, *, exact: bool = False) -> str | None:
+    display_text = keep_letters_and_spaces(_REPLACE_COMPARE_RE.sub("", text).strip())
+    catalog = Dataloader()
+    resolver = catalog.resolve_affix_exact if exact else catalog.resolve_affix
+    return resolver(
+        display_text,
+        include_charms=item_type == ItemType.Charm,
+        include_seals=item_type == ItemType.HoradricSeal,
+        range_precision=_affix_range_precision(text),
+    )
+
+
+def _affix_range_precision(text: str) -> str | None:
+    """Preserve tooltip range formatting when localized labels alone are ambiguous."""
+    precisions: set[str] = set()
+    for match in _AFFIX_RE.finditer(_clean_value_text(text)):
+        groups = match.groupdict()
+        for suffix in ("1", "2"):
+            minimum = groups.get(f"minvalue{suffix}")
+            maximum = groups.get(f"maxvalue{suffix}")
+            if minimum is None or maximum is None:
+                continue
+            if "." in minimum and "." in maximum:
+                precisions.add("decimal")
+            elif "." not in minimum and "." not in maximum:
+                precisions.add("integer")
+    return next(iter(precisions)) if len(precisions) == 1 else None
+
+
+def _legendary_affix_count(tts_section: list[str], start: int, inherent_num: int) -> int | None:
+    """Use the aspect boundary so current-season four- and five-affix items both parse correctly."""
+    grammar = Dataloader().grammar
+    for index in range(start, len(tts_section)):
+        if grammar.startswith("imprinted", tts_section[index]):
+            return index - start - inherent_num
+
+    for index in range(start, len(tts_section)):
+        if not _is_affix_stop_marker(tts_section[index]):
+            continue
+        if tts_section[index].lower().startswith(_SEASONAL_AFFIX_MARKERS):
+            continue
+        affixes_num = index - start - inherent_num - 1
+        return affixes_num if affixes_num >= 0 else None
+    return None
+
+
+def _resolved_affix_count(
+    tts_section: list[str], item: Item, start: int, inherent_num: int, default_affix_num: int
+) -> int | None:
+    """Count consecutive known affixes without consuming aspect or filled-socket lines."""
+    resolved_count = 0
+    for line in tts_section[start:]:
+        is_seasonal_affix = item.seasonal_attribute == SeasonalAttribute.bloodied and line.lower().startswith(
+            _SEASONAL_AFFIX_MARKERS
+        )
+        if _is_affix_stop_marker(line) and not is_seasonal_affix:
+            break
+        if not _resolve_affix_name(line, item.item_type, exact=True):
+            break
+        resolved_count += 1
+
+    minimum_count = inherent_num + default_affix_num
+    if resolved_count >= minimum_count:
+        return resolved_count - inherent_num
+    return None
 
 
 # Returns a tuple with the number of affixes.  It's in the format (inherent_num, affixes_num)
@@ -90,11 +165,23 @@ def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[i
     elif item.rarity == ItemRarity.Unique:
         affixes_num = 2 if is_seal_or_charm(item.item_type) else 4
 
-    if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic]:
+    if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic] and item.name is not None:
         # Uniques can have variable amounts of inherents.
-        unique_inherents = Dataloader().aspect_unique_dict.get(item.name)["num_inherents"]
+        unique_inherents = (Dataloader().aspect_unique_dict.get(item.name) or {}).get("num_inherents")
         if unique_inherents is not None:
             inherent_num = unique_inherents
+
+        dynamic_unique_count = _resolved_affix_count(tts_section, item, start, inherent_num, affixes_num)
+        if dynamic_unique_count is not None:
+            affixes_num = dynamic_unique_count
+
+    dynamic_count = None
+    if item.rarity == ItemRarity.Legendary and not is_seal_or_charm(item.item_type):
+        dynamic_count = _resolved_affix_count(tts_section, item, start, inherent_num, affixes_num)
+        if dynamic_count is None:
+            dynamic_count = _legendary_affix_count(tts_section, start, inherent_num)
+        if dynamic_count is not None:
+            affixes_num = dynamic_count
 
     # Rares have either 3 or 4 affixes so we have to do special handling to figure out where exactly the affixes end.
     # This will also grab up slotted gems but we really don't have much choice
@@ -102,16 +189,16 @@ def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[i
     if (
         item.rarity in [ItemRarity.Magic, ItemRarity.Rare]
         and next_line_index < len(tts_section)
-        and not any(tts_section[next_line_index].lower().startswith(x) for x in _AFFIX_STOP_MARKERS)
+        and not _is_affix_stop_marker(tts_section[next_line_index])
     ):
         affixes_num = affixes_num + 1
-    elif item.rarity == ItemRarity.Legendary and tts_section[start + inherent_num + affixes_num - 1].lower().startswith(
-        "imprinted:"
+    elif item.rarity == ItemRarity.Legendary and Dataloader().grammar.startswith(
+        "imprinted", tts_section[start + inherent_num + affixes_num - 1]
     ):
         # Additionally, if someone imprinted a 3 affix rare we'd think it was a legendary so we need to catch those here
         affixes_num = 3
 
-    if item.seasonal_attribute == SeasonalAttribute.bloodied:
+    if item.seasonal_attribute == SeasonalAttribute.bloodied and dynamic_count is None:
         affixes_num = affixes_num + 1
 
     return inherent_num, affixes_num
@@ -130,7 +217,7 @@ def _compute_affix_layout(tts_section: list[str], item: Item) -> tuple[int, int,
 
 
 def _assign_aspect_or_set(item: Item, aspect_or_set_text: str | None) -> None:
-    if not aspect_or_set_text:
+    if not aspect_or_set_text or item.name is None:
         return
     if item.rarity == ItemRarity.Mythic:
         item.aspect = Aspect(name=item.name, text=aspect_or_set_text, value=find_number(aspect_or_set_text))
@@ -190,7 +277,7 @@ def _add_affixes_from_tts_mixed(
                 affix.type = AffixType.rerolled
             elif affix_bullets[i].name.startswith("tempered_affix"):
                 affix.type = AffixType.tempered
-            else:
+            elif affix.type != AffixType.greater:
                 affix.type = AffixType.normal
             item.affixes.append(affix)
 
@@ -205,8 +292,6 @@ def _raise_index_error(affixes, affix_bullets, item, img_item_descr: np.ndarray)
     LOGGER.error(f"Affixes ({len(affixes)}): {affixes}")
     LOGGER.error(f"Affix Bullets ({len(affix_bullets)}): {affix_bullets}")
     LOGGER.error(f"Item: {item}")
-    LOGGER.error("Placed screenshot of item in screenshot folder. Screenshot will start with 'not_enough_bullets'")
-    screenshot("not_enough_bullets", img=img_item_descr)
 
     msg = (
         "Found more affixes than we found bullets to represent those affixes. "
@@ -219,14 +304,15 @@ def _raise_index_error(affixes, affix_bullets, item, img_item_descr: np.ndarray)
 
 
 def _add_sigil_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
+    catalog = Dataloader()
     name_index = (
         3 if item.item_type == ItemType.EscalationSigil or item.seasonal_attribute == SeasonalAttribute.bloodied else 2
     )
-    name = tts_section[name_index].split(" in ")[0]
-    item.name = correct_name(name)
+    raw_name = tts_section[name_index]
+    item.name = catalog.resolve_sigil(raw_name, "dungeons") or correct_name(raw_name.split(" in ")[0]) or ""
 
-    start = next((i for i, s in enumerate(tts_section) if "AFFIXES" in s), None)
-    if start:
+    start = next((i for i, line in enumerate(tts_section) if catalog.grammar.contains("affixes_header", line)), None)
+    if start is not None:
         first_affix_index = start + 1
         second_affix_index = start + 3
     else:
@@ -238,7 +324,9 @@ def _add_sigil_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
     affixes = [tts_section[first_affix_index], tts_section[second_affix_index]]
 
     for affix_name in affixes:
-        affix = Affix(name=correct_name(keep_letters_and_spaces(affix_name)))
+        cleaned_name = keep_letters_and_spaces(affix_name)
+        canonical_name = catalog.resolve_sigil(cleaned_name, "major", "minor", "positive")
+        affix = Affix(name=canonical_name or correct_name(cleaned_name) or "")
         affix.type = AffixType.normal
         item.affixes.append(affix)
 
@@ -249,23 +337,26 @@ def _add_sigil_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
 
 def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
     item = Item(original_name=tts_item[0])
-    if tts_item[1].endswith(ItemIdentifiers.COMPASS.value):
+    grammar = Dataloader().grammar
+    if grammar.identifier_matches(ItemIdentifiers.COMPASS.name, tts_item[1], mode="endswith"):
         return _update_item_object(item, rarity=ItemRarity.Common, item_type=ItemType.Compass)
-    if ItemIdentifiers.NIGHTMARE_SIGIL.value.upper() in tts_item[0].upper():
+    if grammar.identifier_matches(ItemIdentifiers.NIGHTMARE_SIGIL.name, tts_item[0]):
         if "Nightmare Sigil is used" in tts_item[0]:  # This is actually the crafting screen
             return None
-        if "bloodied" in tts_item[1].lower():
+        if grammar.contains("bloodied", tts_item[1]):
             item.seasonal_attribute = SeasonalAttribute.bloodied
         return _update_item_object(item, item_type=ItemType.Sigil)
-    if tts_item[0].startswith(ItemIdentifiers.ESCALATION_SIGIL.value):
+    if grammar.identifier_matches(ItemIdentifiers.ESCALATION_SIGIL.name, tts_item[0], mode="startswith"):
         return _update_item_object(item, item_type=ItemType.EscalationSigil)
-    if ItemIdentifiers.TRIBUTE.value in tts_item[0]:
+    if grammar.identifier_matches(ItemIdentifiers.TRIBUTE.name, tts_item[0]):
         item.item_type = ItemType.Tribute
-        search_string_split = tts_item[1].split(" ")
-        item.rarity = _get_item_rarity(search_string_split[0])
-        item.name = correct_name(" ".join(search_string_split[1:]))
+        item.rarity = _get_item_rarity(tts_item[1])
+        if item.rarity is None:
+            return None
+        tribute_text = grammar.strip_rarity(tts_item[1], item.rarity.name)
+        item.name = Dataloader().resolve_tribute(tribute_text) or correct_name(tribute_text)
         return item
-    if tts_item[0].startswith(ItemIdentifiers.WHISPERING_KEY.value):
+    if grammar.identifier_matches(ItemIdentifiers.WHISPERING_KEY.name, tts_item[0], mode="startswith"):
         return _update_item_object(item, item_type=ItemType.Consumable)
     if any(tts_item[1].lower().endswith(x) for x in ["summoning"]):
         return _update_item_object(item, item_type=ItemType.Material)
@@ -282,7 +373,7 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
         search_string_split = tts_item[1].lower().split(" rune of ")
         item.rarity = _get_item_rarity(search_string_split[0])
         return item
-    if any("Cost : " in value or "Cost:" in value for value in tts_item):
+    if any(grammar.contains("cost", value) for value in tts_item):
         item.is_in_shop = True
     if any(tts_item[1].lower().endswith(x) for x in ["cache"]):
         item.item_type = ItemType.Cache
@@ -298,30 +389,35 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
     if is_consumable(item.item_type):
         search_string_split = tts_item[1].split(" ")
         item.rarity = _get_item_rarity(search_string_split[0])
+        if item.rarity is None:
+            return None
         return item
-    if "bloodied" in tts_item[1].lower():
+    if grammar.contains("bloodied", tts_item[1]):
         item.seasonal_attribute = SeasonalAttribute.bloodied
-    item.is_ancestral = "ancestral" in tts_item[1].lower()
+    item.is_ancestral = grammar.contains("ancestral", tts_item[1])
 
     # Check lines 3-6 instead of just line 4 (handles variable name lengths and gives us flexibility to search for the sanctified marker)
-    if any("sanctified" in tts_item[i].lower() for i in range(3, min(7, len(tts_item)))):
+    if any(grammar.contains("sanctified", tts_item[i]) for i in range(3, min(7, len(tts_item)))):
         item.seasonal_attribute = SeasonalAttribute.sanctified
 
-    search_string = tts_item[1].lower().replace("ancestral", "").replace("bloodied", "").strip()
+    search_string = grammar.strip_terms(tts_item[1], "ancestral", "bloodied")
     search_string = _REPLACE_COMPARE_RE.sub("", search_string).strip()
-    search_string_split = search_string.split(" ")
-    item.rarity = _get_item_rarity(search_string_split[0])
-    starting_item_type_index = 1
-    if item.rarity == ItemRarity.Mythic:
-        starting_item_type_index = 2
-    elif item.rarity == ItemRarity.Common:
-        starting_item_type_index = 0
-    item.item_type = _get_item_type(" ".join(search_string_split[starting_item_type_index:]))
-    item.name = correct_name(tts_item[0])
+    item.rarity = _get_item_rarity(search_string)
+    if item.rarity is None:
+        return None
+    item.item_type = _get_item_type(grammar.strip_rarity(search_string, item.rarity.name))
+    if item.item_type is None:
+        return None
+    raw_name = correct_name(tts_item[0]) or ""
+    item.name = (
+        Dataloader().resolve_unique(tts_item[0]) or raw_name
+        if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic]
+        else raw_name
+    )
     if item.name in Dataloader().bad_tts_uniques:
         item.name = Dataloader().bad_tts_uniques[item.name]
     for line in tts_item:
-        if "item power" in line.lower():
+        if grammar.contains("item_power", line):
             item_power = find_number(line)
             if item_power is None:
                 return None
@@ -343,9 +439,9 @@ def _get_affix_starting_location_from_tts_section(tts_section: list[str], item: 
     start = 0
 
     if is_weapon(item.item_type):
-        start = _get_index_of_armor_dps_or_all_resist(tts_section, "damage per second") + 2
+        start = _get_index_of_armor_dps_or_all_resist(tts_section, "damage_per_second") + 2
     elif is_jewelry(item.item_type):
-        start = _get_index_of_armor_dps_or_all_resist(tts_section, "all resist")
+        start = _get_index_of_armor_dps_or_all_resist(tts_section, "all_resist")
     elif item.item_type == ItemType.Shield:
         start = _get_index_of_armor_dps_or_all_resist(tts_section, "armor") + 2
     elif is_armor(item.item_type):
@@ -354,7 +450,7 @@ def _get_affix_starting_location_from_tts_section(tts_section: list[str], item: 
         index = _get_index_after_item_power(tts_section, fallback=4)
         index = _skip_armory_loadout_banner(tts_section, index)
         # Seals also report their max charm slot count right after Item Power; skip past it to reach the affixes.
-        if index < len(tts_section) and "charm slot" in tts_section[index].lower():
+        if index < len(tts_section) and Dataloader().grammar.contains("charm_slot", tts_section[index]):
             index += 1
         return index
     elif item.item_type == ItemType.Charm:
@@ -367,14 +463,15 @@ def _get_affix_starting_location_from_tts_section(tts_section: list[str], item: 
 
 def _skip_armory_loadout_banner(tts_section: list[str], index: int) -> int:
     """Equipped seals/charms may show an "Armory Loadout" banner right after Item Power; skip past it."""
-    if index < len(tts_section) and "armory loadout" in tts_section[index].lower():
+    if index < len(tts_section) and Dataloader().grammar.contains("armory_loadout", tts_section[index]):
         return index + 1
     return index
 
 
 def _get_index_of_armor_dps_or_all_resist(tts_section: list[str], indicator: str) -> int:
     for i, line in enumerate(tts_section):
-        if indicator == keep_letters_and_spaces(_REPLACE_COMPARE_RE.sub("", line.lower())).strip():
+        clean_line = keep_letters_and_spaces(_REPLACE_COMPARE_RE.sub("", line.lower())).strip()
+        if Dataloader().grammar.equals(indicator, clean_line):
             return i
 
     return 0
@@ -388,7 +485,7 @@ def _get_index_after_item_power(tts_section: list[str], fallback: int) -> int:
     when Diablo inserts extra lines above it, e.g. an Armory loadout banner on equipped charms/seals.
     """
     for i, line in enumerate(tts_section):
-        if "item power" in line.lower():
+        if Dataloader().grammar.contains("item_power", line):
             return i + 1
 
     LOGGER.warning(f"Could not find 'Item Power' line in TTS section, falling back to index {fallback}: {tts_section}")
@@ -416,10 +513,10 @@ def _get_aspect_or_set_from_tts_section(tts_section: list[str], item: Item, star
 
 
 def _get_set_from_text(set_text: str) -> str | None:
-    set_name = correct_name(set_text)
+    set_name = Dataloader().resolve_set(set_text) or correct_name(set_text) or ""
     if set_name in Dataloader().bad_tts_uniques:
         set_name = Dataloader().bad_tts_uniques[set_name]
-    if set_name in Dataloader().set_list:
+    if set_name in Dataloader().set_dict:
         return set_name
     return None
 
@@ -429,29 +526,30 @@ def _get_affix_from_text(text: str, item_type: ItemType | None = None) -> Affix:
 
     text = _clean_value_text(text)
 
-    # A semi-hacky way to handle "for X Seconds", which will get read as a GA if we do nothing
-    for_seconds_matches = _FOR_SECONDS_RE.findall(text)
-    for for_seconds_match in for_seconds_matches:
-        for x in [f"for {for_seconds_match} Seconds", f"[{for_seconds_match}]"]:
-            text = text.replace(x, "")
+    # Duration values trail the actual stat in both supported locales and otherwise look like a GA.
+    for duration_re in _DURATION_RES:
+        for duration_match in tuple(duration_re.finditer(text)):
+            duration_value = duration_match.group("durationvalue")
+            text = text.replace(duration_match.group(0), "")
+            text = text.replace(f"[{duration_value}]", "")
 
-    matched_groups = {}
+    matched_groups: dict[str, str] = {}
     for match in _AFFIX_RE.finditer(text):
-        matched_groups = {name: value for name, value in match.groupdict().items() if value is not None}
+        matched_groups = {name: value for name, value in match.groupdict().items() if isinstance(value, str)}
     if not matched_groups and _has_numbers(text):
         msg = f"Could not match affix text: {text}"
         raise Exception(msg)
     for x in ["minvalue1", "minvalue2"]:
-        if matched_groups.get(x) is not None:
-            result.min_value = float(matched_groups[x])
+        if (value := matched_groups.get(x)) is not None:
+            result.min_value = float(value)
             break
     for x in ["maxvalue1", "maxvalue2"]:
-        if matched_groups.get(x) is not None:
-            result.max_value = float(matched_groups[x])
+        if (value := matched_groups.get(x)) is not None:
+            result.max_value = float(value)
             break
     for x in ["affixvalue1", "affixvalue2", "affixvalue3", "affixvalue4"]:
-        if matched_groups.get(x) is not None:
-            result.value = float(matched_groups[x])
+        if (value := matched_groups.get(x)) is not None:
+            result.value = float(value)
             break
     for x in ["greateraffix1", "greateraffix2"]:
         if matched_groups.get(x) is not None:
@@ -459,24 +557,18 @@ def _get_affix_from_text(text: str, item_type: ItemType | None = None) -> Affix:
             if x == "greateraffix2":
                 result.value = float(matched_groups[x])
             break
-    if matched_groups.get("onlyvalue") is not None:
-        result.min_value = float(matched_groups.get("onlyvalue"))
-        result.max_value = float(matched_groups.get("onlyvalue"))
+    if (only_value := matched_groups.get("onlyvalue")) is not None:
+        result.min_value = float(only_value)
+        result.max_value = float(only_value)
 
     if "Charm Slot" in text:  # These are never greater even if they look like they are greater
         result.type = AffixType.normal
 
-    affix_dict = Dataloader().affix_dict
-    if item_type == ItemType.HoradricSeal:
-        affix_dict = Dataloader().affix_dict | Dataloader().seal_affix_dict
-    elif item_type == ItemType.Charm:
-        affix_dict = Dataloader().affix_dict | Dataloader().charm_affix_dict
-
-    result.name = rapidfuzz.process.extractOne(
-        keep_letters_and_spaces(_REPLACE_COMPARE_RE.sub("", result.text).strip()),
-        list(affix_dict),
-        scorer=rapidfuzz.distance.Levenshtein.distance,
-    )[0]
+    resolved_name = _resolve_affix_name(result.text, item_type)
+    if resolved_name is None:
+        message = f"Could not resolve affix name: {result.text}"
+        raise ValueError(message)
+    result.name = resolved_name
     return result
 
 
@@ -515,20 +607,25 @@ def _get_aspect_from_text(text: str, name: str) -> Aspect:
 
 # For legendary aspects
 def _get_aspect_from_name(text: str, name: str) -> Aspect | None:
-    for aspect_name in Dataloader().aspect_list:
-        if aspect_name in name:
-            return Aspect(text=text, name=aspect_name)
+    if aspect_name := Dataloader().resolve_aspect(name):
+        return Aspect(text=text, name=aspect_name)
 
     LOGGER.warning(f"Could not find an aspect representing {name} in our data.")
     return None
 
 
 def _get_item_rarity(data: str) -> ItemRarity | None:
-    return next((rar for rar in ItemRarity if rar.value == data.lower()), ItemRarity.Common)
+    rarity_name = Dataloader().grammar.rarity_name(data)
+    if isinstance(rarity_name, str) and rarity_name in ItemRarity.__members__:
+        return ItemRarity[rarity_name]
+    return ItemRarity.Common if Dataloader().resolve_item_type(data) else None
 
 
 def _get_item_type(data: str):
-    return next((it for it in ItemType if it.value == data.lower()), None)
+    item_type_name = Dataloader().resolve_item_type(data)
+    return (
+        ItemType[item_type_name] if isinstance(item_type_name, str) and item_type_name in ItemType.__members__ else None
+    )
 
 
 def _is_codex_upgrade(tts_section: list[str]) -> bool:
@@ -609,42 +706,40 @@ class _TtsItemParser:
 
     def _parse_with_locations(self) -> Item | None:
         item = self._current_item
-        if (sep_short_match := find_seperator_short(self.img_item_descr)) is None:
+        img_item_descr = self.img_item_descr
+        if img_item_descr is None:
+            LOGGER.warning("Cannot attach item locations without an item description image.")
+            return None
+        if (sep_short_match := find_seperator_short(img_item_descr)) is None:
             LOGGER.warning("Could not detect item_seperator_short.")
-            screenshot("failed_seperator_short", img=self.img_item_descr)
             return None
 
-        TP.submit(find_seperators_long, self.img_item_descr, sep_short_match)
+        TP.submit(find_seperators_long, img_item_descr, sep_short_match)
         aspect_bullet_future = (
-            TP.submit(find_aspect_bullet, self.img_item_descr, sep_short_match)
+            TP.submit(find_aspect_bullet, img_item_descr, sep_short_match)
             if item.rarity in [ItemRarity.Legendary, ItemRarity.Unique, ItemRarity.Mythic]
             else None
         )
-        affix_bullets = find_affix_bullets(self.img_item_descr, sep_short_match)
-
         self._validate_unique()
         self._add_upgrade_flags()
         aspect_bullet = aspect_bullet_future.result() if aspect_bullet_future else None
+        _, _, expected_affixes, _ = _compute_affix_layout(self.tts_section, item)
+        affix_bullets = find_affix_bullets(
+            img_item_descr, sep_short_match, aspect_bullet=aspect_bullet, expected_count=len(expected_affixes)
+        )
         return _add_affixes_from_tts_mixed(
-            self.tts_section, item, affix_bullets, self.img_item_descr, aspect_bullet=aspect_bullet
+            self.tts_section, item, affix_bullets, img_item_descr, aspect_bullet=aspect_bullet
         )
 
     def _validate_unique(self) -> None:
         item = self._current_item
-        if item.rarity == ItemRarity.Unique and item.name not in Dataloader().aspect_unique_dict:
+        if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic] and item.name not in Dataloader().aspect_unique_dict:
             msg = (
                 f"Unrecognized unique {item.name}. This most likely means the name of it reported "
                 f"from Diablo 4 is wrong. Please report a bug with this message."
             )
             if not self.attach_locations:
                 msg = f"{msg} TTS: {self.tts_section}"
-            raise IndexError(msg)
-        if (
-            not self.attach_locations
-            and item.rarity == ItemRarity.Mythic
-            and item.name not in Dataloader().aspect_unique_dict
-        ):
-            msg = f"Unrecognized unique {item.name}. This most likely means the name of it reported from Diablo 4 is wrong. Please report a bug with this message. TTS: {self.tts_section}"
             raise IndexError(msg)
 
     def _add_upgrade_flags(self) -> None:
@@ -653,7 +748,7 @@ class _TtsItemParser:
         item.cosmetic_upgrade = _is_cosmetic_upgrade(self.tts_section)
 
 
-def read_descr_mixed(img_item_descr: np.ndarray) -> Item | None:
+def read_descr_mixed(img_item_descr: np.ndarray | None) -> Item | None:
     tts_section = copy.copy(src.tts.LAST_ITEM)
     return _TtsItemParser(tts_section, img_item_descr=img_item_descr, attach_locations=True).parse()
 

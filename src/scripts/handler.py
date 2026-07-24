@@ -2,7 +2,7 @@ import logging
 import threading
 import time
 from contextlib import suppress
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -21,13 +21,19 @@ from src.config.reload_groups import (
     VISION_MODE_TYPE_SETTING_KEY,
     has_any_changed,
 )
-from src.config.settings_models import ItemRefreshType, VisionModeType
+from src.config.settings_models import ItemRefreshType, VisionModeType, is_read_only_language
 from src.dataloader import Dataloader
 from src.loot_mover import move_items_to_inventory, move_items_to_stash
 from src.paragon_overlay import request_close as request_close_paragon
 from src.paragon_overlay import run_paragon_overlay
-from src.scripts.common import SETUP_INSTRUCTIONS_URL
-from src.scripts.info_overlay import InventoryExpTracker, is_info_overlay_open, open_boss_timer_overlay, request_close
+from src.scripts.common import SETUP_INSTRUCTIONS_URL, game_input_allowed
+from src.scripts.info_overlay import (
+    InventoryExpTracker,
+    is_info_overlay_open,
+    open_boss_timer_overlay,
+    request_close,
+    request_retranslate,
+)
 from src.scripts.info_overlay import set_busy_checker as set_info_busy_checker
 from src.ui.char_inventory import CharInventory
 from src.ui.stash import Stash
@@ -41,20 +47,28 @@ LOGGER = logging.getLogger(__name__)
 LOCK = threading.Lock()
 
 
+class VisionMode(Protocol):
+    def start(self) -> None: ...
+
+    def stop(self) -> None: ...
+
+    def running(self) -> bool: ...
+
+
 class ScriptHandler:
     def __init__(self):
-        self.loot_interaction_thread = None
+        self.loot_interaction_thread: threading.Thread | None = None
         self.paragon_overlay_thread: threading.Thread | None = None
-        self._info_overlay_last_toggle_time = 0
-        self.did_stop_scripts = False
-        self._vision_mode_was_running_before_overlay = False
-        self._hotkey_handles: list[Any] = []
+        self._info_overlay_last_toggle_time: float = 0
+        self.did_stop_scripts: bool = False
+        self._vision_mode_was_running_before_overlay: bool = False
+        self._hotkey_handles: list[int] = []
         self._runtime_config_lock = threading.RLock()
-        self._manual_restart_warning = False
+        self._manual_restart_warning: bool = False
         self._config = IniConfigLoader()
         self._win_spec = WindowSpec(self._config.advanced_options.process_name)
         self._language = self._config.general.language
-        self.vision_mode = self._create_vision_mode(self._config.general.vision_mode_type)
+        self.vision_mode: VisionMode = self._create_vision_mode(self._config.general.vision_mode_type)
 
         # Initialize Info Overlay hooks and subscriptions
         set_info_busy_checker(lambda: self.loot_interaction_thread is not None)
@@ -64,7 +78,7 @@ class ScriptHandler:
         if self._config.general.run_vision_mode_on_startup:
             self.run_vision_mode()
 
-    def _create_vision_mode(self, vision_mode_type: VisionModeType):
+    def _create_vision_mode(self, vision_mode_type: VisionModeType) -> VisionMode:
         if vision_mode_type == VisionModeType.fast:
             return src.scripts.vision_mode_fast.VisionModeFast()
         return src.scripts.vision_mode_with_highlighting.VisionModeWithHighlighting()
@@ -75,9 +89,12 @@ class ScriptHandler:
     def _on_config_changed(self, changed_keys: AbstractSet[str]) -> None:
         """Apply relevant settings after a config change event."""
         with self._runtime_config_lock:
-            if has_any_changed(changed_keys, HOTKEY_SETTING_KEYS):
+            language_changed = has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS)
+            if language_changed:
+                self.stop_active_game_input()
+            if has_any_changed(changed_keys, HOTKEY_SETTING_KEYS) or language_changed:
                 self._refresh_hotkeys(self._config)
-            if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
+            if language_changed:
                 self._refresh_language_assets(self._config)
             if VISION_MODE_TYPE_SETTING_KEY in changed_keys:
                 self._notify_manual_restart_required("vision mode changes")
@@ -98,6 +115,7 @@ class ScriptHandler:
             advanced_options.force_refresh_only,
             advanced_options.move_to_inv,
             advanced_options.move_to_chest,
+            config.general.language,
         )
 
     def _refresh_hotkeys(self, config: IniConfigLoader) -> None:
@@ -115,6 +133,7 @@ class ScriptHandler:
 
         Dataloader().load_data()
         self._language = config.general.language
+        request_retranslate()
         LOGGER.info("Reloaded language assets for %s", self._language)
 
     def _notify_manual_restart_required(self, reason: str) -> None:
@@ -129,7 +148,7 @@ class ScriptHandler:
         try:
             if self.paragon_overlay_thread is not None and self.paragon_overlay_thread.is_alive():
                 LOGGER.info("Closing Paragon overlay")
-                with suppress(Exception):  # type: ignore[attr-defined]
+                with suppress(Exception):
                     request_close_paragon()
                 self.paragon_overlay_thread.join(timeout=2)
                 # Vision mode is restored by the overlay thread cleanup.
@@ -214,22 +233,28 @@ class ScriptHandler:
         self._register_hotkey(advanced_options.exit_key, lambda: self._graceful_exit(), check_focus=False)
         self._register_hotkey(advanced_options.toggle_paragon_overlay, lambda: self.toggle_paragon_overlay())
         self._register_hotkey(advanced_options.info_overlay, lambda: self.toggle_info_overlay())
-        self._register_hotkey(config.char.inventory, lambda: InventoryExpTracker().on_inventory_open())
-        if not advanced_options.vision_mode_only:
-            self._register_hotkey(advanced_options.run_filter, lambda: self.filter_items())
-            self._register_hotkey(advanced_options.run_filter_drop, lambda: self.filter_items(no_match_action="drop"))
-            self._register_hotkey(
-                advanced_options.run_filter_force_refresh, lambda: self.filter_items(ItemRefreshType.force_with_filter)
-            )
-            self._register_hotkey(
-                advanced_options.force_refresh_only, lambda: self.filter_items(ItemRefreshType.force_without_filter)
-            )
-            self._register_hotkey(advanced_options.move_to_inv, lambda: self.move_items_to_inventory())
-            self._register_hotkey(advanced_options.move_to_chest, lambda: self.move_items_to_stash())
+        if not is_read_only_language(config.general.language):
+            self._register_hotkey(config.char.inventory, lambda: InventoryExpTracker().on_inventory_open())
+            if not advanced_options.vision_mode_only:
+                self._register_hotkey(advanced_options.run_filter, lambda: self.filter_items())
+                self._register_hotkey(
+                    advanced_options.run_filter_drop, lambda: self.filter_items(no_match_action="drop")
+                )
+                self._register_hotkey(
+                    advanced_options.run_filter_force_refresh,
+                    lambda: self.filter_items(ItemRefreshType.force_with_filter),
+                )
+                self._register_hotkey(
+                    advanced_options.force_refresh_only, lambda: self.filter_items(ItemRefreshType.force_without_filter)
+                )
+                self._register_hotkey(advanced_options.move_to_inv, lambda: self.move_items_to_inventory())
+                self._register_hotkey(advanced_options.move_to_chest, lambda: self.move_items_to_stash())
 
         self._current_hotkey_signature = self._hotkey_signature(config)
 
     def filter_items(self, force_refresh=ItemRefreshType.no_refresh, no_match_action: str = "junk"):
+        if not game_input_allowed("run loot filter"):
+            return
         if src.tts.CONNECTED:
             self._start_or_stop_loot_interaction_thread(run_loot_filter, (force_refresh, no_match_action))
         else:
@@ -241,20 +266,22 @@ class ScriptHandler:
             )
 
     def move_items_to_inventory(self):
+        if not game_input_allowed("move items to inventory"):
+            return
         self._start_or_stop_loot_interaction_thread(move_items_to_inventory)
 
     def move_items_to_stash(self):
+        if not game_input_allowed("move items to stash"):
+            return
         self._start_or_stop_loot_interaction_thread(move_items_to_stash)
 
     def _start_or_stop_loot_interaction_thread(self, loot_interaction_method: Callable[..., None], method_args=()):
+        if self.loot_interaction_thread is None and not game_input_allowed("start loot interaction"):
+            return
         if LOCK.acquire(blocking=False):
             try:
                 if self.loot_interaction_thread is not None:
-                    LOGGER.info("Stopping filter or move process")
-                    kill_thread(self.loot_interaction_thread)
-                    self.loot_interaction_thread = None
-                    if self.did_stop_scripts and not self.vision_mode.running():
-                        self.vision_mode.start()
+                    self._stop_active_game_input_locked()
                 else:
                     self.loot_interaction_thread = threading.Thread(
                         target=self._wrapper_run_loot_interaction_method,
@@ -267,8 +294,24 @@ class ScriptHandler:
         else:
             return
 
+    def _stop_active_game_input_locked(self) -> None:
+        if self.loot_interaction_thread is None:
+            return
+        LOGGER.info("Stopping filter or move process")
+        kill_thread(self.loot_interaction_thread)
+        self.loot_interaction_thread = None
+        if self.did_stop_scripts and not self.vision_mode.running():
+            self.vision_mode.start()
+
+    def stop_active_game_input(self) -> None:
+        """Stop an in-flight loot interaction before a runtime safety state changes."""
+        with LOCK:
+            self._stop_active_game_input_locked()
+
     def _wrapper_run_loot_interaction_method(self, loot_interaction_method: Callable[..., None], method_args=()):
         try:
+            if not game_input_allowed("run loot interaction"):
+                return
             # We will stop all scripts if they are currently running and restart them afterward if needed.
             self.did_stop_scripts = False
             if self.vision_mode.running():
@@ -296,6 +339,9 @@ class ScriptHandler:
 
 
 def run_loot_filter(force_refresh: ItemRefreshType = ItemRefreshType.no_refresh, no_match_action: str = "junk"):
+    if not game_input_allowed("run loot filter"):
+        return
+
     LOGGER.info("Running loot filter")
     Mouse.move(*Cam().abs_window_to_monitor((0, 0)))
     check_items = src.scripts.loot_filter_tts.check_items
@@ -305,17 +351,25 @@ def run_loot_filter(force_refresh: ItemRefreshType = ItemRefreshType.no_refresh,
 
     if stash.is_open():
         for i in IniConfigLoader().general.check_chest_tabs:
+            if not game_input_allowed("switch stash tab"):
+                return
             stash.switch_to_tab(i)
             time.sleep(0.3)
             check_items(stash, force_refresh, stash_is_open=True, no_match_action="junk")
+        if not game_input_allowed("move pointer away"):
+            return
         Mouse.move(*Cam().abs_window_to_monitor((0, 0)))
         time.sleep(0.3)
         check_items(inv, force_refresh, stash_is_open=True, no_match_action="junk")
     else:
+        if not game_input_allowed("open inventory"):
+            return
         if not inv.open():
             screenshot("inventory_not_open", img=Cam().grab())
             LOGGER.error("Inventory did not open up")
             return
         check_items(inv, force_refresh, no_match_action=no_match_action)
+    if not game_input_allowed("move pointer away"):
+        return
     Mouse.move(*Cam().abs_window_to_monitor((0, 0)))
     LOGGER.info("Loot filter done")

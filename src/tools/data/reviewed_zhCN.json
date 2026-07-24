@@ -1,0 +1,18 @@
+{
+    "locale": "zhCN",
+    "records": {
+        "affixes:all_damage_multiplier": "x 全伤害增倍",
+        "affixes:cold_damage_multiplier": "x 冰霜 伤害增倍",
+        "affixes:critical_strike_damage_multiplier": "x 暴击伤害增倍",
+        "affixes:damage_over_time_multiplier": "x 持续性伤害增倍",
+        "affixes:fire_damage_multiplier": "x 火焰 伤害增倍",
+        "affixes:intelligence": "点智力",
+        "affixes:life_on_kill": "消灭回复生命",
+        "affixes:lightning_damage_multiplier": "x 闪电 伤害增倍",
+        "affixes:lucky_hit_up_to_a_chance_to_restore_primary_resource": "幸运一击 最多有 几率恢复 主要资源",
+        "affixes:resistance_to_all_elements": "点全元素抗性",
+        "affixes:vulnerable_damage_multiplier": "x 易伤伤害增倍",
+        "uniques:raiment_of_the_infinite": "无限法衣"
+    },
+    "schema_version": 1
+}

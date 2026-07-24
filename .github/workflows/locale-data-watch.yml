@@ -1,0 +1,24 @@
+name: Locale data watch
+
+on:
+  schedule:
+    - cron: "17 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "${{ github.workflow }}"
+  cancel-in-progress: true
+
+jobs:
+  source-drift:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Setup env
+        uses: ./.github/actions/setup_env
+      - name: Check locked source data
+        shell: powershell
+        run: python -m src.tools.season_data_watch --source-manifest assets/catalog/source-manifest.json

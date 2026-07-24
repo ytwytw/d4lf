@@ -1,12 +1,14 @@
 import os
 
 import pytest
-from PyQt6.QtWidgets import QApplication, QWidget
+from PyQt6.QtWidgets import QApplication, QGroupBox, QWidget
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from src.config.profile_models import AffixFilterModel, CharmFilterModel, SealFilterModel
-from src.gui.profile_editor.affixes_tab import AffixWidget
+from src.config.profile_models import AffixFilterModel, AspectUniqueFilterModel, CharmFilterModel, SealFilterModel
+from src.gui.models import catalog_display
+from src.gui.profile_editor.affixes_tab import AffixWidget, ItemTypePicker, UniqueAspectWidget, _item_type_summary
+from src.item.data.item_type import ItemType
 
 
 @pytest.fixture(scope="module")
@@ -64,3 +66,66 @@ def test_affix_widget_clears_on_empty_filter(qapp, mock_ini_loader):
 
     # It must clear the name
     assert not widget.affix.name
+
+
+def test_item_type_picker_localizes_labels_but_returns_enum_values(qapp, monkeypatch):
+    catalog = type(
+        "Catalog",
+        (),
+        {
+            "grammar": type("Grammar", (), {"locale": "zhCN"})(),
+            "item_types_dict": {"Sword": "剑", "Helm": "头盔"},
+            "resolve_item_type": lambda _self, value: value,
+        },
+    )()
+    monkeypatch.setattr(catalog_display, "Dataloader", lambda: catalog)
+    monkeypatch.setattr(
+        catalog_display,
+        "IniConfigLoader",
+        lambda: type("Config", (), {"general": type("General", (), {"language": "zhCN"})()})(),
+    )
+
+    parent = QWidget()
+    picker = ItemTypePicker(parent, [ItemType.Sword, ItemType.Helm], [ItemType.Helm])
+
+    assert _item_type_summary([ItemType.Sword, ItemType.Helm]) == "剑, 头盔"
+    assert {group.title() for group in picker.findChildren(QGroupBox)} == {"武器", "非武器"}
+    assert picker.checkboxes[ItemType.Sword].text() == "剑"
+    assert picker.checkboxes[ItemType.Helm].text() == "头盔"
+    assert picker.get_selected_item_types() == [ItemType.Helm]
+
+
+def test_unique_aspect_combo_displays_localized_name_and_stores_canonical_id(qapp, mock_ini_loader, monkeypatch):
+    catalog = type(
+        "Catalog",
+        (),
+        {
+            "grammar": type("Grammar", (), {"locale": "zhCN"})(),
+            "aspect_unique_dict": {
+                "first_unique": {"display_name": "第一件暗金"},
+                "second_unique": {"display_name": "第二件暗金"},
+            },
+            "resolve_unique": lambda _self, value: {"第一件暗金": "first_unique", "第二件暗金": "second_unique"}.get(
+                value
+            ),
+        },
+    )()
+    monkeypatch.setattr(catalog_display, "Dataloader", lambda: catalog)
+    monkeypatch.setattr(
+        catalog_display,
+        "IniConfigLoader",
+        lambda: type("Config", (), {"general": type("General", (), {"language": "zhCN"})()})(),
+    )
+    monkeypatch.setattr("src.gui.profile_editor.affixes_tab.Dataloader", lambda: catalog)
+    unique_aspect = AspectUniqueFilterModel.model_construct(name="first_unique", value=None, min_percent_of_aspect=0)
+
+    widget = UniqueAspectWidget(unique_aspect)
+    assert widget.name_combo.currentText() == "第一件暗金"
+    assert widget.name_combo.currentData() == "first_unique"
+
+    widget.name_combo.setCurrentIndex(widget.name_combo.findData("second_unique"))
+    assert unique_aspect.name == "second_unique"
+
+    widget.name_combo.setCurrentIndex(widget.name_combo.findData("first_unique"))
+    widget.name_combo.setEditText("第二件暗金")
+    assert unique_aspect.name == "second_unique"

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-# The values will be overwritten depending on which language is loaded
+# Enum values are canonical profile IDs. Localized labels are runtime aliases.
 class ItemType(Enum):
     Amulet = "amulet"
     Axe = "axe"
@@ -64,7 +64,7 @@ def is_armor(item_type: ItemType | None) -> bool:
 
 
 def is_consumable(item_type: ItemType | None) -> bool:
-    return item_type in [ItemType.Consumable, ItemType.Elixir, ItemType.Incense, ItemType.TemperManual]
+    return item_type in [ItemType.Consumable, ItemType.Elixir, ItemType.Incense, ItemType.TemperManual, ItemType.Tome]
 
 
 def is_non_sigil_mapping(item_type: ItemType | None) -> bool:
@@ -110,6 +110,5 @@ WEAPON_TYPES = [
     ItemType.Staff,
     ItemType.Sword,
     ItemType.Sword2H,
-    ItemType.Tome,
     ItemType.Wand,
 ]

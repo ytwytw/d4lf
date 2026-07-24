@@ -1,11 +1,13 @@
 import logging
 import sys
 from pathlib import Path
+from typing import override
 
 from PyQt6.QtCore import QPoint, QSettings, QSize, Qt
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QCloseEvent, QIcon
 from PyQt6.QtWidgets import QMainWindow
 
+from src.gui.i18n import translate, translate_widget_tree
 from src.gui.settings_tab import ConfigTab
 
 BASE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent.parent
@@ -17,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 class ConfigWindow(QMainWindow):
     """Standalone window for Config/Settings."""
 
-    def __init__(self, parent=None, theme_changed_callback=None):
+    def __init__(self, parent=None, theme_changed_callback=None, language_changed_callback=None):
         super().__init__(parent)
 
         if ICON_PATH.exists():
@@ -25,9 +27,10 @@ class ConfigWindow(QMainWindow):
 
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.theme_changed_callback = theme_changed_callback
+        self.language_changed_callback = language_changed_callback
         self.settings = QSettings("d4lf", "config")
 
-        self.setWindowTitle("Settings")
+        self.setWindowTitle(translate("Settings"))
 
         self.resize(self.settings.value("size", QSize(650, 800)))
         self.move(self.settings.value("pos", QPoint(0, 0)))
@@ -36,7 +39,9 @@ class ConfigWindow(QMainWindow):
             self.showMaximized()
 
         # Create initial config tab
-        self.config_tab = ConfigTab(theme_changed_callback=self._on_theme_changed)
+        self.config_tab = ConfigTab(
+            theme_changed_callback=self._on_theme_changed, language_changed_callback=self._on_language_changed
+        )
         self.setCentralWidget(self.config_tab)
 
     def _on_theme_changed(self):
@@ -46,19 +51,33 @@ class ConfigWindow(QMainWindow):
         # Rebuild the tab so the settings window updates visually too
         self._rebuild_tab()
 
+    def _on_language_changed(self):
+        if self.language_changed_callback:
+            self.language_changed_callback()
+        self.setWindowTitle(translate("Settings"))
+        self._rebuild_tab()
+
     def _rebuild_tab(self):
         current_idx = self.config_tab.nav_list.currentRow()
         old_tab = self.config_tab
-        self.config_tab = ConfigTab(theme_changed_callback=self._on_theme_changed)
+        self.config_tab = ConfigTab(
+            theme_changed_callback=self._on_theme_changed, language_changed_callback=self._on_language_changed
+        )
         self.setCentralWidget(self.config_tab)
         if current_idx >= 0:
             self.config_tab.nav_list.setCurrentRow(current_idx)
         old_tab.deleteLater()
 
-    def closeEvent(self, event):  # noqa: N802
+    def retranslate_ui(self) -> None:
+        self.setWindowTitle(translate("Settings"))
+        translate_widget_tree(self)
+
+    @override
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
         """Save window size/position."""
         if not self.isMaximized():
             self.settings.setValue("size", self.size())
             self.settings.setValue("pos", self.pos())
         self.settings.setValue("maximized", self.isMaximized())
-        event.accept()
+        if a0 is not None:
+            a0.accept()

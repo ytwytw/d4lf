@@ -1,0 +1,50 @@
+[
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Description": "A known unique.",
+        "DescriptionClean": "A known unique.",
+        "IdName": "Unique_Known",
+        "IdNameItem": "Item_Unique_Known",
+        "IdNameItemActor": "Actor_Known",
+        "IdNameItemList": [
+            "Item_Unique_Known"
+        ],
+        "IdNameList": [
+            "Unique_Known"
+        ],
+        "IdSno": "500",
+        "IdSnoList": [
+            "500"
+        ],
+        "Localisation": "A known unique.",
+        "MagicType": 2,
+        "Name": "Known Unique"
+    },
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Description": "A placeholder unique.",
+        "DescriptionClean": "A placeholder unique.",
+        "IdName": "Unique_Placeholder",
+        "IdNameItem": "Item_Unique_Placeholder",
+        "IdNameItemActor": "Actor_Placeholder",
+        "IdNameItemList": [
+            "Item_Unique_Placeholder"
+        ],
+        "IdNameList": [
+            "Unique_Placeholder"
+        ],
+        "IdSno": "600",
+        "IdSnoList": [
+            "600"
+        ],
+        "Localisation": "A placeholder unique.",
+        "MagicType": 2,
+        "Name": "Placeholder Sword"
+    }
+]

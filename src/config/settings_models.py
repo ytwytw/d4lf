@@ -1,15 +1,18 @@
 import enum
 import logging
-from typing import TYPE_CHECKING
+from typing import Annotated
 
+import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-from pydantic_numpy import np_array_pydantic_annotated_typing  # noqa: TC002
+from pydantic_numpy.helper.annotation import NpArrayPydanticAnnotation
 from pydantic_numpy.model import NumpyModel
 
 from src.config.helper import check_greater_than_zero, validate_hotkey
 
-if TYPE_CHECKING:
-    import numpy as np
+type Np1DArray = Annotated[
+    np.ndarray[tuple[int, ...], np.dtype[np.generic]],
+    NpArrayPydanticAnnotation.factory(data_type=None, dimensions=1, strict_data_typing=False),
+]
 
 MODULE_LOGGER = logging.getLogger(__name__)
 HIDE_FROM_GUI_KEY = "hide_from_gui"
@@ -41,6 +44,13 @@ CATEGORY_ORDER = [
 
 
 LIVE_RELOAD_GROUP_KEY = "live_reload_group"
+SUPPORTED_LANGUAGES = frozenset({"enUS", "zhCN"})
+READ_ONLY_LANGUAGES: frozenset[str] = frozenset()
+
+
+def is_read_only_language(language: str) -> bool:
+    """Return whether a language must run without sending game input."""
+    return language in READ_ONLY_LANGUAGES
 
 
 class AspectFilterType(enum.StrEnum):
@@ -298,6 +308,24 @@ class GeneralModel(_IniBaseModel):
         title="Auto-use Temper Manuals",
         json_schema_extra={CATEGORY_KEY: SettingsCategory.AUTOMATION},
     )
+    automatic_failure_capture: bool = Field(
+        default=False,
+        description=(
+            "When item parsing fails, save a local screenshot and replayable TTS text under "
+            "~/.d4lf/captures/automatic. Microphone audio is never recorded; repeated failures are deduplicated."
+        ),
+        title="Automatic Failure Capture",
+        json_schema_extra={CATEGORY_KEY: SettingsCategory.ADVANCED},
+    )
+    show_diagnostics_tab: bool = Field(
+        default=False,
+        description=(
+            "Show the manual raw-TTS diagnostic capture tab in the main window. This developer-oriented tool is "
+            "separate from automatic failure capture."
+        ),
+        title="Show Diagnostic Capture Tab",
+        json_schema_extra={CATEGORY_KEY: SettingsCategory.ADVANCED, LIVE_RELOAD_GROUP_KEY: "diagnostics_page"},
+    )
     browser: BrowserType = Field(
         default=BrowserType.chrome,
         description="Which browser to use to get builds",
@@ -347,13 +375,12 @@ class GeneralModel(_IniBaseModel):
     )
     language: str = Field(
         default="enUS",
-        description="Do not change. Only English is supported at this time",
-        title="Language",
-        json_schema_extra={
-            HIDE_FROM_GUI_KEY: "True",
-            LIVE_RELOAD_GROUP_KEY: "language",
-            CATEGORY_KEY: SettingsCategory.SYSTEM,
-        },
+        description=(
+            "Switches both the App interface and the Diablo IV item text/parser language. "
+            "English and Simplified Chinese support guarded game interaction."
+        ),
+        title="Interface and Game Language",
+        json_schema_extra={LIVE_RELOAD_GROUP_KEY: "language", CATEGORY_KEY: SettingsCategory.SYSTEM},
     )
     mark_as_favorite: bool = Field(
         default=True,
@@ -416,6 +443,10 @@ class GeneralModel(_IniBaseModel):
         json_schema_extra={LIVE_RELOAD_GROUP_KEY: "restart_app", CATEGORY_KEY: SettingsCategory.UI},
     )
 
+    @property
+    def read_only(self) -> bool:
+        return is_read_only_language(self.language)
+
     @field_validator("check_chest_tabs", mode="before")
     @classmethod
     def check_chest_tabs_index(cls, v: object) -> list[int]:
@@ -423,7 +454,16 @@ class GeneralModel(_IniBaseModel):
             return sorted([int(x.strip()) - 1 for x in v.split(",") if x.strip()])
         if isinstance(v, list):
             # Subtract 1 only if the element is a string (external 1-based format)
-            return sorted([int(x) - 1 if isinstance(x, str) else int(x) for x in v])
+            result = []
+            for item in v:
+                if isinstance(item, str):
+                    result.append(int(item) - 1)
+                elif isinstance(item, int) and not isinstance(item, bool):
+                    result.append(item)
+                else:
+                    msg = "list entries must be strings or integers"
+                    raise ValueError(msg)
+            return sorted(result)
         msg = "must be a list or a string"
         raise ValueError(msg)
 
@@ -445,18 +485,24 @@ class GeneralModel(_IniBaseModel):
 
     @field_validator("profiles", mode="before")
     @classmethod
-    def check_profiles_is_list(cls, v: str) -> list[str]:
+    def check_profiles_is_list(cls, v: object) -> list[str]:
         if isinstance(v, str):
-            v = v.split(",")
-        elif not isinstance(v, list):
+            values = v.split(",")
+        elif isinstance(v, list):
+            values = v
+        else:
             msg = "must be a list or a string"
             raise ValueError(msg)
-        return [profile_name for profile_name in (item.strip() for item in v) if profile_name]
+        if not all(isinstance(item, str) for item in values):
+            msg = "profiles must contain only strings"
+            raise ValueError(msg)
+        profile_names = [item.strip() for item in values if isinstance(item, str)]
+        return [profile_name for profile_name in profile_names if profile_name]
 
     @field_validator("language")
     @classmethod
     def language_must_exist(cls, v: str) -> str:
-        if v != "enUS":
+        if v not in SUPPORTED_LANGUAGES:
             msg = "language not supported"
             raise ValueError(msg)
         return v
@@ -471,15 +517,17 @@ class GeneralModel(_IniBaseModel):
 
     @field_validator("move_to_inv_item_type", "move_to_stash_item_type", mode="before")
     @classmethod
-    def convert_move_item_type(cls, v: str | list[object]) -> list[MoveItemsType]:
+    def convert_move_item_type(cls, v: object) -> list[MoveItemsType]:
         if isinstance(v, str):
-            v = v.split(",")
-        if not isinstance(v, list):
+            values = v.split(",")
+        elif isinstance(v, list):
+            values = v
+        else:
             msg = "must be a list or a string"
             raise ValueError(msg)
 
         out = []
-        for x in v:
+        for x in values:
             if isinstance(x, MoveItemsType):
                 out.append(x)
             elif isinstance(x, str) and (s := x.strip()):
@@ -494,8 +542,8 @@ class GeneralModel(_IniBaseModel):
 
 
 class HSVRangeModel(_IniBaseModel):
-    h_s_v_min: np_array_pydantic_annotated_typing(dimensions=1)
-    h_s_v_max: np_array_pydantic_annotated_typing(dimensions=1)
+    h_s_v_min: Np1DArray
+    h_s_v_max: Np1DArray
 
     def __getitem__(self, index):
         # TODO added this to not have to change much of the other code. should be fixed some time
@@ -550,13 +598,13 @@ class UiPosModel(_IniBaseModel):
 
 
 class UiRoiModel(NumpyModel):
-    rel_descr_search_left: np_array_pydantic_annotated_typing(dimensions=1)
-    rel_descr_search_right: np_array_pydantic_annotated_typing(dimensions=1)
-    rel_fav_flag: np_array_pydantic_annotated_typing(dimensions=1)
-    slots_8x1: np_array_pydantic_annotated_typing(dimensions=1)
-    slots_3x11: np_array_pydantic_annotated_typing(dimensions=1)
-    slots_5x10: np_array_pydantic_annotated_typing(dimensions=1)
-    sort_icon: np_array_pydantic_annotated_typing(dimensions=1)
-    stash_menu_icon: np_array_pydantic_annotated_typing(dimensions=1)
-    tab_slots: np_array_pydantic_annotated_typing(dimensions=1)
-    vendor_menu_icon: np_array_pydantic_annotated_typing(dimensions=1)
+    rel_descr_search_left: Np1DArray
+    rel_descr_search_right: Np1DArray
+    rel_fav_flag: Np1DArray
+    slots_8x1: Np1DArray
+    slots_3x11: Np1DArray
+    slots_5x10: Np1DArray
+    sort_icon: Np1DArray
+    stash_menu_icon: Np1DArray
+    tab_slots: Np1DArray
+    vendor_menu_icon: Np1DArray

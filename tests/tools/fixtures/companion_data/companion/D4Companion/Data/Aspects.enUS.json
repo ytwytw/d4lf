@@ -1,0 +1,94 @@
+[
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": "Offensive",
+        "Description": "Shared by SNO.",
+        "DescriptionClean": "Shared by SNO.",
+        "Dungeon": "",
+        "IdName": "Aspect_English_Internal",
+        "IdNameList": [
+            "Aspect_English_Internal"
+        ],
+        "IdSno": "400",
+        "IdSnoList": [
+            "400"
+        ],
+        "IsCodex": true,
+        "IsSeasonal": false,
+        "Localisation": "Shared by SNO.",
+        "MagicType": 1,
+        "Name": "Shared Aspect"
+    },
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": "Utility",
+        "Description": "Shared by internal name.",
+        "DescriptionClean": "Shared by internal name.",
+        "Dungeon": "",
+        "IdName": "Aspect_Name_Join",
+        "IdNameList": [
+            "Aspect_Name_Join"
+        ],
+        "IdSno": "410",
+        "IdSnoList": [
+            "410"
+        ],
+        "IsCodex": true,
+        "IsSeasonal": false,
+        "Localisation": "Shared by internal name.",
+        "MagicType": 1,
+        "Name": "Named Aspect"
+    },
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": "Utility",
+        "Description": "First duplicate alias.",
+        "DescriptionClean": "First duplicate alias.",
+        "Dungeon": "",
+        "IdName": "Aspect_Twin_A",
+        "IdNameList": [
+            "Aspect_Twin_A"
+        ],
+        "IdSno": "420",
+        "IdSnoList": [
+            "420"
+        ],
+        "IsCodex": false,
+        "IsSeasonal": false,
+        "Localisation": "First duplicate alias.",
+        "MagicType": 1,
+        "Name": "Twin Alias"
+    },
+    {
+        "AllowedForPlayerClass": [
+            1
+        ],
+        "AllowedItemLabels": [],
+        "Category": "Utility",
+        "Description": "Second duplicate alias.",
+        "DescriptionClean": "Second duplicate alias.",
+        "Dungeon": "",
+        "IdName": "Aspect_Twin_B",
+        "IdNameList": [
+            "Aspect_Twin_B"
+        ],
+        "IdSno": "422",
+        "IdSnoList": [
+            "422"
+        ],
+        "IsCodex": false,
+        "IsSeasonal": false,
+        "Localisation": "Second duplicate alias.",
+        "MagicType": 1,
+        "Name": "Twin Alias"
+    }
+]

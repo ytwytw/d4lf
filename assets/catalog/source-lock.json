@@ -1,0 +1,8 @@
+{
+    "build_version": "3.1.1.72836",
+    "schema_version": 1,
+    "source_manifest": {
+        "path": "source-manifest.json",
+        "sha256": "37d7ea5504f994e20aa89634b31e265a5da8b94278841e7974f441e9c31889ac"
+    }
+}

@@ -98,6 +98,14 @@ class ImportPipeline:
                         variant.name or build.build_header or build.class_name,
                     )
 
+            if not (profile.affixes or profile.charms or profile.seals or profile.aspect_upgrades or profile.paragon):
+                LOGGER.warning(
+                    "Skipping empty %s variant %r because no supported filter data was resolved.",
+                    build.source_name,
+                    variant.name or build.build_header or build.class_name,
+                )
+                continue
+
             corrected_file_name = (
                 ProfileDocumentStore
                 .default()

@@ -3,10 +3,10 @@ import sys
 import time
 from contextlib import suppress
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from PyQt6.QtCore import QEvent, QObject, QPoint, QSettings, QSize, Qt, QThread, QTimer, QUrl, pyqtSignal
-from PyQt6.QtGui import QDesktopServices, QIcon
+from PyQt6.QtGui import QAction, QCloseEvent, QDesktopServices, QIcon
 from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -22,7 +22,14 @@ from PyQt6.QtWidgets import (
 from src import __version__
 from src.autoupdater import notify_if_update
 from src.config.loader import IniConfigLoader
-from src.config.reload_groups import LOG_LEVEL_SETTING_KEYS, has_any_changed
+from src.config.reload_groups import (
+    DIAGNOSTICS_PAGE_SETTING_KEYS,
+    LANGUAGE_SETTING_KEYS,
+    LOG_LEVEL_SETTING_KEYS,
+    has_any_changed,
+)
+from src.gui.diagnostics_widget import DiagnosticsWidget
+from src.gui.i18n import install_ui_localization, retranslate_open_windows, translate
 from src.gui.importer_window import ImporterWindow
 from src.gui.models.activity_log_widget import ActivityLogWidget, ANSIConsoleWidget, QtConsoleHandler
 from src.gui.profile_editor_window import ProfileEditorWindow
@@ -114,10 +121,25 @@ class BackendWorker(QObject):
 
 
 class UnifiedMainWindow(QMainWindow):
+    diagnostics_page_change_requested = pyqtSignal(bool)
+    ui_language_change_requested = pyqtSignal()
+
     def __init__(self):
         super().__init__()
         self._child_windows: dict[str, QMainWindow] = {}
+        self._diagnostic_vision_state: bool | None = None
+        self.diagnostics_tab: DiagnosticsWidget | None = None
+        self._backend_thread: QThread | None = None
+        self.worker: BackendWorker | None = None
+        self._closing = False
         self._config = IniConfigLoader()
+        self.diagnostics_page_change_requested.connect(self._set_diagnostics_page_enabled)
+        self.ui_language_change_requested.connect(self.retranslate_ui)
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            install_ui_localization(app)
+        self._config.register_change_listener(self._on_config_changed_language)
+        self._config.register_change_listener(self._on_config_changed_diagnostics_page)
 
         if ICON_PATH.exists():
             self.setWindowIcon(QIcon(str(ICON_PATH)))
@@ -126,6 +148,7 @@ class UnifiedMainWindow(QMainWindow):
         self._setup_logging()
         self._setup_ui()
         self._setup_tray()
+        self.retranslate_ui()
         self._init_backend()
         self.restore_geometry()
 
@@ -176,8 +199,16 @@ class UnifiedMainWindow(QMainWindow):
             "Updated log settings (Level: %s, Tech: %s, TS: %s)", new_level, adv.technical_log_info, adv.log_timestamp
         )
 
+    def _on_config_changed_language(self, changed_keys) -> None:
+        if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
+            self.ui_language_change_requested.emit()
+
+    def _on_config_changed_diagnostics_page(self, changed_keys) -> None:
+        if has_any_changed(changed_keys, DIAGNOSTICS_PAGE_SETTING_KEYS):
+            self.diagnostics_page_change_requested.emit(self._config.general.show_diagnostics_tab)
+
     def _setup_ui(self):
-        self.setWindowTitle(f"D4LF - Diablo 4 Loot Filter v{__version__}")
+        self.setWindowTitle(translate("D4LF - Diablo 4 Loot Filter v{version}", version=__version__))
         self.setMinimumSize(800, 600)
 
         self.tabs = QTabWidget()
@@ -186,8 +217,9 @@ class UnifiedMainWindow(QMainWindow):
         self.activity_tab = ActivityLogWidget(parent=self)
         self.console_output = ANSIConsoleWidget()
 
-        self.tabs.addTab(self.activity_tab, "Dashboard")
-        self.tabs.addTab(self.console_output, "Full Logs")
+        self.tabs.addTab(self.activity_tab, translate("Dashboard"))
+        self.tabs.addTab(self.console_output, translate("Full Logs"))
+        self._set_diagnostics_page_enabled(self._config.general.show_diagnostics_tab)
         self._setup_tab_corner_widgets()
 
         # Both tabs receive the same unified stream
@@ -198,6 +230,37 @@ class UnifiedMainWindow(QMainWindow):
         self._emit_startup_logs()
         self._emit_deferred_config_cleanup_logs(self._config)
 
+    def _set_diagnostics_page_enabled(self, enabled: bool) -> None:
+        if enabled:
+            self._show_diagnostics_tab()
+        else:
+            self._hide_diagnostics_tab()
+
+    def _show_diagnostics_tab(self) -> None:
+        if self.diagnostics_tab is not None:
+            return
+        self.diagnostics_tab = DiagnosticsWidget(
+            parent=self,
+            on_capture_started=self._enable_vision_for_diagnostic_capture,
+            on_capture_ended=self._restore_vision_after_diagnostic_capture,
+        )
+        self.tabs.addTab(self.diagnostics_tab, translate("Diagnostics"))
+        LOGGER.info("Enabled the diagnostic capture tab")
+
+    def _hide_diagnostics_tab(self) -> None:
+        diagnostics_tab = self.diagnostics_tab
+        if diagnostics_tab is None:
+            return
+        diagnostics_tab.shutdown()
+        index = self.tabs.indexOf(diagnostics_tab)
+        if index >= 0:
+            if self.tabs.currentWidget() is diagnostics_tab:
+                self.tabs.setCurrentWidget(self.activity_tab)
+            self.tabs.removeTab(index)
+        diagnostics_tab.deleteLater()
+        self.diagnostics_tab = None
+        LOGGER.info("Disabled the diagnostic capture tab")
+
     def _setup_tab_corner_widgets(self):
         """Add social buttons to the top right of the tab bar."""
         container = QWidget()
@@ -207,14 +270,14 @@ class UnifiedMainWindow(QMainWindow):
 
         # System Status Indicators
         if sys.platform == "win32":
-            self.vision_indicator = QLabel("Vision Mode: STOPPED")
+            self.vision_indicator = QLabel(translate("Vision Mode: STOPPED"))
             self.vision_indicator.setStyleSheet("color: #ff4d4d; font-weight: bold; font-size: 10pt;")
-            self.tts_indicator = QLabel("TTS: Disconnected")
+            self.tts_indicator = QLabel(translate("TTS: Disconnected"))
             self.tts_indicator.setStyleSheet("color: #ff4d4d; font-weight: bold; font-size: 10pt;")
         else:
-            self.vision_indicator = QLabel("Vision Mode: Disabled (GUI-only)")
+            self.vision_indicator = QLabel(translate("Vision Mode: Disabled (GUI-only)"))
             self.vision_indicator.setStyleSheet("color: #b0b0b0; font-weight: bold; font-size: 10pt;")
-            self.tts_indicator = QLabel("TTS: Disabled (GUI-only)")
+            self.tts_indicator = QLabel(translate("TTS: Disabled (GUI-only)"))
             self.tts_indicator.setStyleSheet("color: #b0b0b0; font-weight: bold; font-size: 10pt;")
 
         layout.addWidget(self.vision_indicator)
@@ -223,7 +286,7 @@ class UnifiedMainWindow(QMainWindow):
         discord_btn = QPushButton()
         self._setup_social_button(discord_btn, DISCORD_ICON, "https://discord.gg/YyzaPhAN6T")
         github_btn = QPushButton()
-        self._setup_social_button(github_btn, GITHUB_ICON, "https://github.com/d4lfteam/d4lf")
+        self._setup_social_button(github_btn, GITHUB_ICON, "https://github.com/ytwytw/d4lf")
 
         layout.addWidget(discord_btn)
         layout.addWidget(github_btn)
@@ -253,47 +316,80 @@ class UnifiedMainWindow(QMainWindow):
     def _refresh_dashboard_status(self):
         """Poll backend states and update the Dashboard labels."""
         self.update_tts_status(tts_module.CONNECTED if tts_module is not None else None)
-        if self.worker and self.worker.script_handler:
-            self.update_vision_status(self.worker.script_handler.vision_mode.running())
+        worker = self.worker
+        handler = worker.script_handler if worker is not None else None
+        if handler is not None:
+            self.update_vision_status(handler.vision_mode.running())
+
+    def _enable_vision_for_diagnostic_capture(self) -> None:
+        worker = self.worker
+        handler = worker.script_handler if worker is not None else None
+        if handler is None:
+            self._diagnostic_vision_state = None
+            return
+        handler.stop_active_game_input()
+        self._diagnostic_vision_state = handler.vision_mode.running()
+        if not self._diagnostic_vision_state:
+            handler.vision_mode.start()
+            LOGGER.info("Started vision mode for diagnostic TTS capture")
+
+    def _restore_vision_after_diagnostic_capture(self) -> None:
+        previous_state = self._diagnostic_vision_state
+        self._diagnostic_vision_state = None
+        if previous_state is None or self._closing:
+            return
+
+        worker = self.worker
+        handler = worker.script_handler if worker is not None else None
+        if handler is None:
+            return
+        is_running = handler.vision_mode.running()
+        if previous_state and not is_running:
+            handler.vision_mode.start()
+        elif not previous_state and is_running:
+            handler.vision_mode.stop()
+        LOGGER.info("Restored vision mode state after diagnostic TTS capture")
 
     def update_vision_status(self, is_running: bool | None):
         if is_running is None:
-            self.vision_indicator.setText("Vision Mode: Disabled (GUI-only)")
+            self.vision_indicator.setText(translate("Vision Mode: Disabled (GUI-only)"))
             self.vision_indicator.setStyleSheet("color: #b0b0b0; font-weight: bold; font-size: 10pt;")
             return
         if is_running:
-            self.vision_indicator.setText("Vision Mode: RUNNING")
+            self.vision_indicator.setText(translate("Vision Mode: RUNNING"))
             self.vision_indicator.setStyleSheet("color: #23fc5d; font-weight: bold; font-size: 10pt;")
         else:
-            self.vision_indicator.setText("Vision Mode: STOPPED")
+            self.vision_indicator.setText(translate("Vision Mode: STOPPED"))
             self.vision_indicator.setStyleSheet("color: #ff4d4d; font-weight: bold; font-size: 10pt;")
 
     def update_tts_status(self, connected: bool | None):
         if connected is None:
-            self.tts_indicator.setText("TTS: Disabled (GUI-only)")
+            self.tts_indicator.setText(translate("TTS: Disabled (GUI-only)"))
             self.tts_indicator.setStyleSheet("color: #b0b0b0; font-weight: bold; font-size: 10pt;")
             return
         if connected:
-            self.tts_indicator.setText("TTS: Connected")
+            self.tts_indicator.setText(translate("TTS: Connected"))
             self.tts_indicator.setStyleSheet("color: #23fc5d; font-weight: bold; font-size: 10pt;")
         else:
-            self.tts_indicator.setText("TTS: Disconnected")
+            self.tts_indicator.setText(translate("TTS: Disconnected"))
             self.tts_indicator.setStyleSheet("color: #ff4d4d; font-weight: bold; font-size: 10pt;")
 
     def _init_backend(self):
         if sys.platform != "win32":
-            self.thread = None
+            self._backend_thread = None
             self.worker = None
             self.update_vision_status(None)
             self.update_tts_status(None)
             return
 
-        self.thread = QThread()
-        self.worker = BackendWorker()
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.thread.start()
+        backend_thread = QThread()
+        worker = BackendWorker()
+        worker.moveToThread(backend_thread)
+        backend_thread.started.connect(worker.run)
+        worker.finished.connect(backend_thread.quit)
+        self._backend_thread = backend_thread
+        self.worker = worker
+        backend_thread.start()
 
     def _show_singleton_modal(self, key: str, window_class, *args, **kwargs):
         existing_window = self._child_windows.get(key)
@@ -331,7 +427,12 @@ class UnifiedMainWindow(QMainWindow):
         win.import_completed.connect(self.activity_tab.refresh_profiles, Qt.ConnectionType.UniqueConnection)
 
     def open_settings_dialog(self):
-        self._show_singleton_modal("config", ConfigWindow, theme_changed_callback=self.apply_theme)
+        self._show_singleton_modal(
+            "config",
+            ConfigWindow,
+            theme_changed_callback=self.apply_theme,
+            language_changed_callback=self.retranslate_ui,
+        )
 
     def open_profile_editor(self, profile_name: str | None = None):
         self._show_singleton_modal("editor", ProfileEditorWindow, profile_name=profile_name)
@@ -371,18 +472,20 @@ class UnifiedMainWindow(QMainWindow):
         if ICON_PATH.exists():
             self.tray_icon.setIcon(QIcon(str(ICON_PATH)))
 
-        tray_menu = QMenu()
-        restore_action = tray_menu.addAction("Restore")
-        restore_action.triggered.connect(self._restore_from_tray)
+        tray_menu = QMenu(self)
+        self.restore_action = QAction(translate("Restore"), tray_menu)
+        self.restore_action.triggered.connect(self._restore_from_tray)
+        tray_menu.addAction(self.restore_action)
 
         tray_menu.addSeparator()
 
-        exit_action = tray_menu.addAction("Exit")
-        exit_action.triggered.connect(self.close)
+        self.exit_action = QAction(translate("Exit"), tray_menu)
+        self.exit_action.triggered.connect(self.close)
+        tray_menu.addAction(self.exit_action)
 
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.activated.connect(self._on_tray_icon_activated)
-        self.tray_icon.setToolTip("D4 Loot Filter")
+        self.tray_icon.setToolTip(translate("D4 Loot Filter"))
         self.tray_icon.show()
 
     def _on_tray_icon_activated(self, reason):
@@ -393,16 +496,27 @@ class UnifiedMainWindow(QMainWindow):
         self.showNormal()
         self.activateWindow()
 
-    def changeEvent(self, event: QEvent):  # noqa: N802
+    @override
+    def changeEvent(self, a0: QEvent | None):
+        # PyQt exposes `a0` as a keyword, so the override must retain that public name.
+        event = a0
         if (
-            event.type() == QEvent.Type.WindowStateChange
+            event is not None
+            and event.type() == QEvent.Type.WindowStateChange
             and self.isMinimized()
             and self.activity_tab.minimize_to_tray_cb.isChecked()
         ):
             self.hide()
         super().changeEvent(event)
 
-    def closeEvent(self, event):  # noqa: N802
+    @override
+    def closeEvent(self, a0: QCloseEvent | None):
+        # PyQt exposes `a0` as a keyword, so the override must retain that public name.
+        event = a0
+        self._closing = True
+        diagnostics_tab = getattr(self, "diagnostics_tab", None)
+        if diagnostics_tab is not None:
+            diagnostics_tab.shutdown()
         for win in list(self._child_windows.values()):
             with suppress(Exception):
                 win.close()
@@ -411,8 +525,6 @@ class UnifiedMainWindow(QMainWindow):
         root_logger = logging.getLogger()
         with suppress(Exception):
             root_logger.removeHandler(self.console_handler)
-        with suppress(Exception):
-            logging._handlerList.clear()
 
         super().closeEvent(event)
 
@@ -425,10 +537,40 @@ class UnifiedMainWindow(QMainWindow):
         self.console_output.append_ansi_text(banner)
         self.console_output.append_ansi_text("")
 
+    def retranslate_ui(self) -> None:
+        self.setWindowTitle(translate("D4LF - Diablo 4 Loot Filter v{version}", version=__version__))
+        if hasattr(self, "tabs"):
+            self.tabs.setTabText(self.tabs.indexOf(self.activity_tab), translate("Dashboard"))
+            self.tabs.setTabText(self.tabs.indexOf(self.console_output), translate("Full Logs"))
+            self.activity_tab.retranslate_ui()
+            if self.diagnostics_tab is not None:
+                self.tabs.setTabText(self.tabs.indexOf(self.diagnostics_tab), translate("Diagnostics"))
+                self.diagnostics_tab.retranslate_ui()
+            self.update_tts_status(tts_module.CONNECTED if tts_module is not None else None)
+            worker = self.worker
+            handler = worker.script_handler if worker is not None else None
+            if handler is not None:
+                self.update_vision_status(handler.vision_mode.running())
+            else:
+                self.update_vision_status(None if sys.platform != "win32" else False)
+        if hasattr(self, "tray_icon"):
+            self.restore_action.setText(translate("Restore"))
+            self.exit_action.setText(translate("Exit"))
+            self.tray_icon.setToolTip(translate("D4 Loot Filter"))
+        for window in self._child_windows.values():
+            retranslate_ui = getattr(window, "retranslate_ui", None)
+            if callable(retranslate_ui):
+                retranslate_ui()
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            retranslate_open_windows(app)
+
     def apply_theme(self):
         theme_name = IniConfigLoader().general.theme
         accent_color = get_filter_colors().matched
         template = DARK_THEME_TEMPLATE if theme_name == "dark" else LIGHT_THEME_TEMPLATE
         stylesheet = template.replace("{accent}", accent_color)
 
-        QApplication.instance().setStyleSheet(stylesheet)
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            app.setStyleSheet(stylesheet)

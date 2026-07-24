@@ -11,6 +11,10 @@ def test_loot_filter_controls_are_not_tts_item_start():
     assert src.tts.find_item_start(LOOT_FILTER_TTS) is None
 
 
+def test_loot_filter_controls_with_punctuation_are_not_tts_item_start():
+    assert src.tts.find_item_start(["SELECT ALL.", *LOOT_FILTER_TTS[1:]]) is None
+
+
 def test_loot_filter_controls_do_not_raise_tts_parser_error():
     src.tts.LAST_ITEM = LOOT_FILTER_TTS
 
@@ -27,6 +31,12 @@ def test_mixed_parser_returns_boss_keys_without_image_lookup():
     src.tts.LAST_ITEM = ["MALIGNANT HEART", "Legendary Boss Key"]
 
     assert read_descr_mixed(None) == Item(item_type=ItemType.LairBossKey, original_name="MALIGNANT HEART")
+
+
+def test_mixed_parser_returns_none_for_equipment_without_image_lookup():
+    src.tts.LAST_ITEM = ["TEST BOOTS", "Rare Boots", "Item Power 900"]
+
+    assert read_descr_mixed(None) is None
 
 
 def test_sigil_rarity_is_derived_from_tts_affixes():
