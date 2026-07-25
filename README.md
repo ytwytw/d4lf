@@ -57,10 +57,10 @@ D4LF。默认按 `F11` 启动装备筛选。
 
 在 D4LF 的 **Profile 导入器**中粘贴受支持的 Build 链接。目前支持：
 
-- Maxroll
-- Mobalytics
-- D4Builds
-- InfinityBuilds
+- [Maxroll](https://maxroll.gg/d4/)
+- [Mobalytics](https://mobalytics.gg/diablo-4/builds)
+- [D4Builds](https://d4builds.gg/builds)
+- [InfinityBuilds](https://infinitybuilds.gg/en/builds)
 - [暗黑核 D2Core](https://www.d2core.com/d4/builds)
 
 导入器会把来源网站的名称映射为 D4LF 的稳定内部 ID。因此：

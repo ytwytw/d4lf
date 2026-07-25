@@ -58,10 +58,10 @@ language. Restart D4LF after changing it. The default loot-filter hotkey is `F11
 
 Paste a supported build URL into the D4LF **Profile Importer**. Supported sources are:
 
-- Maxroll
-- Mobalytics
-- D4Builds
-- InfinityBuilds
+- [Maxroll](https://maxroll.gg/d4/)
+- [Mobalytics](https://mobalytics.gg/diablo-4/builds)
+- [D4Builds](https://d4builds.gg/builds)
+- [InfinityBuilds](https://infinitybuilds.gg/en/builds)
 - [D2Core](https://www.d2core.com/d4/builds)
 
 The importer maps source-site labels to stable D4LF IDs. An English InfinityBuilds profile can therefore run with a
