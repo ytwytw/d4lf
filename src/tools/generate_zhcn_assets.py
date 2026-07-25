@@ -101,11 +101,13 @@ def _json_array(path: Path, label: str) -> list[object]:
     return cast("list[object]", value)
 
 
+def _canonical_json_text(payload: object) -> str:
+    return json.dumps(payload, ensure_ascii=False, indent=4, sort_keys=True, allow_nan=False) + "\n"
+
+
 def _write_json(path: Path, payload: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=4, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8"
-    )
+    path.write_text(_canonical_json_text(payload), encoding="utf-8")
 
 
 def _sha256_bytes(value: bytes) -> str:
@@ -310,9 +312,10 @@ def _d2core_translation_record_index(
     return dict(sorted(records.items()))
 
 
-def _merge_preferred_indexes(
+def _overlay_preferred_indexes(
     *indexes: Mapping[str, set[_TranslationCandidate]] | None,
 ) -> dict[str, set[_TranslationCandidate]]:
+    """Overlay increasingly namespace-specific candidate indexes."""
     merged: dict[str, set[_TranslationCandidate]] = defaultdict(set)
     for index in indexes:
         if index is None:
@@ -737,7 +740,7 @@ def _reviewed_overrides(path: Path) -> tuple[dict[str, str], str]:
         if _is_ascii_placeholder(text):
             raise GenerationError(f"reviewed zhCN override {stable_id!r} is an ASCII placeholder")
         records[stable_id] = text
-    return records, _sha256_file(path)
+    return records, _sha256_text(_canonical_json_text(data))
 
 
 def _augment_source_files(sources: dict[str, object], companion_repo: Path) -> None:
@@ -818,9 +821,9 @@ def generate_zhcn_assets(
     unique_index = _translation_index(entries, "unique")
     item_type_index = _item_type_index(companion_repo, en_grammar, zh_grammar)
     sigil_index = _sigil_index(companion_repo)
-    charm_preferred_index = _merge_preferred_indexes(d2core_indexes.get("affix"), d2core_indexes.get("charm_affix"))
-    seal_preferred_index = _merge_preferred_indexes(d2core_indexes.get("affix"), d2core_indexes.get("seal_affix"))
-    unique_preferred_index = _merge_preferred_indexes(d2core_indexes.get("unique"))
+    charm_preferred_index = _overlay_preferred_indexes(d2core_indexes.get("affix"), d2core_indexes.get("charm_affix"))
+    seal_preferred_index = _overlay_preferred_indexes(d2core_indexes.get("affix"), d2core_indexes.get("seal_affix"))
+    unique_preferred_index = _overlay_preferred_indexes(d2core_indexes.get("unique"))
 
     affixes = _simple_mapping(
         builder=builder,
@@ -1048,7 +1051,10 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--d2core-dir",
         type=Path,
-        help="Optional validated D2Core snapshot directory; current records take precedence over Companion aliases.",
+        help=(
+            "Optional validated D2Core snapshot directory; supplements missing Companion translations "
+            "without excluding records by provider absence."
+        ),
     )
     parser.add_argument(
         "--reviewed-overrides",

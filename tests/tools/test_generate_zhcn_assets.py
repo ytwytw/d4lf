@@ -294,8 +294,25 @@ def test_generator_applies_and_tracks_publishable_reviewed_overrides(tmp_path: P
     manifest = json.loads(bundle.locale_manifest.read_text(encoding="utf-8"))
     assert manifest["reviewed_overrides"] == {
         "path": overrides.name,
-        "sha256": hashlib.sha256(overrides.read_bytes()).hexdigest(),
+        "sha256": hashlib.sha256(
+            generate_zhcn_assets._canonical_json_text(json.loads(overrides.read_text(encoding="utf-8"))).encode()
+        ).hexdigest(),
     }
+
+
+def test_reviewed_override_hash_is_independent_of_line_endings(tmp_path: Path) -> None:
+    data = {"schema_version": 1, "locale": "zhCN", "records": {"affixes:damage": "测试伤害"}}
+    canonical = generate_zhcn_assets._canonical_json_text(data)
+    lf_path = tmp_path / "lf.json"
+    crlf_path = tmp_path / "crlf.json"
+    lf_path.write_bytes(canonical.encode("utf-8"))
+    crlf_path.write_bytes(canonical.replace("\n", "\r\n").encode("utf-8"))
+
+    lf_records, lf_hash = generate_zhcn_assets._reviewed_overrides(lf_path)
+    crlf_records, crlf_hash = generate_zhcn_assets._reviewed_overrides(crlf_path)
+
+    assert lf_records == crlf_records
+    assert lf_hash == crlf_hash
 
 
 def test_generator_rejects_private_evidence_in_reviewed_overrides(tmp_path: Path) -> None:
@@ -462,6 +479,19 @@ def test_translation_provider_absence_never_excludes_a_companion_translation() -
     }
     assert builder.unresolved == []
     assert builder.excluded_historical == []
+
+
+def test_namespace_specific_candidate_index_overlays_general_affixes() -> None:
+    affix = generate_zhcn_assets._TranslationCandidate(
+        text="词缀译名", provider="d2core", source_id="affix:test:1:x1", source_record_sha256="1" * 64
+    )
+    talisman = generate_zhcn_assets._TranslationCandidate(
+        text="护符译名", provider="d2core", source_id="talisman:test:2:x1", source_record_sha256="2" * 64
+    )
+
+    merged = generate_zhcn_assets._overlay_preferred_indexes({"shared": {affix}}, {"shared": {talisman}})
+
+    assert merged == {"shared": {talisman}}
 
 
 def test_flat_stat_candidate_takes_precedence_over_percent_variant() -> None:

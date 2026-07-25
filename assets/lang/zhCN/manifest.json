@@ -26751,7 +26751,7 @@
     ],
     "reviewed_overrides": {
         "path": "reviewed_zhCN.json",
-        "sha256": "59feaa998f039039788c5dafb06fc7f59ffd3257ce58eb30b043415ac10a4ebb"
+        "sha256": "6b410147751f6febbc48aa8f0e830ffc875bbe45f31356a4382ee57db6f5722d"
     },
     "runtime_ready": false,
     "schema_version": 1,

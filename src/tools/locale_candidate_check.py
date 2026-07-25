@@ -48,6 +48,13 @@ def _stable_ids(values: object, label: str) -> set[str]:
     return result
 
 
+def _object(value: object, label: str) -> dict[str, object]:
+    if not isinstance(value, dict):
+        message = f"{label} must be an object"
+        raise CandidateInputError(message)
+    return cast("dict[str, object]", value)
+
+
 def _report(status: str, issues: list[dict[str, object]], base_report: Mapping[str, object]) -> dict[str, object]:
     issue_counts: Counter[str] = Counter()
     for issue in issues:
@@ -74,6 +81,10 @@ def check_candidate(
         quality = _load_json_object(quality_report, "quality report")
         locale = _load_json_object(locale_manifest, "locale manifest")
         unresolved_ids = _stable_ids(quality.get("unresolved"), "quality_report.unresolved")
+        scope = _object(quality.get("scope"), "quality_report.scope")
+        excluded_historical_ids = _stable_ids(
+            scope.get("excluded_historical_records"), "quality_report.scope.excluded_historical_records"
+        )
     except CandidateInputError as error:
         return {
             "ok": False,
@@ -164,10 +175,22 @@ def check_candidate(
             "missing_from_release_gate": sorted(unresolved_ids - missing_ids),
         })
 
+    if excluded_historical_ids:
+        issues.append({
+            "code": "provider_scope_exclusion",
+            "message": "optional provider coverage must not exclude records from the aggregated locale candidate",
+            "stable_ids": sorted(excluded_historical_ids),
+        })
+
     if not isinstance(summary, dict) or summary.get("unresolved_records") != len(unresolved_ids):
         issues.append({
             "code": "summary_mismatch",
             "message": "quality summary unresolved count does not match unresolved records",
+        })
+    if not isinstance(summary, dict) or summary.get("excluded_historical_records") != len(excluded_historical_ids):
+        issues.append({
+            "code": "summary_mismatch",
+            "message": "quality summary excluded historical count does not match scope records",
         })
 
     if runtime_ready and (unresolved_ids or base_report.get("exit_code") != locale_data_check.EXIT_OK):

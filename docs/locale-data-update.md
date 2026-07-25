@@ -40,7 +40,8 @@ unreadable inputs return `2`. The generator never fills a missing Chinese value 
 `--reviewed-overrides` accepts normalized stable-ID translations that are safe to publish. The file must not
 contain capture hashes, game builds, timestamps, UUIDs, record counts, or other evidence metadata. Unknown stable
 IDs, empty translations, ASCII placeholders, and an `evidence` field fail generation. The public mapping file hash
-is written to the locale manifest for reproducibility.
+is written to the locale manifest for reproducibility. It is calculated from canonical JSON content, so equivalent
+LF and CRLF files have the same hash.
 
 Translation precedence is reviewed override, paired Companion game data, then D2Core as a supplement when the
 paired game data has no translation. No provider is authoritative by absence: a stable ID missing from the current
@@ -77,8 +78,8 @@ version 1.
 1. Regenerate the source manifest and source lock, including hashes for every declared source file.
 1. Regenerate the target locale data and its manifest from that locked source. Do not hand-edit generated files
    after their hashes are recorded.
-1. Confirm `excluded_historical_records` remains zero. Provider snapshot absence is diagnostic metadata, not a
-   reason to retire or hide a localized stable ID.
+1. Confirm `excluded_historical_records` remains zero. The candidate checker rejects any nonzero value: provider
+   snapshot absence is diagnostic metadata, not a reason to retire or hide a localized stable ID.
 1. Run the checker with explicit paths. Preserve the JSON report as a CI artifact when the update is automated.
 1. Review or commit the generated data only when the process exits with code 0 and the report has `"ok": true`.
 
