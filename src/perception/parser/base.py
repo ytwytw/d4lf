@@ -1,4 +1,3 @@
-import enum
 import logging
 import re
 
@@ -15,15 +14,8 @@ from src.item import (
     is_consumable,
     is_seal_or_charm,
 )
+from src.perception.framing import ItemIdentifier
 from src.perception.text import correct_name, find_number, keep_letters_and_spaces
-
-
-class ItemIdentifiers(enum.Enum):
-    COMPASS = "Compass"
-    ESCALATION_SIGIL = "Escalation Sigil"
-    NIGHTMARE_SIGIL = "Nightmare Sigil"
-    WHISPERING_KEY = "WHISPERING KEY"
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -41,9 +33,7 @@ _ASPECT_RE = re.compile(
     r" - (?P<maxvalue>[0-9]+[.]?[0-9]*)]"
 )
 
-_FOR_SECONDS_RE = re.compile(r"for (?P<forsecondsvalue>\d+(?:\.\d+)?) Seconds")
-
-_REPLACE_COMPARE_RE = re.compile(r"\(.*\)")
+_REPLACE_COMPARE_RE = re.compile(r"[\(（].*?[\)）]")
 
 _AFFIX_REPLACEMENTS = ["%", "+", ",", "[+]", "[x]", "per 5 Seconds"]
 _AFFIX_STOP_MARKERS = (
@@ -59,14 +49,18 @@ _AFFIX_STOP_MARKERS = (
     "left mouse button",
     "action button",
 )
-LOGGER = logging.getLogger(__name__)
 
 
-# Returns a tuple with the number of affixes.  It's in the format (inherent_num, affixes_num)
+def _is_affix_stop_marker(line: str) -> bool:
+    normalized = line.lower()
+    return any(normalized.startswith(marker) for marker in _AFFIX_STOP_MARKERS) or Dataloader().grammar.startswith(
+        "affix_stop", line
+    )
+
+
 def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[int, int]:
     inherent_num = 0
     affixes_num = 4
-    # We assume these objects have the minimum number of affixes and then try to determine if they have more.
     if item.rarity == ItemRarity.Common:
         affixes_num = 0
     elif item.rarity == ItemRarity.Magic:
@@ -84,22 +78,22 @@ def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[i
         inherent_num = int(_is_charm_slot_unlock(tts_section[start]))
 
     if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic] and item.name is not None:
-        # Uniques can have variable amounts of inherents.
         unique_data = Dataloader().aspect_unique_dict.get(item.name)
         if unique_data is not None and unique_data["num_inherents"] is not None:
             inherent_num = unique_data["num_inherents"]
 
-    # Rares have either 3 or 4 affixes so we have to do special handling to figure out where exactly the affixes end.
-    # This will also grab up slotted gems but we really don't have much choice
     next_line_index = start + inherent_num + affixes_num
     if (
         item.rarity in [ItemRarity.Magic, ItemRarity.Rare]
         and next_line_index < len(tts_section)
-        and not any(tts_section[next_line_index].lower().startswith(x) for x in _AFFIX_STOP_MARKERS)
+        and _is_known_affix_text(tts_section[next_line_index], item.item_type)
+        and not _is_affix_stop_marker(tts_section[next_line_index])
     ):
         affixes_num = affixes_num + 1
-    elif item.rarity == ItemRarity.Legendary and tts_section[start + inherent_num + affixes_num - 1].lower().startswith(
-        "imprinted:"
+    elif (
+        item.rarity == ItemRarity.Legendary
+        and start + inherent_num + affixes_num - 1 < len(tts_section)
+        and Dataloader().grammar.startswith("imprinted", tts_section[start + inherent_num + affixes_num - 1])
     ):
         # Additionally, if someone imprinted a 3 affix rare we'd think it was a legendary so we need to catch those here
         affixes_num = 3
@@ -107,7 +101,7 @@ def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[i
         while (
             next_line_index < len(tts_section)
             and _is_known_affix_text(tts_section[next_line_index], item.item_type)
-            and not any(tts_section[next_line_index].lower().startswith(x) for x in _AFFIX_STOP_MARKERS)
+            and not _is_affix_stop_marker(tts_section[next_line_index])
         ):
             affixes_num += 1
             next_line_index += 1
@@ -119,10 +113,7 @@ def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[i
 
 
 def _compute_affix_layout(tts_section: list[str], item: Item) -> tuple[int, int, list[str], str | None]:
-    """Compute where affixes start/end and what (if any) aspect/set text follows them.
-
-    Returns (inherent_num, affixes_num, affixes, aspect_or_set_text).
-    """
+    """Return inherent count, affix count, affix lines, and following aspect or set text."""
     starting_index = _get_affix_starting_location_from_tts_section(tts_section, item)
     inherent_num, affixes_num = _get_affix_counts(tts_section, item, starting_index)
     affixes = _get_affixes_from_tts_section(tts_section, starting_index, inherent_num + affixes_num)
@@ -160,18 +151,20 @@ def _add_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
 
 def _is_charm_slot_unlock(text: str) -> bool:
     normalized = text.lower()
-    return normalized.startswith("unlocks ") and "charm slot" in normalized
+    grammar = Dataloader().grammar
+    return grammar.contains("charm_slot", text) and (normalized.startswith("unlocks ") or grammar.locale != "enUS")
 
 
 def _add_sigil_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
+    catalog = Dataloader()
     name_index = (
         3 if item.item_type == ItemType.EscalationSigil or item.seasonal_attribute == SeasonalAttribute.bloodied else 2
     )
-    name = tts_section[name_index].split(" in ")[0]
-    item.name = correct_name(name)
+    raw_name = tts_section[name_index]
+    item.name = catalog.resolve_sigil(raw_name, "dungeons") or correct_name(raw_name.split(" in ")[0]) or ""
 
-    start = next((i for i, s in enumerate(tts_section) if "AFFIXES" in s), None)
-    if start:
+    start = next((i for i, line in enumerate(tts_section) if catalog.grammar.contains("affixes_header", line)), None)
+    if start is not None:
         first_affix_index = start + 1
         second_affix_index = start + 3
     else:
@@ -183,10 +176,9 @@ def _add_sigil_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
     affixes = [tts_section[first_affix_index], tts_section[second_affix_index]]
 
     for affix_name in affixes:
-        normalized_name = correct_name(keep_letters_and_spaces(affix_name))
-        if normalized_name is None:
-            normalized_name = ""
-        affix = Affix(name=normalized_name)
+        cleaned_name = keep_letters_and_spaces(affix_name)
+        canonical_name = catalog.resolve_sigil(cleaned_name, "major", "minor", "positive")
+        affix = Affix(name=canonical_name or correct_name(cleaned_name) or "")
         affix.type = AffixType.normal
         item.affixes.append(affix)
 
@@ -196,25 +188,32 @@ def _add_sigil_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
 
 
 def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
+    if len(tts_item) < 2:
+        return None
     item = Item(original_name=tts_item[0])
-    if tts_item[1].endswith(ItemIdentifiers.COMPASS.value):
+    catalog = Dataloader()
+    grammar = catalog.grammar
+    if grammar.identifier_matches(ItemIdentifier.COMPASS.name, tts_item[1], mode="endswith"):
         return _update_item_object(item, rarity=ItemRarity.Common, item_type=ItemType.Compass)
-    if ItemIdentifiers.NIGHTMARE_SIGIL.value.upper() in tts_item[0].upper():
+    if grammar.identifier_matches(ItemIdentifier.NIGHTMARE_SIGIL.name, tts_item[0]):
         if "Nightmare Sigil is used" in tts_item[0]:  # This is actually the crafting screen
             return None
-        if "bloodied" in tts_item[1].lower():
+        if grammar.contains("bloodied", tts_item[1]):
             item.seasonal_attribute = SeasonalAttribute.bloodied
         return _update_item_object(item, item_type=ItemType.Sigil)
-    if tts_item[0].startswith(ItemIdentifiers.ESCALATION_SIGIL.value):
+    if grammar.identifier_matches(ItemIdentifier.ESCALATION_SIGIL.name, tts_item[0], mode="startswith"):
         return _update_item_object(item, item_type=ItemType.EscalationSigil)
-    metadata_parts = tts_item[1].split(" ")
-    descriptor_parts = metadata_parts[1:]
-    if any(part.lower() == ItemType.Tribute.value for part in descriptor_parts):
+    if grammar.identifier_matches(ItemIdentifier.TRIBUTE.name, tts_item[1]):
         item.item_type = ItemType.Tribute
-        item.rarity = _get_item_rarity(metadata_parts[0])
-        item.name = correct_name(" ".join(descriptor_parts))
+        item.rarity = _get_item_rarity(tts_item[1])
+        if item.rarity is None:
+            return None
+        tribute_text = grammar.strip_rarity(tts_item[1], item.rarity.name)
+        item.name = (
+            catalog.resolve_tribute(tts_item[0]) or catalog.resolve_tribute(tribute_text) or correct_name(tribute_text)
+        )
         return item
-    if tts_item[0].startswith(ItemIdentifiers.WHISPERING_KEY.value):
+    if grammar.identifier_matches(ItemIdentifier.WHISPERING_KEY.name, tts_item[0], mode="startswith"):
         return _update_item_object(item, item_type=ItemType.Consumable)
     if any(tts_item[1].lower().endswith(x) for x in ["summoning"]):
         return _update_item_object(item, item_type=ItemType.Material)
@@ -231,7 +230,7 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
         search_string_split = tts_item[1].lower().split(" rune of ")
         item.rarity = _get_item_rarity(search_string_split[0])
         return item
-    if any("Cost : " in value or "Cost:" in value for value in tts_item):
+    if any(grammar.contains("cost", value) for value in tts_item):
         item.is_in_shop = True
     if any(tts_item[1].lower().endswith(x) for x in ["cache"]):
         item.item_type = ItemType.Cache
@@ -247,30 +246,35 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
     if is_consumable(item.item_type):
         search_string_split = tts_item[1].split(" ")
         item.rarity = _get_item_rarity(search_string_split[0])
+        if item.rarity is None:
+            return None
         return item
-    if "bloodied" in tts_item[1].lower():
+    if grammar.contains("bloodied", tts_item[1]):
         item.seasonal_attribute = SeasonalAttribute.bloodied
-    item.is_ancestral = "ancestral" in tts_item[1].lower()
+    item.is_ancestral = grammar.contains("ancestral", tts_item[1])
 
     # Check lines 3-6 instead of just line 4 (handles variable name lengths and gives us flexibility to search for the sanctified marker)
-    if any("sanctified" in tts_item[i].lower() for i in range(3, min(7, len(tts_item)))):
+    if any(grammar.contains("sanctified", tts_item[i]) for i in range(3, min(7, len(tts_item)))):
         item.seasonal_attribute = SeasonalAttribute.sanctified
 
-    search_string = tts_item[1].lower().replace("ancestral", "").replace("bloodied", "").strip()
+    search_string = grammar.strip_terms(tts_item[1], "ancestral", "bloodied")
     search_string = _REPLACE_COMPARE_RE.sub("", search_string).strip()
-    search_string_split = search_string.split(" ")
-    item.rarity = _get_item_rarity(search_string_split[0])
-    starting_item_type_index = 1
-    if item.rarity == ItemRarity.Mythic:
-        starting_item_type_index = 2
-    elif item.rarity == ItemRarity.Common:
-        starting_item_type_index = 0
-    item.item_type = _get_item_type(" ".join(search_string_split[starting_item_type_index:]))
-    item.name = correct_name(tts_item[0])
+    item.rarity = _get_item_rarity(search_string)
+    if item.rarity is None:
+        return None
+    item.item_type = _get_item_type(grammar.strip_rarity(search_string, item.rarity.name))
+    if item.item_type is None:
+        return None
+    raw_name = correct_name(tts_item[0]) or ""
+    item.name = (
+        catalog.resolve_unique(tts_item[0]) or raw_name
+        if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic]
+        else raw_name
+    )
     if item.name in Dataloader().bad_tts_uniques:
         item.name = Dataloader().bad_tts_uniques[item.name]
     for line in tts_item:
-        if "item power" in line.lower():
+        if grammar.contains("item_power", line):
             item_power = find_number(line)
             if item_power is None:
                 return None
