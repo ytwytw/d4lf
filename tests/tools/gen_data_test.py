@@ -12,10 +12,8 @@ def test_set_tagged_seal_affix_normalises_with_set_name() -> None:
 
 def test_excluded_seal_affix_patterns_match_charm_set_powers() -> None:
     excluded_keys = [
-        "when_you_gain_a_stack_of_stoicism_gain_damage_for_second",
         "while_at_least_might_charms_equipped_all_your_damage_bonuses_are_equal_to_your_highest_damage_type_bonus",
         "while_bravery_charm_equipped_every_critical_strike_grants_you_critical_strike_damage_for_seconds_up_to",
-        "while_in_a_feral_rage_your_werewolf_skills_gain_attack_speed",
     ]
 
     assert [
@@ -25,6 +23,11 @@ def test_excluded_seal_affix_patterns_match_charm_set_powers() -> None:
         or (key.startswith("while_at_least_") and "_charms_equipped_" in key)
         or "_charm_equipped_" in key
     ] == excluded_keys
+
+
+def test_internal_gurtest_affixes_are_excluded_before_localisation() -> None:
+    assert gen_data.is_internal_test_affix_name("Talisman_SealAffix_Legendary_Druid_Bear_01_GURTEST")
+    assert not gen_data.is_internal_test_affix_name("Talisman_SealAffix_Set_Generic_01_AllDamage")
 
 
 def test_merge_custom_data_handles_list_and_nested_overrides(tmp_path, monkeypatch) -> None:

@@ -3,6 +3,6 @@
     "schema_version": 1,
     "source_manifest": {
         "path": "source-manifest.json",
-        "sha256": "37d7ea5504f994e20aa89634b31e265a5da8b94278841e7974f441e9c31889ac"
+        "sha256": "f28d132ceeb979bb3414905071d360260c9fb7c2dba01051083b275ce04ac00c"
     }
 }

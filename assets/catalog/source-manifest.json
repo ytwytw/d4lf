@@ -8892,11 +8892,6 @@
             "text": "bliss of the multitude ultimate skill damage"
         },
         {
-            "source_sha256": "d3458ab052e49de3a7cf0dea57ee90f65c1d6fa1eb120c50c8f6a12d8cd817c8",
-            "stable_id": "seals_affixes:blood_hunt_also_increases_your_damage_by",
-            "text": "blood hunt also increases your damage by"
-        },
-        {
             "source_sha256": "4b38347fa04c0a708829e48afd855df74f6c885ed3aed37031a4393ff4d0d7ef",
             "stable_id": "seals_affixes:bloodletters_flow_bleeding_damage",
             "text": "bloodletters flow bleeding damage"
@@ -9192,11 +9187,6 @@
             "text": "critical strike damage"
         },
         {
-            "source_sha256": "12acca8bbabda79eb5c589920b28d92616ae8097a7ae6be51e01ac537a378efa",
-            "stable_id": "seals_affixes:critical_strikes_with_your_earth_skills_grants_fortify_for_of_your_maximum_life",
-            "text": "critical strikes with your earth skills grants fortify for of your maximum life"
-        },
-        {
             "source_sha256": "8ced897d3fb3b22509340d3fc956705b1cf535f0b7bd906ef509f881ef153948",
             "stable_id": "seals_affixes:cruel_fate_lucky_hit_chance",
             "text": "cruel fate lucky hit chance"
@@ -9210,11 +9200,6 @@
             "source_sha256": "6f5a5c61ccdbd8ff2a620d28c86c721feda2dcc809d23b29e1983af5cc50bd85",
             "stable_id": "seals_affixes:damage",
             "text": "damage"
-        },
-        {
-            "source_sha256": "8a9c64383b8f3de03653824ca96e059e382b493d6fb315b6600f4b5af3254725",
-            "stable_id": "seals_affixes:dancing_bolts_gain_critical_strike_chance",
-            "text": "dancing bolts gain critical strike chance"
         },
         {
             "source_sha256": "91e7eb46d53c3ac394de686ed5cb74b249396bc39a2d46561c3a1cf13fba99a5",
@@ -9250,11 +9235,6 @@
             "source_sha256": "68f59df4675995f6f7cf66b7e140891ca269bc6a9b6a8fc08cb84085c9f3e8aa",
             "stable_id": "seals_affixes:dexterity",
             "text": "dexterity"
-        },
-        {
-            "source_sha256": "a8a039761d05242bfe71fd7539df959a4d0ff06f39a94594e48785e7b9b524dc",
-            "stable_id": "seals_affixes:explosions_caused_by_your_feral_rampage_grant_stack_of_ferocity",
-            "text": "explosions caused by your feral rampage grant stack of ferocity"
         },
         {
             "source_sha256": "5fba66ae1d29d4f3298f015fa8b399d8eeb0cd47e4515d6fcbfe36d66c426e96",
@@ -9315,21 +9295,6 @@
             "source_sha256": "85082e1f3e17dcd787b96f18e6e8b35373315bf378eb33dc850fbfa80baf7f8a",
             "stable_id": "seals_affixes:fulcrum_of_mefis_ranks_to_lesser_demon_skills",
             "text": "fulcrum of mefis ranks to lesser demon skills"
-        },
-        {
-            "source_sha256": "b24ce87f751683dfd4d65d5cc08148eaf9f9f91b3b67a1bbabf4e14e57fcb996",
-            "stable_id": "seals_affixes:gain_overpower_each_time_you_petrify_an_enemy",
-            "text": "gain overpower each time you petrify an enemy"
-        },
-        {
-            "source_sha256": "9d6fd8afa53757e4149b6c47f1fea94cd695396597b6b4b429ae38221f2a1f9a",
-            "stable_id": "seals_affixes:gain_thorns_while_in_werebear_form",
-            "text": "gain thorns while in werebear form"
-        },
-        {
-            "source_sha256": "3e455b2d595b2a1867f9484ca8ab514874317c9c0b958170e7446ed2ad659a00",
-            "stable_id": "seals_affixes:gain_werewolf_skill_cost_reduction_while_you_have_an_active_set_bonus",
-            "text": "gain werewolf skill cost reduction while you have an active set bonus"
         },
         {
             "source_sha256": "eec85910ec9f43a725a04d26c0778074c9decdfddd4c0f585a2b905b4229c550",
@@ -9407,26 +9372,6 @@
             "text": "intelligence"
         },
         {
-            "source_sha256": "36235c70944f0d648aee8e46d35f225564dd9530bcb48389ba583bd4e905175a",
-            "stable_id": "seals_affixes:killing_a_blood_hunted_target_extends_the_duration_of_your_feral_rage_by_seconds",
-            "text": "killing a blood hunted target extends the duration of your feral rage by seconds"
-        },
-        {
-            "source_sha256": "de21cf793d0f3448dffa9d71fb522b7f1b02e53671bc898d9b4ba49424cb5355",
-            "stable_id": "seals_affixes:killing_a_blood_hunted_target_grants_stack_of_ferocity",
-            "text": "killing a blood hunted target grants stack of ferocity"
-        },
-        {
-            "source_sha256": "be0811b99c3e8f52a549d5eded1be1878c5d4930a0c6bbe9c00e1e2e84fa96e0",
-            "stable_id": "seals_affixes:killing_a_petrified_enemy_restores_of_your_maximum_life",
-            "text": "killing a petrified enemy restores of your maximum life"
-        },
-        {
-            "source_sha256": "606bc30c6ddff72fc96d00bba3ba02a6b61916a37b2b91d5eb5c47c065a803eb",
-            "stable_id": "seals_affixes:killing_an_enemy_extends_your_wild_lightning_by_seconds",
-            "text": "killing an enemy extends your wild lightning by seconds"
-        },
-        {
             "source_sha256": "8303a572bc2a103f1e113269eb84f65dd2239649455980c3cbe5fe9f4613a85d",
             "stable_id": "seals_affixes:kwatlis_grace_attacks_reduce_evades_cooldown_by_seconds",
             "text": "kwatlis grace attacks reduce evades cooldown by seconds"
@@ -9495,11 +9440,6 @@
             "source_sha256": "4e745211d64e55e492f143d862c9a973733eea638bd61c0b0a145cd06515921a",
             "stable_id": "seals_affixes:lethality_critical_strike_damage",
             "text": "lethality critical strike damage"
-        },
-        {
-            "source_sha256": "7eb05dab4d77776c63555396f9d7f89f9b8f6a54e1bf53c6dec7bd88ad69c9c8",
-            "stable_id": "seals_affixes:lightning_strikes_grant_you_attack_speed_stacking_up_to_times",
-            "text": "lightning strikes grant you attack speed, stacking up to times"
         },
         {
             "source_sha256": "7a3c56c8452e275be83c47279b206f72a52ac54b6e0a48b055577d8f410bfa3a",
@@ -10037,11 +9977,6 @@
             "text": "spellbound steel shadow damage"
         },
         {
-            "source_sha256": "a089e07e5f355217ede6abcca56dae83b8012033f497530ed2bad376dc4e7039",
-            "stable_id": "seals_affixes:stoicism_also_grants_damage_reduction_per_stack",
-            "text": "stoicism also grants damage reduction per stack"
-        },
-        {
             "source_sha256": "5be1c1fe19c5efdf7d85b585749a7df3c1886b6bfba297cd84a1d2694db00a6f",
             "stable_id": "seals_affixes:storm_shepherds_call_lightning_damage",
             "text": "storm shepherds call lightning damage"
@@ -10202,21 +10137,6 @@
             "text": "way of the blurring blade to nearby enemies"
         },
         {
-            "source_sha256": "b93c60b2fb9a24731ca3ea2b2c8f3b0f7e78237f75512483d89f05f545d293f9",
-            "stable_id": "seals_affixes:werebear_skills_deal_more_damage_while_you_have_an_active_set_bonus",
-            "text": "werebear skills deal more damage while you have an active set bonus"
-        },
-        {
-            "source_sha256": "6ce0cd350aa79d3257edf7b5ec1ee201fd79fa692f27dacaaf178c8b94ac1010",
-            "stable_id": "seals_affixes:werewolf_form_grants_damage_while_you_have_an_active_set_bonus",
-            "text": "werewolf form grants damage while you have an active set bonus"
-        },
-        {
-            "source_sha256": "22f268e5f46d62200e82a0a964ec7d4e71a1290bbdeec976a176f7064dc060ee",
-            "stable_id": "seals_affixes:wild_lightning_summons_extra_dancing_bolts",
-            "text": "wild lightning summons extra dancing bolts"
-        },
-        {
             "source_sha256": "6391bfbe9ef03e0dcb1c2a56108fe23b6a632a56b145c8751f9b7fff1738d18e",
             "stable_id": "seals_affixes:willpower",
             "text": "willpower"
@@ -10280,36 +10200,6 @@
             "source_sha256": "9c9a912cd36a7a755ffcb868d77dc862fd70803d842524520469ff402bb0a2b4",
             "stable_id": "seals_affixes:wumbas_embrace_thorns",
             "text": "wumbas embrace thorns"
-        },
-        {
-            "source_sha256": "a36f6777f9968066a52e5350a6f74f702ed0577b0a6cef706d351a068f7c64f1",
-            "stable_id": "seals_affixes:you_deal_more_damage_to_fosillized_enemies",
-            "text": "you deal more damage to fosillized enemies"
-        },
-        {
-            "source_sha256": "b44fd9ea66aef8bc4b78ab17ee77f193533e7dd893c591dbe0d10518df7a668c",
-            "stable_id": "seals_affixes:you_deal_more_lightning_damage_while_you_have_a_set_bonus_active",
-            "text": "you deal more lightning damage while you have a set bonus active"
-        },
-        {
-            "source_sha256": "fe6dcc8fa17875e9891616dc892922707c43cadbce39d3d79564896777608e51",
-            "stable_id": "seals_affixes:you_gain_movement_speed_while_rampaging",
-            "text": "you gain movement speed while rampaging"
-        },
-        {
-            "source_sha256": "3665e6776ba7246c9623a90e2bed4d0c07d3bdc682824b97aac6b822aedd582a",
-            "stable_id": "seals_affixes:your_earth_skills_deal_more_damage_to_crowd_controlled_enemies",
-            "text": "your earth skills deal more damage to crowd controlled enemies"
-        },
-        {
-            "source_sha256": "a1347ceb9adada7f8200daf66e2923e70db0bec2c12913676acd34aab46d09bb",
-            "stable_id": "seals_affixes:your_rock_fragments_deal_more_damage",
-            "text": "your rock fragments deal more damage"
-        },
-        {
-            "source_sha256": "06edc1b54f52ad19a193165a5e80844a24951765277e8db0ba9ea9b997eafab7",
-            "stable_id": "seals_affixes:your_storm_skills_cost_more_spirit_but_deal_more_damage",
-            "text": "your storm skills cost more spirit, but deal more damage"
         },
         {
             "source_sha256": "36563106bd824f3384270cd912443bfc8e37da979b0d5c9bfc3a8f4cbe77ff59",

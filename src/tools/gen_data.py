@@ -32,11 +32,7 @@ from src.tools.gen_data_helpers import (
 
 D4LF_BASE_DIR = Path(__file__).parent.parent.parent
 
-EXCLUDED_SEAL_AFFIX_KEYS = {
-    "when_you_gain_a_stack_of_stoicism_gain_damage_for_second",
-    "while_in_a_feral_rage_your_werewolf_skills_gain_attack_speed",
-    "cannot_have_more_than_sockets_but_can_equip_unique_charms",
-}
+EXCLUDED_SEAL_AFFIX_KEYS = {"cannot_have_more_than_sockets_but_can_equip_unique_charms"}
 
 
 class AffixGenerationContext(TypedDict):
@@ -136,6 +132,10 @@ def is_placeholder_or_test_name(name) -> bool:
         return True
 
     return name.startswith("ph_")
+
+
+def is_internal_test_affix_name(name: str) -> bool:
+    return name.casefold().endswith("_gurtest")
 
 
 def check_ms(input_string) -> str:
@@ -430,6 +430,8 @@ def generate_affixes(d4data_dir: Path, language: str, output_file: Path | None =
     for affix_file in affix_files:
         affix_data = load_json_file(affix_file)
         affix_name = Path(affix_data["__fileName__"]).stem
+        if is_internal_test_affix_name(affix_name):
+            continue
         is_seal_affix = affix_name.startswith("Talisman_SealAffix_")
         is_charm_affix = affix_name.startswith("Talisman_Charm_")
         if affix_data.get("eMagicType") != 0 and not is_seal_affix:

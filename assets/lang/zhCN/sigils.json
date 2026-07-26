@@ -224,7 +224,7 @@
         "lesser_aegis": "次级壁垒 这里的一些怪物获得一个相当于 50% 生命上限的屏障。",
         "lightning_strikes": "闪电攻击 怪物额外造成相当于其物理伤害 20% 的闪电伤害。",
         "melee_defenders": "近战抵御 怪物承受的近距目标伤害降低 40%",
-        "monster_barrier": "",
+        "monster_barrier": "怪物屏障 怪物获得一个相当于 30% 生命上限的屏障。",
         "monster_bleed_resist": "怪物流血抵抗 怪物承受的流血伤害降低 60%。",
         "monster_burning_resist": "怪物燃烧抵抗 怪物承受的燃烧伤害降低 60%。",
         "monster_cold_resist": "怪物冰霜抵抗 怪物承受的冰霜伤害降低 40%。",

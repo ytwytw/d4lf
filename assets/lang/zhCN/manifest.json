@@ -3,51 +3,51 @@
     "files": [
         {
             "path": "affixes.json",
-            "sha256": "d3767ef8f4e34af791612c49e949b61b4e1cf813e082d6e3ffc98bad4469a631"
+            "sha256": "5a0d609078c9ef2ed35f6241922ee8a07f65c79e17e1a150f4f0c27a42a06cd8"
         },
         {
             "path": "aspects.json",
-            "sha256": "e7169d4a4131d0373a258b77359879d3999af239a9fa67a95090eba1a655c722"
+            "sha256": "09c1c4e0efd9f00ee17d9b8379163f94b33ce150dc4c11cc8a0700714622588a"
         },
         {
             "path": "charms_affixes.json",
-            "sha256": "b7d5fa281d5dbed5d355c66b5c29a7a47fb3434e2d187e6207e1ae7c6a6282d8"
+            "sha256": "01c54ec0fb9c15bfb1f72406069e7a4c6dd387f1b97061008e018df9ef3c1d48"
         },
         {
             "path": "corrections.json",
-            "sha256": "feab8dbb58050f692ae1394e050f48c939052a762347d133fe2051caa8144b71"
+            "sha256": "c167aba50f686207bae049e1a9d825c83bcf44e660cd10fc15963dee7b05dbf1"
         },
         {
             "path": "grammar.json",
-            "sha256": "d47dd2fcc7fb3b37c7d81e6340a9d8e817a1db90a6663f92942cb2e2b7a9d3d0"
+            "sha256": "f09a76e93fd776f4b38e82da5f5c19635685d0ec4b47691ce1b1e1bebdb17ed2"
         },
         {
             "path": "item_types.json",
-            "sha256": "dd5e584112cd62e4099d410ccfa06cddbbcf9e6b1bee069056a579e1d5b4f702"
+            "sha256": "ba7039ee70f0246b3b49e45fb303a83d59948b8d48f9a49ed9f50381b0824a65"
         },
         {
             "path": "seals_affixes.json",
-            "sha256": "33185bce55989c5ac4a71632a2a8782b47dbea6c311612da1da8393fc4933caf"
+            "sha256": "f5fa128f0f7fdb8190ab4f2dba09d4e6671ac97d1bc253817d56da0a46e71817"
         },
         {
             "path": "sets.json",
-            "sha256": "199834c73550c741e74174509fd689ba7e4e553ac5b9f705bc7eeda742c6c8ce"
+            "sha256": "ee0d91a95873ee5c823ee1f9600f25dfc72c8ae48cd3d3e063e034dd5a7af484"
         },
         {
             "path": "sigils.json",
-            "sha256": "30624f37c1abc9662d15ca29829a2634d8924fac7574e64d98618c7b2dc9f6ca"
+            "sha256": "1697cd8b93b31b3b20564533294b2666ec11a9638f8690c1c22e3fd5bdb7df45"
         },
         {
             "path": "tooltips.json",
-            "sha256": "e71e8f716c04bfbfe8647ed24084dba05daec123cd06457ea4f44568ca5a93c0"
+            "sha256": "109629d62706bb2dcb345d7ff109ec6b6991399f59a215b76b39c7e0a7b30718"
         },
         {
             "path": "tributes.json",
-            "sha256": "86e8af5ed41d3479dabd8f3e27c1ffc249ee80c5b80197ff05fabad8ca1de191"
+            "sha256": "6a16f0e562b518dc0c9f5cbdf9388727f99efb4fab84979638e096dd1b422baa"
         },
         {
             "path": "uniques.json",
-            "sha256": "686d07d021db3494920e36c8b8b91b4e6ef96d7e59ee29d94b6c0b8254c9ad7c"
+            "sha256": "427a5f7a2db0f0f013ff67606b28c222275cb6dac56f06526590d6f463a96c47"
         }
     ],
     "locale": "zhCN",
@@ -194,6 +194,16 @@
             }
         },
         {
+            "source_sha256": "0748bf5f57ce0ed00a09964d93882d5e748011e115668052916a4a87fffac7e1",
+            "stable_id": "affixes:armor_and_resistance_to_all_elements_while_you_have_three_or_more_growth_&_decay_witch_powers_equipped_you_gain_maximum_life_and_unhindered",
+            "text": "160 点护甲值和 全元素抗性。当你至少装备有三个增长与衰亡巫术师法能时：主核心属性提高 ，生命上限提高 ，且处于无束状态。",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "affixes:armor_and_resistance_to_all_elements_while_you_have_three_or_more_growth_&_decay_witch_powers_equipped_you_gain_maximum_life_and_unhindered",
+                "translation_sha256": "6cc150c9b0c26ba1f20177487b7ea73407369bad99a0a68cf44c1c41ac3b77cc"
+            }
+        },
+        {
             "source_sha256": "bc5c70a74d12a7d638ab9fdba524a43d369f6845964f7c91b17b8ca2363dd75e",
             "stable_id": "affixes:armor_in_arbiter_form",
             "text": "在仲裁官形态下的护甲值",
@@ -221,6 +231,16 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:attack_speed",
                 "translation_sha256": "bf1835a0e3f0fdc804436ad071b42743ad113a76d7a8d1a93e3c6c12039329e6"
+            }
+        },
+        {
+            "source_sha256": "89ba28df912b05e5f032cccddb6641ef76822cfd55b2d55c5a13bbd3f2c9420b",
+            "stable_id": "affixes:attack_speed_for_seconds_after_casting_a_defensive_skill",
+            "text": "施放一次防御技能后，攻击速度 ，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:attack_speed_for_seconds_after_casting_a_defensive_skill",
+                "translation_sha256": "2dd905a6b234268aabb9d286231a45de2aaad45831774b39c54fb80c9316e487"
             }
         },
         {
@@ -898,9 +918,8 @@
             "stable_id": "affixes:chance_for_minion_attacks_to_fortify_you_for_maximum_life",
             "text": "仆从攻击强固你 生命上限的几率",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Fortify_Necro_Pet_Tier3:2008147:x1",
-                "source_record_sha256": "e6c00cb4b8bed24e185da78c4f45545eef7d74d2a843e2948d3cdb7ce5e480cc",
+                "provider": "diablo4_companion",
+                "source_id": "affixes:chance_for_minion_attacks_to_fortify_you_for_maximum_life",
                 "translation_sha256": "287b4d90cae8806b238b4677a734dc57f34d42abe38b54878897ae58b0b90f5e"
             }
         },
@@ -1613,6 +1632,16 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:damage_for_seconds_after_dodging_an_attack",
                 "translation_sha256": "7ea05ac27e5f13b1d5aa9b1d2bdf8a759e0550cf53b99638eefa8f86bbc59158"
+            }
+        },
+        {
+            "source_sha256": "5a23e013ad44ad70909b4b91510a73fecf5d76e0750015c1403cd4241346f8c1",
+            "stable_id": "affixes:damage_for_seconds_after_gaining_resolve",
+            "text": "伤害；在获得决断后持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:damage_for_seconds_after_gaining_resolve",
+                "translation_sha256": "70b947676ffae44627b0d512610f8eda87e611f50e68a592ffcfd25322c976fc"
             }
         },
         {
@@ -2487,6 +2516,16 @@
             }
         },
         {
+            "source_sha256": "ac8bf4ac08664af157a25cd5a2dd5e9780122607542e886786beeba466a5499e",
+            "stable_id": "affixes:drinking_a_potion_grants_movement_speed_for_seconds",
+            "text": "饮用药水给予的移动速度，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:drinking_a_potion_grants_movement_speed_for_seconds",
+                "translation_sha256": "7844829d82d1437100c267a045272d4f8caf24d9a998f93251122e50eb4091a2"
+            }
+        },
+        {
             "source_sha256": "4d09d053dfe9c426bc0e12d94373e5d6a95a1f5d8cd267a04e1718c0e8d91ee2",
             "stable_id": "affixes:dust_devil_damage",
             "text": "尘魔伤害",
@@ -2697,6 +2736,16 @@
             }
         },
         {
+            "source_sha256": "4281383c20fea92141e44ee433cf04cd172baf0a7f505d2150ce4745e12fbf04",
+            "stable_id": "affixes:evade_grants_attack_speed_for_seconds",
+            "text": "闪避给予的攻击速度，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:evade_grants_attack_speed_for_seconds",
+                "translation_sha256": "f6e90bcfc605548f26fe3e226461be820dfefdea6ac32de3d7e45447e229f193"
+            }
+        },
+        {
             "source_sha256": "42cbbab39fb1247021ab6b060bcb37b47e2551be4d3f67ab779399b8d4822029",
             "stable_id": "affixes:evade_grants_movement_speed_for_seconds",
             "text": "闪避给予的移动速度，持续 秒",
@@ -2717,23 +2766,33 @@
             }
         },
         {
-            "source_sha256": "67fd16aec6ef4cdbfd16ddd08326a74c1660cd3503bfb844dbb47cf4610a210a",
-            "stable_id": "affixes:faith_on_kill",
-            "text": "消灭获得 信仰",
+            "source_sha256": "72d9512455554ee7c22c79d727f09f6e8408f71f715e438b60f638a9a0378c9f",
+            "stable_id": "affixes:evade_leaves_behind_desecrated_ground_for_seconds",
+            "text": "闪避时会留下一片亵渎之地，持续 秒",
             "translation_source": {
                 "provider": "diablo4_companion",
+                "source_id": "affixes:evade_leaves_behind_desecrated_ground_for_seconds",
+                "translation_sha256": "c31e44c024ee7d79a39ad91d7e42fd95aab2e0fcefef7ee2ad0cbf5e22b0aae8"
+            }
+        },
+        {
+            "source_sha256": "67fd16aec6ef4cdbfd16ddd08326a74c1660cd3503bfb844dbb47cf4610a210a",
+            "stable_id": "affixes:faith_on_kill",
+            "text": "消灭获得 信念",
+            "translation_source": {
+                "provider": "reviewed_override",
                 "source_id": "affixes:faith_on_kill",
-                "translation_sha256": "a784cec1d961c19c4c280f3432ee30b893d8bc3baa375d1769a5f0667cdeed8c"
+                "translation_sha256": "bd4cef1e276dcabd5c45a3a041c9e00c8bc89984c8397aca9c3ec5f446eb2a16"
             }
         },
         {
             "source_sha256": "2d0a97758d61592c98a6c8ef630fe440bf6849a27d90e9372eb06238b8ee6f90",
             "stable_id": "affixes:faith_regeneration",
-            "text": "信仰回复",
+            "text": "信念回复",
             "translation_source": {
-                "provider": "diablo4_companion",
+                "provider": "reviewed_override",
                 "source_id": "affixes:faith_regeneration",
-                "translation_sha256": "7ffe24d0dffa5c25a4fbdceb7af0b7792e4fb0a007a85d1855364147f3095db1"
+                "translation_sha256": "060902cf198cc8032c245618563f618143941de1b6476d6f41ac5ab641dd6ce1"
             }
         },
         {
@@ -2774,6 +2833,76 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:fanaticism_aura_potency",
                 "translation_sha256": "6d99855a4f216f60efa14988682693aa03c84f39581c03556eb5ec0489c1f8b4"
+            }
+        },
+        {
+            "source_sha256": "b5604e8fee4f3053a68c6ba8343fd34a00c3ddf478ed75fb101e5cf12abdae62",
+            "stable_id": "affixes:feast_every_kills_chains_hook_nearby_enemies",
+            "text": "盛宴: 每 次击杀，用锁链钩拽 名附近的敌人",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:feast_every_kills_chains_hook_nearby_enemies",
+                "translation_sha256": "602f50dd411ae09d747a2e82558d21eb74409c116b89c9f8f8cf31525c016715"
+            }
+        },
+        {
+            "source_sha256": "9071e7d7a4319dcbf31e339103070592da2451cb29a82cb02c2b5eb6cd27a2cf",
+            "stable_id": "affixes:feast_every_kills_gain_berserking_for_seconds",
+            "text": "盛宴: 每 次击杀，获得狂暴效果，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:feast_every_kills_gain_berserking_for_seconds",
+                "translation_sha256": "6517a139cb28d4e8fc20f26bca54d9210175af4dd70b149af17a08c1c40e0e2c"
+            }
+        },
+        {
+            "source_sha256": "7505c6c55f129a1b3c3ca8608b19c0cddbb4b49da3ebca53acc27f5a36fab8f4",
+            "stable_id": "affixes:feast_every_kills_release_a_bloodsplosion_for_damage",
+            "text": "盛宴: 每 次击杀，释放一次血爆，造成 点伤害",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:feast_every_kills_release_a_bloodsplosion_for_damage",
+                "translation_sha256": "266c657509b1f4e42260ee268bcebb9e95d2a38c5cbaa82de430645d9e306dff"
+            }
+        },
+        {
+            "source_sha256": "386f8adbd6eda1328d6995d23ee7bfafe66a64df4f1459cf5688911b80b855b8",
+            "stable_id": "affixes:feast_every_kills_reset_random_cooldowns",
+            "text": "盛宴: 每 次击杀，随机重置 个技能的冷却时间",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:feast_every_kills_reset_random_cooldowns",
+                "translation_sha256": "61cd62704c4cd89314a9d08d3b55235d05206f2d3cfb348f0ac7845cdfc0df3a"
+            }
+        },
+        {
+            "source_sha256": "ab3cd8d603e68489ded4da7d97f24adb4c5aa308f364b455fc980497d4d5fc79",
+            "stable_id": "affixes:feast_every_kills_restore_of_your_maximum_primary_resource",
+            "text": "盛宴: 每 次击杀，恢复 的主要资源上限",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:feast_every_kills_restore_of_your_maximum_primary_resource",
+                "translation_sha256": "8b36e09e7c1220b7ed0e87ba862b193b941b61b19fa37ad65f0a173ef43e8c1f"
+            }
+        },
+        {
+            "source_sha256": "fcdb40e64581c8e7318fdb68b26d8f1abf436dcf06d79db339b3dea5e2b7ec0d",
+            "stable_id": "affixes:feast_every_kills_savagely_bite_times_for_damage_and_apply_vulnerable",
+            "text": "盛宴: 每 次击杀，野蛮噬咬目标 次，造成 点伤害并施加易伤",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:feast_every_kills_savagely_bite_times_for_damage_and_apply_vulnerable",
+                "translation_sha256": "358ec452fffe9ed8386f25f53600f37788d11fd343f22a24138400287bb03cda"
+            }
+        },
+        {
+            "source_sha256": "8bdd967ff5b03d34ead06040b185b223b02ec644c4d361ee997d307403a8323e",
+            "stable_id": "affixes:feast_every_kills_your_next_core_skill_cast_deals_additional_damage",
+            "text": "盛宴: 每 次击杀，你的下一个核心技能造成 额外伤害",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:feast_every_kills_your_next_core_skill_cast_deals_additional_damage",
+                "translation_sha256": "b385e05b4591dbf14de573d8f05f6ec56492ee1cc56c637c1a387dbd65e30bfa"
             }
         },
         {
@@ -3057,6 +3186,16 @@
             }
         },
         {
+            "source_sha256": "eb43ac7f58cb7ba354213fee046a08e3da9477e524b0e1e2ee504442d9e8ac64",
+            "stable_id": "affixes:hammer_of_the_ancients_damage_for_seconds_after_an_earthquake_explodes",
+            "text": "撼地重击爆炸后，先祖之锤的伤害 ，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:hammer_of_the_ancients_damage_for_seconds_after_an_earthquake_explodes",
+                "translation_sha256": "b8392c703a650357829eea296c4fccbf4f298904fcb58987df0773ddac82eec8"
+            }
+        },
+        {
             "source_sha256": "e6ef6d0e60815cfc126b3ffa1f94501a95566434eb6c9b9ce2b5292dc6ea67ce",
             "stable_id": "affixes:healing_received",
             "text": "受到的治疗",
@@ -3087,6 +3226,16 @@
             }
         },
         {
+            "source_sha256": "b27b868860276060078d5ebf86f592fb9e90d1b984c39d8c7b3058155b94657a",
+            "stable_id": "affixes:hewed_flesh_grants_maximum_life_as_barrier_for_seconds",
+            "text": "凿削血肉给予 生命上限的屏障，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:hewed_flesh_grants_maximum_life_as_barrier_for_seconds",
+                "translation_sha256": "07f2281065ec272d9f411c0b5eb3f799a6d8ee668ba3c90b805f1bbd115d7ba8"
+            }
+        },
+        {
             "source_sha256": "b087cfeba1854b4b4c63316a2856c460ee51c23c769aa75f77f390d29efbf0bf",
             "stable_id": "affixes:holy_bolt_resource_generation",
             "text": "神圣之击资源生成量",
@@ -3107,6 +3256,17 @@
             }
         },
         {
+            "source_sha256": "3a1c9d1d179a3890525dd0b31273b417db648632409e46acbe3a656ba7e777bc",
+            "stable_id": "affixes:holy_damage_multiplier",
+            "text": "x 神圣 伤害增倍",
+            "translation_source": {
+                "provider": "d2core",
+                "source_id": "affix:X2_DamageType_Holy:2558719:x1",
+                "source_record_sha256": "aeaf174f0414ba5852c2d634bfd8e44d1da372e92ad0a65a541b69c5ee380dcb",
+                "translation_sha256": "06d4a4b4824d6576ba1f84f4d9b8021e48bd7eabfcdc3f8804b1e139929c5f9c"
+            }
+        },
+        {
             "source_sha256": "2588cf9393e517bd813eea364a0203569e914e94d3907708c91bc9888266b0ed",
             "stable_id": "affixes:holy_light_aura_potency",
             "text": "圣光光环 强度",
@@ -3124,6 +3284,46 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:human_damage",
                 "translation_sha256": "88a17ad9ea72e9233401a17f5e90a44b97471aeb87e6dc4c84f2caef0e1e3d41"
+            }
+        },
+        {
+            "source_sha256": "3214f52ef677bd284f02ae31133824c8298cd88c20ec3126d9ffd2ec7fc7a8ec",
+            "stable_id": "affixes:hunger_after_you_cast_a_basic_skill_chance_for_kill_to_your_kill_streak",
+            "text": "饥渴: 每次施放基础技能后，有 的几率使你的连杀数",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:hunger_after_you_cast_a_basic_skill_chance_for_kill_to_your_kill_streak",
+                "translation_sha256": "4e983820049ade6853716f3a291fc5a5e7ab6f88b02c864375d9737f70b885fb"
+            }
+        },
+        {
+            "source_sha256": "5db26f2cbbc3afb697d31b10b6d1f2066061019bbf4b75e3147dc43db1134f33",
+            "stable_id": "affixes:hunger_after_you_cast_a_cooldown_kill_to_your_kill_streak",
+            "text": "饥渴: 施放一个带有冷却时间的技能后，你的连杀数",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:hunger_after_you_cast_a_cooldown_kill_to_your_kill_streak",
+                "translation_sha256": "14a314adfaf5d5cd636cb4f803c402817b6adb424afd362f2fdb2aff9f3d162e"
+            }
+        },
+        {
+            "source_sha256": "f115f729efa8e047ba281bb4158ae6f49c54aa27be8a71e6fcca57f062b570b9",
+            "stable_id": "affixes:hunger_after_you_kill_an_enemy_chance_for_kill_to_your_kill_streak",
+            "text": "饥渴: 击杀一名敌人后，有 的几率使你的连杀数",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:hunger_after_you_kill_an_enemy_chance_for_kill_to_your_kill_streak",
+                "translation_sha256": "509248b3da4a54e5d30b785c4d0988e0215762d78dc74ee2811d20a0c0080e75"
+            }
+        },
+        {
+            "source_sha256": "66ce5f2de57ec4d3c9aa416b60e2283c3f0c0119879f1f699ee54f869c69a4dd",
+            "stable_id": "affixes:hunger_every_resource_chance_for_kill_to_your_kill_streak",
+            "text": "饥渴: 每 点资源，有 的几率使你的连杀数",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:hunger_every_resource_chance_for_kill_to_your_kill_streak",
+                "translation_sha256": "97e5dacff8fae16f3ca810f9ae06dce1fa8f3ccae0a2047af550ef5f76611aa3"
             }
         },
         {
@@ -3184,6 +3384,16 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:hunger_increased_chance_for_runes_during_your_kill_streaks",
                 "translation_sha256": "d1a02459aba05e2a10c291920a76e834e53e6f89a4ed0420d267255570b7604c"
+            }
+        },
+        {
+            "source_sha256": "d46c615b73ae30954c76a974dc46bfd571e078a065a6f69439593978189e0a67",
+            "stable_id": "affixes:hunger_lucky_hit_up_to_a_chance_for_kill_to_your_kill_streak",
+            "text": "饥渴: 幸运一击: 最多有 的几率使你的连杀数",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:hunger_lucky_hit_up_to_a_chance_for_kill_to_your_kill_streak",
+                "translation_sha256": "9394e5d0ff36931c9cb4ab86b5ff50b337445d3760fe97897b2c7aee3312e8cd"
             }
         },
         {
@@ -3587,6 +3797,16 @@
             }
         },
         {
+            "source_sha256": "bda6bb02b5cf85e7f419579962cdb23468ec736946414f625ef2c24c22692462",
+            "stable_id": "affixes:life_per_seconds",
+            "text": "每 秒回复生命",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:life_per_seconds",
+                "translation_sha256": "fe1ffe46fad60c93e7112a662d908023e034451ac103e55c09a796a65d605c7f"
+            }
+        },
+        {
             "source_sha256": "4ae42089c1a8de340b4f9859e9aaa14e887ae638778564114f597d4d7dcc8e3e",
             "stable_id": "affixes:life_regeneration",
             "text": "生命回复",
@@ -3707,6 +3927,66 @@
             }
         },
         {
+            "source_sha256": "93fdce357aa00d5a5290cc92a9813769b29afa074ba3050ea3f193ead6c779cf",
+            "stable_id": "affixes:lucky_hit_critical_strikes_have_up_to_a_chance_to_daze_for_seconds",
+            "text": "幸运一击：暴击最多有 几率迷惑，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_critical_strikes_have_up_to_a_chance_to_daze_for_seconds",
+                "translation_sha256": "e2099df3f46b1035e2e0e84459491c24bf9df6d032fe5db23e4202ae33d9b5b4"
+            }
+        },
+        {
+            "source_sha256": "61be249646f915cdaf105f2cce198bcecacca838456f4fe9d11d02d2f880e0f5",
+            "stable_id": "affixes:lucky_hit_critical_strikes_have_up_to_a_chance_to_immobilize_for_seconds",
+            "text": "幸运一击：暴击最多有 几率定身，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_critical_strikes_have_up_to_a_chance_to_immobilize_for_seconds",
+                "translation_sha256": "bfa4166d53ea13d05437b5e5f1ed1304193e6221631383aea4e25e1c780d927d"
+            }
+        },
+        {
+            "source_sha256": "450c117c0d426496235dc323d32d98faaaad763e97a0a37c518b62899bf19ebe",
+            "stable_id": "affixes:lucky_hit_critical_strikes_have_up_to_a_chance_to_slow_for_seconds",
+            "text": "幸运一击：暴击最多有 几率减速，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_critical_strikes_have_up_to_a_chance_to_slow_for_seconds",
+                "translation_sha256": "706cdeb3740f3844fd4d9ace9c676bd8d5c6adb406ff6bbb3d90839511efe7b8"
+            }
+        },
+        {
+            "source_sha256": "147567f63ab5ace08a320cc6953391f7e6be67dc7790fa40f38a2b1694b34761",
+            "stable_id": "affixes:lucky_hit_critical_strikes_have_up_to_a_chance_to_stun_for_seconds",
+            "text": "幸运一击：暴击最多有 几率击昏，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_critical_strikes_have_up_to_a_chance_to_stun_for_seconds",
+                "translation_sha256": "e18eb4e2190c1f9f284f2683e49f16bfe773ccc2c8307f9d3f85d2e6589b0f20"
+            }
+        },
+        {
+            "source_sha256": "c0e60cafe6a70364c16e1c93894d51b5fc5a368cab65ec9557dffd8588290e97",
+            "stable_id": "affixes:lucky_hit_up_to_a_bleeding_damage_over_seconds",
+            "text": "幸运一击：最多有 几率在 5 秒内造成 流血伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "affixes:lucky_hit_up_to_a_bleeding_damage_over_seconds",
+                "translation_sha256": "7f30008a03910861d938f95c04795fa53d9534f6a51ccff3473d9d0564c1796d"
+            }
+        },
+        {
+            "source_sha256": "441ed342d00317cfcee8eba4294bf1336fdec75487dfd89245b39a087088cd07",
+            "stable_id": "affixes:lucky_hit_up_to_a_chance_to_apply_a_random_crowd_control_effect_for_seconds",
+            "text": "幸运一击：最多有 的几率施加一个随机的控制效果，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_apply_a_random_crowd_control_effect_for_seconds",
+                "translation_sha256": "4b44e99e133308e2516f883770439f721c0e9253d1e9df137bfcfdeb49e4b38f"
+            }
+        },
+        {
             "source_sha256": "7c1330b77ff0d4c5ff5ffa804d80fd6969868f2d5c71be9312fd2fa6a5ed87ac",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_become_berserking",
             "text": "幸运一击：最多有 几率进入狂暴",
@@ -3719,78 +3999,71 @@
         {
             "source_sha256": "ca36e987adfbd9b27af618fb1eb7b18b79fa078a0ef7de08247236c62d410f49",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_daze_for_seconds",
-            "text": "幸运一击 最多有 几率迷惑 持续 秒",
+            "text": "幸运一击：最多有 几率迷惑，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_Daze_BarbRogue_Tier3:2617979:x1",
-                "source_record_sha256": "11e616bffcb1d47df2b29462c566b8464ae8daa9cece14f2d0f71a3954cb5664",
-                "translation_sha256": "853d7edaa584f6dcf84c6b538094f34f9523d015010ac2a8358ce8437f8d967d"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_daze_for_seconds",
+                "translation_sha256": "7c68b659c3939cb1b1094ac6ddff48c3cc0c3b47d243afcda3817d5b126ed55b"
             }
         },
         {
             "source_sha256": "c571c3de3c4ca7f84ccb3ee6cfa247d62381db5055c51613f6d0224054a54ed4",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_deal_cold_damage",
-            "text": "幸运一击 最多有 几率造成 点冰霜伤害",
+            "text": "幸运一击：最多有 几率造成 点冰霜伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Cold_Tier3:1936576:x1",
-                "source_record_sha256": "610cea8a9fef37e63766ab9f4b8723a424948414b04b61534d23cf630220bacc",
-                "translation_sha256": "fe5e8556f22cae45e7739036ad1449810efb1b233cf7e8a39ced619d725bc185"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_deal_cold_damage",
+                "translation_sha256": "3903a3c1dd45704e77fbcddeb3fee21316b0986c2c00702eb31c3c8b167a271e"
             }
         },
         {
             "source_sha256": "ecca1e22677a54a08d16a3e328af3321c8c85b83339c5ce98a40bedfd93b9867",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_deal_fire_damage",
-            "text": "幸运一击 最多有 几率造成 点火焰伤害",
+            "text": "幸运一击：最多有 几率造成 点火焰伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Fire_Tier3:1936574:x1",
-                "source_record_sha256": "09095fcbb22a48e11aaf281856812831fc43365b44b4fe5995f1165e32a485c2",
-                "translation_sha256": "316635a6e7597adb5aa59c82c7bb5522e0828ba8b83371ec147590023c8b0d9d"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_deal_fire_damage",
+                "translation_sha256": "4506dd6cb2df60c05b87570da7abf498a0166cec244c7bc9e005e11eef5aaf8e"
             }
         },
         {
             "source_sha256": "2307c3ff19f2ba260677de2fb215eb1de099a2046b1baef12e6d4d81a07e1fd9",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_deal_lightning_damage",
-            "text": "幸运一击 最多有 几率造成 点闪电伤害",
+            "text": "幸运一击：最多有 几率造成 点闪电伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Lightning_Tier3:1936578:x1",
-                "source_record_sha256": "641ee490591a96fc11664691b832ba3a63b85527f697a8de56da1a671c50745b",
-                "translation_sha256": "b81d8328396d6ecc268dd6bc8f5510f905ddd23a0bc55400434a56b915f03b9e"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_deal_lightning_damage",
+                "translation_sha256": "00cfa578f587d2c5467deed4da8d1c19fb139c45ea9488f36a2aa8a9cae873b6"
             }
         },
         {
             "source_sha256": "bd689291a4c30fa0a1130e52836ebc13c0f5bf5a9d8a1ad83740c98eb622c484",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_deal_physical_damage",
-            "text": "幸运一击 最多有 几率造成 点物理伤害",
+            "text": "幸运一击：最多有 几率造成 点物理伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Physical_Tier3:1936572:x1",
-                "source_record_sha256": "e39568bed337d3944290fb398d075988a7cd3990c3e9c29d4dd23c2f1a8e69d5",
-                "translation_sha256": "4188e61b46232fc8827e06f8b8ef179c297e0452b07a28b27f8f34a1fc6c9442"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_deal_physical_damage",
+                "translation_sha256": "5b458e674ed39a09d48de699abf8820947e6b5097712ddc01bbffeb07612ee1d"
             }
         },
         {
             "source_sha256": "79216376f89bd0b044be815536ba31526aed05b73d8256603f211f5dd4ba453f",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_deal_poison_damage",
-            "text": "幸运一击 最多有 几率造成 点毒素伤害",
+            "text": "幸运一击：最多有 几率造成 点毒素伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Poison_Tier3:1936580:x1",
-                "source_record_sha256": "ee28fbbaef6d0ef82e7da0a7c6cee7d4dcc565fdf4182c0403d675a7310efca4",
-                "translation_sha256": "f6e9a01edc26df51388262322de0ae16c57e1b74d7ab11b8c91510413b29bbba"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_deal_poison_damage",
+                "translation_sha256": "36f709125dcb9ab5baf87bd0f7652fd45b62dd0a94b3507846712f0e6d88a819"
             }
         },
         {
             "source_sha256": "26ef66feb34b02cb16e476b5eb8fe8dfcf896530e520e2fe5720730a5feb4196",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_deal_shadow_damage",
-            "text": "幸运一击 最多有 几率造成 点暗影伤害",
+            "text": "幸运一击：最多有 几率造成 点暗影伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Shadow_Tier3:1936582:x1",
-                "source_record_sha256": "f6556373b74002b07161983d2a74fdbd818660db3f064931e61b114597391ad2",
-                "translation_sha256": "ac1762b3e6cb4dbe896368306e6901b5bb3700a0045f2527910c40d945b4f086"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_deal_shadow_damage",
+                "translation_sha256": "9529aab6fc3e0081dc130a0c1739afd808a07019c20528e8acdd373b08079708"
             }
         },
         {
@@ -3804,14 +4077,23 @@
             }
         },
         {
+            "source_sha256": "2266fb4b735aed1abd44b2efd51fe742ce01173f6af981ece2694f58a96d679c",
+            "stable_id": "affixes:lucky_hit_up_to_a_chance_to_fear_for_seconds",
+            "text": "幸运一击：最多有 几率恐惧，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_fear_for_seconds",
+                "translation_sha256": "04dcc96e52605ba9bfc93d1e34a1201dfbe57c23730ff2de956a4b84752b0346"
+            }
+        },
+        {
             "source_sha256": "c85bb1d055dc6fb454873eb825d3302c47fb32538e56a0de4fd62b9c5cd9e06a",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_freeze_for_seconds",
-            "text": "幸运一击 最多有 几率冻结 持续 秒",
+            "text": "幸运一击：最多有 几率冻结，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_Freeze_BarbRogue_Tier3:2617987:x1",
-                "source_record_sha256": "6627ebc6c7a8c2d227aaa73c478c17dd0b0c2292aba35734782ebee101a651da",
-                "translation_sha256": "ce2e7e5a211304568c140a3d307499dcb356925e27f0e2f9feb5515f28dc1788"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_freeze_for_seconds",
+                "translation_sha256": "530dc6a3deea117f2053e4d66ce281f5744f72ba43aeefd402bc21ee607d3527"
             }
         },
         {
@@ -3825,14 +4107,23 @@
             }
         },
         {
+            "source_sha256": "b90c723b0b03c03a1ab97fafeeb4b27db75581405738b6ecc43f90e092c6c074",
+            "stable_id": "affixes:lucky_hit_up_to_a_chance_to_heal_life",
+            "text": "幸运一击: 最多有 几率恢复 生命",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_heal_life",
+                "translation_sha256": "48c881dba3ad559838f84e48bb0a1340727618232cba93dd1c84c33e32510647"
+            }
+        },
+        {
             "source_sha256": "ff4a61ea86ad14210ee17e1e7810930b37ac218be6ff1582c1b71a1365702979",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_immobilize_for_seconds",
-            "text": "幸运一击 最多有 几率定身 持续 秒",
+            "text": "幸运一击：最多有 几率定身，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_Immobilize_BarbRogue_Tier3:2617998:x1",
-                "source_record_sha256": "70656a4315e4fc0ed5c734de916a1ef71831cc58c47a4680f41eebdd1eae02e0",
-                "translation_sha256": "ee4a49d1012fd6f40de573b536e7c3419b38c86483061405a1b854bf56bc9c5e"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_immobilize_for_seconds",
+                "translation_sha256": "738dad26edd78a990998efc11506c03f92e089fc1b257089c231835a5a420ffb"
             }
         },
         {
@@ -3858,34 +4149,41 @@
         {
             "source_sha256": "c68e98a759a66f1a8cfe50bc55f2bb49649734e266133d73cfb3054284dbe1fc",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_slow_for_seconds",
-            "text": "幸运一击 最多有 几率减速 持续 秒",
+            "text": "幸运一击：最多有 几率减速，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_Slow_BarbRogue_Tier3:2617994:x1",
-                "source_record_sha256": "00bb5b66eb2a1d81416e86f70d2c73c3019042dd5fe9d9e83ee69669ef34bf2f",
-                "translation_sha256": "60a4dc1b1a463df775085a050d428d65c32809b1ae49dde41115dbd9d062608d"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_slow_for_seconds",
+                "translation_sha256": "9a329de38ca16d9c36e0a63d2be63b1270e1facba3a0c1fb1a59a4a512a7a07d"
             }
         },
         {
             "source_sha256": "972be0428ce921aafa1b7e364a233179245940332643a1c6e5c939feee33bcd0",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_stun_for_seconds",
-            "text": "幸运一击 最多有 几率击昏 持续 秒",
+            "text": "幸运一击：最多有 几率击昏，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Generic_LuckyHit_Stun_BarbRogue_Tier3:2617992:x1",
-                "source_record_sha256": "948b0c26081d37e481152541cda0b69104dd80295068042ceef82ffac1c3a64f",
-                "translation_sha256": "425a5f619d0e490bea94703ae7051f2c9c2685c4ddf88f81e1d075a7aaa601a4"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_stun_for_seconds",
+                "translation_sha256": "5e9e306237aefa50051c5047b83015dacdbeaae00580359e1483a9456c1fe957"
             }
         },
         {
             "source_sha256": "030958799dbb75f1cd13c2e2c7764c426c2efead6aa1c06425632c0668b49788",
             "stable_id": "affixes:lucky_hit_up_to_a_chance_to_weaken_for_seconds",
-            "text": "幸运一击 最多有 几率虚弱 持续 秒",
+            "text": "幸运一击：最多有 几率虚弱，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:Tempered_Damage_Generic_LuckHit_Weakened_BarbRogue_Tier3:2618025:x1",
-                "source_record_sha256": "f4b851b90d379ab0d08064814ea8ab5c7ab281ad1d9ed91675d1a97cb5d953da",
-                "translation_sha256": "2aaaf42fd31951b1580e9ded1d7de460a0a07cf0188dd83f09122386413e8d59"
+                "provider": "diablo4_companion",
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_weaken_for_seconds",
+                "translation_sha256": "aa3607c173487547dd1f185136c43cb2358093f0c11ccfdc1dcbae907c5dc6a6"
+            }
+        },
+        {
+            "source_sha256": "dbf9e10f630f3fb7b8499ce5c19a15e2972c67f1d16cc0495afd2cd91b5a0821",
+            "stable_id": "affixes:lucky_hit_up_to_a_damage_for_seconds",
+            "text": "幸运一击：最多有 几率获得 伤害，持续 秒。",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "affixes:lucky_hit_up_to_a_damage_for_seconds",
+                "translation_sha256": "158c245f7eac338b7e850b626aee0f0515c4927a6f10b0649582d500097ad07a"
             }
         },
         {
@@ -4159,6 +4457,16 @@
             }
         },
         {
+            "source_sha256": "9a4417502cd0a5312f725bcf9971f4b72335606f839fe7d3cfd6760559a0a779",
+            "stable_id": "affixes:mobility_skills_grant_movement_speed_for_seconds",
+            "text": "机动技能使移动速度 ，持续 秒。",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:mobility_skills_grant_movement_speed_for_seconds",
+                "translation_sha256": "9fa4d4d59f4c6295df9bbb11010ee07d22d0c777739b619a3dd9a096c510dfea"
+            }
+        },
+        {
             "source_sha256": "515bef7e59e396b1e3e73d50456316fac7d991c96149c8ab4916286b8ccfb7a3",
             "stable_id": "affixes:movement_speed",
             "text": "移动速度",
@@ -4176,6 +4484,26 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:movement_speed_for_seconds_after_killing_an_elite",
                 "translation_sha256": "1e0c72ca49c4a2ddf5c471d8a1f44bf295844acf0eac742b8cd9ad48392c07c8"
+            }
+        },
+        {
+            "source_sha256": "fea075de048822e24f3b6e39e4ce1ff5bf3bef8f2e927169af2c884eed97f327",
+            "stable_id": "affixes:movement_speed_for_seconds_after_killing_an_enemy",
+            "text": "消灭一个敌人后 秒内的移动速度",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:movement_speed_for_seconds_after_killing_an_enemy",
+                "translation_sha256": "a6e6007df4a0f59eb35f68309334ca68dc2ed1c0fbd30351e9585ea739acdabd"
+            }
+        },
+        {
+            "source_sha256": "65bafead5250fdd871e90d5d6686f65ba00adbfb6943e70285f8ebd586ff1f32",
+            "stable_id": "affixes:movement_speed_for_seconds_after_picking_up_crackling_energy",
+            "text": "拾取爆裂电花后在 秒内获得的移动速度",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:movement_speed_for_seconds_after_picking_up_crackling_energy",
+                "translation_sha256": "bb1e20eca31862ef957e088cc12ce6df178245b482ecfda9f0d72840cfb5d39c"
             }
         },
         {
@@ -4349,6 +4677,17 @@
             }
         },
         {
+            "source_sha256": "fdb7e4cfc6338b5151046a9fc51460073e16c35cd480ba6e006ad0fb8d31e504",
+            "stable_id": "affixes:physical_damage_multiplier",
+            "text": "x 物理 伤害增倍",
+            "translation_source": {
+                "provider": "d2core",
+                "source_id": "affix:X2_DamageType_Physical:2558672:x1",
+                "source_record_sha256": "efd8b6eada93471126e6fbd28f703ff06cde95bfd4dea777b55972f55525b79e",
+                "translation_sha256": "039926856bb700195f6c89b667efbfa13376a15c28967e21783afcf7d86ab942"
+            }
+        },
+        {
             "source_sha256": "7bb124feb3b04a65d6798bbcb70b1d790fb9ef7939a860080e34bca26c7cf415",
             "stable_id": "affixes:physical_resistance",
             "text": "点物理抗性",
@@ -4396,6 +4735,17 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:poison_damage",
                 "translation_sha256": "78e4dcabf2d0646286404626ce881ef0e74653f64f5e6fac0227f72cfc428525"
+            }
+        },
+        {
+            "source_sha256": "9e153a1eafc67e7e7a4999418382fcb890a2ed4df4d1f664f66644a17b169190",
+            "stable_id": "affixes:poison_damage_multiplier",
+            "text": "x 毒素 伤害增倍",
+            "translation_source": {
+                "provider": "d2core",
+                "source_id": "affix:X2_DamageType_Poison:2558715:x1",
+                "source_record_sha256": "2bfccb7d893232dce223da336d0f68f03d3036d9134104584a7f82568cd69be5",
+                "translation_sha256": "6418b81e743157aa519daad31422d0185598ea8246a5345f52ae308b2c146ecf"
             }
         },
         {
@@ -5019,6 +5369,17 @@
             }
         },
         {
+            "source_sha256": "0ce353b4bc22a2b9bc689459b77c721db8b214ac92425b03806675cedce730f5",
+            "stable_id": "affixes:shadow_damage_multiplier",
+            "text": "x 暗影 伤害增倍",
+            "translation_source": {
+                "provider": "d2core",
+                "source_id": "affix:X2_DamageType_Shadow:2558713:x1",
+                "source_record_sha256": "74ca8c15a7e7c1a91e81331ae5bd43e7bf28e68d5a465043782b7093723eaee3",
+                "translation_sha256": "02583b02771940d419483bd41161bc5673c074d0e8809266450f07a5ab0ae1fa"
+            }
+        },
+        {
             "source_sha256": "99dee0380afbe6fb9cf00dbae0c9c5028be5d74da6962e7440f5acd9bcdf6117",
             "stable_id": "affixes:shadow_lucky_hit_chance",
             "text": "暗影幸运一击几率",
@@ -5236,6 +5597,16 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:soar_deals_up_to_damage_based_on_distance_traveled",
                 "translation_sha256": "9057c00e008e6d872eb887d3756020eed3a6439e9660865e38595420b0dbd0e3"
+            }
+        },
+        {
+            "source_sha256": "893d3ae70648a772b2acda34c44467d14a299b9abcd6300ed12de1136afd22e3",
+            "stable_id": "affixes:soar_grants_maximum_life_as_barrier_for_seconds",
+            "text": "飞空给予 生命上限的屏障，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:soar_grants_maximum_life_as_barrier_for_seconds",
+                "translation_sha256": "1f70eedcbf4c7b40e17fa51ab3e8433f9c8236c94ccb3d0d4d74ab7157bf9c58"
             }
         },
         {
@@ -8290,6 +8661,16 @@
             }
         },
         {
+            "source_sha256": "95a82eb619626fa9947a1ac0280ba3a1e787d5ea8f7304d1ef7ffdda78432ca9",
+            "stable_id": "affixes:while_injured_your_potion_also_grants_movement_speed_for_seconds",
+            "text": "受伤时，你的药水还会提供 移动速度加成，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "affixes:while_injured_your_potion_also_grants_movement_speed_for_seconds",
+                "translation_sha256": "7044df25dfd9b164e8ad1500a7bada80a57ee88aa45ce1d810379ea1b8da7ef7"
+            }
+        },
+        {
             "source_sha256": "60a29c6c7c37ad1c5b51e0638577f40be53b5051cd2367b86d97b31ca29cd0d4",
             "stable_id": "affixes:while_injured_your_potion_also_restores_resource",
             "text": "受伤时，你的药水还会使你恢复 资源",
@@ -8365,9 +8746,8 @@
             "stable_id": "affixes:wrath_every_kills",
             "text": "每 次击杀获得 愤怒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "affix:S04_Resource_On_Kill_Wrath:2532212:x1",
-                "source_record_sha256": "5bea92b51d48147a820b52e254ccffe4d1434a682931e73d80b2e256fb35c8e3",
+                "provider": "diablo4_companion",
+                "source_id": "affixes:wrath_every_kills",
                 "translation_sha256": "5619cc784cef358d453108ad6fd01c7a8e5a5e794c93e4c997924f1170863d27"
             }
         },
@@ -9092,6 +9472,16 @@
             }
         },
         {
+            "source_sha256": "a5a1a67c00054ff6299a503d2ef624aba7fd88a351983ae14c2eeb75369c4de9",
+            "stable_id": "aspects:flamewalkers",
+            "text": "火焰行者的",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "aspects:flamewalkers",
+                "translation_sha256": "e7942edc0b9b355e0df3e6757eded046f4e51ae73b765415c2794c885040faf6"
+            }
+        },
+        {
             "source_sha256": "c2bfc81a5f9c5c93ce6774e5999b913207e7ee61790d68b83dc1ffce62477269",
             "stable_id": "aspects:flash_fire",
             "text": "闪焰",
@@ -9169,6 +9559,16 @@
                 "provider": "diablo4_companion",
                 "source_id": "aspects:gorefeast",
                 "translation_sha256": "8d71c0acbcfa0b96f39d48eadbef013dcdb716b229beb687da9b7add5468a540"
+            }
+        },
+        {
+            "source_sha256": "bffb902d5a138d9abe37a7b0248c3263b4cd80ea1fe8c4dbba9d4d063b1a4039",
+            "stable_id": "aspects:gravitational",
+            "text": "引力",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "aspects:gravitational",
+                "translation_sha256": "011fb0b4544d7291454267ef9c74867d06a7ba67e8c07175163b9c34be07b625"
             }
         },
         {
@@ -9729,6 +10129,16 @@
                 "provider": "diablo4_companion",
                 "source_id": "aspects:of_anger_management",
                 "translation_sha256": "187707434405dcd631979ffd84146b59295491935a953dcc445e91b563083d2c"
+            }
+        },
+        {
+            "source_sha256": "adf4e4273e1a9adff818d0a73220647ad5a2ec6a8e480c517f299d16cb5511bb",
+            "stable_id": "aspects:of_anticline_burst",
+            "text": "背斜爆发之",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "aspects:of_anticline_burst",
+                "translation_sha256": "0be345578ba70ff5bb40bfe4a7c199f206228ef115044203553959493117973c"
             }
         },
         {
@@ -10922,6 +11332,16 @@
             }
         },
         {
+            "source_sha256": "b17b49254382b36157cf49f10fc4c85f9e1b760a7333f7e41a020dbb6fa5eac5",
+            "stable_id": "aspects:of_impending_deluge",
+            "text": "将倾暴雨之",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "aspects:of_impending_deluge",
+                "translation_sha256": "fb7896038e8963a1a7750001fe5bce2e649e2bbad2e64e957fc549ed29286a00"
+            }
+        },
+        {
             "source_sha256": "26fe32d8893d01864b5a06a344a0b753cbebb64a729e353b149ce4d9188c2fe3",
             "stable_id": "aspects:of_impetus",
             "text": "动量充沛之",
@@ -10994,11 +11414,11 @@
         {
             "source_sha256": "9965ec1f1d6e7780f0d9bed426213f6dcc34a04a7772ef101b644f466585d69f",
             "stable_id": "aspects:of_intricacy",
-            "text": "时间切片之",
+            "text": "精微之",
             "translation_source": {
-                "provider": "diablo4_companion",
+                "provider": "reviewed_override",
                 "source_id": "aspects:of_intricacy",
-                "translation_sha256": "fbfceb0e3a1fae389495944f726ab00e003d881272b347bf8061fb818d5c4192"
+                "translation_sha256": "d465ce7ed8abfe35807fbe65aca63ca2c8d042a93c51efd05dfd70f6b137ea1f"
             }
         },
         {
@@ -11912,6 +12332,16 @@
             }
         },
         {
+            "source_sha256": "bf0446bb0cb73fa047c21bbea3f03bb316d490341b55f4449f1f16120c6ab1c7",
+            "stable_id": "aspects:of_temporal_incisions",
+            "text": "时间切片之",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "aspects:of_temporal_incisions",
+                "translation_sha256": "fbfceb0e3a1fae389495944f726ab00e003d881272b347bf8061fb818d5c4192"
+            }
+        },
+        {
             "source_sha256": "c2eea19c4ebdfa9bf600ab892085ad411fde10767b7f9d6d7c4cc0f0db333789",
             "stable_id": "aspects:of_tenacity",
             "text": "坚韧之",
@@ -11949,6 +12379,16 @@
                 "provider": "diablo4_companion",
                 "source_id": "aspects:of_terror",
                 "translation_sha256": "bc54b7ab073a1a6f4fc751999f8b0073603360900a566f79f3df25807c626bea"
+            }
+        },
+        {
+            "source_sha256": "0aa1f6a900c801969fb57cbe70c2b86b7c5e15aeb3e483dc9260ba381f5c9a85",
+            "stable_id": "aspects:of_the_agile_wolf",
+            "text": "敏捷恶狼之",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "aspects:of_the_agile_wolf",
+                "translation_sha256": "8134a554979396b0fb60d26d2fb22e0b3ed55a10e5c8abef3463328ab6fed42f"
             }
         },
         {
@@ -13122,6 +13562,16 @@
             }
         },
         {
+            "source_sha256": "37091fafb07181092da312eba2b97df80aa411edf34941d47438c9540529a890",
+            "stable_id": "aspects:shard_of_dawn",
+            "text": "黎明碎片",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "aspects:shard_of_dawn",
+                "translation_sha256": "375d91c354e47176d2acc48bdf2309f3c2531a2eab70ce6ddbb4d121a0cb1453"
+            }
+        },
+        {
             "source_sha256": "9eb95674b4cc09f2f216d86e32990d78e1f6b622c43f84f7fc8ab815ebdca780",
             "stable_id": "aspects:shattered",
             "text": "碎冰",
@@ -13359,6 +13809,16 @@
                 "provider": "diablo4_companion",
                 "source_id": "aspects:stormchasers",
                 "translation_sha256": "cef29383364909400b80ab01dcd0111ff0ef01cf858df2d9be3a4c2fd2ad998d"
+            }
+        },
+        {
+            "source_sha256": "3f2b8088c60c86424d18b07afb8c72cff5339b5e96eedd93c65b830aa6fea4d8",
+            "stable_id": "aspects:stormcrows",
+            "text": "风暴乌鸦的",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "aspects:stormcrows",
+                "translation_sha256": "3aceb66dde0b84f0568a12f76986431dacc52b63c2ac75d008e73a6f479eea0d"
             }
         },
         {
@@ -14076,113 +14536,133 @@
             }
         },
         {
+            "source_sha256": "78d194eb79661e80531fb6c0bb0ca5983d7ac195ae47c766241ecb54a4ac3cb8",
+            "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_chill_for_seconds",
+            "text": "幸运一击：最多有 几率冻伤，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_chill_for_seconds",
+                "translation_sha256": "665bac38dc2b9012bef4a7ace2ca98a3241e8f7c64e2d0f401ef895ad3514da5"
+            }
+        },
+        {
             "source_sha256": "ca36e987adfbd9b27af618fb1eb7b18b79fa078a0ef7de08247236c62d410f49",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_daze_for_seconds",
-            "text": "幸运一击 最多有 几率迷惑 持续 秒",
+            "text": "幸运一击：最多有 几率迷惑，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_Daze:2619762:x1",
-                "source_record_sha256": "35b60a291d2c34eda133221e6b5fc40a511b9081f6336a28127712d9e0538cf9",
-                "translation_sha256": "853d7edaa584f6dcf84c6b538094f34f9523d015010ac2a8358ce8437f8d967d"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_daze_for_seconds",
+                "translation_sha256": "7c68b659c3939cb1b1094ac6ddff48c3cc0c3b47d243afcda3817d5b126ed55b"
             }
         },
         {
             "source_sha256": "c571c3de3c4ca7f84ccb3ee6cfa247d62381db5055c51613f6d0224054a54ed4",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_cold_damage",
-            "text": "幸运一击 最多有 几率造成 点冰霜伤害",
+            "text": "幸运一击：最多有 几率造成 点冰霜伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_FlatDamage_ElementalSurge_Cold:2619744:x1",
-                "source_record_sha256": "f4889ba816f6ed91427b1ebf2831185175eca16647d1e9c6297f48dba89d6605",
-                "translation_sha256": "fe5e8556f22cae45e7739036ad1449810efb1b233cf7e8a39ced619d725bc185"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_cold_damage",
+                "translation_sha256": "3903a3c1dd45704e77fbcddeb3fee21316b0986c2c00702eb31c3c8b167a271e"
             }
         },
         {
             "source_sha256": "ecca1e22677a54a08d16a3e328af3321c8c85b83339c5ce98a40bedfd93b9867",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_fire_damage",
-            "text": "幸运一击 最多有 几率造成 点火焰伤害",
+            "text": "幸运一击：最多有 几率造成 点火焰伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_FlatDamage_ElementalSurge_Fire:2619746:x1",
-                "source_record_sha256": "dcc2a4adc10346a761572a62357fdf58579f1cc7bac3e4757c58f6ff4eb36bed",
-                "translation_sha256": "316635a6e7597adb5aa59c82c7bb5522e0828ba8b83371ec147590023c8b0d9d"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_fire_damage",
+                "translation_sha256": "4506dd6cb2df60c05b87570da7abf498a0166cec244c7bc9e005e11eef5aaf8e"
             }
         },
         {
             "source_sha256": "d0044de802e830d1c898fe3a4307f58ae5c85037d2ee6bba33ddaa53a2c7ca43",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_holy_damage",
-            "text": "幸运一击 最多有 几率造成 点神圣伤害",
+            "text": "幸运一击：最多有 几率造成 点神圣伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_FlatDamage_ElementalSurge_Holy:2619748:x1",
-                "source_record_sha256": "d16bc92e94ae461c30364887018be3479c0bc1c3d24a467cc29cede988ca203d",
-                "translation_sha256": "4ad4a23ea41827d1cf311c28d9a69ca1b1404db12839cdd5a64d5a1c2b4c81fd"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_holy_damage",
+                "translation_sha256": "ceb62cd449141c03eec092e7ccc51dcd142551b9ae603c4f894a7b3269704f15"
             }
         },
         {
             "source_sha256": "2307c3ff19f2ba260677de2fb215eb1de099a2046b1baef12e6d4d81a07e1fd9",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_lightning_damage",
-            "text": "幸运一击 最多有 几率造成 点闪电伤害",
+            "text": "幸运一击：最多有 几率造成 点闪电伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_FlatDamage_ElementalSurge_Lightning:2619750:x1",
-                "source_record_sha256": "7e0d34b3a689e40e1870277c1a4ce9e7579313954dec7d81afb9ca0df4f4fd3c",
-                "translation_sha256": "b81d8328396d6ecc268dd6bc8f5510f905ddd23a0bc55400434a56b915f03b9e"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_lightning_damage",
+                "translation_sha256": "00cfa578f587d2c5467deed4da8d1c19fb139c45ea9488f36a2aa8a9cae873b6"
             }
         },
         {
             "source_sha256": "bd689291a4c30fa0a1130e52836ebc13c0f5bf5a9d8a1ad83740c98eb622c484",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_physical_damage",
-            "text": "幸运一击 最多有 几率造成 点物理伤害",
+            "text": "幸运一击：最多有 几率造成 点物理伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_FlatDamage_ElementalSurge_Physical:2619752:x1",
-                "source_record_sha256": "fa2fc9fb39a92836b9a1e3e4b43b6f5f819ba8fb893fbd3b500a3cebc0a94c17",
-                "translation_sha256": "4188e61b46232fc8827e06f8b8ef179c297e0452b07a28b27f8f34a1fc6c9442"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_physical_damage",
+                "translation_sha256": "5b458e674ed39a09d48de699abf8820947e6b5097712ddc01bbffeb07612ee1d"
             }
         },
         {
             "source_sha256": "79216376f89bd0b044be815536ba31526aed05b73d8256603f211f5dd4ba453f",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_poison_damage",
-            "text": "幸运一击 最多有 几率造成 点毒素伤害",
+            "text": "幸运一击：最多有 几率造成 点毒素伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_FlatDamage_ElementalSurge_Poison:2619754:x1",
-                "source_record_sha256": "e96de09ece5f19d8edff7c9f3dedea607f63b2b18e2264e7c61e0cd52999b3ae",
-                "translation_sha256": "f6e9a01edc26df51388262322de0ae16c57e1b74d7ab11b8c91510413b29bbba"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_poison_damage",
+                "translation_sha256": "36f709125dcb9ab5baf87bd0f7652fd45b62dd0a94b3507846712f0e6d88a819"
             }
         },
         {
             "source_sha256": "26ef66feb34b02cb16e476b5eb8fe8dfcf896530e520e2fe5720730a5feb4196",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_shadow_damage",
-            "text": "幸运一击 最多有 几率造成 点暗影伤害",
+            "text": "幸运一击：最多有 几率造成 点暗影伤害",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_FlatDamage_ElementalSurge_Shadow:2619756:x1",
-                "source_record_sha256": "05ffc3e582a384e2b3e6266ddeb90830a85c591655166158bcc62ebdc996e74d",
-                "translation_sha256": "ac1762b3e6cb4dbe896368306e6901b5bb3700a0045f2527910c40d945b4f086"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_deal_shadow_damage",
+                "translation_sha256": "9529aab6fc3e0081dc130a0c1739afd808a07019c20528e8acdd373b08079708"
+            }
+        },
+        {
+            "source_sha256": "2266fb4b735aed1abd44b2efd51fe742ce01173f6af981ece2694f58a96d679c",
+            "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_fear_for_seconds",
+            "text": "幸运一击：最多有 几率恐惧，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_fear_for_seconds",
+                "translation_sha256": "04dcc96e52605ba9bfc93d1e34a1201dfbe57c23730ff2de956a4b84752b0346"
             }
         },
         {
             "source_sha256": "c85bb1d055dc6fb454873eb825d3302c47fb32538e56a0de4fd62b9c5cd9e06a",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_freeze_for_seconds",
-            "text": "幸运一击 最多有 几率冻结 持续 秒",
+            "text": "幸运一击：最多有 几率冻结，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_Freeze:2619832:x1",
-                "source_record_sha256": "c4e873d235838a06a42b643b290e96c9f2d16a9445d8dbd0805a597a73a7d470",
-                "translation_sha256": "ce2e7e5a211304568c140a3d307499dcb356925e27f0e2f9feb5515f28dc1788"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_freeze_for_seconds",
+                "translation_sha256": "530dc6a3deea117f2053e4d66ce281f5744f72ba43aeefd402bc21ee607d3527"
             }
         },
         {
             "source_sha256": "ff4a61ea86ad14210ee17e1e7810930b37ac218be6ff1582c1b71a1365702979",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_immobilize_for_seconds",
-            "text": "幸运一击 最多有 几率定身 持续 秒",
+            "text": "幸运一击：最多有 几率定身，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_Immobilize:2619766:x1",
-                "source_record_sha256": "78035b8eb665fd90ea499c28b6caba93a04befece6bc8a947ac5277feb5c8d80",
-                "translation_sha256": "ee4a49d1012fd6f40de573b536e7c3419b38c86483061405a1b854bf56bc9c5e"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_immobilize_for_seconds",
+                "translation_sha256": "738dad26edd78a990998efc11506c03f92e089fc1b257089c231835a5a420ffb"
+            }
+        },
+        {
+            "source_sha256": "dfaf0f9ac35359c67d10e84c85e1bebc656ce46f164fb442955ea65f9f6815d2",
+            "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_knockback_for_seconds",
+            "text": "幸运一击：最多有 几率击退，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_knockback_for_seconds",
+                "translation_sha256": "42bf5786001f27e1b83e4dae5c2cbc0350e27058523aaff2596e0632e665e54f"
             }
         },
         {
@@ -14198,23 +14678,31 @@
         {
             "source_sha256": "c68e98a759a66f1a8cfe50bc55f2bb49649734e266133d73cfb3054284dbe1fc",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_slow_for_seconds",
-            "text": "幸运一击 最多有 几率减速 持续 秒",
+            "text": "幸运一击：最多有 几率减速，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_Slow:2619768:x1",
-                "source_record_sha256": "b4c0af1388c5de810400ba7b6399954cb132fa9a96c840baec19c6a1e8ad2ca8",
-                "translation_sha256": "60a4dc1b1a463df775085a050d428d65c32809b1ae49dde41115dbd9d062608d"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_slow_for_seconds",
+                "translation_sha256": "9a329de38ca16d9c36e0a63d2be63b1270e1facba3a0c1fb1a59a4a512a7a07d"
             }
         },
         {
             "source_sha256": "972be0428ce921aafa1b7e364a233179245940332643a1c6e5c939feee33bcd0",
             "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_stun_for_seconds",
-            "text": "幸运一击 最多有 几率击昏 持续 秒",
+            "text": "幸运一击：最多有 几率击昏，持续 秒",
             "translation_source": {
-                "provider": "d2core",
-                "source_id": "talisman:Talisman_Charm_LuckyHit_Stun:2619770:x1",
-                "source_record_sha256": "767c18daa26e1f739c557c5ad6631b897742edc95ffde4456183bb7f5956b9c0",
-                "translation_sha256": "425a5f619d0e490bea94703ae7051f2c9c2685c4ddf88f81e1d075a7aaa601a4"
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_stun_for_seconds",
+                "translation_sha256": "5e9e306237aefa50051c5047b83015dacdbeaae00580359e1483a9456c1fe957"
+            }
+        },
+        {
+            "source_sha256": "14fcdfa4b7dce9af141d6db7977cf494d878315b66b6a1a18a94fcfbabcb8b9d",
+            "stable_id": "charms_affixes:lucky_hit_up_to_a_chance_to_taunt_for_seconds",
+            "text": "幸运一击：最多有 几率嘲讽，持续 秒",
+            "translation_source": {
+                "provider": "diablo4_companion",
+                "source_id": "charms_affixes:lucky_hit_up_to_a_chance_to_taunt_for_seconds",
+                "translation_sha256": "dbb40caa0b5daf730abf681a46dac88810b7c53032ef94f8686bd89f8e388d7d"
             }
         },
         {
@@ -16911,6 +17399,26 @@
             }
         },
         {
+            "source_sha256": "82f802d5c2211e136c006a4fd653e76ecbe763b85722f8c1e7bbe1a4032958f7",
+            "stable_id": "seals_affixes:adept_action_damage_reduction_while_moving",
+            "text": "娴熟技艺：移动时的伤害减免",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:adept_action_damage_reduction_while_moving",
+                "translation_sha256": "fdde5d28ef36132480ce296d4e31dee4c766c019d96444891c26d416741eaae7"
+            }
+        },
+        {
+            "source_sha256": "dd80e9940d621673d226dc23e17829df7ddd732570b9f057c518867e94e66984",
+            "stable_id": "seals_affixes:adept_action_while_standing_still_you_deal_increased_damage",
+            "text": "娴熟技艺：静止不动时，你造成的伤害提高",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:adept_action_while_standing_still_you_deal_increased_damage",
+                "translation_sha256": "0666a331e055a53d72824edc84076fd18dcf18e45514b6c8e4324c8e1cca6837"
+            }
+        },
+        {
             "source_sha256": "3ee430c9c3fea8cf77da898880f72ca72288a8f7c294904acb4f782d26b3c12f",
             "stable_id": "seals_affixes:all_stats",
             "text": "全属性",
@@ -17283,6 +17791,16 @@
             }
         },
         {
+            "source_sha256": "1c6589bc60ee1bd0c9edacb840ac5cb018b6ea14c0a8ec3181d431d3413fdb92",
+            "stable_id": "seals_affixes:berserkers_crucible_to_wrath_of_the_berserker",
+            "text": "狂战士炼狱：至狂战士之怒",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:berserkers_crucible_to_wrath_of_the_berserker",
+                "translation_sha256": "c16dc672074892c6175841654aa431f24ead375d7e3e901ff44a2ed942ac9cd7"
+            }
+        },
+        {
             "source_sha256": "ce1389be6ccdf3d4d0950a6f39239ff564581d5cf44c683db17c4d7a61d9f19a",
             "stable_id": "seals_affixes:bliss_of_the_multitude_centipede_damage",
             "text": "万象众灵的法喜 巨虫技能伤害",
@@ -17426,6 +17944,26 @@
             }
         },
         {
+            "source_sha256": "c8eda3c630d6a8977e1359d503e265dbd4d5ecfbd7e2a66200e32219bdfcaeb9",
+            "stable_id": "seals_affixes:bone_breaker_maximum_overpower",
+            "text": "碎骨者：压制上限",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:bone_breaker_maximum_overpower",
+                "translation_sha256": "faacebe1b96c22469c4b630068f2660c283f2871baa7a84014d2c81706e6317e"
+            }
+        },
+        {
+            "source_sha256": "cb5461d80ac27afa326f11cd499db39f97183ea78f6b4619e53ee0867f891a60",
+            "stable_id": "seals_affixes:bone_breaker_resource_generation",
+            "text": "碎骨者：资源生成",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:bone_breaker_resource_generation",
+                "translation_sha256": "7c3dda063f5342928532c8ff042ac3eec92fa1907ef3f5068078d8d8d50e5070"
+            }
+        },
+        {
             "source_sha256": "e62098f41bf52800150ed3b3bda4681698b3610ec07bf3b20c675826aaec0912",
             "stable_id": "seals_affixes:breath_of_the_frozen_sea_barrier_generation",
             "text": "凝寒之海的气息 屏障生成量",
@@ -17547,6 +18085,16 @@
             }
         },
         {
+            "source_sha256": "c5867a8a77d1f2b0b00fea29622556aa0d9ab009554325fc09104c160aecfaf1",
+            "stable_id": "seals_affixes:bulkathos_pride_to_call_of_the_ancients",
+            "text": "布尔凯索骄傲：至先祖召唤",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:bulkathos_pride_to_call_of_the_ancients",
+                "translation_sha256": "c63cca5d0d6c2227dd6a61bcdfe86317e8d3e3c417b83894b4611c1a570f502a"
+            }
+        },
+        {
             "source_sha256": "c264a6d471ffc079e354b98d126d0b3e94f629bfa41ed325ce7a43860b4ca2ce",
             "stable_id": "seals_affixes:cains_wild_lightning_critical_strike_chance",
             "text": "凯恩的狂野奔雷 暴击几率",
@@ -17610,6 +18158,16 @@
                 "source_id": "talisman:Talisman_SealAffix_Set_Sorcerer_03_ShockSkillDamage:2590245:x1",
                 "source_record_sha256": "26caf32092c867abbc6406f0344b9b7879a0cb2834c71b74681c18c429bb37bd",
                 "translation_sha256": "e94525e829b8542782de3540edfe4b98a7d6b71848ec5b360cfe019856beb760"
+            }
+        },
+        {
+            "source_sha256": "ba7f3ad2f12340616b831824a661a75040d679f6d500e89beeb194f537a8509f",
+            "stable_id": "seals_affixes:can_equip_up_to_unique_charms",
+            "text": "最多可装备 个暗金神符",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:can_equip_up_to_unique_charms",
+                "translation_sha256": "a88a0f906a40c720a49305d0ec990a304ed9ba9710df745af0a90349cdc2ac4c"
             }
         },
         {
@@ -17888,6 +18446,26 @@
             }
         },
         {
+            "source_sha256": "32b29f3ad438723bbcfa84032db5ed18229ee998a2f1df319ec13bda916efd8b",
+            "stable_id": "seals_affixes:charm_set_spiritborn_of_the_toxic_damage_to_weakened_enemies",
+            "text": "神符套装：巨虫灵巫。对虚弱敌人的伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:charm_set_spiritborn_of_the_toxic_damage_to_weakened_enemies",
+                "translation_sha256": "614b4e6ca6f2cd6fde3ecfe33e2b9586f7611bc4fb5d6b316ba3ea3435fcadff"
+            }
+        },
+        {
+            "source_sha256": "a1d75d3d6ae74cb001e533986795251a701d0e3d7f9690ac9ca6ee2902fbef63",
+            "stable_id": "seals_affixes:charm_set_spiritborn_of_the_toxic_poison_damage",
+            "text": "神符套装：巨虫灵巫。毒素伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:charm_set_spiritborn_of_the_toxic_poison_damage",
+                "translation_sha256": "dee4a7877b2a5b0eda76e9e640ecf7d7f5771cc68cfd5e2e7d48455a95bedb97"
+            }
+        },
+        {
             "source_sha256": "10f0baffb104c8dbbe0129e881729a006d81daacce37e0eeb9be0ebd8718b51d",
             "stable_id": "seals_affixes:charm_slot",
             "text": "神符插槽",
@@ -17929,6 +18507,26 @@
             }
         },
         {
+            "source_sha256": "8ced897d3fb3b22509340d3fc956705b1cf535f0b7bd906ef509f881ef153948",
+            "stable_id": "seals_affixes:cruel_fate_lucky_hit_chance",
+            "text": "残酷命运：幸运一击几率",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:cruel_fate_lucky_hit_chance",
+                "translation_sha256": "368d0c3f8288a3fdc0aeee1f99775af9481d711a841253790f49293bd40d2b57"
+            }
+        },
+        {
+            "source_sha256": "41e600be0f7f9860bdee51eba2488059257f249e6d8cb944994e0b0baf604acc",
+            "stable_id": "seals_affixes:cruel_fate_vulnerable_damage",
+            "text": "残酷命运：易伤伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:cruel_fate_vulnerable_damage",
+                "translation_sha256": "d8fb516fa0abe272b59052411335ee0fccf93cfc951d3f1f259a4db2de29b560"
+            }
+        },
+        {
             "source_sha256": "6f5a5c61ccdbd8ff2a620d28c86c721feda2dcc809d23b29e1983af5cc50bd85",
             "stable_id": "seals_affixes:damage",
             "text": "点伤害",
@@ -17937,6 +18535,26 @@
                 "source_id": "talisman:Talisman_SealAffix_Normal_Damage_All:2546431:x1",
                 "source_record_sha256": "3528255bcc1a7bce2542969e7fc5be766a738cc84cff13f428b6f14c3ed7cc75",
                 "translation_sha256": "d70f8fa95be1c6f285047e5383e352463c3a55ce1f4249ddb7d69339e5d6e2a4"
+            }
+        },
+        {
+            "source_sha256": "91e7eb46d53c3ac394de686ed5cb74b249396bc39a2d46561c3a1cf13fba99a5",
+            "stable_id": "seals_affixes:dark_pact_damage",
+            "text": "黑暗契约：伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:dark_pact_damage",
+                "translation_sha256": "4645c2a30a10f0af4e970d7615f428fdb86c76108a6dcd0cfec0e84d5d243721"
+            }
+        },
+        {
+            "source_sha256": "27d8ab3c30bdf3f32c561c030f38048d5bb277598cb87807ebd72292135a309b",
+            "stable_id": "seals_affixes:dark_pact_damage_over_time",
+            "text": "黑暗契约：持续性伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:dark_pact_damage_over_time",
+                "translation_sha256": "20100ad07d3a45afe8b1a86dbfdc6e32d4e6fdf4930cdc18780dbd8aecc67e97"
             }
         },
         {
@@ -17959,6 +18577,26 @@
                 "source_id": "talisman:Talisman_SealAffix_Set_PreTorment_Generic_04_Damage_NonPhysical:2620534:x1",
                 "source_record_sha256": "9d4596b338a32458b6d9dfbc5dc2aa98e1e575e0e5784da37a8d51449b7941e2",
                 "translation_sha256": "76713e3e2840b3d6d6b42379df3caa8d2170cae3a7306c34e8156dfba14f349d"
+            }
+        },
+        {
+            "source_sha256": "7d626851357280c4509ea086e3af7c9e2b9e90597b1d47dd2fe0a5b7a22358bd",
+            "stable_id": "seals_affixes:deceptive_insight_primary_resource",
+            "text": "欺诈洞察：主要资源",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:deceptive_insight_primary_resource",
+                "translation_sha256": "a8e2fcf7ad1251c0ed4e9473ebea3da0320fbf706d956ffb1817531d4a59a5ae"
+            }
+        },
+        {
+            "source_sha256": "b4af7c18c851ba41ca7b5dde61630a27e5ca57596323e0cedc841d726d946191",
+            "stable_id": "seals_affixes:deceptive_insight_resource_cost_reduction",
+            "text": "欺诈洞察：资源消耗减免",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:deceptive_insight_resource_cost_reduction",
+                "translation_sha256": "ebe85f5f8a270a1f2ceab344fea6dc653b2e1edfa04749d54de006537c6f4e40"
             }
         },
         {
@@ -18400,6 +19038,26 @@
             }
         },
         {
+            "source_sha256": "9a5fc2b500b1d6b89731d14e2399925386cb23282f32ca795bf59a473e11dcbe",
+            "stable_id": "seals_affixes:lethality_critical_strike_chance",
+            "text": "致死：暴击几率",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:lethality_critical_strike_chance",
+                "translation_sha256": "4ff6ebe7a23eac1499536eecb04acc7a64873b2b8e4ce7f7d28eeb29f4fabcd7"
+            }
+        },
+        {
+            "source_sha256": "4e745211d64e55e492f143d862c9a973733eea638bd61c0b0a145cd06515921a",
+            "stable_id": "seals_affixes:lethality_critical_strike_damage",
+            "text": "致死：暴击伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:lethality_critical_strike_damage",
+                "translation_sha256": "809de5c579e9a92d628c81f1c48046f8f9ef123ba9ef1d805d0d5e66244df2dd"
+            }
+        },
+        {
             "source_sha256": "7a3c56c8452e275be83c47279b206f72a52ac54b6e0a48b055577d8f410bfa3a",
             "stable_id": "seals_affixes:lights_epiphany_disciple_skill_cooldown_reduction",
             "text": "圣光启示 虔信者技能冷却时间缩减",
@@ -18783,6 +19441,16 @@
             }
         },
         {
+            "source_sha256": "61e4144bf59dd8a57b8c11b383e1e0016ce0b5348192e69978ffba095c549386",
+            "stable_id": "seals_affixes:practiced_technique_all_stats",
+            "text": "精进手段：全属性",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:practiced_technique_all_stats",
+                "translation_sha256": "a710651d0c1de471ecb811cc608c2f74eb4dec2bd645d7a9be7a99a1729c8550"
+            }
+        },
+        {
             "source_sha256": "f911ca63c35a77a31d27f279eec8d6188a44fa64033f14cc88215e750e3f6500",
             "stable_id": "seals_affixes:practiced_technique_bonus_kill_experience_(_at_level_)",
             "text": "精进手段 消灭经验值加成 级时为",
@@ -18794,6 +19462,16 @@
             }
         },
         {
+            "source_sha256": "ca5529c511d3dd8c7ac2393aeb03b95fb6e034190799306135a9a97bb196a11b",
+            "stable_id": "seals_affixes:practiced_technique_dexterity",
+            "text": "精进手段：敏捷",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:practiced_technique_dexterity",
+                "translation_sha256": "099b0fa380cab48d6863cd30f643a72dd737e173af6afbe4f336eb9fd74a4a43"
+            }
+        },
+        {
             "source_sha256": "9b2dc293dc0f3932bdf5bdf6eedb58989db923d25489cab55c761fcdbe4f88f0",
             "stable_id": "seals_affixes:practiced_technique_gold_drop_rate",
             "text": "精进手段 金币掉落率",
@@ -18802,6 +19480,16 @@
                 "source_id": "talisman:Talisman_SealAffix_Set_PreTorment_Generic_02_GoldFind:2620501:x1",
                 "source_record_sha256": "e89238acb7291b5e0aa5849d7b342f8fe4b3184f15d3bd87393ff7e66eb92153",
                 "translation_sha256": "efbfd247a1c27e7fa3c9ba4bd321f17e9ba9b4b71e6a53bd9964c0d203e081bd"
+            }
+        },
+        {
+            "source_sha256": "21e6b138a9946757af49b9b3595b06541eca0b0adf40d968b0cbe95cb91844a8",
+            "stable_id": "seals_affixes:practiced_technique_intelligence",
+            "text": "精进手段：智力",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:practiced_technique_intelligence",
+                "translation_sha256": "50013698a07a428b3fe8265aca1d5efc00924a5d7dc868885bac5cb93ae211a4"
             }
         },
         {
@@ -18824,6 +19512,26 @@
                 "source_id": "talisman:Talisman_SealAffix_Set_PreTorment_Generic_02_MaxPotions:2620514:x1",
                 "source_record_sha256": "bc547c8895a0482a3e66ced396fb16752b10da54ea077a30aba4f9343dc338ef",
                 "translation_sha256": "f8629711e2042e80ba29e0d377fdc3d7b8afd784f5c31c99b9e06586aa43e819"
+            }
+        },
+        {
+            "source_sha256": "aaf549e7e2ad551b3aed014812a337e419fe2834d09964803f818a9f984c6f81",
+            "stable_id": "seals_affixes:practiced_technique_strength",
+            "text": "精进手段：力量",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:practiced_technique_strength",
+                "translation_sha256": "a53d596d940b526f7e0181457ef8bb1365f6d98de7c4206ca0d57e544aaca2ae"
+            }
+        },
+        {
+            "source_sha256": "98264e620cc5c1b8473822e6be8e6411d6daef300e5cdf601c28330896b2554e",
+            "stable_id": "seals_affixes:practiced_technique_willpower",
+            "text": "精进手段：意力",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:practiced_technique_willpower",
+                "translation_sha256": "1ec5e49a3c3a70ac39aa25f20a9527ed0b79c658ce8365ad95fbd064b48f044b"
             }
         },
         {
@@ -18926,6 +19634,16 @@
             }
         },
         {
+            "source_sha256": "7aa186ee6c81ec336667deb23ed461a3b7fea1e60e8d35f323ef0e116b5e625d",
+            "stable_id": "seals_affixes:rathmas_walking_touch_to_army_of_the_dead",
+            "text": "拉斯玛的游走死触：至亡者大军",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:rathmas_walking_touch_to_army_of_the_dead",
+                "translation_sha256": "fc8c9e69636246ede7c91eba0691cfadad0a9a33b3592c34988302e10f63b504"
+            }
+        },
+        {
             "source_sha256": "81292b21810e7ad1e7413ef88a8ef7555a410765eb2d5daf9c727653e283bae8",
             "stable_id": "seals_affixes:rathmas_walking_touch_to_skeleton_mage",
             "text": "拉斯玛的游走死触 至骷髅法师",
@@ -18945,6 +19663,16 @@
                 "source_id": "talisman:Talisman_SealAffix_Set_Necromancer_01_SkeletonWarriorRanks:2597335:x1",
                 "source_record_sha256": "fd824a67607ae07cf7d951a38852bfd89a6df0452e9e0d91d5c1e1bee4b2bf3e",
                 "translation_sha256": "dc79fe6e4bc0980d363062055121dc64b21484e67c84bd207f85ca1a5f378209"
+            }
+        },
+        {
+            "source_sha256": "b7a617e2c5cd3cb5be46cc9c5b8a8a0124381714bfb7b4af253c929d61299dec",
+            "stable_id": "seals_affixes:reduces_the_number_of_charms_needed_for_set_bonuses_by_(to_a_minimum_of_)",
+            "text": "激活套装加成所需神符数量减少 个（最少为 个）",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:reduces_the_number_of_charms_needed_for_set_bonuses_by_(to_a_minimum_of_)",
+                "translation_sha256": "e8fdb75aa45e7d2336d8091347994316e034a0b93c1edcb4e17dec0e26f19ea1"
             }
         },
         {
@@ -19310,6 +20038,26 @@
             }
         },
         {
+            "source_sha256": "ba83813257c3819e11e5d3e309455bd077862b122b20f6bb8df5e3b1f27215e7",
+            "stable_id": "seals_affixes:slaughter_core_skill_damage",
+            "text": "屠戮：核心技能伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:slaughter_core_skill_damage",
+                "translation_sha256": "af6931c545fa7b060eb64929785f6ebc439ab9a56d1872eaa5d51c91402be8e1"
+            }
+        },
+        {
+            "source_sha256": "14944ff97f53517e7572a22dcf6a830853a1def24122d32e5470f19cd780d2cb",
+            "stable_id": "seals_affixes:slaughter_damage",
+            "text": "屠戮：伤害",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:slaughter_damage",
+                "translation_sha256": "7ff591a378569823fdeb6082510523488fc04e91566dd16b708e316d8adad215"
+            }
+        },
+        {
             "source_sha256": "46461af1a14b7a5af6eb2776ff9ba41c3e6517b64d345f173f4244c921a2b966",
             "stable_id": "seals_affixes:slaughter_damage_reduction_from_elites",
             "text": "屠戮 来自精英的伤害减免",
@@ -19593,6 +20341,26 @@
                 "source_id": "talisman:Talisman_SealAffix_Set_PreTorment_Generic_03_Resist_All_Percent:2620520:x1",
                 "source_record_sha256": "1eeb41271ce466eba66b63c85f3a7561cbd46de3352d72c5c29a09d1cee33743",
                 "translation_sha256": "f908dfe254cd928c123e7ce2b28db7af4716c16a9c2e4eb8cffacd4d30d76d01"
+            }
+        },
+        {
+            "source_sha256": "d372a412b56c6edfa096c6bc1feb8a9fa86090ed81a517f16d86e4d339a65887",
+            "stable_id": "seals_affixes:survivor_healing_received",
+            "text": "幸存者：受到的治疗",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:survivor_healing_received",
+                "translation_sha256": "11f312a0fa846f817ddc39043e2ef5e5b369d37afb852cbb1c4032df4c17fd05"
+            }
+        },
+        {
+            "source_sha256": "a51488c8a41bf9395991e0157849d9b95408465ab27304b727763dce3d96e96b",
+            "stable_id": "seals_affixes:survivor_resistance_to_all_elements",
+            "text": "幸存者：全元素抗性",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "seals_affixes:survivor_resistance_to_all_elements",
+                "translation_sha256": "620e03162196e1a42b0928dacb1d0fd5024b7ee356e2db93d7806dc00e4c45c4"
             }
         },
         {
@@ -22642,6 +23410,16 @@
             }
         },
         {
+            "source_sha256": "6c7ba9e5634b7b0efe11d7ad798aa9263894c799c049fd6a648ab83d032cc15d",
+            "stable_id": "sigils:minor:monster_barrier",
+            "text": "怪物屏障 怪物获得一个相当于 30% 生命上限的屏障。",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "sigils:minor:monster_barrier",
+                "translation_sha256": "7d1dad4cf8368c2530a85525f5ec56e428fc09749f25d4841c53c1fad72a26dd"
+            }
+        },
+        {
             "source_sha256": "459c84c642c479c0c6882ec5672762cfcb7a58c80ec2e039134f0839ed5a953b",
             "stable_id": "sigils:minor:monster_bleed_resist",
             "text": "怪物流血抵抗 怪物承受的流血伤害降低 60%。",
@@ -23772,6 +24550,96 @@
             }
         },
         {
+            "source_sha256": "33c8fa6384997919049a1373a567922a0131ab5fc53b2061c9fe73c5bf00e8d9",
+            "stable_id": "tributes:ancestral_tribute_of_armaments",
+            "text": "先祖军械贡品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:ancestral_tribute_of_armaments",
+                "translation_sha256": "2b5323942d08d1305ab201c9befe9524696be0959e3ac401886763e0945bace4"
+            }
+        },
+        {
+            "source_sha256": "18da96f624488f093ffe47971a2ddc9ab7bb43004b58e3bb9de0b23cdffafcb7",
+            "stable_id": "tributes:mythic_tribute_of_armaments",
+            "text": "神话军械贡品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:mythic_tribute_of_armaments",
+                "translation_sha256": "0b1787fba181675bddd2bf2e86fae01bd52140abfd37f7497c1b4b49b7116619"
+            }
+        },
+        {
+            "source_sha256": "2531c8a995ddd91305fa2007645798e77cbcb78c2fa689e146e0bcf62665ddeb",
+            "stable_id": "tributes:tribute_of_armaments",
+            "text": "军械贡品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:tribute_of_armaments",
+                "translation_sha256": "18877a715966faf9e6ade168054fb175e5369e00cab11567f724d90e1032c4e8"
+            }
+        },
+        {
+            "source_sha256": "d8f70e957c87e9d0fc34dcdeac3432ed5f081940522432349e89f86c284f8a78",
+            "stable_id": "tributes:tribute_of_ascendance_resolute",
+            "text": "晋升贡品（决绝）",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:tribute_of_ascendance_resolute",
+                "translation_sha256": "a265f44cce78eeceef7176b06cdf9488b4096198caa25237c7bf7da653842dfd"
+            }
+        },
+        {
+            "source_sha256": "207c8a290621f0173e584b05eccdfaed5044be04839a036bbeca7d56261e34e6",
+            "stable_id": "tributes:tribute_of_growth",
+            "text": "赘生物供品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:tribute_of_growth",
+                "translation_sha256": "6d1572bb5cedf2569bf7239f3871b7c563adcd4dd232c6b08e3bc4d24a299da8"
+            }
+        },
+        {
+            "source_sha256": "2496bb8ab898d66c362e528b2175c4821702e1d873724ae4ea5a08a4a6bab1ff",
+            "stable_id": "tributes:tribute_of_harmony",
+            "text": "和谐供品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:tribute_of_harmony",
+                "translation_sha256": "e81f03ad515d98d96fe55d124737fc9ea775c5d195b0ca4d451f41ab70fe7214"
+            }
+        },
+        {
+            "source_sha256": "32bb2d4fa02f302b5cb15930f36d56be1277ffe38103824ea1192ad7720604fb",
+            "stable_id": "tributes:tribute_of_radiance_resolute",
+            "text": "光辉贡品（决绝）",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:tribute_of_radiance_resolute",
+                "translation_sha256": "658eb94d4b1b5d408fa32c98b2a9d9d36644274f588c566861df7ae148d02e06"
+            }
+        },
+        {
+            "source_sha256": "37853fca35b24ed9687e86ea8c74dfd11e12efa19e8b8a16122b3c39f70c933c",
+            "stable_id": "tributes:tribute_of_refinement",
+            "text": "精炼贡品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:tribute_of_refinement",
+                "translation_sha256": "d0c528ae3910f08cef436a63a12019054e88f3909977147b0610cbf9dc40b884"
+            }
+        },
+        {
+            "source_sha256": "4f5c41bee58006c45090f7cc2ba14ac6ec9be61af6b4c20b0c3de4100d134010",
+            "stable_id": "tributes:tribute_of_titans",
+            "text": "巨人贡品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "tributes:tribute_of_titans",
+                "translation_sha256": "ad7c09bba55aeb6bbb985d4e3f7ba9a85182bed920fc901bea5d47e6a6b23c92"
+            }
+        },
+        {
             "source_sha256": "72a53d91e1f84e476045f0dc43f79c41294dc37b78e6a9289d32b8ec7aee1753",
             "stable_id": "uniques:100000_steps",
             "text": "十万加行",
@@ -23914,11 +24782,11 @@
         {
             "source_sha256": "f35bbb73419143298bdcfc47319e6824c866a8d9d14788e1fd7658cb02be36ad",
             "stable_id": "uniques:axial_conduit",
-            "text": "布克拉尼决断",
+            "text": "枢轴导体",
             "translation_source": {
-                "provider": "diablo4_companion",
+                "provider": "reviewed_override",
                 "source_id": "uniques:axial_conduit",
-                "translation_sha256": "cf6bf879facaaa35d675a4ec5ecf26d591f3079dc01672d49ee576b2eb07322d"
+                "translation_sha256": "1da7cc4d59e690363f7c2d4264a0d08d2bd96198ee56c15727234a064c3f768d"
             }
         },
         {
@@ -25957,6 +26825,16 @@
             }
         },
         {
+            "source_sha256": "610ad6bae4ccec83b52b4ace9b3ff27d3fbce5db0975c1320482b7f93a4c7517",
+            "stable_id": "uniques:seal_of_the_severed_finger",
+            "text": "断指封印",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "source_id": "uniques:seal_of_the_severed_finger",
+                "translation_sha256": "01f974b364338cc8f8bedfd5aece46386d5609be16f05b6ae4ef31d3d3f1c749"
+            }
+        },
+        {
             "source_sha256": "9fb6a5811b298761a1194c36d5d5f29c80aeb752e4882304c260f6c3280381f1",
             "stable_id": "uniques:seed_of_horazon",
             "text": "霍拉松之种",
@@ -26751,11 +27629,11 @@
     ],
     "reviewed_overrides": {
         "path": "reviewed_zhCN.json",
-        "sha256": "6b410147751f6febbc48aa8f0e830ffc875bbe45f31356a4382ee57db6f5722d"
+        "sha256": "9151f5176d3d7306b4f89235b1bab43a5d6994179ba52a65fdfad42e42ff8870"
     },
     "runtime_ready": false,
     "schema_version": 1,
-    "source_manifest_sha256": "37d7ea5504f994e20aa89634b31e265a5da8b94278841e7974f441e9c31889ac",
+    "source_manifest_sha256": "f28d132ceeb979bb3414905071d360260c9fb7c2dba01051083b275ce04ac00c",
     "source_quality_ok": true,
-    "translation_conflicts": 4
+    "translation_conflicts": 0
 }

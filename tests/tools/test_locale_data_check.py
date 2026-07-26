@@ -203,6 +203,25 @@ def test_declared_source_and_locale_file_hashes_are_checked(tmp_path: Path) -> N
     assert {issue["input"] for issue in file_hash_issues} == {"source_lock", "locale_manifest"}
 
 
+def test_runtime_text_must_match_locale_manifest_even_when_file_hash_is_updated(tmp_path: Path) -> None:
+    paths = _make_fixture(tmp_path)
+    runtime = json.loads(paths.locale_file.read_text(encoding="utf-8"))
+    runtime["alpha"] = "错误翻译"
+    _write_json(paths.locale_file, runtime)
+    locale_manifest = json.loads(paths.locale_manifest.read_text(encoding="utf-8"))
+    locale_manifest["files"][0]["sha256"] = _sha256_bytes(paths.locale_file.read_bytes())
+    _write_json(paths.locale_manifest, locale_manifest)
+
+    report = _check(paths)
+
+    assert report["exit_code"] == locale_data_check.EXIT_CHECK_FAILED
+    assert any(
+        issue["code"] == "runtime_translation_mismatch" and issue.get("stable_id") == "affixes:alpha"
+        for issue in _issues(report)
+    )
+    assert not any(issue["code"] == "hash_mismatch" and issue.get("hash_kind") == "file" for issue in _issues(report))
+
+
 def test_stable_id_coverage_duplicates_and_ascii_placeholders_are_reported(tmp_path: Path) -> None:
     paths = _make_fixture(tmp_path)
     locale_manifest = json.loads(paths.locale_manifest.read_text(encoding="utf-8"))

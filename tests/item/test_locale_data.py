@@ -98,6 +98,25 @@ def test_zhcn_live_affix_aliases_are_runtime_resolvable(monkeypatch, text, expec
     assert parser._get_affix_from_text(text).name == expected_name
 
 
+@pytest.mark.parametrize(
+    ("text", "expected_name"),
+    [
+        ("和谐供品", "tribute_of_harmony"),
+        ("光辉贡品（决绝）", "tribute_of_radiance_resolute"),
+        ("巨人贡品", "tribute_of_titans"),
+    ],
+)
+def test_zhcn_reviewed_tribute_aliases_are_runtime_resolvable(monkeypatch, text, expected_name):
+    from src.config.loader import IniConfigLoader
+    from src.dataloader import Dataloader
+
+    monkeypatch.setattr(IniConfigLoader()._general, "language", "zhCN")
+    catalog = object.__new__(Dataloader)
+    catalog.load_data()
+
+    assert catalog.resolve_tribute(text) == expected_name
+
+
 def test_find_item_start_uses_localized_header(monkeypatch):
     import src.tts
 

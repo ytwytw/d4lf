@@ -19,6 +19,17 @@ EXIT_CHECK_FAILED = 1
 EXIT_INPUT_ERROR = 2
 
 _SHA256_RE = re.compile(r"[0-9a-fA-F]{64}")
+_FLAT_RUNTIME_NAMESPACES = {
+    "affixes.json": "affixes",
+    "aspects.json": "aspects",
+    "charms_affixes.json": "charms_affixes",
+    "item_types.json": "item_types",
+    "seals_affixes.json": "seals_affixes",
+    "sets.json": "sets",
+    "tooltips.json": "tooltips",
+    "tributes.json": "tributes",
+}
+_RUNTIME_NAMESPACES = frozenset({*_FLAT_RUNTIME_NAMESPACES.values(), "sigils", "uniques"})
 
 
 class CheckInputError(Exception):
@@ -713,6 +724,143 @@ def _check_declared_files(
             )
 
 
+def _normalized_runtime_stable_id(stable_id: str) -> str:
+    namespace, separator, remainder = stable_id.partition(":")
+    if namespace == "affix":
+        namespace = "affixes"
+    return f"{namespace}:{remainder}" if separator else namespace
+
+
+def _runtime_record_texts(
+    document: dict[str, object], label: str, base_path: Path, issues: list[dict[str, object]]
+) -> dict[str, str]:
+    records: dict[str, str] = {}
+
+    def add_record(stable_id: str, text: object, path: Path) -> None:
+        if not isinstance(text, str):
+            issues.append(
+                _issue(
+                    "invalid_runtime_record",
+                    f"Runtime file '{path}' has a non-string translation for '{stable_id}'.",
+                    stable_id=stable_id,
+                    path=str(path),
+                )
+            )
+            return
+        if stable_id in records:
+            issues.append(
+                _issue(
+                    "duplicate_runtime_record",
+                    f"Runtime stable ID '{stable_id}' is declared more than once.",
+                    stable_id=stable_id,
+                    path=str(path),
+                )
+            )
+            return
+        records[stable_id] = text
+
+    for file_hash in _file_hashes(document, label):
+        declared_path = Path(file_hash.path)
+        filename = declared_path.name
+        if filename not in _FLAT_RUNTIME_NAMESPACES and filename not in {"sigils.json", "uniques.json"}:
+            continue
+        path = declared_path if declared_path.is_absolute() else base_path / declared_path
+        try:
+            payload, _ = _load_json_object(path, f"{label} runtime file")
+        except CheckInputError as exc:
+            issues.append(
+                _issue(
+                    "invalid_runtime_file",
+                    f"Declared runtime file cannot be validated: {path}.",
+                    path=str(path),
+                    cause=exc.issue["code"],
+                )
+            )
+            continue
+
+        if namespace := _FLAT_RUNTIME_NAMESPACES.get(filename):
+            for canonical, text in payload.items():
+                add_record(f"{namespace}:{canonical}", text, path)
+            continue
+
+        if filename == "uniques.json":
+            for canonical, metadata in payload.items():
+                display_name = metadata.get("display_name") if isinstance(metadata, dict) else None
+                add_record(f"uniques:{canonical}", display_name, path)
+            continue
+
+        for section, section_records in payload.items():
+            if section == "rarities":
+                continue
+            if not isinstance(section_records, dict):
+                issues.append(
+                    _issue(
+                        "invalid_runtime_record",
+                        f"Runtime sigil section '{section}' in '{path}' is not an object.",
+                        stable_id=f"sigils:{section}",
+                        path=str(path),
+                    )
+                )
+                continue
+            for canonical, text in section_records.items():
+                add_record(f"sigils:{section}:{canonical}", text, path)
+    return records
+
+
+def _check_runtime_records(
+    source_records: list[Record],
+    locale_records: list[Record],
+    runtime_records: dict[str, str],
+    issues: list[dict[str, object]],
+) -> None:
+    source_ids = {
+        _normalized_runtime_stable_id(record.stable_id)
+        for record in source_records
+        if record.stable_id.partition(":")[0] in _RUNTIME_NAMESPACES | {"affix"}
+    }
+    locale_by_id = {
+        _normalized_runtime_stable_id(record.stable_id): record
+        for record in locale_records
+        if record.stable_id.partition(":")[0] in _RUNTIME_NAMESPACES | {"affix"}
+    }
+
+    issues.extend(
+        (
+            _issue(
+                "runtime_record_missing",
+                f"Runtime locale files are missing source stable ID '{stable_id}'.",
+                stable_id=stable_id,
+            )
+        )
+        for stable_id in sorted(source_ids - runtime_records.keys())
+    )
+
+    for stable_id, record in sorted(locale_by_id.items()):
+        runtime_text = runtime_records.get(stable_id)
+        if runtime_text is None:
+            continue
+        if runtime_text != record.text:
+            issues.append(
+                _issue(
+                    "runtime_translation_mismatch",
+                    f"Runtime text does not match the locale manifest for stable ID '{stable_id}'.",
+                    stable_id=stable_id,
+                    expected=record.text,
+                    actual=runtime_text,
+                )
+            )
+
+    for stable_id, runtime_text in sorted(runtime_records.items()):
+        if runtime_text.strip() and stable_id not in locale_by_id:
+            issues.append(
+                _issue(
+                    "runtime_translation_untracked",
+                    f"Runtime text for stable ID '{stable_id}' is not declared by the locale manifest.",
+                    stable_id=stable_id,
+                )
+            )
+
+
 def _first_by_stable_id(records: list[Record]) -> dict[str, Record]:
     result: dict[str, Record] = {}
     for record in records:
@@ -975,6 +1123,10 @@ def check_locale_data(
         if not source_records:
             issues.append(_issue("missing_record", "Source manifest contains no records.", manifest="source"))
         _check_records(source_records, locale_records, issues)
+        runtime_records = _runtime_record_texts(
+            locale_manifest_document, "locale_manifest", locale_manifest.parent, issues
+        )
+        _check_runtime_records(source_records, locale_records, runtime_records, issues)
         d2core_translation_records = _d2core_translation_record_index(source_manifest_document, issues)
         _check_translation_provenance(
             source_manifest_document, locale_manifest_document, issues, d2core_translation_records

@@ -11,7 +11,7 @@ from typing import cast
 import pytest
 
 from src.locale_data import LocaleGrammar
-from src.tools import d2core_data, generate_zhcn_assets, locale_data_check
+from src.tools import companion_data, d2core_data, generate_zhcn_assets, locale_data_check
 
 FIXTURE_ROOT = Path(__file__).parent / "fixtures" / "companion_data"
 
@@ -372,6 +372,9 @@ def test_companion_records_take_precedence_and_d2core_supplements_missing_transl
         "test_seal_damage": "暗核封印伤害"
     }
     assert json.loads((output_dir / "sets.json").read_text(encoding="utf-8")) == {"missing_set": "暗核套装"}
+    assert json.loads((output_dir / "tributes.json").read_text(encoding="utf-8")) == {"missing_tribute": "测试贡品"}
+    for path in (*output_dir.glob("*.json"), *catalog_dir.iterdir()):
+        assert b"\r\n" not in path.read_bytes()
 
     manifest = json.loads(bundle.locale_manifest.read_text(encoding="utf-8"))
     records = {record["stable_id"]: record for record in manifest["records"]}
@@ -481,6 +484,44 @@ def test_translation_provider_absence_never_excludes_a_companion_translation() -
     assert builder.excluded_historical == []
 
 
+def test_translation_conflict_ignores_only_numeric_and_punctuation_variations() -> None:
+    candidate = generate_zhcn_assets._TranslationCandidate(
+        text="幸运一击 最多有 几率迷惑 持续 秒",
+        provider="d2core",
+        source_id="affix:test:1:x1",
+        source_record_sha256="1" * 64,
+    )
+    builder = generate_zhcn_assets._BundleBuilder()
+
+    builder.resolve(
+        "affixes:lucky_hit_confuse",
+        "lucky hit up to a chance to confuse for seconds",
+        {"幸运一击：最多有 40% 几率迷惑，持续 2 秒。"},
+        preferred_candidates={candidate},
+    )
+
+    assert builder.translation_conflicts == []
+
+
+def test_translation_conflict_preserves_semantic_provider_disagreement() -> None:
+    candidate = generate_zhcn_assets._TranslationCandidate(
+        text="信念回复", provider="d2core", source_id="affix:test:1:x1", source_record_sha256="1" * 64
+    )
+    builder = generate_zhcn_assets._BundleBuilder()
+
+    builder.resolve("affixes:faith_regeneration", "faith regeneration", {"信仰回复"}, preferred_candidates={candidate})
+
+    assert builder.translation_conflicts == [
+        {
+            "stable_id": "affixes:faith_regeneration",
+            "selected": "信仰回复",
+            "fallback": "信念回复",
+            "selected_provider": "diablo4_companion",
+            "fallback_provider": "d2core",
+        }
+    ]
+
+
 def test_namespace_specific_candidate_index_overlays_general_affixes() -> None:
     affix = generate_zhcn_assets._TranslationCandidate(
         text="词缀译名", provider="d2core", source_id="affix:test:1:x1", source_record_sha256="1" * 64
@@ -504,9 +545,116 @@ def test_flat_stat_candidate_takes_precedence_over_percent_variant() -> None:
         source_id="affix:S04_CoreStat_DexterityPercent:2:x1",
         source_record_sha256="2" * 64,
     )
-    index = {generate_zhcn_assets._identity("dexterity"): {flat, percent}}
+    index = {generate_zhcn_assets._exact_index_identity("dexterity"): {flat, percent}}
 
     assert generate_zhcn_assets._preferred_candidate_values(index, "dexterity", "dexterity") == {flat}
+
+
+def test_companion_template_match_ignores_numeric_values_only_as_a_fallback() -> None:
+    entries = [
+        companion_data.CanonicalEntry(
+            canonical_id="affix:577127",
+            kind="affix",
+            sno_aliases=("577127",),
+            name_aliases=("Affix_LuckyHit_Slow",),
+            locale_aliases={
+                "enUS": ("Lucky Hit: Critical Strikes Have Up to a 10% Chance to Slow for 2 Seconds",),
+                "zhCN": ("幸运一击：暴击最多有 10% 几率减速，持续 2 秒",),
+            },
+            record_keys=(),
+        )
+    ]
+    index = generate_zhcn_assets._translation_index(entries, "affix")
+
+    candidates = generate_zhcn_assets._candidate_values(
+        index,
+        "lucky_hit_critical_strikes_have_up_to_a_chance_to_slow_for_seconds",
+        "lucky hit critical strikes have up to a chance to slow for seconds",
+    )
+
+    assert candidates == {"幸运一击：暴击最多有 几率减速，持续 秒"}
+
+
+def test_exact_numeric_template_match_is_not_polluted_by_other_numeric_variants() -> None:
+    entries = [
+        companion_data.CanonicalEntry(
+            canonical_id=f"affix:{seconds}",
+            kind="affix",
+            sno_aliases=(str(seconds),),
+            name_aliases=(f"Affix_Duration_{seconds}",),
+            locale_aliases={"enUS": (f"Gain Damage for {seconds} Seconds",), "zhCN": (f"获得伤害，持续 {seconds} 秒",)},
+            record_keys=(),
+        )
+        for seconds in (2, 5)
+    ]
+    index = generate_zhcn_assets._translation_index(entries, "affix")
+
+    exact = generate_zhcn_assets._candidate_values(index, "gain_damage_for_2_seconds", "gain damage for 2 seconds")
+    ambiguous_fallback = generate_zhcn_assets._candidate_values(
+        index, "gain_damage_for_seconds", "gain damage for seconds"
+    )
+
+    assert exact == {"获得伤害，持续 2 秒"}
+    assert ambiguous_fallback == {"获得伤害，持续 秒"}
+    assert generate_zhcn_assets._select_translation(ambiguous_fallback) == ("获得伤害，持续 秒", None)
+
+
+def test_d2core_multiplier_marker_matches_normalized_source_name(tmp_path: Path) -> None:
+    snapshot = d2core_data.D2CoreSnapshot(
+        root=tmp_path,
+        manifest_path=tmp_path / "d2core-manifest.json",
+        build_version="65432",
+        manifest={},
+        payloads={},
+        records={
+            ("affix", "enUS"): (
+                {"key": "X2_DamageType_Holy", "id": 100, "descTpl": "x[{VALUE}*100|%|] Holy Damage Multiplier"},
+            ),
+            ("affix", "zhCN"): (
+                {"key": "X2_DamageType_Holy", "id": 100, "descTpl": "x[{VALUE}*100|%|] 神圣 伤害增倍"},
+            ),
+            ("aspect", "enUS"): (),
+            ("aspect", "zhCN"): (),
+            ("talisman", "enUS"): (),
+            ("talisman", "zhCN"): (),
+            ("uniqueItem", "enUS"): (),
+            ("uniqueItem", "zhCN"): (),
+        },
+    )
+
+    index = generate_zhcn_assets._d2core_translation_indexes(snapshot)["affix"]
+    candidate = generate_zhcn_assets._preferred_candidate_values(
+        index, "holy_damage_multiplier", "holy damage multiplier"
+    )
+
+    assert {value.text for value in candidate} == {"x 神圣 伤害增倍"}
+
+
+def test_d2core_multiplier_marker_does_not_pollute_non_multiplier_source_name(tmp_path: Path) -> None:
+    snapshot = d2core_data.D2CoreSnapshot(
+        root=tmp_path,
+        manifest_path=tmp_path / "d2core-manifest.json",
+        build_version="65432",
+        manifest={},
+        payloads={},
+        records={
+            ("affix", "enUS"): ({"key": "Damage_Vulnerable", "id": 100, "descTpl": "x Vulnerable Damage"},),
+            ("affix", "zhCN"): ({"key": "Damage_Vulnerable", "id": 100, "descTpl": "x 易伤伤害"},),
+            ("aspect", "enUS"): (),
+            ("aspect", "zhCN"): (),
+            ("talisman", "enUS"): (),
+            ("talisman", "zhCN"): (),
+            ("uniqueItem", "enUS"): (),
+            ("uniqueItem", "zhCN"): (),
+        },
+    )
+
+    index = generate_zhcn_assets._d2core_translation_indexes(snapshot)["affix"]
+
+    assert not generate_zhcn_assets._preferred_candidate_values(index, "vulnerable_damage", "vulnerable damage")
+    assert generate_zhcn_assets._preferred_candidate_values(
+        index, "vulnerable_damage_multiplier", "vulnerable damage multiplier"
+    )
 
 
 def test_selected_alias_collisions_are_reported_by_runtime_namespace() -> None:
@@ -517,6 +665,21 @@ def test_selected_alias_collisions_are_reported_by_runtime_namespace() -> None:
 
     assert collisions == [
         {"namespace": "aspects", "normalized_alias": "恶毒", "stable_ids": ["malicious", "virulent"], "texts": ["恶毒"]}
+    ]
+
+
+def test_selected_alias_collisions_include_runtime_digit_stripped_aliases() -> None:
+    collisions = generate_zhcn_assets._selected_alias_collisions({
+        "affixes": [("two_seconds", "每 2 秒触发"), ("five_seconds", "每 5 秒触发")]
+    })
+
+    assert collisions == [
+        {
+            "namespace": "affixes",
+            "normalized_alias": "每 秒触发",
+            "stable_ids": ["five_seconds", "two_seconds"],
+            "texts": ["每 2 秒触发", "每 5 秒触发"],
+        }
     ]
 
 

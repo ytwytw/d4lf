@@ -127,7 +127,7 @@ def _build_payload():
 
 
 @pytest.mark.parametrize(
-    "url", ["https://www.d2core.com/d4/planner?bd=20eK", "http://d2core.com/d4/planner/?foo=1&bd=abc_123-Z"]
+    "url", ["https://www.d2core.com/d4/planner?bd=20eK", "https://d2core.com/d4/planner/?foo=1&bd=abc_123-Z"]
 )
 def test_extract_d2core_share_code(url: str) -> None:
     assert extract_d2core_share_code(url) in {"20eK", "abc_123-Z"}
@@ -138,6 +138,7 @@ def test_extract_d2core_share_code(url: str) -> None:
     [
         "https://evil.example/d4/planner?bd=20eK",
         "https://notd2core.com/d4/planner?bd=20eK",
+        "http://d2core.com/d4/planner?bd=20eK",
         "https://www.d2core.com/d4/builds?bd=20eK",
         "https://www.d2core.com/d4/planner",
         "https://www.d2core.com/d4/planner?bd=bad%20code",

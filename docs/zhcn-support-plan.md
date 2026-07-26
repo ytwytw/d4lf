@@ -92,13 +92,13 @@ differences must remain visible. It is not valid to relabel `72836` data as `725
 Companion's repository-level `72903`; a real client capture can validate observed grammar and aliases, but it
 cannot prove complete seasonal data coverage.
 
-The source manifest contains all 2,764 runtime stable keys regardless of D2Core coverage. It resolves 2,634 records:
-104 equipment records and 26 D4LF extension records remain untranslated. `excluded_historical_records` is zero, so
+The source manifest contains all 2,742 runtime stable keys regardless of D2Core coverage. It resolves 2,724 records:
+2 equipment records and 16 D4LF extension records remain untranslated. `excluded_historical_records` is zero, so
 all existing non-empty Chinese aliases participate in runtime parsing.
 
 The manifest still contains `"runtime_ready": false` for the complete multilingual catalog release gate. Guarded
 interaction is enabled for the separately validated equipment scope. Full-catalog promotion remains blocked by
-the mixed `72592`/`72698`/`72810`/`72836` source and validation builds, four current-provider disagreements, and 130
+the mixed `72698`/`72810`/`72836`/`72903` source and validation builds, no current-provider disagreements, and 18
 untranslated records. The known duplicate Chinese aliases are explicitly disambiguated or grouped and no longer
 make `source_quality_ok` fail. These are separate, machine-readable findings rather than one opaque coverage
 percentage.

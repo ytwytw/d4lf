@@ -37,8 +37,9 @@ def test_committed_zhcn_candidate_is_internally_consistent_and_not_ready() -> No
         "missing_record": quality["summary"]["unresolved_records"],
         "provider_build_mismatch": 1,
         "runtime_not_ready": 1,
-        "translation_conflict": 1,
     }
+    if quality["summary"]["translation_conflicts"]:
+        expected_issue_counts["translation_conflict"] = 1
     if not quality["summary"]["source_quality_ok"]:
         expected_issue_counts["source_quality_failed"] = 1
     assert issue_counts == expected_issue_counts

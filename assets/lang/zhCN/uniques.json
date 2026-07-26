@@ -56,7 +56,7 @@
         "num_inherents": 0
     },
     "axial_conduit": {
-        "display_name": "布克拉尼决断",
+        "display_name": "枢轴导体",
         "num_inherents": 0
     },
     "azurewrath": {
@@ -872,6 +872,7 @@
         "num_inherents": 0
     },
     "seal_of_the_severed_finger": {
+        "display_name": "断指封印",
         "num_inherents": 0
     },
     "seed_of_horazon": {

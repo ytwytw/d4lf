@@ -10,6 +10,10 @@
 *.sh text eol=lf
 *.yaml text eol=lf
 *.yml text eol=lf
+/assets/catalog/*.json text eol=lf
+/assets/catalog/*.txt text eol=lf
+/assets/lang/enUS/*.json text eol=lf
+/assets/lang/zhCN/*.json text eol=lf
 /src/tools/data/reviewed_zhCN.json text eol=lf
 
 # Internal agent context is useful in the development repository but is not

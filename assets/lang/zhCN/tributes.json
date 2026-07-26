@@ -1,5 +1,5 @@
 {
-    "ancestral_tribute_of_armaments": "",
+    "ancestral_tribute_of_armaments": "先祖军械贡品",
     "greater_tribute_of_armaments": "",
     "greater_tribute_of_harmony": "",
     "greater_tribute_of_ingenuity": "",
@@ -11,16 +11,16 @@
     "lesser_tribute_of_the_horadrim": "",
     "major_tribute_of_andariel": "",
     "minor_tribute_of_andariel": "",
-    "mythic_tribute_of_armaments": "",
+    "mythic_tribute_of_armaments": "神话军械贡品",
     "tribute_of_andariel": "",
-    "tribute_of_armaments": "",
-    "tribute_of_ascendance_resolute": "",
-    "tribute_of_growth": "",
-    "tribute_of_harmony": "",
+    "tribute_of_armaments": "军械贡品",
+    "tribute_of_ascendance_resolute": "晋升贡品（决绝）",
+    "tribute_of_growth": "赘生物供品",
+    "tribute_of_harmony": "和谐供品",
     "tribute_of_heritage": "",
     "tribute_of_ingenuity": "",
-    "tribute_of_radiance_resolute": "",
-    "tribute_of_refinement": "",
+    "tribute_of_radiance_resolute": "光辉贡品（决绝）",
+    "tribute_of_refinement": "精炼贡品",
     "tribute_of_the_horadrim": "",
-    "tribute_of_titans": ""
+    "tribute_of_titans": "巨人贡品"
 }

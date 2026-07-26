@@ -107,7 +107,7 @@ def _canonical_json_text(payload: object) -> str:
 
 def _write_json(path: Path, payload: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(_canonical_json_text(payload), encoding="utf-8")
+    path.write_text(_canonical_json_text(payload), encoding="utf-8", newline="\n")
 
 
 def _sha256_bytes(value: bytes) -> str:
@@ -125,6 +125,37 @@ def _sha256_file(path: Path) -> str:
 def _identity(value: str) -> str:
     normalized = unicodedata.normalize("NFKC", value).casefold()
     return "".join(character for character in normalized if character.isalnum())
+
+
+def _template_identity(value: str) -> str:
+    """Normalize a localized template while ignoring source-specific numeric values."""
+    normalized = unicodedata.normalize("NFKC", value).casefold()
+    return "".join(character for character in normalized if character.isalpha())
+
+
+def _exact_index_identity(value: str) -> str:
+    identity = _identity(value)
+    return f"exact:{identity}" if identity else ""
+
+
+def _template_index_identity(value: str) -> str:
+    identity = _template_identity(value)
+    return f"template:{identity}" if identity else ""
+
+
+def _index_identities(value: str) -> tuple[str, ...]:
+    return tuple(
+        dict.fromkeys(
+            identity for identity in (_exact_index_identity(value), _template_index_identity(value)) if identity
+        )
+    )
+
+
+def _numeric_template_text(value: str) -> str:
+    """Remove source-instance values when a generic stable template matched."""
+    normalized = re.sub(r"\d+(?:[.,，．]\d+)*\s*[-–—]\s*\d+(?:[.,，．]\d+)*\s*[%％]?", "", value)
+    normalized = re.sub(r"\d+(?:[.,，．]\d+)*\s*[%％]?", "", normalized)
+    return " ".join(normalized.split())
 
 
 def _is_ascii_placeholder(value: str) -> bool:
@@ -158,7 +189,8 @@ def _translation_index(entries: Sequence[companion_data.CanonicalEntry], kind: s
             continue
         chinese = entry.locale_aliases.get("zhCN", ())
         for english in entry.locale_aliases.get("enUS", ()):
-            index[_identity(english)].update(chinese)
+            for identity in _index_identities(english):
+                index[identity].update(chinese)
     return index
 
 
@@ -261,8 +293,17 @@ def _d2core_translation_indexes(
                 english_text = _clean_d2core_affix(english_text)
                 chinese_text = _clean_d2core_affix(chinese_text)
                 aliases = _d2core_affix_aliases(english_text, cast("str", english["key"]))
+                multiplier_alias = ""
                 if english_text.casefold().startswith("x "):
-                    aliases.add(f"{english_text[2:]} multiplier")
+                    multiplier_alias = english_text[2:].strip()
+                elif english_text.casefold().endswith(" x"):
+                    multiplier_alias = english_text[:-2].strip()
+                if multiplier_alias:
+                    aliases.add(
+                        multiplier_alias
+                        if multiplier_alias.casefold().endswith(" multiplier")
+                        else f"{multiplier_alias} multiplier"
+                    )
             elif dataset == "aspect":
                 kind = "aspect"
                 aliases = _aspect_name_aliases(english_text)
@@ -288,8 +329,7 @@ def _d2core_translation_indexes(
                 text=chinese_text, provider="d2core", source_id=source_id, source_record_sha256=source_record_sha256
             )
             for alias in aliases:
-                identity = _identity(alias)
-                if identity:
+                for identity in _index_identities(alias):
                     indexes[kind][identity].add(candidate)
     return indexes
 
@@ -332,7 +372,19 @@ def _preferred_candidate_values(
         return set()
     candidates: set[_TranslationCandidate] = set()
     for value in (canonical, canonical.replace("_", " "), source_text):
-        candidates.update(index.get(_identity(value), set()))
+        candidates.update(index.get(_exact_index_identity(value), set()))
+    if not candidates:
+        for value in (canonical, canonical.replace("_", " "), source_text):
+            candidates.update(index.get(_template_index_identity(value), set()))
+        candidates = {
+            _TranslationCandidate(
+                text=_numeric_template_text(candidate.text),
+                provider=candidate.provider,
+                source_id=candidate.source_id,
+                source_record_sha256=candidate.source_record_sha256,
+            )
+            for candidate in candidates
+        }
     if "percent" not in canonical.casefold():
         non_percent = {candidate for candidate in candidates if "percent" not in candidate.source_id.casefold()}
         if non_percent:
@@ -388,7 +440,7 @@ class _BundleBuilder:
             if (
                 fallback_translation is not None
                 and preferred_translation is not None
-                and _identity(fallback_translation) != _identity(preferred_translation)
+                and _template_identity(fallback_translation) != _template_identity(preferred_translation)
             ):
                 self.translation_conflicts.append({
                     "stable_id": stable_id,
@@ -432,7 +484,11 @@ class _BundleBuilder:
 def _candidate_values(index: Mapping[str, set[str]], canonical: str, source_text: str) -> set[str]:
     candidates: set[str] = set()
     for value in (canonical, canonical.replace("_", " "), source_text):
-        candidates.update(index.get(_identity(value), set()))
+        candidates.update(index.get(_exact_index_identity(value), set()))
+    if not candidates:
+        for value in (canonical, canonical.replace("_", " "), source_text):
+            candidates.update(index.get(_template_index_identity(value), set()))
+        candidates = {_numeric_template_text(candidate) for candidate in candidates}
     return candidates
 
 
@@ -572,9 +628,9 @@ def _item_type_index(companion_repo: Path, en_grammar: LocaleGrammar, zh_grammar
         source_rarity = cast("str", english["Rarerity"])
         english_name = _strip_rarity(en_grammar, cast("str", english["Name"]), source_rarity)
         chinese_name = _strip_rarity(zh_grammar, cast("str", chinese["Name"]), source_rarity)
-        index[_identity(english_name)].add(chinese_name)
+        index[_exact_index_identity(english_name)].add(chinese_name)
         if not source_rarity:
-            index[_identity(cast("str", english["Type"]))].add(chinese_name)
+            index[_exact_index_identity(cast("str", english["Type"]))].add(chinese_name)
     return index
 
 
@@ -642,14 +698,19 @@ def _sigil_mapping(
     return output
 
 
-def _unavailable_mapping(builder: _BundleBuilder, prefix: str, source: Mapping[str, object]) -> dict[str, str]:
+def _flat_mapping(builder: _BundleBuilder, prefix: str, source: Mapping[str, object]) -> dict[str, str]:
     output: dict[str, str] = {}
     for canonical, raw_source_text in sorted(source.items()):
         if not isinstance(raw_source_text, str):
             raise GenerationError(f"{prefix}.json must map strings to strings")
-        builder.resolve(f"{prefix}:{canonical}", raw_source_text, ())
-        output[canonical] = ""
+        output[canonical] = builder.resolve(f"{prefix}:{canonical}", raw_source_text, ()) or ""
     return output
+
+
+def _runtime_tts_identity(value: str) -> str:
+    letters_and_spaces = "".join(character for character in value if character.isalpha() or character.isspace())
+    normalized = unicodedata.normalize("NFKC", letters_and_spaces).casefold()
+    return " ".join(normalized.split())
 
 
 def _selected_alias_collisions(namespaces: Mapping[str, Sequence[tuple[str, str]]]) -> list[dict[str, object]]:
@@ -657,11 +718,11 @@ def _selected_alias_collisions(namespaces: Mapping[str, Sequence[tuple[str, str]
     for namespace, entries in namespaces.items():
         grouped: dict[str, dict[str, set[str]]] = defaultdict(lambda: {"stable_ids": set(), "texts": set()})
         for stable_id, text in entries:
-            identity = _identity(text)
-            if not identity:
-                continue
-            grouped[identity]["stable_ids"].add(stable_id)
-            grouped[identity]["texts"].add(text)
+            for identity in dict.fromkeys((_identity(text), _runtime_tts_identity(text))):
+                if not identity:
+                    continue
+                grouped[identity]["stable_ids"].add(stable_id)
+                grouped[identity]["texts"].add(text)
         for identity, values in sorted(grouped.items()):
             if len(values["stable_ids"]) > 1:
                 collisions.append({
@@ -857,7 +918,7 @@ def generate_zhcn_assets(
     item_types = _item_type_mapping(builder, item_types_source, item_type_index)
     sigils = _sigil_mapping(builder, _json_object(en_us_dir / "sigils.json", "enUS sigils"), sigil_index)
     sets = _set_mapping(builder, _json_array(en_us_dir / "sets.json", "enUS sets"), d2core_indexes.get("set"))
-    tributes = _unavailable_mapping(builder, "tributes", _json_object(en_us_dir / "tributes.json", "enUS tributes"))
+    tributes = _flat_mapping(builder, "tributes", _json_object(en_us_dir / "tributes.json", "enUS tributes"))
 
     item_power_candidates = zh_grammar.terms("item_power")
     item_power_source = _json_object(en_us_dir / "tooltips.json", "enUS tooltips").get("ItemPower", "item power")
@@ -960,7 +1021,7 @@ def generate_zhcn_assets(
 
     build_version_path = catalog_dir / "d4data-buildVersion.txt"
     build_version_path.parent.mkdir(parents=True, exist_ok=True)
-    build_version_path.write_text(build_version + "\n", encoding="utf-8")
+    build_version_path.write_text(build_version + "\n", encoding="utf-8", newline="\n")
     source_lock_path = catalog_dir / "source-lock.json"
     _write_json(
         source_lock_path,

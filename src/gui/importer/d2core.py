@@ -96,7 +96,7 @@ class D2CoreCatalog:
 
 def extract_d2core_share_code(url: str) -> str:
     parsed = urlsplit(url.strip())
-    if parsed.scheme.casefold() not in {"http", "https"} or (parsed.hostname or "").casefold() not in D2CORE_HOSTS:
+    if parsed.scheme.casefold() != "https" or (parsed.hostname or "").casefold() not in D2CORE_HOSTS:
         message = "Invalid URL, please use a d2core.com planner link"
         raise ValueError(message)
     if parsed.path.rstrip("/") != D2CORE_PLANNER_PATH:
