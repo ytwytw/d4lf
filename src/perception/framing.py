@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import enum
 import re
 from typing import TYPE_CHECKING, Protocol
@@ -27,9 +25,7 @@ def find_item_start(data: list[str], *, grammar: LocaleGrammar, catalog: ItemTyp
         if grammar.contains("item_start_ignored", item):
             continue
 
-        if any(
-            grammar.identifier_matches(identifier.name, item, mode="startswith") for identifier in ItemIdentifier
-        ):
+        if any(grammar.identifier_matches(identifier.name, item, mode="startswith") for identifier in ItemIdentifier):
             return index
 
         cleaned_text = re.sub(r"[^A-Za-z]", "", item)

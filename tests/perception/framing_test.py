@@ -12,11 +12,7 @@ class _Catalog:
 
 def test_find_item_start_uses_localized_header() -> None:
     grammar = LocaleGrammar.from_dict(
-        "zhCN",
-        {
-            "labels": {"ancestral": ["先祖"], "item_start_ignored": ["词缀"]},
-            "rarities": {"Unique": ["暗金"]},
-        },
+        "zhCN", {"labels": {"ancestral": ["先祖"], "item_start_ignored": ["词缀"]}, "rarities": {"Unique": ["暗金"]}}
     )
     catalog = _Catalog({"双手剑": "Sword2H"})
     trace = ["无关界面文字", "祖父", "先祖暗金双手剑", "925 物品强度"]
@@ -46,8 +42,7 @@ def test_tts_framer_emits_localized_trace_and_bounds_noise() -> None:
 
 def test_tts_framer_keeps_raw_lines() -> None:
     grammar = LocaleGrammar.from_dict(
-        "enUS",
-        {"labels": {"item_end_control": ["Right mouse button"]}, "rarities": {"Legendary": ["Legendary"]}},
+        "enUS", {"labels": {"item_end_control": ["Right mouse button"]}, "rarities": {"Legendary": ["Legendary"]}}
     )
     catalog = _Catalog({"ring": "Ring"})
     framer = TtsFramer(grammar, catalog)
