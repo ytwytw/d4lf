@@ -1,0 +1,157 @@
+{
+    "affix_range_precision": {
+        "暗影伤害": {
+            "decimal": "shade_damage",
+            "integer": "shadow_damage"
+        },
+        "毒素伤害": {
+            "decimal": "poisoning_damage",
+            "integer": "poison_damage"
+        }
+    },
+    "aspect_alias_equivalence": {
+        "恶毒": [
+            "malicious",
+            "virulent"
+        ]
+    },
+    "identifiers": {
+        "COMPASS": [
+            "罗盘",
+            "compass"
+        ],
+        "ESCALATION_SIGIL": [
+            "升级符印",
+            "escalation sigil"
+        ],
+        "NIGHTMARE_SIGIL": [
+            "梦魇符印",
+            "nightmare sigil"
+        ],
+        "TRIBUTE": [
+            "贡品",
+            "tribute"
+        ],
+        "WHISPERING_KEY": [
+            "低语钥匙",
+            "whispering key"
+        ]
+    },
+    "labels": {
+        "affix_stop": [
+            "空的镶孔",
+            "空插槽",
+            "需要等级",
+            "装备时会失去属性",
+            "无法分解",
+            "出售价格",
+            "鼠标右键",
+            "鼠标左键",
+            "操作按钮",
+            "right mouse button",
+            "left mouse button",
+            "action button"
+        ],
+        "affixes_header": [
+            "词缀",
+            "affixes"
+        ],
+        "all_resist": [
+            "全元素抗性",
+            "所有元素抗性",
+            "所有抗性"
+        ],
+        "ancestral": [
+            "先祖"
+        ],
+        "armor": [
+            "护甲值",
+            "护甲"
+        ],
+        "armory_loadout": [
+            "军械库配置",
+            "军械库套装"
+        ],
+        "bloodied": [
+            "染血"
+        ],
+        "charm_slot": [
+            "护符栏位",
+            "护符槽位"
+        ],
+        "cost": [
+            "费用",
+            "cost"
+        ],
+        "damage_per_second": [
+            "每秒伤害"
+        ],
+        "imprinted": [
+            "已刻印：",
+            "已刻印:",
+            "刻印：",
+            "刻印:"
+        ],
+        "item_end_control": [
+            "鼠标左键",
+            "鼠标右键",
+            "鼠标按钮",
+            "操作按钮",
+            "mouse button",
+            "action button"
+        ],
+        "item_name_prefix": [
+            "[收藏物品]."
+        ],
+        "item_power": [
+            "物品强度",
+            "item power"
+        ],
+        "item_start_ignored": [
+            "罗盘词缀",
+            "地下城词缀",
+            "词缀",
+            "全选",
+            "affixes",
+            "select all"
+        ],
+        "sanctified": [
+            "圣化"
+        ]
+    },
+    "rarities": {
+        "Common": [
+            "普通",
+            "common"
+        ],
+        "Legendary": [
+            "传奇",
+            "legendary"
+        ],
+        "Magic": [
+            "魔法",
+            "magic"
+        ],
+        "Mythic": [
+            "神话暗金",
+            "神话",
+            "mythic unique",
+            "mythic"
+        ],
+        "Rare": [
+            "稀有",
+            "rare"
+        ],
+        "Set": [
+            "套装",
+            "set"
+        ],
+        "Unique": [
+            "暗金",
+            "unique"
+        ]
+    },
+    "schema_version": 1,
+    "status": "capture_validated_core_equipment",
+    "validated_game_build": "3.1.0.72810"
+}

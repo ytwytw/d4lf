@@ -11,6 +11,7 @@
 .agents
 .codex
 .coverage
+CLAUDE.md
 .idea/
 .pytest_cache/
 .scratch

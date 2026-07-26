@@ -1,14 +1,24 @@
 import json
 import threading
+from types import SimpleNamespace
 
 import pytest
 
 from src.item.data import loader as loader_module
+from src.item.data.item_type import ItemType
 from src.item.data.loader import Dataloader, _load_string_map
 
 
 class _LoaderFailure(BaseException):
     pass
+
+
+def _load_zhcn_catalog(monkeypatch) -> Dataloader:
+    settings = SimpleNamespace(general=SimpleNamespace(language="zhCN"))
+    monkeypatch.setattr(loader_module, "get_settings", lambda: settings)
+    catalog = object.__new__(Dataloader)
+    catalog.load_data()
+    return catalog
 
 
 def test_load_string_map_returns_string_values(tmp_path):
@@ -30,6 +40,32 @@ def test_load_string_map_rejects_non_string_maps(tmp_path, payload):
 def test_dataloader_has_expected_data_containers():
     assert isinstance(Dataloader.affix_dict, dict)
     assert isinstance(Dataloader.aspect_list, list)
+
+
+def test_zhcn_catalog_loads_all_runtime_aliases(monkeypatch) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+
+    assert catalog.resolve_affix("闪避给予的移动速度，持续 秒") == "evade_grants_movement_speed_for_seconds"
+    assert catalog.resolve_tribute("巨人贡品") == "tribute_of_titans"
+    assert catalog.resolve_item_type("胸甲") == "ChestArmor"
+    assert catalog.resolve_unique("命运之拳") == "fists_of_fate"
+
+
+def test_zhcn_ambiguous_damage_aliases_use_range_precision(monkeypatch) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+
+    assert catalog.resolve_affix_exact("暗影伤害") is None
+    assert catalog.resolve_affix_exact("暗影伤害", range_precision="decimal") == "shade_damage"
+    assert catalog.resolve_affix_exact("暗影伤害", range_precision="integer") == "shadow_damage"
+    assert catalog.resolve_affix_exact("毒素伤害", range_precision="decimal") == "poisoning_damage"
+    assert catalog.resolve_affix_exact("毒素伤害", range_precision="integer") == "poison_damage"
+
+
+def test_loading_zhcn_does_not_mutate_stable_item_type_values(monkeypatch) -> None:
+    _load_zhcn_catalog(monkeypatch)
+
+    assert ItemType.ChestArmor.value == "chest armor"
+    assert ItemType.Sigil.value == "nightmare sigil"
 
 
 def test_dataloader_does_not_publish_while_loading(monkeypatch):

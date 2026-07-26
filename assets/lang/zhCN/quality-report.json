@@ -1,0 +1,282 @@
+{
+    "build_version": "3.1.1.72836",
+    "companion_quality": {
+        "ascii_placeholders": [
+            {
+                "alias": "Thorn Pulse",
+                "alias_field": "Name",
+                "canonical_id": "unique:1619876",
+                "kind": "unique",
+                "locale": "zhCN"
+            },
+            {
+                "alias": "Gloves Unique Druid 98",
+                "alias_field": "Name",
+                "canonical_id": "unique:1934418",
+                "kind": "unique",
+                "locale": "zhCN"
+            },
+            {
+                "alias": "Helm Unique Druid 98",
+                "alias_field": "Name",
+                "canonical_id": "unique:578819",
+                "kind": "unique",
+                "locale": "zhCN"
+            }
+        ],
+        "duplicates": {
+            "identity_aliases": [],
+            "locale_aliases": [
+                {
+                    "aliases": [
+                        "Life On Kill",
+                        "Life on Kill"
+                    ],
+                    "canonical_ids": [
+                        "affix:2480780",
+                        "affix:577197"
+                    ],
+                    "kind": "affix",
+                    "locale": "enUS",
+                    "normalised_alias": "life on kill"
+                },
+                {
+                    "aliases": [
+                        "恶毒"
+                    ],
+                    "canonical_ids": [
+                        "aspect:1738556",
+                        "aspect:2547904"
+                    ],
+                    "kind": "aspect",
+                    "locale": "zhCN",
+                    "normalised_alias": "恶毒"
+                }
+            ]
+        },
+        "missing": {
+            "locale_aliases": [],
+            "locale_records": [
+                {
+                    "canonical_id": "unique:2571335",
+                    "kind": "unique",
+                    "locale": "zhCN"
+                }
+            ]
+        },
+        "ok": false,
+        "schema_version": 1,
+        "source_records": {
+            "affix": {
+                "enUS": 893,
+                "zhCN": 905
+            },
+            "aspect": {
+                "enUS": 523,
+                "zhCN": 524
+            },
+            "unique": {
+                "enUS": 299,
+                "zhCN": 301
+            }
+        },
+        "summary": {
+            "ascii_placeholders": 3,
+            "duplicate_identity_aliases": 0,
+            "duplicate_locale_aliases": 2,
+            "missing_locale_aliases": 0,
+            "missing_locale_records": 1
+        }
+    },
+    "locale": "zhCN",
+    "runtime_ready": false,
+    "schema_version": 1,
+    "scope": {
+        "excluded_historical_records": [],
+        "excluded_item_types": [
+            "Elixir",
+            "Incense",
+            "Material",
+            "TemperManual",
+            "Tome"
+        ],
+        "historical_reason": "No translation provider is authoritative by absence. D2Core may supplement missing translations, but records are never excluded merely because D2Core does not contain them.",
+        "reason": "D4LF ignores these non-gear item types before profile filtering."
+    },
+    "selected_quality": {
+        "alias_collisions": [],
+        "disambiguated_alias_collisions": [
+            {
+                "mapping": {
+                    "decimal": "shade_damage",
+                    "integer": "shadow_damage"
+                },
+                "namespace": "affixes",
+                "normalized_alias": "暗影伤害",
+                "stable_ids": [
+                    "shade_damage",
+                    "shadow_damage"
+                ],
+                "strategy": "range_precision",
+                "texts": [
+                    "暗影伤害"
+                ]
+            },
+            {
+                "mapping": {
+                    "decimal": "poisoning_damage",
+                    "integer": "poison_damage"
+                },
+                "namespace": "affixes",
+                "normalized_alias": "毒素伤害",
+                "stable_ids": [
+                    "poison_damage",
+                    "poisoning_damage"
+                ],
+                "strategy": "range_precision",
+                "texts": [
+                    "毒素伤害"
+                ]
+            },
+            {
+                "canonical_ids": [
+                    "malicious",
+                    "virulent"
+                ],
+                "namespace": "aspects",
+                "normalized_alias": "恶毒",
+                "stable_ids": [
+                    "malicious",
+                    "virulent"
+                ],
+                "strategy": "equivalent_canonical_ids",
+                "texts": [
+                    "恶毒"
+                ]
+            }
+        ],
+        "ok": true
+    },
+    "source_builds": {
+        "d2core": "72698",
+        "d4data": "3.1.1.72836"
+    },
+    "summary": {
+        "equipment_unresolved_records": 2,
+        "excluded_historical_records": 0,
+        "excluded_records": 5,
+        "extension_unresolved_records": 16,
+        "resolved_records": 2724,
+        "reviewed_overrides": 66,
+        "source_builds_match": false,
+        "source_quality_ok": true,
+        "source_records": 2742,
+        "translation_conflicts": 0,
+        "translation_sources": {
+            "d2core": 334,
+            "diablo4_companion": 2323,
+            "locale_grammar": 1,
+            "reviewed_override": 66
+        },
+        "unresolved_by_kind": {
+            "affixes": 1,
+            "charms_affixes": 1,
+            "sigils": 1,
+            "tributes": 15
+        },
+        "unresolved_records": 18
+    },
+    "translation_conflicts": [],
+    "unresolved": [
+        {
+            "reason": "missing_translation",
+            "source_text": "crafting material drop rate",
+            "stable_id": "affixes:crafting_material_drop_rate"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "crafting material drop rate",
+            "stable_id": "charms_affixes:crafting_material_drop_rate"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "ruptures close ruptures here to access the deathtoll chambers",
+            "stable_id": "sigils:positive:ruptures"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "greater tribute of armaments",
+            "stable_id": "tributes:greater_tribute_of_armaments"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "greater tribute of harmony",
+            "stable_id": "tributes:greater_tribute_of_harmony"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "greater tribute of ingenuity",
+            "stable_id": "tributes:greater_tribute_of_ingenuity"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "greater tribute of refinement",
+            "stable_id": "tributes:greater_tribute_of_refinement"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "greater tribute of the horadrim",
+            "stable_id": "tributes:greater_tribute_of_the_horadrim"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "lesser tribute",
+            "stable_id": "tributes:lesser_tribute"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "lesser tribute of harmony",
+            "stable_id": "tributes:lesser_tribute_of_harmony"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "lesser tribute of ingenuity",
+            "stable_id": "tributes:lesser_tribute_of_ingenuity"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "lesser tribute of the horadrim",
+            "stable_id": "tributes:lesser_tribute_of_the_horadrim"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "major tribute of andariel",
+            "stable_id": "tributes:major_tribute_of_andariel"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "minor tribute of andariel",
+            "stable_id": "tributes:minor_tribute_of_andariel"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "tribute of andariel",
+            "stable_id": "tributes:tribute_of_andariel"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "tribute of heritage",
+            "stable_id": "tributes:tribute_of_heritage"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "tribute of ingenuity",
+            "stable_id": "tributes:tribute_of_ingenuity"
+        },
+        {
+            "reason": "missing_translation",
+            "source_text": "tribute of the horadrim",
+            "stable_id": "tributes:tribute_of_the_horadrim"
+        }
+    ]
+}

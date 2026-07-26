@@ -2,12 +2,12 @@ from pydantic import Field, field_validator, model_validator
 
 from src.settings.models.core import (
     CATEGORY_KEY,
-    HIDE_FROM_GUI_KEY,
     LIVE_RELOAD_GROUP_KEY,
     MODULE_LOGGER,
     AspectFilterType,
     BrowserType,
     CosmeticFilterType,
+    LanguageType,
     MoveItemsType,
     SettingsCategory,
     ThemeType,
@@ -91,15 +91,11 @@ class GeneralModel(_IniBaseModel):
         title="Aspect Upgrade Handling",
         json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
     )
-    language: str = Field(
-        default="enUS",
-        description="Do not change. Only English is supported at this time",
-        title="Language",
-        json_schema_extra={
-            HIDE_FROM_GUI_KEY: "True",
-            LIVE_RELOAD_GROUP_KEY: "language",
-            CATEGORY_KEY: SettingsCategory.SYSTEM,
-        },
+    language: LanguageType = Field(
+        default=LanguageType.EN_US,
+        description="Switches both the App interface and the Diablo IV item text/parser language.",
+        title="Interface and Game Language",
+        json_schema_extra={LIVE_RELOAD_GROUP_KEY: "language", CATEGORY_KEY: SettingsCategory.SYSTEM},
     )
     mark_as_favorite: bool = Field(
         default=True,
@@ -213,14 +209,6 @@ class GeneralModel(_IniBaseModel):
             raise ValueError(msg)
         profile_names = [item.strip() for item in values if isinstance(item, str)]
         return [profile_name for profile_name in profile_names if profile_name]
-
-    @field_validator("language")
-    @classmethod
-    def language_must_exist(cls, v: str) -> str:
-        if v != "enUS":
-            msg = "language not supported"
-            raise ValueError(msg)
-        return v
 
     @field_validator("minimum_overlay_font_size")
     @classmethod

@@ -68,6 +68,11 @@ class ItemRefreshType(enum.StrEnum):
     no_refresh = enum.auto()
 
 
+class LanguageType(enum.StrEnum):
+    EN_US = "enUS"
+    ZH_CN = "zhCN"
+
+
 class LogLevels(enum.StrEnum):
     debug = enum.auto()
     info = enum.auto()
