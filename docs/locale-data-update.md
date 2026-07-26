@@ -1,5 +1,7 @@
 # Locale data update checks
 
+[简体中文](locale-data-update.zh-CN.md) | **English**
+
 `src.tools.locale_data_check` is the fail-closed gate for generated locale data. Run it after generating a
 locale and before reviewing or committing generated files. It does not modify the source checkout or generated
 assets.

@@ -1,5 +1,7 @@
 # Canonical `rarity` filter key with `rarities` back-compat alias
 
+[简体中文](0001-canonical-rarity-filter-key.zh-CN.md) | **English**
+
 Rarity filtering now spans affix, sigil, and tribute filters. Tributes already shipped a plural `rarities` key, but we standardize all filters on a singular `rarity` key for one consistent vocabulary. Tributes keep `rarities` as a validation alias so existing profiles still load. Input is normalized (bare string → list, case-folded to lowercase) and then strictly validated against the `ItemRarity` enum, so the canonical stored form is always a lowercase list.
 
 ## Considered Options

@@ -1,0 +1,97 @@
+{
+    "pairs": [
+        {
+            "en": "README.en.md",
+            "zh_CN": "README.md"
+        },
+        {
+            "en": "THIRD-PARTY-NOTICES.md",
+            "zh_CN": "THIRD-PARTY-NOTICES.zh-CN.md"
+        },
+        {
+            "en": "assets/lang/enUS/How to add to these files.md",
+            "zh_CN": "assets/lang/enUS/How to add to these files.zh-CN.md"
+        },
+        {
+            "en": "docs/adr/0001-canonical-rarity-filter-key.md",
+            "zh_CN": "docs/adr/0001-canonical-rarity-filter-key.zh-CN.md"
+        },
+        {
+            "en": "docs/adr/0002-sigil-rarity-derivation.md",
+            "zh_CN": "docs/adr/0002-sigil-rarity-derivation.zh-CN.md"
+        },
+        {
+            "en": "docs/adr/0003-sigil-editor-affix-dungeon-kind-split.md",
+            "zh_CN": "docs/adr/0003-sigil-editor-affix-dungeon-kind-split.zh-CN.md"
+        },
+        {
+            "en": "docs/adr/0004-profile-tab-profile-session-seam.md",
+            "zh_CN": "docs/adr/0004-profile-tab-profile-session-seam.zh-CN.md"
+        },
+        {
+            "en": "docs/adr/0005-mythic-equipment-imported-like-uniques.md",
+            "zh_CN": "docs/adr/0005-mythic-equipment-imported-like-uniques.zh-CN.md"
+        },
+        {
+            "en": "docs/adr/0006-tribute-filter-single-object-and-semantics.md",
+            "zh_CN": "docs/adr/0006-tribute-filter-single-object-and-semantics.zh-CN.md"
+        },
+        {
+            "en": "docs/agents/domain.md",
+            "zh_CN": "docs/agents/domain.zh-CN.md"
+        },
+        {
+            "en": "docs/agents/issue-tracker.md",
+            "zh_CN": "docs/agents/issue-tracker.zh-CN.md"
+        },
+        {
+            "en": "docs/agents/triage-labels.md",
+            "zh_CN": "docs/agents/triage-labels.zh-CN.md"
+        },
+        {
+            "en": "docs/full-guide.en.md",
+            "zh_CN": "docs/full-guide.zh-CN.md"
+        },
+        {
+            "en": "docs/index.en.md",
+            "zh_CN": "docs/index.zh-CN.md"
+        },
+        {
+            "en": "docs/locale-data-update.md",
+            "zh_CN": "docs/locale-data-update.zh-CN.md"
+        },
+        {
+            "en": "docs/public-release.md",
+            "zh_CN": "docs/public-release.zh-CN.md"
+        },
+        {
+            "en": "docs/third-party-data.md",
+            "zh_CN": "docs/third-party-data.zh-CN.md"
+        },
+        {
+            "en": "docs/zhcn-capture.md",
+            "zh_CN": "docs/zhcn-capture.zh-CN.md"
+        },
+        {
+            "en": "docs/zhcn-collection-checklist.md",
+            "zh_CN": "docs/zhcn-collection-checklist.zh-CN.md"
+        },
+        {
+            "en": "docs/zhcn-scope-audit.md",
+            "zh_CN": "docs/zhcn-scope-audit.zh-CN.md"
+        },
+        {
+            "en": "docs/zhcn-support-plan.md",
+            "zh_CN": "docs/zhcn-support-plan.zh-CN.md"
+        },
+        {
+            "en": "docs/zhcn-translation-audit.en.md",
+            "zh_CN": "docs/zhcn-translation-audit.md"
+        },
+        {
+            "en": "tests/tools/fixtures/companion_data/d4data/README.md",
+            "zh_CN": "tests/tools/fixtures/companion_data/d4data/README.zh-CN.md"
+        }
+    ],
+    "schema_version": 1
+}

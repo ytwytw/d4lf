@@ -1,5 +1,7 @@
 # Simplified Chinese support plan
 
+[简体中文](zhcn-support-plan.zh-CN.md) | **English**
+
 This document records the engineering and safety decisions for adding `zhCN` Diablo IV support. It is a
 working plan, not a claim that the tool is authorized by Blizzard or that an account cannot be actioned.
 
@@ -98,10 +100,10 @@ all existing non-empty Chinese aliases participate in runtime parsing.
 
 The manifest still contains `"runtime_ready": false` for the complete multilingual catalog release gate. Guarded
 interaction is enabled for the separately validated equipment scope. Full-catalog promotion remains blocked by
-the mixed `72698`/`72810`/`72836`/`72903` source and validation builds, no current-provider disagreements, and 18
-untranslated records. The known duplicate Chinese aliases are explicitly disambiguated or grouped and no longer
-make `source_quality_ok` fail. These are separate, machine-readable findings rather than one opaque coverage
-percentage.
+the mixed `72698`/`72810`/`72836`/`72903` source and validation builds and 18 untranslated records; no
+current-provider disagreements remain. The known duplicate Chinese aliases are explicitly disambiguated or grouped
+and no longer make `source_quality_ok` fail. These are separate, machine-readable findings rather than one opaque
+coverage percentage.
 
 Provider conflicts are fail-closed. They are visible in both the locale manifest and quality report and prevent
 `runtime_ready=true` until an explicit reviewed resolution is recorded; provider availability or precedence alone
@@ -130,10 +132,12 @@ For every patch or season:
 This process can be unattended up to the release decision. A new ambiguous term, a source license change, a
 new TTS layout, or a build mismatch deliberately requires review.
 
+<a id="account-risk"></a>
+
 ## Account risk
 
 Blizzard's current [EULA](https://www.blizzard.com/en-us/legal/fba4d00f-c7e4-4883-b8b9-1b4500a402ea/blizzard-end-user-license-agreement)
-and [anti-cheating agreement](https://www.blizzard.com/legal/cd5930c0-2784-420c-a23d-1e0d6ff8599b/anti-cheating-vereinbarung)
+and [anti-cheating agreement](https://www.blizzard.com/en-us/legal/cd5930c0-2784-420c-a23d-1e0d6ff8599b/anti-cheating-agreement)
 reserve broad discretion over unauthorized third-party programs, automation, and software that facilitates
 gameplay. The platform may detect and report an unauthorized program, and account action can include suspension
 or closure. D4LF itself also documents that it reads accessibility TTS and, in its normal English mode, sends
@@ -186,8 +190,9 @@ account-identifying metadata must not be recorded.
 
 ## D2Core build import
 
-The profile importer accepts public D2Core planner links such as
-`https://www.d2core.com/d4/planner?bd=20eK`. It reads the public build through the SDK already loaded by the
+The profile importer accepts public planner links from the [D2Core website](https://www.d2core.com/). Historical
+testing used share code `20eK`; its old planner URL now returns `404`, so it is retained as a regression fixture
+rather than a live documentation link. The importer reads a public build through the SDK already loaded by the
 D2Core page and resolves equipment against D2Core's current `enUS` static catalog. English is used only as a
 language-neutral bridge to D4LF's stable IDs, so the generated profile works with either the `enUS` or `zhCN`
 game-language setting.

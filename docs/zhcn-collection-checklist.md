@@ -1,5 +1,7 @@
 # zhCN client collection checklist
 
+[简体中文](zhcn-collection-checklist.zh-CN.md) | **English**
+
 This is the minimum first-pass evidence needed from a real `zhCN` client. The committed grammar currently references
 build `3.1.0.72810`; do not relabel captures made by another build.
 

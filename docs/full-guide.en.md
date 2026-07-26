@@ -37,13 +37,14 @@ this project and is not treated as the source of truth.
 
 ## How to Setup
 
-### Installation and quick start guide (New instructions for season 12 that must be followed!)
+### Installation and quick start
 
 - For this Simplified Chinese branch, download and extract the latest version (`.zip`) from
-  [this repository's Releases](../../releases). The [upstream releases](https://github.com/d4lfteam/d4lf/releases)
+  [this repository's Releases](https://github.com/ytwytw/d4lf/releases). The
+  [upstream releases](https://github.com/d4lfteam/d4lf/releases)
   are the historical English-only distribution.
 - Find your "Diablo IV" directory. Copy the path and have it in your clipboard:
-  - In Battle.net, click the gear icon next to the Play button and select "Open in Explorer"
+  - In Battle.net, click the gear icon next to the Play button and select "Show in Explorer"
   - In Steam, right click the game, select Manage > Browse local files
 - D4LF gets item information by reading the screen and using TTS information sent for accessibility. TTS setup takes additional steps, detailed below. For more information on the install_dll.cmd script, see [the TTS section](#tts)
   - Navigate to your downloaded d4lf directory
@@ -53,15 +54,15 @@ this project and is not treated as the source of truth.
     - When asked to install a certificate, allow it.
     - If everything is successful, proceed with the guide. Otherwise open an issue in this repository.
 - Generate a profile of what Diablo 4 items you want to filter for. To do so you have a few options:
-  - Run d4lf.exe and import a profile using the import window by pasting a build page from popular planner websites
+  - Run `d4lf.exe` and import a profile using the import window by pasting a build page from popular planner websites
   - Create one yourself by looking at the [examples](#how-to-filter--profiles) below and using the profile editor to recreate
 - If created manually (not recommended), place the profile in the `C:/Users/<WINDOWS_USER>/.d4lf/profiles` folder. The D4LF
   Settings window has a button to open this folder directly. If imported they are placed there automatically.
-- Run d4lf.exe and use the Settings button to configure the profiles in the Profile section. Check the box next to the profiles you would like to use.
+- Run `d4lf.exe` and use the Settings button to configure the profiles in the Profile section. Check the box next to the profiles you would like to use.
 - Ensure all [game settings](#game-settings) are configured properly.
-- If you made changes, restart d4lf.exe and launch Diablo 4.
-- Use the hotkeys listed in d4lf.exe to run filtering. By default, F11 will run the loot filter and filter your items.
-- For most common issues, if something is wrong, you will see an error or warning when you start d4lf.exe. Open an issue in this repository for more help.
+- If you made changes, restart `d4lf.exe` and launch Diablo 4.
+- Use the hotkeys listed in `d4lf.exe` to run filtering. By default, F11 will run the loot filter and filter your items.
+- For most common issues, if something is wrong, you will see an error or warning when you start `d4lf.exe`. Open an issue in this repository for more help.
 
 ### Game Settings
 
@@ -99,7 +100,7 @@ captures remain local unless the user deliberately shares them. See the full
     - Run Diablo 4 again through Steam/Battle.net and see if that resolved the issue.
     - If it did not, set Steam/Battle.net to run as administrator as well and make sure you are running Diablo through Steam. This should resolve the issue.
 - The GUI crashes immediately upon opening, with no error message given
-  - This almost always means there is an issue in your params.ini, the backing file for our Settings. Delete the file in `C:/Users/<WINDOWS_USER>/.d4lf/` and then open the GUI and configure
+  - This almost always means there is an issue in your params.ini, the backing file for our Settings. Delete `C:/Users/<WINDOWS_USER>/.d4lf/params.ini` and then open the GUI and configure
     your params.ini through the Settings window in D4LF. Using the GUI for configuration will ensure the file is always accurate.
 - Mouse control isn't possible
   - Due to your local windows settings, the tool might not be able to control the mouse. Just run the tool as admin
@@ -142,15 +143,11 @@ Current functionality:
 
 ### Main Screen
 
-(Documentation in progress)
-
 The main screen contains the log of what D4LF is doing when it is filtering items. Any errors are posted here.
 
 It contains navigation buttons to get to the Profile Importer, Settings, and Profile Editor.
 
 ### Profile Importer
-
-(Documentation in progress)
 
 Import profiles from the following popular build sites: D2Core, Maxroll, Mobalytics, D4Builds, InfinityBuilds.
 
@@ -206,8 +203,6 @@ If you instead enable "fast" vision mode, we do not read the screen at all but i
 If you would like for the fast vision mode box to appear somewhere else, you can modify its location in Settings > Advanced > Fast Vision Mode Coordinates.
 
 ### Profile Editor
-
-(Documentation still in progress)
 
 The Profile Editor allows you to edit your profiles. It is still in beta. The Sigils tab supports global affix rules (blacklist an affix on every sigil without picking a dungeon) and the sigil rarity gate, alongside an affix rarity picker on the Affixes tab.
 
@@ -504,7 +499,7 @@ Affixes:
 ```
 
 **This item would match:** Boots with movement_speed (GA), maximum_life (GA), cold_resistance (normal), fire_resistance (normal)\
-**Why:** movement_speed and maximum_life are both Greater Affixes as required, and item has 4 affixes (meets minCount of 3)
+**Why:** movement_speed and maximum_life are both Greater Affixes as required, and item has 4 affixes (meets `minCount: 3`)
 
 **This item would NOT match:** Boots with movement_speed (normal), maximum_life (GA), cold_resistance (normal), fire_resistance (normal)\
 **Why:** movement_speed is marked as `want_greater: true` but is not a Greater Affix on the item
@@ -763,7 +758,7 @@ Tributes:
   name: [tribute_of_harmony]
 ```
 
-If you're exceptionally pressed for time, you can just put the name of the tribute without "tribute_of\_" at the beginning.
+If you're exceptionally pressed for time, you can omit the `tribute_of_` prefix from the tribute name.
 
 ```yaml
 # Keeps Tribute of Harmony and Tribute of Ascendance (Resolute)
@@ -864,7 +859,7 @@ D4LF can import Paragon boards from supported build planners and show them in-ga
 
 - Overlays may not work in exclusive fullscreen; use **borderless windowed** if the overlay does not appear.
 - Planner websites can change over time. If an import/export stops working, please report a bug.
-- InfinityBuilds import doesn't support Paragon boards yet.
+- D2Core equipment import does not include Paragon boards.
 
 ## Info Panel Overlay
 
@@ -1019,8 +1014,8 @@ Ultimately, please understand there is only 1 full-time maintainer of D4LF and t
 ## Tip
 
 The best way to support this localized branch is to share it and submit reproducible reports in this repository.
-The in-app Discord button and [Ko-fi](https://ko-fi.com/d4lf) belong to the upstream `d4lfteam/d4lf` project;
-Ko-fi contributions go directly to the upstream maintainers and are not received by this branch's publisher.
+The in-app Discord and former Ko-fi controls belong to the upstream `d4lfteam/d4lf` project. This zhCN fork does
+not operate a donation channel.
 
 ## Credits
 

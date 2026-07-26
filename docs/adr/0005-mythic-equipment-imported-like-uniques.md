@@ -1,5 +1,7 @@
 # Mythic equipment is imported and filtered exactly like Unique equipment
 
+[简体中文](0005-mythic-equipment-imported-like-uniques.zh-CN.md) | **English**
+
 Mythics used to be a completely separate class of item, so every build-guide importer (maxroll, d4builds, mobalytics, infinitybuilds) special-cased them: a mythic equipment item's affixes were discarded, its name was stashed in a `mythic_names` list, and the pipeline lumped all of them into one catch-all `"Mythics"` `ItemFilterModel` with an empty `item_type` and no `affix_pool` — matching by name only, across all item types at once. In the current game, a Mythic is mechanically a Unique with a different (purple) rarity value: same one unique aspect, same handful of normal affixes. The filter engine (`_check_unique_aspects_for_item`, `_check_affixes`) already treated `ItemRarity.Mythic` and `ItemRarity.Unique` identically, so the lumping was purely an importer-side artifact, and it produced strictly worse profiles than treating mythics as uniques: no `item_type`, no affix matching, just a name.
 
 ## Decision

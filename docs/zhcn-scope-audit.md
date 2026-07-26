@@ -1,5 +1,7 @@
 # zhCN scope audit for Diablo IV 3.1
 
+[简体中文](zhcn-scope-audit.zh-CN.md) | **English**
+
 This source-snapshot note separates current equipment-filter requirements from historical parser types and from
 D4LF's optional non-equipment filters.
 
@@ -74,10 +76,7 @@ locale pair is validated by `(key, id)` before generation.
 The attribution and machine-readable publication status are documented in `docs/third-party-data.md` and enforced
 by the public export gate.
 
-Sites:
-
-- <https://www.d2core.com/d4/builds>
-- <https://www.d2core.com/d4/data>
+Site: <https://www.d2core.com/>
 
 ## Delivery tiers
 

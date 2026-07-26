@@ -1,5 +1,7 @@
 # Third-party data
 
+[简体中文](third-party-data.zh-CN.md) | **English**
+
 This file records publication requirements for generated or bundled data whose provenance is separate from D4LF's
 MIT software license.
 

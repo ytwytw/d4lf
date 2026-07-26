@@ -111,6 +111,15 @@ hooks = [
     stages = ["pre-commit"]
   },
   {
+    id = "documentation-parity",
+    name = "bilingual documentation parity",
+    entry = "uv run --frozen --all-groups python -m src.tools.documentation_check",
+    language = "system",
+    pass_filenames = false,
+    always_run = true,
+    priority = 4294967295
+  },
+  {
     id = "public-safety-head",
     name = "public safety scan (HEAD)",
     entry = "uv run python -m src.tools.public_safety --tree HEAD",

@@ -1,14 +1,14 @@
-# Third-party notices
+# 第三方声明
 
-[简体中文](THIRD-PARTY-NOTICES.zh-CN.md) | **English**
+**简体中文** | [English](THIRD-PARTY-NOTICES.md)
 
-This project includes normalized data derived from the following open-source projects. These notices apply to the
-upstream software and data compilations; Diablo IV game text and assets remain the property of Blizzard
-Entertainment.
+本项目包含以下来源于开源项目的规范化数据。这些声明适用于上游软件及数据汇编；《暗黑破坏神 IV》的游戏文本与素材仍归暴雪娱乐（Blizzard Entertainment）所有。
+
+> 说明：以下中文为解释性文字，不具法律效力；许可条款以英文原文为准。
 
 ## Diablo4Companion
 
-Source: <https://github.com/josdemmers/Diablo4Companion>
+来源：<https://github.com/josdemmers/Diablo4Companion>
 
 MIT License
 
@@ -29,7 +29,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 ## DiabloTools d4data
 
-Source: <https://github.com/DiabloTools/d4data>
+来源：<https://github.com/DiabloTools/d4data>
 
 MIT License
 

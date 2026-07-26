@@ -1,5 +1,7 @@
 # Public release safety
 
+[简体中文](public-release.zh-CN.md) | **English**
+
 Do not change the visibility of the private development repository and do not mirror its `.git` directory. Its
 custom commit authors, branch names, remote URL, reflogs, and timestamps can identify the development account.
 Prepare publication in a separate Git repository built from a Git archive. Choose either an attributed fork release

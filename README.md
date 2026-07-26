@@ -5,9 +5,11 @@
 D4LF 是一个 Windows 上的《暗黑破坏神 IV》装备筛选辅助工具。这个分支基于上游
 `v9.3.7`，增加了简体中文界面、中文客户端解析、跨语言 Build 导入、中文巅峰浮层和本地诊断能力。
 
+全部用户、维护、架构与归属文档见[文档索引](docs/index.zh-CN.md)。
+
 > [!WARNING]
-> 当前版本为 `9.3.7+zhcn.beta.5` 测试版。它并非暴雪授权或背书的软件，也无法保证不会触发
-> 游戏规则或反作弊相关风险。请先阅读[账号与自动化风险](#%E8%B4%A6%E5%8F%B7%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A3%8E%E9%99%A9)。
+> 当前版本为 `9.3.7+zhcn.beta.6` 测试版。它并非暴雪授权或背书的软件，也无法保证不会触发
+> 游戏规则或反作弊相关风险。请先阅读[账号与自动化风险](#account-risk)。
 
 ![D4LF 示例](assets/thumbnail.jpg)
 
@@ -24,7 +26,7 @@ D4LF 是一个 Windows 上的《暗黑破坏神 IV》装备筛选辅助工具。
 
 ## 下载与安装
 
-1. 从[本仓库 Releases](../../releases)下载最新的 Windows `.zip`，解压到普通文件夹。
+1. 从[本仓库 Releases](https://github.com/ytwytw/d4lf/releases)下载最新的 Windows `.zip`，解压到普通文件夹。
 1. 找到 Diablo IV 安装目录：
    - Battle.net：游戏页齿轮图标 > **在资源管理器中显示**
    - Steam：游戏属性 > **已安装文件** > **浏览**
@@ -59,9 +61,9 @@ D4LF。默认按 `F11` 启动装备筛选。
 
 - [Maxroll](https://maxroll.gg/d4/)
 - [Mobalytics](https://mobalytics.gg/diablo-4/builds)
-- [D4Builds](https://d4builds.gg/builds)
+- [D4Builds](https://d4builds.gg/)
 - [InfinityBuilds](https://infinitybuilds.gg/en/builds)
-- [暗黑核 D2Core](https://www.d2core.com/d4/builds)
+- [暗黑核 D2Core](https://www.d2core.com/)
 
 导入器会把来源网站的名称映射为 D4LF 的稳定内部 ID。因此：
 
@@ -69,7 +71,7 @@ D4LF。默认按 `F11` 启动装备筛选。
 - 中文暗黑核 Build 导入后，可以切换到 `enUS` 并用于英文游戏
 - 网站显示语言不决定 Profile 的运行语言；来源站的机器翻译也不作为中文目录的权威依据
 
-导入完成后，请在 **设置 > Profile** 中启用生成的 Profile。新赛季或游戏热修复可能改变物品、
+导入完成后，请在**设置 > 配置方案**中启用生成的 Profile。新赛季或游戏热修复可能改变物品、
 词条和巅峰数据，发布前仍需通过版本清单和实机样本复核。
 
 ## 诊断与隐私
@@ -78,11 +80,13 @@ D4LF。默认按 `F11` 启动装备筛选。
 保存到本机 `C:/Users/<WINDOWS_USER>/.d4lf/captures/automatic`，不会自动上传。
 
 手动诊断页也默认隐藏且关闭。需要时可在 **设置 > 高级设置** 中开启 **显示诊断采集标签页**，
-再使用“开始采集”和“停止并保存”。手动诊断与自动失败留样可以同时开启，但手动采集期间会阻止
-新的游戏输入操作。采集说明见[中文采集指南](docs/zhcn-capture.md)。
+再使用“开始采集”和“结束并保存”。手动诊断与自动失败留样可以同时开启，但手动采集期间会阻止
+新的游戏输入操作。采集说明见[中文采集指南](docs/zhcn-capture.zh-CN.md)。
 
 提交 Issue 前请检查样本内容；不要上传账号名、聊天、好友列表或其他个人信息。仓库的发布前隐私
-检查流程见[公开发布说明](docs/public-release.md)。
+检查流程见[公开发布说明](docs/public-release.zh-CN.md)。
+
+<a id="account-risk"></a>
 
 ## 账号与自动化风险
 
@@ -91,7 +95,7 @@ D4LF 会读取屏幕和无障碍 TTS；启用自动整理、标记或移动物�
 前台窗口检查、诊断期间禁用输入等保护也不能消除风险。
 
 请自行判断是否启用交互功能。只使用视觉模式通常减少自动输入，但不代表获得官方许可或零风险。
-完整评估见[账号风险说明](docs/zhcn-support-plan.md#account-risk)。
+完整评估见[账号风险说明](docs/zhcn-support-plan.zh-CN.md#account-risk)。
 
 ## 数据来源与致谢
 
@@ -102,8 +106,9 @@ D4LF 会读取屏幕和无障碍 TTS；启用自动整理、标记或移动物�
 - [D2Core](https://www.d2core.com/)：经许可使用的补充数据和交叉校验来源
 
 D2Core 不是唯一权威来源；它缺少某项数据时，不会禁用已有的中文别名。完整许可、归属和版本来源见
-[`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)、[第三方数据说明](docs/third-party-data.md)和
-[中文数据更新流程](docs/locale-data-update.md)。上述项目与网站不为本分支背书。
+[`THIRD-PARTY-NOTICES.zh-CN.md`](THIRD-PARTY-NOTICES.zh-CN.md)、
+[第三方数据说明](docs/third-party-data.zh-CN.md)和
+[中文数据更新流程](docs/locale-data-update.zh-CN.md)。上述项目与网站不为本分支背书。
 
 ## 开发与验证
 
@@ -112,11 +117,11 @@ D2Core 不是唯一权威来源；它缺少某项数据时，不会禁用已有�
 ```powershell
 uv sync --frozen --all-groups
 uvx prek run --all-files
-uv run pytest -p no:cacheprovider -p no:pytest_randomly
+uv run pytest -p no:cacheprovider
 ```
 
 季节数据候选检查、公开仓库扫描和 Windows 构建均由 GitHub Actions 执行。中文覆盖范围和待实机验证
-项目见[中文支持审计](docs/zhcn-scope-audit.md)。
+项目见[中文支持审计](docs/zhcn-scope-audit.zh-CN.md)。
 
 ## 项目关系与支持
 

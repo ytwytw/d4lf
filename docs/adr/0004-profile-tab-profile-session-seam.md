@@ -1,5 +1,7 @@
 # ProfileSession fronts profile persistence for the profile editor
 
+[简体中文](0004-profile-tab-profile-session-seam.zh-CN.md) | **English**
+
 `profile_tab.py` and `profile_editor.py` both talked directly to `ProfileDocumentStore`
 and `IniConfigLoader`, and `ProfileEditor.save_all()` also owned validation, the
 "model differs after validation" warning dialog, and success/error dialogs. We

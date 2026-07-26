@@ -1,5 +1,7 @@
 # Raw zhCN TTS capture
 
+[简体中文](zhcn-capture.zh-CN.md) | **English**
+
 `src.tools.tts_capture` records the UTF-8 messages that `saapi64.dll` sends to the D4LF Windows named
 pipe. It is intended for collecting untranslated zhCN samples before parser or localization work.
 

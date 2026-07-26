@@ -6,9 +6,11 @@ D4LF is a Windows loot-filter companion for Diablo IV. This branch is based on u
 Simplified Chinese interface, `zhCN` client parsing, cross-language build imports, localized paragon overlays, and
 local diagnostics.
 
+See the [documentation index](docs/index.en.md) for all user, maintainer, architecture, and attribution documents.
+
 > [!WARNING]
-> `9.3.7+zhcn.beta.5` is a beta build. It is not authorized or endorsed by Blizzard, and it cannot guarantee that
-> use will not conflict with game rules or anti-cheat systems. Read [Account and automation risk](#account-and-automation-risk).
+> `9.3.7+zhcn.beta.6` is a beta build. It is not authorized or endorsed by Blizzard, and it cannot guarantee that
+> use will not conflict with game rules or anti-cheat systems. Read [Account and automation risk](#account-risk).
 
 ![D4LF sample](assets/thumbnail.jpg)
 
@@ -25,7 +27,8 @@ local diagnostics.
 
 ## Download And Install
 
-1. Download the latest Windows `.zip` from [this repository's Releases](../../releases) and extract it.
+1. Download the latest Windows `.zip` from [this repository's Releases](https://github.com/ytwytw/d4lf/releases)
+   and extract it.
 1. Find the Diablo IV installation directory:
    - Battle.net: gear icon on the game page > **Show in Explorer**
    - Steam: game properties > **Installed Files** > **Browse**
@@ -60,9 +63,9 @@ Paste a supported build URL into the D4LF **Profile Importer**. Supported source
 
 - [Maxroll](https://maxroll.gg/d4/)
 - [Mobalytics](https://mobalytics.gg/diablo-4/builds)
-- [D4Builds](https://d4builds.gg/builds)
+- [D4Builds](https://d4builds.gg/)
 - [InfinityBuilds](https://infinitybuilds.gg/en/builds)
-- [D2Core](https://www.d2core.com/d4/builds)
+- [D2Core](https://www.d2core.com/)
 
 The importer maps source-site labels to stable D4LF IDs. An English InfinityBuilds profile can therefore run with a
 `zhCN` client, and a Chinese D2Core profile can run with an `enUS` client. A website's display language does not
@@ -74,17 +77,20 @@ affixes, and paragon data, so each release still requires manifest checks and re
 
 ## Diagnostics And Privacy
 
-**Automatically Save Recognition Failure Samples** is disabled by default. When enabled, parser failures save a
+**Automatic Failure Capture** is disabled by default. When enabled, parser failures save a
 screenshot, tooltip crop, and matching TTS locally under
 `C:/Users/<WINDOWS_USER>/.d4lf/captures/automatic`. D4LF never uploads these files automatically.
 
 The manual diagnostics page is also hidden and disabled by default. Enable **Show Diagnostic Capture Tab** under
-**Settings > Advanced** only when needed. Manual diagnostics and automatic failure capture can be enabled together,
-but new game-input actions are blocked while a manual capture is active. See the
+**Settings > Advanced** only when needed, then use **Start Capture** and **Stop and Save**. Manual diagnostics and
+automatic failure capture can be enabled together, but new game-input actions are blocked while a manual capture
+is active. See the
 [Chinese capture guide](docs/zhcn-capture.md).
 
 Review every sample before attaching it to an issue. Do not publish account names, chat, friend lists, or other
 personal information. See the [public-release guide](docs/public-release.md) for the repository privacy gate.
+
+<a id="account-risk"></a>
 
 ## Account And Automation Risk
 
@@ -117,7 +123,7 @@ The project uses Python 3.14 and `uv`:
 ```powershell
 uv sync --frozen --all-groups
 uvx prek run --all-files
-uv run pytest -p no:cacheprovider -p no:pytest_randomly
+uv run pytest -p no:cacheprovider
 ```
 
 GitHub Actions runs seasonal-data candidate checks, public-repository scanning, and Windows builds. See the
