@@ -7,9 +7,9 @@
 证据按以下顺序使用：
 
 1. 暴雪国服公告、补丁说明和简中客户端实机画面。
-2. 英文与简中使用相同 SNO/对象 ID 的成对数据。
-3. 另一独立数据库、实机截图或资料页对对象级译名的复核。
-4. 只有语义相同且对象身份明确的结果才能进入 `reviewed_zhCN.json`。
+1. 英文与简中使用相同 SNO/对象 ID 的成对数据。
+1. 另一独立数据库、实机截图或资料页对对象级译名的复核。
+1. 只有语义相同且对象身份明确的结果才能进入 `reviewed_zhCN.json`。
 
 D2Core 是聚合来源之一，不是 source of truth。D2Core 缺失不能禁用已有中文。InfinityBuild 的机器翻译不作为证据，也不参与审核结论。
 
@@ -39,12 +39,12 @@ D2Core 是聚合来源之一，不是 source of truth。D2Core 缺失不能禁�
 
 ## 新批准贡品
 
-| stable ID | 简体中文 | 交叉证据 |
-| --- | --- | --- |
+| stable ID                        | 简体中文         | 交叉证据                                                                                                                                                           |
+| -------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `tribute_of_ascendance_resolute` | 晋升贡品（决绝） | [Wowhead 对象 2090362](https://www.wowhead.com/diablo-4/cn/item/x-2090362)、[简中客户端截图](https://bubaigei.com/wp-content/uploads/2024/10/2024101402390557.png) |
-| `tribute_of_harmony` | 和谐供品 | [Wowhead 对象 2125691](https://www.wowhead.com/diablo-4/cn/item/x-2125691)、[简中客户端截图](https://bubaigei.com/wp-content/uploads/2024/10/2024101402390862.png) |
-| `tribute_of_radiance_resolute` | 光辉贡品（决绝） | [Wowhead 对象 2077998](https://www.wowhead.com/diablo-4/cn/item/x-2077998)、[简中客户端截图](https://bubaigei.com/wp-content/uploads/2024/10/2024101402390862.png) |
-| `tribute_of_titans` | 巨人贡品 | [Wowhead 对象 2090358](https://www.wowhead.com/diablo-4/cn/item/x-2090358)、[独立资料](https://news.17173.com/content/01272025/151203334.shtml) |
+| `tribute_of_harmony`             | 和谐供品         | [Wowhead 对象 2125691](https://www.wowhead.com/diablo-4/cn/item/x-2125691)、[简中客户端截图](https://bubaigei.com/wp-content/uploads/2024/10/2024101402390862.png) |
+| `tribute_of_radiance_resolute`   | 光辉贡品（决绝） | [Wowhead 对象 2077998](https://www.wowhead.com/diablo-4/cn/item/x-2077998)、[简中客户端截图](https://bubaigei.com/wp-content/uploads/2024/10/2024101402390862.png) |
+| `tribute_of_titans`              | 巨人贡品         | [Wowhead 对象 2090358](https://www.wowhead.com/diablo-4/cn/item/x-2090358)、[独立资料](https://news.17173.com/content/01272025/151203334.shtml)                    |
 
 在 Harmony 系列中，`和谐供品` 的“供”只适用于对象 `2125691`。后续对象 `Lesser/Greater Tribute of Harmony` 的数据使用“贡品”，不能做全局替换。
 
