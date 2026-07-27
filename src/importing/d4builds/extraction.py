@@ -19,12 +19,8 @@ from src.importing.d4builds.constants import (
     UNIQUE_TOOLTIP_CSS,
     UNIQUE_TOOLTIP_SLOT_XPATH,
 )
-from src.importing.filters import (
-    affix_dict_for_item_type,
-    create_seal_charm_filter,
-    fix_weapon_type,
-    match_set_aware_seal_affix,
-)
+from src.importing.filters import create_seal_charm_filter, fix_weapon_type, match_set_aware_seal_affix
+from src.importing.source_locale import source_affix_dict_for_item_type
 from src.importing.web import hover_and_get_tooltip_html
 from src.item import Affix, ItemType
 from src.perception import clean_str, closest_match, correct_name
@@ -37,6 +33,7 @@ if TYPE_CHECKING:
     from src.importing.contracts import ImportRequest
 
 LOGGER = logging.getLogger(__name__)
+SOURCE_LOCALE = "enUS"
 
 
 def _corrections(input_str: str) -> str:
@@ -109,7 +106,7 @@ def _affixes_from_tooltip_values(
 
 def _match_d4builds_tooltip_affix(text: str, item_type: ItemType, guessed_set_name: str | None = None) -> str | None:
     stat_clean = clean_str(_corrections(input_str=text))
-    affix_dict = affix_dict_for_item_type(item_type=item_type)
+    affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
     if (
         item_type == ItemType.HoradricSeal
         and guessed_set_name

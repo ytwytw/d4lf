@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 from src.importing.conversion import as_string_keyed_mapping as _as_mapping
 from src.importing.conversion import as_string_keyed_mapping_list as _as_mapping_list
 from src.importing.conversion import as_text as _as_text
-from src.importing.filters import affix_dict_for_item_type
 from src.importing.maxroll.constants import (
     SKILL_RANK_AFFIX_KEY_REGEX,
     SKILL_RANK_BONUS_FORMULAS,
     SKILL_RANK_DESC_LABEL_REGEX,
 )
+from src.importing.source_locale import source_affix_dict_for_item_type
 from src.item import Affix, AffixType, ItemRarity, ItemType
 from src.perception import clean_str, closest_match
 
@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.propagate = True
+SOURCE_LOCALE = "enUS"
 
 
 def _attribute_description_corrections(input_str: str) -> str:
@@ -161,7 +162,7 @@ def _find_item_affixes(
                 )
                 continue
 
-            affix_dict = affix_dict_for_item_type(item_type=item_type)
+            affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
             affix_obj = Affix(name=closest_match(clean_str(clean_desc), affix_dict))
             if import_greater_affixes and affix_id.get("greater") is True:
                 affix_obj.type = AffixType.greater

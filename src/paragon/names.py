@@ -76,12 +76,7 @@ def _name_index(kind: NameKind) -> dict[str, str]:
 def _find_identifier(kind: NameKind, source_name: str) -> str:
     normalized = _normalize(source_name)
     return next(
-        (
-            identifier
-            for identifier, name in _load_catalog("enUS")[kind].items()
-            if _normalize(name) == normalized
-        ),
-        "",
+        (identifier for identifier, name in _load_catalog("enUS")[kind].items() if _normalize(name) == normalized), ""
     )
 
 
@@ -103,12 +98,7 @@ def _starting_board_id(class_slug: str) -> str:
 
 
 def localized_paragon_name(
-    kind: NameKind,
-    *,
-    identifier: str | None,
-    source_name: str | None,
-    class_slug: str = "",
-    locale: str | None = None,
+    kind: NameKind, *, identifier: str | None, source_name: str | None, class_slug: str = "", locale: str | None = None
 ) -> str:
     """Resolve a board or glyph name without changing its stored identity."""
     selected_locale = locale or str(get_settings().general.language)

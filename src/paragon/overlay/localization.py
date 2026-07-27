@@ -15,9 +15,7 @@ class OverlayLocalizationMixin(OverlayContract):
             return
 
         self.title(translate("paragon.title"))
-        self.lbl_mode.config(
-            text=translate("paragon.view.compact" if self._cfg.is_collapsed else "paragon.view.full")
-        )
+        self.lbl_mode.config(text=translate("paragon.view.compact" if self._cfg.is_collapsed else "paragon.view.full"))
         self.btn_settings.config(text=f"{translate('paragon.settings')}⚙ ▼")
         self.btn_build_menu.config(text=f"{translate('paragon.builds')} ▼")
 

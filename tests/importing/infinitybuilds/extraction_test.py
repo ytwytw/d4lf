@@ -153,6 +153,13 @@ def test_convert_raw_to_affixes_skips_tempered_affixes() -> None:
     assert [a.name for a in affixes] == ["strength"]
 
 
+def test_convert_raw_to_affixes_does_not_guess_unknown_catalog_labels() -> None:
+    raw_affixes = [{"affixId": "affix-unknown", "value": 100}]
+    resolved_affixes = {"affix-unknown": {"label": "Maximum Lif", "greaterAffixEligible": False}}
+
+    assert _convert_raw_to_affixes(raw_affixes, resolved_affixes) == []
+
+
 def test_resolve_gear_data_queries_view_endpoint_with_unique_sorted_ids(mocker: MockerFixture) -> None:
     gear = [
         _gear_piece("helm", "item-1", ["affix-1", "affix-2"], aspect_id="aspect-1"),

@@ -2,11 +2,11 @@ import json
 import logging
 import pathlib
 import threading
-from typing import TypeGuard
 
 import rapidfuzz
 
 from src.item.data.item_type import ItemType
+from src.item.data.localized_maps import load_localized_string_map, load_string_map
 from src.locale_data import LocaleGrammar, normalize_locale_text
 from src.settings import BASE_DIR, get_settings
 
@@ -14,19 +14,7 @@ LOGGER = logging.getLogger(__name__)
 DATALOADER_LOCK = threading.RLock()
 
 
-def _is_string_map(value: object) -> TypeGuard[dict[str, str]]:
-    return isinstance(value, dict) and all(
-        isinstance(key, str) and isinstance(item, str) for key, item in value.items()
-    )
-
-
-def _load_string_map(path: pathlib.Path) -> dict[str, str]:
-    with path.open(encoding="utf-8") as f:
-        data: object = json.load(f)
-    if not _is_string_map(data):
-        msg = f"Expected a JSON object containing only string keys and values: {path}"
-        raise ValueError(msg)
-    return data
+_load_string_map = load_string_map
 
 
 class Dataloader:
@@ -69,9 +57,9 @@ class Dataloader:
     def load_data(self):
         language = str(get_settings().general.language)
         language_dir = pathlib.Path(BASE_DIR / f"assets/lang/{language}")
-        self.affix_dict = _load_string_map(language_dir / "affixes.json")
-        self.seal_affix_dict = _load_string_map(language_dir / "seals_affixes.json")
-        self.charm_affix_dict = _load_string_map(language_dir / "charms_affixes.json")
+        self.affix_dict = load_localized_string_map(language_dir, "affixes.json")
+        self.seal_affix_dict = load_localized_string_map(language_dir, "seals_affixes.json")
+        self.charm_affix_dict = load_localized_string_map(language_dir, "charms_affixes.json")
         with (language_dir / "aspects.json").open(encoding="utf-8") as f:
             aspect_data = json.load(f)
             self.aspect_dict = self._display_map(aspect_data)

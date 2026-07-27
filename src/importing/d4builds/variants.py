@@ -19,7 +19,6 @@ from src.importing.d4builds.extraction import (
 from src.importing.d4builds.metadata import D4BuildsError, _get_affix_name, _get_item_slots, _get_legendary_aspects
 from src.importing.d4builds.paragon import extract_d4builds_paragon_steps
 from src.importing.filters import (
-    affix_dict_for_item_type,
     create_item_affix_pool,
     fix_offhand_type,
     fix_weapon_type,
@@ -29,6 +28,7 @@ from src.importing.filters import (
     weapon_slot_name_hint,
 )
 from src.importing.pipeline import Variant
+from src.importing.source_locale import source_affix_dict_for_item_type
 from src.item import WEAPON_TYPES, Affix, AffixType, ItemType
 from src.perception import clean_str, closest_match
 from src.profiles import AffixFilterCountModel, AffixFilterModel, AspectUniqueFilterModel, ItemFilterModel
@@ -41,6 +41,7 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
+SOURCE_LOCALE = "enUS"
 
 
 def extract_variant(
@@ -94,7 +95,7 @@ def extract_variant(
         is_unique_like = is_unique_like_rarity(rarity)
 
         is_weapon = "weapon" in slot.lower()
-        affix_dict = affix_dict_for_item_type(item_type=item_type)
+        affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
         for stat in stats:
             if stat.xpath(TEMPERING_ICON_XPATH) or stat.xpath(SANCTIFIED_ICON_XPATH):
                 continue

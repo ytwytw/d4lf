@@ -18,39 +18,27 @@ def test_paragon_name_catalogs_have_matching_stable_ids() -> None:
 def test_localized_paragon_name_prefers_stable_id() -> None:
     assert (
         localized_paragon_name(
-            "boards",
-            identifier="Paragon_Barb_01",
-            source_name="Untrusted Display Text",
-            locale="zhCN",
+            "boards", identifier="Paragon_Barb_01", source_name="Untrusted Display Text", locale="zhCN"
         )
         == "出血"
     )
     assert (
         localized_paragon_name(
-            "glyphs",
-            identifier="Rare_001_Intelligence_Main",
-            source_name="Untrusted Display Text",
-            locale="enUS",
+            "glyphs", identifier="Rare_001_Intelligence_Main", source_name="Untrusted Display Text", locale="enUS"
         )
         == "Enchanter"
     )
 
 
 def test_localized_paragon_name_matches_paired_legacy_names() -> None:
-    assert (
-        localized_paragon_name("boards", identifier=None, source_name="Hemorrhage", locale="zhCN") == "出血"
-    )
+    assert localized_paragon_name("boards", identifier=None, source_name="Hemorrhage", locale="zhCN") == "出血"
     assert localized_paragon_name("glyphs", identifier=None, source_name="附魔", locale="enUS") == "Enchanter"
 
 
 def test_starting_board_alias_uses_the_board_class() -> None:
     assert (
         localized_paragon_name(
-            "boards",
-            identifier=None,
-            source_name="Starting Board",
-            class_slug="barbarian",
-            locale="zhCN",
+            "boards", identifier=None, source_name="Starting Board", class_slug="barbarian", locale="zhCN"
         )
         == "开始"
     )

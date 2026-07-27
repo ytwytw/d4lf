@@ -9,7 +9,8 @@ from selenium.common.exceptions import NoSuchElementException, WebDriverExceptio
 from selenium.webdriver.common.by import By
 
 from src.importing.conversion import as_text as _as_text  # ruff:ignore[unused-import]
-from src.importing.filters import affix_dict_for_item_type, fix_weapon_type, match_set_aware_seal_affix
+from src.importing.filters import fix_weapon_type, match_set_aware_seal_affix
+from src.importing.source_locale import source_affix_dict_for_item_type
 from src.importing.web import hover_and_get_tooltip_html
 from src.item import Affix, AffixType, Dataloader, ItemType
 from src.perception import clean_str, closest_match, correct_name
@@ -21,6 +22,7 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 LOGGER = logging.getLogger(__name__)
+SOURCE_LOCALE = "enUS"
 CHARM_ICON_SET_SLUG_REGEX = re.compile(r"/charms/(?P<slug>[^/?#]+?)(?:\.[^/.?#]+)?(?:[?#]|$)")
 ITEM_TOOLTIP_CSS = "[data-tippy-root]"
 PAGE_DIAGNOSTIC_MARKERS = (
@@ -169,7 +171,7 @@ def _convert_raw_to_affixes(
     guessed_set_name: str | None = None,
 ) -> list[Affix]:
     result = []
-    affix_dict = affix_dict_for_item_type(item_type=item_type)
+    affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
     for stat in raw_stats:
         if stat:
             stat_id = stat.get("id")

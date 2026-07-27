@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, TypeVar
 
 import rapidfuzz
 
+from src.importing.source_locale import source_set_names
 from src.item import WEAPON_TYPES, Affix, AffixType, Dataloader, ItemRarity, ItemType
 from src.perception import closest_match
 from src.profiles import (
@@ -96,18 +97,16 @@ def match_set_aware_seal_affix(stat_clean: str, affix_dict: dict[str, str], gues
     if best_global_key and best_global_key != "damage":
         global_display = affix_dict[best_global_key]
         if rapidfuzz.distance.Levenshtein.distance(stat_clean, global_display) <= 2:
-            is_set_specific = any(best_global_key.startswith(f"{set_name}_") for set_name in Dataloader().set_list)
+            is_set_specific = any(best_global_key.startswith(f"{set_name}_") for set_name in source_set_names())
             if not is_set_specific:
                 return best_global_key
-    set_affixes = {
-        key: value for key, value in Dataloader().seal_affix_dict.items() if key.startswith(f"{guessed_set_name}_")
-    }
+    set_affixes = {key: value for key, value in affix_dict.items() if key.startswith(f"{guessed_set_name}_")}
     if not set_affixes:
         return None
     potential_match = closest_match(stat_clean, set_affixes)
     if potential_match is None:
         return None
-    display_name = Dataloader().seal_affix_dict[potential_match]
+    display_name = affix_dict[potential_match]
     return potential_match if rapidfuzz.fuzz.token_set_ratio(stat_clean, display_name) >= 50 else None
 
 

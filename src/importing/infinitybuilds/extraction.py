@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
 from src.importing.conversion import as_string_keyed_mapping as _as_object
-from src.importing.filters import affix_dict_for_item_type
 from src.importing.infinitybuilds.models import _ResolvedGearData
+from src.importing.source_locale import match_source_affix
 from src.importing.web import get_with_retry
 from src.item import Affix, AffixType, ItemType
-from src.perception import clean_str, closest_match, correct_name
+from src.perception import correct_name
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 TOOLS_API_BASE_URL = "https://tools.infinitybuilds.gg/api/games/diablo4/build-data"
+CATALOG_ASSET_LOCALE = "enUS"
 SCRIPT_XPATH = "//script"
 NEXT_F_PUSH_REGEX = re.compile(r'^self\.__next_f\.push\(\[(?:\d+),(".*")\]\)\s*;?$', re.DOTALL)
 CATALOG_ID_INSTANCE_PREFIX = re.compile(r"^(item|aspect)-\d+-")
@@ -158,7 +159,6 @@ def _convert_raw_to_affixes(
     item_type: ItemType | None = None,
 ) -> list[Affix]:
     result = []
-    affix_dict = affix_dict_for_item_type(item_type=item_type)
     for raw_value in raw_affixes:
         raw_affix = _as_object(raw_value)
         if raw_affix.get("tempered"):
@@ -171,10 +171,13 @@ def _convert_raw_to_affixes(
         label = resolved_affix.get("label")
         if not isinstance(label, str):
             continue
-        stat_clean = clean_str(label)
-        matched_name = closest_match(stat_clean, affix_dict)
+        matched_name = match_source_affix(label, item_type, CATALOG_ASSET_LOCALE)
         if matched_name is None:
-            LOGGER.error(f"Couldn't match {resolved_affix['label']=}")
+            LOGGER.error(
+                "Couldn't exactly match %s in the InfinityBuilds %s catalog; skipping it instead of guessing.",
+                resolved_affix["label"],
+                CATALOG_ASSET_LOCALE,
+            )
             continue
         affix_obj = Affix(name=matched_name)
         if import_greater_affixes and resolved_affix.get("greaterAffixEligible") is True:
