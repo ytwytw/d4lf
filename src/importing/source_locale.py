@@ -36,7 +36,8 @@ def source_affix_dict_for_item_type(item_type: ItemType | None, source_locale: s
     selected = _load_string_map(source_locale, file_name)
     if source_locale == "enUS":
         return dict(selected)
-    return {**_load_string_map("enUS", file_name), **selected}
+    localized = {canonical: display for canonical, display in selected.items() if display.strip()}
+    return {**_load_string_map("enUS", file_name), **localized}
 
 
 @cache

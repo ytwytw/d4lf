@@ -6,15 +6,17 @@ import threading
 import rapidfuzz
 
 from src.item.data.item_type import ItemType
-from src.item.data.localized_maps import load_localized_string_map, load_string_map
+from src.item.data.localized_maps import (
+    load_localized_display_map,
+    load_localized_metadata_map,
+    load_localized_nested_string_map,
+    load_localized_string_map,
+)
 from src.locale_data import LocaleGrammar, normalize_locale_text
 from src.settings import BASE_DIR, get_settings
 
 LOGGER = logging.getLogger(__name__)
 DATALOADER_LOCK = threading.RLock()
-
-
-_load_string_map = load_string_map
 
 
 class Dataloader:
@@ -60,10 +62,8 @@ class Dataloader:
         self.affix_dict = load_localized_string_map(language_dir, "affixes.json")
         self.seal_affix_dict = load_localized_string_map(language_dir, "seals_affixes.json")
         self.charm_affix_dict = load_localized_string_map(language_dir, "charms_affixes.json")
-        with (language_dir / "aspects.json").open(encoding="utf-8") as f:
-            aspect_data = json.load(f)
-            self.aspect_dict = self._display_map(aspect_data)
-            self.aspect_list = list(self.aspect_dict)
+        self.aspect_dict = load_localized_display_map(language_dir, "aspects.json")
+        self.aspect_list = list(self.aspect_dict)
         with (language_dir / "corrections.json").open(encoding="utf-8") as f:
             data = json.load(f)
             self.filter_after_keyword = data["filter_after_keyword"]
@@ -72,23 +72,18 @@ class Dataloader:
         with (language_dir / "item_types.json").open(encoding="utf-8") as f:
             data = json.load(f)
             self.item_types_dict = data
-        with (language_dir / "sigils.json").open(encoding="utf-8") as f:
-            self.affix_sigil_dict_all = json.load(f)
-            self.affix_sigil_dict = {
-                **self.affix_sigil_dict_all["dungeons"],
-                **self.affix_sigil_dict_all["minor"],
-                **self.affix_sigil_dict_all["major"],
-                **self.affix_sigil_dict_all["positive"],
-            }
-        self.tribute_dict = _load_string_map(language_dir / "tributes.json")
-        with (language_dir / "tooltips.json").open(encoding="utf-8") as f:
-            self.tooltips = json.load(f)
-        with (language_dir / "uniques.json").open(encoding="utf-8") as f:
-            self.aspect_unique_dict = json.load(f)
-        with (language_dir / "sets.json").open(encoding="utf-8") as f:
-            set_data = json.load(f)
-            self.set_dict = self._display_map(set_data)
-            self.set_list = list(self.set_dict)
+        self.affix_sigil_dict_all = load_localized_nested_string_map(language_dir, "sigils.json")
+        self.affix_sigil_dict = {
+            **self.affix_sigil_dict_all["dungeons"],
+            **self.affix_sigil_dict_all["minor"],
+            **self.affix_sigil_dict_all["major"],
+            **self.affix_sigil_dict_all["positive"],
+        }
+        self.tribute_dict = load_localized_string_map(language_dir, "tributes.json")
+        self.tooltips = load_localized_string_map(language_dir, "tooltips.json")
+        self.aspect_unique_dict = load_localized_metadata_map(language_dir, "uniques.json")
+        self.set_dict = load_localized_display_map(language_dir, "sets.json")
+        self.set_list = list(self.set_dict)
 
         grammar_path = language_dir / "grammar.json"
         if grammar_path.exists():
@@ -110,12 +105,6 @@ class Dataloader:
         }
         self._tribute_aliases = self._alias_index(self.tribute_dict)
         self._unique_aliases = self._unique_alias_index(self.aspect_unique_dict)
-
-    @staticmethod
-    def _display_map(data: list[str] | dict[str, str]) -> dict[str, str]:
-        if isinstance(data, list):
-            return {value: value.replace("_", " ") for value in data}
-        return dict(data)
 
     @staticmethod
     def _alias_index(data: dict[str, str]) -> dict[str, str]:

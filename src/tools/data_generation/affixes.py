@@ -116,13 +116,22 @@ def affix_string_description(
     return description
 
 
+def _is_internal_test_seal(affix_name: str, source_path: str) -> bool:
+    folded_name = affix_name.casefold()
+    folded_path = source_path.casefold()
+    return "_gurtest" in folded_name or "talisman_seal_gurtest" in folded_path
+
+
 def _generate_affix(
     affix_file: Path, context: AffixGenerationContext, d4data_dir: Path, language: str
 ) -> tuple[str, str, str] | None:
     affix_data = load_json_file(affix_file)
-    affix_name = Path(affix_data["__fileName__"]).stem
+    source_path = affix_data["__fileName__"]
+    affix_name = Path(source_path).stem
     is_seal_affix = affix_name.startswith("Talisman_SealAffix_")
     is_charm_affix = affix_name.startswith("Talisman_Charm_")
+    if is_seal_affix and _is_internal_test_seal(affix_name, source_path):
+        return None
     if affix_data.get("eMagicType") != 0 and not is_seal_affix:
         return None
     if affix_name.startswith("zz"):

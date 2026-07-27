@@ -1,7 +1,12 @@
 from typing import TYPE_CHECKING
 
 from src.tools.data_generation import affix_helpers
-from src.tools.data_generation.affixes import EXCLUDED_SEAL_AFFIX_KEYS, merge_custom_data, normalise_affix_description
+from src.tools.data_generation.affixes import (
+    EXCLUDED_SEAL_AFFIX_KEYS,
+    _is_internal_test_seal,
+    merge_custom_data,
+    normalise_affix_description,
+)
 
 if TYPE_CHECKING:
     from src.tools.data_generation.common import AffixGenerationContext
@@ -83,6 +88,16 @@ def test_excluded_seal_affix_patterns_match_charm_set_powers() -> None:
         or (key.startswith("while_at_least_") and "_charms_equipped_" in key)
         or "_charm_equipped_" in key
     ] == excluded_keys
+
+
+def test_internal_gurtest_seals_are_excluded_by_name_and_family() -> None:
+    assert _is_internal_test_seal("Talisman_SealAffix_GURTEST_Druid_01", "meta/Affix/example.json")
+    assert _is_internal_test_seal(
+        "Talisman_SealAffix_Druid_01", "meta/Talisman_Seal_GURTEST/Talisman_SealAffix_Druid_01.json"
+    )
+    assert not _is_internal_test_seal(
+        "Talisman_SealAffix_Druid_01", "meta/Talisman_Seal/Talisman_SealAffix_Druid_01.json"
+    )
 
 
 def test_merge_custom_data_handles_list_and_nested_overrides(tmp_path, monkeypatch) -> None:

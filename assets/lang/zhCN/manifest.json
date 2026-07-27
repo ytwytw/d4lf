@@ -27631,7 +27631,7 @@
         "path": "reviewed_zhCN.json",
         "sha256": "9151f5176d3d7306b4f89235b1bab43a5d6994179ba52a65fdfad42e42ff8870"
     },
-    "runtime_ready": false,
+    "runtime_ready": true,
     "schema_version": 1,
     "source_manifest_sha256": "f28d132ceeb979bb3414905071d360260c9fb7c2dba01051083b275ce04ac00c",
     "source_quality_ok": true,

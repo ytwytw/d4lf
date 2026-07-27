@@ -79,8 +79,9 @@ def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[i
 
     if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic] and item.name is not None:
         unique_data = Dataloader().aspect_unique_dict.get(item.name)
-        if unique_data is not None and unique_data["num_inherents"] is not None:
-            inherent_num = unique_data["num_inherents"]
+        unique_inherents = unique_data.get("num_inherents") if unique_data is not None else None
+        if type(unique_inherents) is int:
+            inherent_num = unique_inherents
 
     next_line_index = start + inherent_num + affixes_num
     if (

@@ -21,7 +21,7 @@ def test_source_affix_matching_is_exact_and_fails_closed() -> None:
 
 
 def test_source_catalog_falls_back_to_english_for_missing_chinese_seal_keys() -> None:
-    english = source_affix_dict_for_item_type(ItemType.HoradricSeal, "enUS")
-    chinese = source_affix_dict_for_item_type(ItemType.HoradricSeal, "zhCN")
+    english = source_affix_dict_for_item_type(ItemType.Ring, "enUS")
+    chinese = source_affix_dict_for_item_type(ItemType.Ring, "zhCN")
 
-    assert english.keys() <= chinese.keys()
+    assert chinese["crafting_material_drop_rate"] == english["crafting_material_drop_rate"]

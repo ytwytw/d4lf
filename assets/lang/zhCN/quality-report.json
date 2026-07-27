@@ -89,7 +89,7 @@
         }
     },
     "locale": "zhCN",
-    "runtime_ready": false,
+    "runtime_ready": true,
     "schema_version": 1,
     "scope": {
         "excluded_historical_records": [],

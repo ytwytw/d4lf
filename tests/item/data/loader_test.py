@@ -1,11 +1,14 @@
+import json
 import threading
 from types import SimpleNamespace
 
 import pytest
 
+from src.importing.d2core import catalog as d2core_catalog
 from src.item.data import loader as loader_module
 from src.item.data.item_type import ItemType
-from src.item.data.loader import Dataloader, _load_string_map
+from src.item.data.loader import Dataloader
+from src.item.data.localized_maps import load_localized_nested_string_map, load_string_map
 
 
 class _LoaderFailure(BaseException):
@@ -34,16 +37,69 @@ def test_zhcn_catalog_loads_all_runtime_aliases(monkeypatch) -> None:
     assert catalog.resolve_unique("命运之拳") == "fists_of_fate"
 
 
-def test_zhcn_catalog_keeps_missing_seal_keys_enabled_with_english_fallback(monkeypatch) -> None:
+def test_zhcn_catalog_contains_only_production_seal_keys(monkeypatch) -> None:
     catalog = _load_zhcn_catalog(monkeypatch)
     language_root = loader_module.BASE_DIR / "assets" / "lang"
-    english = _load_string_map(language_root / "enUS" / "seals_affixes.json")
-    chinese = _load_string_map(language_root / "zhCN" / "seals_affixes.json")
-    missing_chinese = english.keys() - chinese.keys()
+    english = load_string_map(language_root / "enUS" / "seals_affixes.json")
+    chinese = load_string_map(language_root / "zhCN" / "seals_affixes.json")
 
-    assert missing_chinese
-    assert english.keys() <= catalog.seal_affix_dict.keys()
-    assert all(catalog.seal_affix_dict[key] == english[key] for key in missing_chinese)
+    assert len(english) == 305
+    assert english.keys() == chinese.keys() == catalog.seal_affix_dict.keys()
+
+
+def test_zhcn_catalog_uses_english_for_unresolved_production_text(monkeypatch) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+    english = loader_module.BASE_DIR / "assets" / "lang" / "enUS"
+    english_sigils = load_localized_nested_string_map(english, "sigils.json")
+    english_tributes = load_string_map(english / "tributes.json")
+
+    assert catalog.affix_dict["crafting_material_drop_rate"] == "crafting material drop rate"
+    assert catalog.charm_affix_dict["crafting_material_drop_rate"] == "crafting material drop rate"
+    assert catalog.affix_sigil_dict_all["positive"]["ruptures"] == english_sigils["positive"]["ruptures"]
+    assert catalog.tribute_dict["greater_tribute_of_armaments"] == english_tributes["greater_tribute_of_armaments"]
+
+
+def test_zhcn_production_scope_is_stable_and_explicit() -> None:
+    chinese = loader_module.BASE_DIR / "assets" / "lang" / "zhCN"
+    flat_files = ("affixes.json", "charms_affixes.json", "seals_affixes.json", "tributes.json")
+    resolved = sum(
+        sum(bool(value.strip()) for value in load_string_map(chinese / file_name).values()) for file_name in flat_files
+    )
+    resolved += sum(bool(value.strip()) for value in load_string_map(chinese / "aspects.json").values())
+    resolved += sum(bool(value.strip()) for value in load_string_map(chinese / "sets.json").values())
+    resolved += sum(bool(value.strip()) for value in load_string_map(chinese / "item_types.json").values())
+    unique_data = json.loads((chinese / "uniques.json").read_text(encoding="utf-8"))
+    resolved += sum(bool(metadata.get("display_name", "").strip()) for metadata in unique_data.values())
+    sigils = json.loads((chinese / "sigils.json").read_text(encoding="utf-8"))
+    resolved += sum(
+        bool(value.strip())
+        for section_name in ("dungeons", "major", "minor", "positive")
+        for value in sigils[section_name].values()
+    )
+    resolved += 1
+
+    report = json.loads((chinese / "quality-report.json").read_text(encoding="utf-8"))
+    manifest = json.loads((chinese / "manifest.json").read_text(encoding="utf-8"))
+    assert resolved == 2724
+    assert report["summary"]["source_records"] == 2742
+    assert report["summary"]["unresolved_records"] == 18
+    assert resolved + report["summary"]["unresolved_records"] == report["summary"]["source_records"]
+    assert report["runtime_ready"] is True
+    assert manifest["runtime_ready"] is True
+
+
+def test_runtime_catalog_does_not_depend_on_d2core_availability(monkeypatch) -> None:
+    def unavailable():
+        message = "D2Core unavailable"
+        raise AssertionError(message)
+
+    monkeypatch.setattr(d2core_catalog, "load_d2core_catalog", unavailable)
+
+    catalog = _load_zhcn_catalog(monkeypatch)
+
+    assert len(catalog.affix_dict) == 877
+    assert len(catalog.aspect_dict) == 530
+    assert len(catalog.aspect_unique_dict) == 298
 
 
 def test_zhcn_ambiguous_damage_aliases_use_range_precision(monkeypatch) -> None:
