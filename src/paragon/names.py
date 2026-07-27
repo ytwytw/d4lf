@@ -64,10 +64,11 @@ def _load_catalog(locale: str) -> dict[NameKind, dict[str, str]]:
 
 @cache
 def _name_index(kind: NameKind) -> dict[str, str]:
-    index: dict[str, str] = {}
+    candidates: dict[str, set[str]] = {}
     for locale in ("enUS", "zhCN"):
         for identifier, name in _load_catalog(locale)[kind].items():
-            index.setdefault(_normalize(name), identifier)
+            candidates.setdefault(_normalize(name), set()).add(identifier)
+    index = {name: next(iter(identifiers)) for name, identifiers in candidates.items() if len(identifiers) == 1}
     if kind == "glyphs":
         index.setdefault(_normalize("Golems"), _find_identifier(kind, "Golem"))
     return {name: identifier for name, identifier in index.items() if identifier}
