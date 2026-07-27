@@ -13,7 +13,9 @@ importing_module = importlib.import_module("src.importing")
 DEFAULT_FILENAME_PARTS = importing_module.DEFAULT_FILENAME_PARTS
 FilenamePart = importing_module.FilenamePart
 ImportRequest = importing_module.ImportRequest
-GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP = importer_window_module.GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP
+GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP = importlib.import_module(
+    "src.importing.gui.constants"
+).GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP
 ImporterWindow = importer_window_module.ImporterWindow
 
 

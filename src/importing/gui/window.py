@@ -25,12 +25,14 @@ from src.importing.contracts import VariantSelection
 from src.importing.gui.constants import (
     _CHECKBOX_CONFIGS,
     FILENAME_PART_LABELS,
-    GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP,
     IMPORTER_WINDOW_LOGGERS,
     INSTRUCTIONS_TEXT,
 )
+from src.importing.gui.localization import ImporterWindowLocalization
+from src.importing.gui.options import ImporterOptionsMixin
 from src.importing.gui.support import FetchVariantsWorker, ImportWorker
 from src.importing.gui.variant_dialog import select_variants_dialog
+from src.localization import translate
 from src.settings import get_settings
 
 BASE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[3]
@@ -39,10 +41,11 @@ LOGGER = logging.getLogger(__name__)
 THREADPOOL = QThreadPool()
 
 
-class ImporterWindow(QMainWindow):
+class ImporterWindow(ImporterWindowLocalization, ImporterOptionsMixin, QMainWindow):
     """Standalone window for importing profiles from supported build guides."""
 
     import_completed = pyqtSignal()
+    language_changed_signal = pyqtSignal()
 
     import_aspect_upgrades_checkbox: CheckmarkCheckBox
     import_charms_checkbox: CheckmarkCheckBox
@@ -67,13 +70,14 @@ class ImporterWindow(QMainWindow):
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.settings = QSettings("d4lf", "ImporterWindow")
         self.is_generating = False
-        self.setWindowTitle("Profile Importer - Maxroll / D4Builds / Mobalytics / InfinityBuilds")
+        self.setWindowTitle(translate("importer.title"))
         self.setMinimumSize(700, 600)
         self.resize(self.settings.value("size", QSize(700, 600)))
         self.move(self.settings.value("pos", QPoint(100, 100)))
         if self.settings.value("maximized", "false") == "true":
             self.showMaximized()
         self._build_ui()
+        self._setup_localization()
         # Setup logging.
         self.log_handler = QtLogHandler(self.log_output)
         for name in IMPORTER_WINDOW_LOGGERS:
@@ -88,25 +92,30 @@ class ImporterWindow(QMainWindow):
         self._build_url_row(layout)
         self._build_filename_row(layout)
         self._build_options(layout)
-        layout.addWidget(QLabel("Log:"))
+        self.log_label = QLabel(translate("importer.log"))
+        layout.addWidget(self.log_label)
         self.log_output = QTextEdit()
         self.log_output.setReadOnly(True)
         layout.addWidget(self.log_output)
-        layout.addWidget(QLabel("Instructions:"))
-        instructions = QTextEdit()
-        instructions.setText(INSTRUCTIONS_TEXT.format(user_dir=get_settings().user_dir))
-        instructions.setReadOnly(True)
-        instructions.setMaximumHeight(200)
-        instructions.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        layout.addWidget(instructions)
+        self.instructions_label = QLabel(translate("importer.instructions.title"))
+        layout.addWidget(self.instructions_label)
+        self.instructions_text = QTextEdit()
+        self.instructions_text.setText(
+            translate("importer.instructions.body", INSTRUCTIONS_TEXT, user_dir=get_settings().user_dir)
+        )
+        self.instructions_text.setReadOnly(True)
+        self.instructions_text.setMaximumHeight(200)
+        self.instructions_text.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        layout.addWidget(self.instructions_text)
 
     def _build_url_row(self, layout: QVBoxLayout):
         row = QHBoxLayout()
-        row.addWidget(QLabel("URL:"))
+        self.url_label = QLabel(translate("importer.url"))
+        row.addWidget(self.url_label)
         self.input_box = QLineEdit()
         self.input_box.textChanged.connect(self._update_generate_button_state)
         row.addWidget(self.input_box)
-        self.generate_button = QPushButton("Generate")
+        self.generate_button = QPushButton(translate("importer.generate"))
         self.generate_button.setEnabled(False)
         self.generate_button.clicked.connect(self._generate_button_click)
         row.addWidget(self.generate_button)
@@ -114,16 +123,19 @@ class ImporterWindow(QMainWindow):
 
     def _build_filename_row(self, layout: QVBoxLayout):
         row = QHBoxLayout()
-        row.addWidget(QLabel("Custom file name:"))
+        self.filename_label = QLabel(translate("importer.custom_filename"))
+        row.addWidget(self.filename_label)
         self.filename_input_box = QLineEdit()
-        self.filename_input_box.setPlaceholderText("Leave blank for default filename")
+        self.filename_input_box.setPlaceholderText(translate("importer.custom_filename.placeholder"))
         self.filename_input_box.textChanged.connect(self._update_generate_button_state)
         row.addWidget(self.filename_input_box)
-        self.filename_parts_button = QPushButton("Default filename includes...")
+        self.filename_parts_button = QPushButton(translate("importer.filename_parts"))
         self.filename_parts_menu = QMenu(self.filename_parts_button)
         self.filename_part_actions: dict[FilenamePart, QAction] = {}
         for part in DEFAULT_FILENAME_PARTS:
-            action = QAction(FILENAME_PART_LABELS[part], self.filename_parts_menu)
+            action = QAction(
+                translate(f"importer.filename_part.{part.value}", FILENAME_PART_LABELS[part]), self.filename_parts_menu
+            )
             action.setCheckable(True)
             action.setChecked(self._filename_part_setting(part))
             action.toggled.connect(lambda checked, part=part: self._handle_filename_part_toggled(part, checked))
@@ -172,44 +184,6 @@ class ImporterWindow(QMainWindow):
         checkbox.stateChanged.connect(lambda: self.settings.setValue(setting, checkbox.isChecked()))
         return checkbox
 
-    def _update_greater_affix_dependency(self):
-        enabled = self.import_gas_checkbox.isChecked()
-        self.require_all_gas_checkbox.setEnabled(enabled)
-        if not enabled:
-            self.require_all_gas_checkbox.setChecked(False)
-
-    def _filename_part_setting(self, part: FilenamePart) -> bool:
-        value = self.settings.value(self._filename_part_setting_key(part), "true")
-        return value is True or str(value).casefold() == "true"
-
-    def _handle_filename_part_toggled(self, part: FilenamePart, checked: bool):
-        self.settings.setValue(self._filename_part_setting_key(part), checked)
-        self._update_filename_parts_summary()
-        self._update_generate_button_state()
-
-    def _selected_filename_parts(self) -> tuple[FilenamePart, ...]:
-        return tuple(part for part in DEFAULT_FILENAME_PARTS if self.filename_part_actions[part].isChecked())
-
-    def _update_filename_parts_summary(self):
-        labels = [FILENAME_PART_LABELS[part] for part in self._selected_filename_parts()]
-        self.filename_parts_summary_label.setText(
-            f"Default file name: {'_'.join(labels) + '.yaml' if labels else 'none'}"
-        )
-
-    def _update_generate_button_state(self):
-        if self.is_generating:
-            self.generate_button.setEnabled(False)
-            return
-        url_ready = bool(self.input_box.text().strip())
-        filename_ready = bool(self.filename_input_box.text().strip()) or bool(self._selected_filename_parts())
-        self.generate_button.setEnabled(url_ready and filename_ready)
-        if url_ready and not filename_ready:
-            self.generate_button.setToolTip(GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP)
-        elif not url_ready:
-            self.generate_button.setToolTip("Enter a URL to generate a profile.")
-        else:
-            self.generate_button.setToolTip("")
-
     def _generate_button_click(self):
         if not self.generate_button.isEnabled():
             return
@@ -240,14 +214,14 @@ class ImporterWindow(QMainWindow):
 
         self.is_generating = True
         self.generate_button.setEnabled(False)
-        self.generate_button.setText("Generating...")
+        self.generate_button.setText(translate("importer.generating"))
         THREADPOOL.start(worker)
 
     def _on_worker_finished(self):
         if hasattr(self, "_waiting_for_user_selection") and self._waiting_for_user_selection:
             return
         self.is_generating = False
-        self.generate_button.setText("Generate")
+        self.generate_button.setText(translate("importer.generate"))
         self.filename_input_box.clear()
         self._update_generate_button_state()
         self.import_completed.emit()
@@ -256,7 +230,7 @@ class ImporterWindow(QMainWindow):
         self._waiting_for_user_selection = True
         # variants is a list of VariantMetadata
         # We need the source_name, but we don't have it explicitly. Let's just pass "the build guide"
-        source_name = "the build guide"
+        source_name = translate("importer.build_guide")
         selected_ids = select_variants_dialog(self, variants, source_name)
         if selected_ids is None or not selected_ids:
             LOGGER.info("No variants selected or dialog cancelled, aborting import.")
@@ -265,7 +239,7 @@ class ImporterWindow(QMainWindow):
             return
 
         LOGGER.info(f"User selected {len(selected_ids)} variant(s). Generating...")
-        self.generate_button.setText("Saving...")
+        self.generate_button.setText(translate("importer.saving"))
         selection = VariantSelection.from_ids(tuple(selected_ids))
         request = self._current_request.with_variant_selection(selection)
         worker = ImportWorker(request=request, finished=self._on_persist_finished)
@@ -274,10 +248,6 @@ class ImporterWindow(QMainWindow):
     def _on_persist_finished(self):
         self._waiting_for_user_selection = False
         self._on_worker_finished()
-
-    @staticmethod
-    def _filename_part_setting_key(part: FilenamePart) -> str:
-        return f"filename_part_{part.value}"
 
     @override
     def closeEvent(self, a0: QCloseEvent | None):
@@ -289,5 +259,6 @@ class ImporterWindow(QMainWindow):
         # Cleanup log handler.
         for name in IMPORTER_WINDOW_LOGGERS:
             logging.getLogger(name).removeHandler(self.log_handler)
+        self._config.unregister_change_listener(self._queue_language_change)
         if a0 is not None:
             a0.accept()
