@@ -10,6 +10,7 @@ from src.paragon.overlay.core import OverlayCoreMixin
 from src.paragon.overlay.grid import OverlayGridMixin
 from src.paragon.overlay.grid_assets import OverlayGridMixin as OverlayGridAssetsMixin
 from src.paragon.overlay.lifecycle import OverlayLifecycleMixin
+from src.paragon.overlay.localization import OverlayLocalizationMixin
 from src.paragon.overlay.popup import OverlayPopupMixin
 from src.paragon.overlay.popup_build import OverlayPopupBuildMixin
 from src.paragon.overlay.popup_measure import OverlayPopupMixin as OverlayPopupMeasureMixin
@@ -29,6 +30,7 @@ class ParagonOverlay(
     OverlayPopupBuildMixin,
     OverlayGridMixin,
     OverlayGridAssetsMixin,
+    OverlayLocalizationMixin,
     OverlayLifecycleMixin,
 ):
     """Tkinter Paragon overlay assembled from private behavior mixins."""

@@ -4,13 +4,14 @@ from contextlib import suppress
 
 from src.automation import is_self_foreground, is_window_foreground
 from src.desktop import is_alive, post_to_ui_thread
+from src.localization import translate
 from src.paragon.data import _clamp_int
 
 # fmt: off
 from src.paragon.shared import CARD_BG, FS_BUTTON, FS_CARD_FRAME, FS_GRID_FRAME, FS_MODE_LABEL, FS_PANEL_TITLE, GOLD, LOGGER, MUTED, NODE_BLUE, NODE_GREEN, TRANSPARENT_KEY, OverlayContract, _CLOSE_REQUESTED, _TK_BASELINE_SCALING, _dpi_scale_for_widget, _tk_btn, _tk_lbl  # isort: skip
 # fmt: on
 from src.paragon import data as _data
-from src.settings import get_settings
+from src.settings import LANGUAGE_SETTING_KEYS, get_settings, has_any_changed
 
 globals().update({name: getattr(_data, name) for name in _data.__all__})
 
@@ -78,7 +79,7 @@ class OverlayUIMixin(OverlayContract):
 
         self.lbl_mode = _tk_lbl(
             mode_frame,
-            text="Compact View" if self._cfg.is_collapsed else "Full View",
+            text=translate("paragon.view.compact" if self._cfg.is_collapsed else "paragon.view.full"),
             fg=MUTED,
             font=("Segoe UI", int(FS_MODE_LABEL * self._cfg.ui_scale)),
             anchor="w",
@@ -110,7 +111,7 @@ class OverlayUIMixin(OverlayContract):
 
         self.btn_settings = _tk_btn(
             btn_cont,
-            text="Settings⚙ ▼",
+            text=f"{translate('paragon.settings')}⚙ ▼",
             cmd=self._show_settings_dropdown,
             font=("Segoe UI", int(FS_BUTTON * self._cfg.ui_scale), "bold"),
             padx=int(10 * self._cfg.ui_scale),
@@ -120,7 +121,7 @@ class OverlayUIMixin(OverlayContract):
 
         self.btn_build_menu = _tk_btn(
             btn_cont,
-            text="Builds ▼",
+            text=f"{translate('paragon.builds')} ▼",
             cmd=self._show_build_menu,
             font=("Segoe UI", int(FS_BUTTON * self._cfg.ui_scale), "bold"),
             padx=int(12 * self._cfg.ui_scale),
@@ -197,9 +198,10 @@ class OverlayUIMixin(OverlayContract):
 
     def _on_config_changed(self, changed_keys: set[str] | frozenset[str]) -> None:
         """Apply live overlay updates after runtime config changes."""
-        if "general.colorblind_mode" not in changed_keys:
-            return
-        post_to_ui_thread(self._apply_live_colorblind_change)
+        if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
+            post_to_ui_thread(self._apply_live_language_change)
+        if "general.colorblind_mode" in changed_keys:
+            post_to_ui_thread(self._apply_live_colorblind_change)
 
     def _apply_live_colorblind_change(self) -> None:
         """Refresh overlay colors on the Tk UI thread after a colorblind change."""

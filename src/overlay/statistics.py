@@ -2,6 +2,7 @@ import logging
 import re
 import time
 
+from src.localization import translate
 from src.overlay.settings import load_settings, save_settings
 from src.overlay.singleton import singleton
 from src.perception import Publisher
@@ -123,7 +124,11 @@ class _SessionStats:
         t2l = "-"
         if eph and self.max_exp:
             hours = max(0, self.max_exp - value) / eph
-            t2l = f"{int(hours * 60)}m" if hours < 1 else f"{int(hours)}h {int(hours % 1 * 60)}m"
+            t2l = (
+                translate("info.duration.minutes", minutes=int(hours * 60))
+                if hours < 1
+                else translate("info.duration.hours_minutes", hours=int(hours), minutes=int(hours % 1 * 60))
+            )
         self._persist()
         _notify(eph=eph, total_exp=self.total_exp, t2l=t2l)
 

@@ -2,6 +2,7 @@ import tkinter as tk
 from contextlib import suppress
 from typing import Literal
 
+from src.localization import translate
 from src.loot import get_filter_colors
 from src.overlay.statistics import SessionStats
 from src.overlay.widget.shared import (
@@ -30,15 +31,15 @@ class _OverlayUI(OverlayContract):
         self.overlay_frame.pack(padx=5, pady=5)
 
         self.wb_group = tk.Frame(self.overlay_frame, bg=CARD_BG)
-        lbl_wb = tk.Label(
+        self.lbl_wb = tk.Label(
             self.wb_group,
-            text="World Boss:",
+            text=translate("info.timer.world_boss"),
             bg=CARD_BG,
             fg=colors.codex_upgrade if is_colorblind else WB_ORANGE,
             font=(self.font_family, self.font_size, "bold"),
         )
-        lbl_wb.pack(side="left")
-        self.labels_to_resize.append(lbl_wb)
+        self.lbl_wb.pack(side="left")
+        self.labels_to_resize.append(self.lbl_wb)
         self.wb_timer = tk.Label(
             self.wb_group, text="--:--:--", bg=CARD_BG, fg=TEXT, font=(self.font_family, self.font_size, "bold")
         )
@@ -48,7 +49,7 @@ class _OverlayUI(OverlayContract):
         self.legion_group = tk.Frame(self.overlay_frame, bg=CARD_BG)
         self.lbl_legion = tk.Label(
             self.legion_group,
-            text="Legion:",
+            text=translate("info.timer.legion"),
             bg=CARD_BG,
             fg=colors.matched if is_colorblind else LEGION_BLUE,
             font=(self.font_family, self.font_size, "bold"),
@@ -64,7 +65,7 @@ class _OverlayUI(OverlayContract):
         self.ht_group = tk.Frame(self.overlay_frame, bg=CARD_BG)
         self.lbl_ht = tk.Label(
             self.ht_group,
-            text="Helltide:",
+            text=translate("info.timer.helltide"),
             bg=CARD_BG,
             fg=colors.no_match if is_colorblind else HELLTIDE_RED,
             font=(self.font_family, self.font_size, "bold"),
@@ -80,7 +81,7 @@ class _OverlayUI(OverlayContract):
         self.stats_group = tk.Frame(self.overlay_frame, bg=CARD_BG)
         self.lbl_gph_title = tk.Label(
             self.stats_group,
-            text="GPH:",
+            text=translate("info.metric.gold_per_hour"),
             bg=CARD_BG,
             fg=colors.matched if is_colorblind else ACCENT,
             font=(self.font_family, self.font_size, "bold"),
@@ -89,7 +90,7 @@ class _OverlayUI(OverlayContract):
         self.labels_to_resize.append(self.lbl_gph_title)
         self.gph_value_label = tk.Label(
             self.stats_group,
-            text="Pending" if self.capture_gold_stats else "0",
+            text=translate("info.state.pending") if self.capture_gold_stats else "0",
             bg=CARD_BG,
             fg=TEXT,
             font=(self.font_family, self.font_size, "bold"),
@@ -99,7 +100,7 @@ class _OverlayUI(OverlayContract):
 
         self.lbl_total_gained_title = tk.Label(
             self.stats_group,
-            text="|Gained:",
+            text=f"|{translate('info.metric.gold_gained')}",
             bg=CARD_BG,
             fg=colors.matched if is_colorblind else ACCENT,
             font=(self.font_family, self.font_size, "bold"),
@@ -119,7 +120,7 @@ class _OverlayUI(OverlayContract):
         self.exp_group = tk.Frame(self.overlay_frame, bg=CARD_BG)
         self.lbl_eph_title = tk.Label(
             self.exp_group,
-            text="EPH:",
+            text=translate("info.metric.exp_per_hour"),
             bg=CARD_BG,
             fg=colors.matched if is_colorblind else LEGION_BLUE,
             font=(self.font_family, self.font_size, "bold"),
@@ -128,7 +129,7 @@ class _OverlayUI(OverlayContract):
         self.labels_to_resize.append(self.lbl_eph_title)
         self.eph_value_label = tk.Label(
             self.exp_group,
-            text="Pending" if self.capture_exp_stats else "0",
+            text=translate("info.state.pending") if self.capture_exp_stats else "0",
             bg=CARD_BG,
             fg=TEXT,
             font=(self.font_family, self.font_size, "bold"),
@@ -138,7 +139,7 @@ class _OverlayUI(OverlayContract):
 
         self.lbl_total_exp_title = tk.Label(
             self.exp_group,
-            text="|Exp:",
+            text=f"|{translate('info.metric.exp_gained')}",
             bg=CARD_BG,
             fg=colors.matched if is_colorblind else LEGION_BLUE,
             font=(self.font_family, self.font_size, "bold"),
@@ -158,7 +159,7 @@ class _OverlayUI(OverlayContract):
         self.t2l_group = tk.Frame(self.overlay_frame, bg=CARD_BG)
         self.lbl_t2l_title = tk.Label(
             self.t2l_group,
-            text="T2L:",
+            text=translate("info.metric.time_to_level"),
             bg=CARD_BG,
             fg=colors.matched if is_colorblind else LEGION_BLUE,
             font=(self.font_family, self.font_size, "bold"),
@@ -173,7 +174,7 @@ class _OverlayUI(OverlayContract):
 
         self.lbl_next_scan_title = tk.Label(
             self.t2l_group,
-            text="|Next Scan:",
+            text=f"|{translate('info.metric.next_scan')}",
             bg=CARD_BG,
             fg=colors.matched if is_colorblind else LEGION_BLUE,
             font=(self.font_family, self.font_size, "bold"),
@@ -181,7 +182,11 @@ class _OverlayUI(OverlayContract):
         self.lbl_next_scan_title.pack(side="left")
         self.labels_to_resize.append(self.lbl_next_scan_title)
         self.next_scan_value_label = tk.Label(
-            self.t2l_group, text="Ready", bg=CARD_BG, fg=TEXT, font=(self.font_family, self.font_size, "bold")
+            self.t2l_group,
+            text=translate("info.state.ready"),
+            bg=CARD_BG,
+            fg=TEXT,
+            font=(self.font_family, self.font_size, "bold"),
         )
         self.next_scan_value_label.pack(side="left")
         self.labels_to_resize.append(self.next_scan_value_label)
@@ -199,7 +204,6 @@ class _OverlayUI(OverlayContract):
             f"show_eph={self.show_eph}, show_total_exp={self.show_total_exp}, "
             f"show_t2l={self.show_t2l}, show_next_scan={self.show_next_scan}"
         )
-        # Hide everything first
         self.wb_group.pack_forget()
         self.legion_group.pack_forget()
         self.ht_group.pack_forget()
@@ -240,15 +244,18 @@ class _OverlayUI(OverlayContract):
         self.total_gained_value_label.pack_forget()
         count = 0
         if self.show_gph:
-            self.lbl_gph_title.config(text="GPH:")
+            self.lbl_gph_title.config(text=translate("info.metric.gold_per_hour"))
             self.lbl_gph_title.pack(side="left")
             self.gph_value_label.config(
-                text="Pending" if not self._gold_initialized else self.gph_value_label.cget("text")
+                text=translate("info.state.pending")
+                if not self._gold_initialized
+                else self.gph_value_label.cget("text")
             )
             self.gph_value_label.pack(side="left")
             count += 1
         if self.show_total_gold:
-            self.lbl_total_gained_title.config(text="|Gained:" if count > 0 else "Gained:")
+            prefix = "|" if count > 0 else ""
+            self.lbl_total_gained_title.config(text=f"{prefix}{translate('info.metric.gold_gained')}")
             self.lbl_total_gained_title.pack(side="left")
             self.total_gained_value_label.config(text=self.total_gained_value_label.cget("text"))
             self.total_gained_value_label.pack(side="left")
@@ -260,15 +267,16 @@ class _OverlayUI(OverlayContract):
         self.total_exp_value_label.pack_forget()
         count = 0
         if self.show_eph:
-            self.lbl_eph_title.config(text="EPH:")
+            self.lbl_eph_title.config(text=translate("info.metric.exp_per_hour"))
             self.lbl_eph_title.pack(side="left")
             self.eph_value_label.config(
-                text="Pending" if not self._exp_initialized else self.eph_value_label.cget("text")
+                text=translate("info.state.pending") if not self._exp_initialized else self.eph_value_label.cget("text")
             )
             self.eph_value_label.pack(side="left")
             count += 1
         if self.show_total_exp:
-            self.lbl_total_exp_title.config(text="|Exp:" if count > 0 else "Exp:")
+            prefix = "|" if count > 0 else ""
+            self.lbl_total_exp_title.config(text=f"{prefix}{translate('info.metric.exp_gained')}")
             self.lbl_total_exp_title.pack(side="left")
             self.total_exp_value_label.config(text=self.total_exp_value_label.cget("text"))
             self.total_exp_value_label.pack(side="left")
@@ -281,11 +289,12 @@ class _OverlayUI(OverlayContract):
         self.next_scan_value_label.pack_forget()
         count = 0
         if self.show_t2l:
-            self.lbl_t2l_title.config(text="T2L:")
+            self.lbl_t2l_title.config(text=translate("info.metric.time_to_level"))
             self.lbl_t2l_title.pack(side="left")
             self.t2l_value_label.pack(side="left")
             count += 1
         if self.show_next_scan:
-            self.lbl_next_scan_title.config(text="|Next Scan:" if count > 0 else "Next Scan:")
+            prefix = "|" if count > 0 else ""
+            self.lbl_next_scan_title.config(text=f"{prefix}{translate('info.metric.next_scan')}")
             self.lbl_next_scan_title.pack(side="left")
             self.next_scan_value_label.pack(side="left")

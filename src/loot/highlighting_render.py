@@ -9,7 +9,9 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 
 from src.item import ASPECT_UPGRADES_LABEL
+from src.localization import translate
 from src.loot.colors import get_filter_colors, reset_canvas
+from src.loot.text import match_profile_text
 from src.settings import get_settings, get_ui_coordinates
 
 DARK_GRAY_BG = "#111111"
@@ -149,9 +151,9 @@ class HighlightingRenderer:
         # show all info strings of the profiles
         text_y = h
         for match in reversed(should_keep_res.matched):
-            text = match.profile
+            text = match_profile_text(match.profile)
             if match.set_match:
-                text = text + " (incl. Set)"
+                text = translate("loot.match.includes_set", profile=text)
             text_y = self.draw_text(self.canvas, text, get_filter_colors().matched, text_y, 5, w // 2)
         # Show matched bullets
         if locator_result and locator_result.reliable and len(should_keep_res.matched) > 0:
@@ -183,13 +185,15 @@ class HighlightingRenderer:
 
         # show string indicating that this item upgrades the codex
         if len(should_keep_result.matched) == 1 and should_keep_result.matched[0].profile == ASPECT_UPGRADES_LABEL:
-            self.draw_text(self.canvas, "Codex Upgrade", get_filter_colors().codex_upgrade, h, 5, w // 2)
+            self.draw_text(
+                self.canvas, translate("loot.match.codex_upgrade"), get_filter_colors().codex_upgrade, h, 5, w // 2
+            )
         else:
             # This matched an Aspects section in a profile, write the profiles
             text_y = h
             for match in reversed(should_keep_result.matched):
                 text_y = self.draw_text(
-                    self.canvas, match.profile, get_filter_colors().codex_upgrade, text_y, 5, w // 2
+                    self.canvas, match_profile_text(match.profile), get_filter_colors().codex_upgrade, text_y, 5, w // 2
                 )
 
         self.root.geometry(f"{w}x{h}+{x + self.screen_off_x}+{y + self.screen_off_y}")

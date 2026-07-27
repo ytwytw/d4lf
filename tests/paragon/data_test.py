@@ -7,4 +7,4 @@ def test_data_formats_a_board_for_the_overlay() -> None:
         name="barbarian-starting-board", glyph="hemorrhage", rotation="0°", nodes=[False] * NODES_LEN
     )
 
-    assert format_board_display_text(board) == "Barbarian - Starting Board - Hemorrhage - 0°"
+    assert format_board_display_text(board) == "Barbarian - Start - Hemorrhage - 0°"

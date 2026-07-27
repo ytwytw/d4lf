@@ -2,7 +2,9 @@ import tkinter as tk
 from contextlib import suppress
 from typing import TYPE_CHECKING
 
+from src.localization import translate
 from src.paragon import data as _data
+from src.paragon.data import _format_build_display_name
 from src.paragon.shared import (
     _TK_IMAGE_ATTRIBUTE,
     CARD_BG,
@@ -58,7 +60,7 @@ class OverlayPopupBuildMixin(OverlayContract):
                 w.destroy()
             grps: dict[str, list[tuple[int, BuildRow]]] = {}
             for i, b in enumerate(self.builds):
-                grps.setdefault(str(b.get("profile") or "Ungrouped"), []).append((i, b))
+                grps.setdefault(str(b.get("profile") or translate("paragon.build.ungrouped")), []).append((i, b))
             mul = len(grps) > 1
 
             for p in sorted(grps):
@@ -76,7 +78,7 @@ class OverlayPopupBuildMixin(OverlayContract):
                     act = i == self.current_build_idx
                     _tk_btn(
                         lf,
-                        text=str(b.get("name") or "Unknown Build"),
+                        text=_format_build_display_name(b.get("name") or translate("paragon.build.unknown")),
                         cmd=lambda idx=i: (self._select_build(idx), self._close_build_dropdown()),
                         bg=SELECT_BG if act else CARD_BG,
                         fg=GOLD if act else TEXT,
@@ -134,12 +136,14 @@ class OverlayPopupBuildMixin(OverlayContract):
         btn_lock, lbl_lock = _row(
             "🔒" if self._cfg.grid_locked else "🔓",
             imgs.get(self._cfg.grid_locked),
-            "Grid locked",
+            translate("paragon.settings.grid_locked"),
             lambda: (self._toggle_grid_lock(), _ref()),
         )
-        btn_gold, lbl_gold = _row("★", None, "Golden frames", lambda: (self._toggle_gold_frames(), _ref()))
-        _row("↻", None, "Reload profiles", self._reload_profiles)
-        _row("↺", None, "Reset grid defaults", lambda: (self._reset_grid_defaults(), _ref()))
+        btn_gold, lbl_gold = _row(
+            "★", None, translate("paragon.settings.gold_frames.off"), lambda: (self._toggle_gold_frames(), _ref())
+        )
+        _row("↻", None, translate("paragon.settings.reload_profiles"), self._reload_profiles)
+        _row("↺", None, translate("paragon.settings.reset_grid"), lambda: (self._reset_grid_defaults(), _ref()))
 
         tk.Frame(c, bg=MUTED, height=1).pack(fill="x", pady=int(6 * s))
 
@@ -166,9 +170,13 @@ class OverlayPopupBuildMixin(OverlayContract):
             pady=int(2 * s),
         )
         btn_zp.pack(side="left")
-        _tk_lbl(zr, text="Grid Zoom", fg=MUTED, font=("Segoe UI", int(FS_SETTINGS_LABEL * s)), anchor="w").pack(
-            side="left", padx=(int(8 * s), 0)
-        )
+        _tk_lbl(
+            zr,
+            text=translate("paragon.settings.zoom"),
+            fg=MUTED,
+            font=("Segoe UI", int(FS_SETTINGS_LABEL * s)),
+            anchor="w",
+        ).pack(side="left", padx=(int(8 * s), 0))
 
         tk.Frame(c, bg=MUTED, height=1).pack(fill="x", pady=int(4 * s))
 
@@ -225,13 +233,18 @@ class OverlayPopupBuildMixin(OverlayContract):
         ).pack(side="left", padx=1, pady=1)
         tk.Frame(r2, bg=CARD_BG, width=sp, height=1).pack(side="left")
 
-        _tk_lbl(dp, text="Move\nGrid", fg=MUTED, font=("Segoe UI", int(FS_HINT * s)), anchor="w", justify="left").pack(
-            side="left", padx=(int(8 * s), 0)
-        )
+        _tk_lbl(
+            dp,
+            text=translate("paragon.settings.move_grid"),
+            fg=MUTED,
+            font=("Segoe UI", int(FS_HINT * s)),
+            anchor="w",
+            justify="left",
+        ).pack(side="left", padx=(int(8 * s), 0))
         tk.Frame(c, bg=MUTED, height=1).pack(fill="x", pady=int(6 * s))
         _tk_lbl(
             c,
-            text="• Drag frame to move grid\n• D-Pad ↑ ↓ ← → moves grid per click\n• Use − + buttons to zoom\n• Use ★ to make all frames golden\n• Use ↺ to reset to default size/position\n• Use 🔓 to unlock/lock grid",
+            text=translate("paragon.settings.help"),
             fg=MUTED,
             font=("Segoe UI", int(FS_HINT * s)),
             anchor="w",
@@ -249,9 +262,15 @@ class OverlayPopupBuildMixin(OverlayContract):
                 setattr(btn_lock, _TK_IMAGE_ATTRIBUTE, lock_image)
             else:
                 btn_lock.configure(text="🔒" if lk else "🔓", fg=GOLD if lk else TEXT)
-            lbl_lock.configure(text="Grid locked" if lk else "Grid unlocked", fg=GOLD if lk else TEXT)
+            lbl_lock.configure(
+                text=translate("paragon.settings.grid_locked" if lk else "paragon.settings.grid_unlocked"),
+                fg=GOLD if lk else TEXT,
+            )
             btn_gold.configure(fg=GOLD if gd else TEXT)
-            lbl_gold.configure(text="Golden frames (on)" if gd else "Golden frames (off)", fg=GOLD if gd else TEXT)
+            lbl_gold.configure(
+                text=translate("paragon.settings.gold_frames.on" if gd else "paragon.settings.gold_frames.off"),
+                fg=GOLD if gd else TEXT,
+            )
 
             for w in (btn_zm, btn_zp) + tuple(dc.winfo_children()):
                 for child in w.winfo_children():

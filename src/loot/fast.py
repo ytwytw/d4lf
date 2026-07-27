@@ -9,8 +9,10 @@ from typing import Literal
 import src.perception
 from src.desktop import call_on_ui_thread, create_overlay_toplevel, get_root
 from src.item import ASPECT_UPGRADES_LABEL, MYTHICS_ALWAYS_KEPT_LABEL, Filter, ItemRarity, MatchedFilter
+from src.localization import translate
 from src.loot.colors import get_filter_colors, is_ignored_item
 from src.loot.singleton import singleton
+from src.loot.text import affix_text, match_profile_text
 from src.perception import Publisher, capture, screenshot
 from src.settings import get_settings, get_ui_coordinates
 
@@ -142,7 +144,7 @@ class VisionModeFast:
 
             if item_descr is None:
                 LOGGER.info("Unknown Item")
-                return self.request_draw("Unknown item", "#ce7e00")
+                return self.request_draw(translate("loot.item.unknown"), "#ce7e00")
 
             feedback = fast_feedback(item_descr, Filter().should_keep(item_descr))
             if feedback is None:
@@ -171,12 +173,12 @@ class VisionModeFast:
 def create_match_text(matches: Iterable[MatchedFilter]) -> list[str]:
     result: list[str] = []
     for match in matches:
-        match_list = [f"  - {ma.name}" for ma in match.matched_affixes]
+        match_list = [f"  - {affix_text(ma.name)}" for ma in match.matched_affixes]
         if match.aspect_match and match.profile != MYTHICS_ALWAYS_KEPT_LABEL:
-            match_list.append("  - Aspect")
+            match_list.append(f"  - {translate('loot.match.aspect')}")
         if match.set_match:
-            match_list.append("  - Set")
-        result.append("\n".join([match.profile, *match_list]))
+            match_list.append(f"  - {translate('loot.match.set')}")
+        result.append("\n".join([match_profile_text(match.profile), *match_list]))
 
     return result
 
@@ -189,9 +191,9 @@ def fast_feedback(item_descr, filter_result) -> tuple[str, str] | None:
 
     if not filter_result.matched:
         if item_descr.rarity == ItemRarity.Unique:
-            text = ["Unique"]
+            text = [translate("loot.item.unique")]
         elif item_descr.rarity == ItemRarity.Mythic:
-            text = ["Mythic (Always Kept)"]
+            text = [translate("loot.item.mythic_always_kept")]
         else:
             text = []
         return "\n".join(text), colors.matched

@@ -1,5 +1,6 @@
 import tkinter as tk
 
+from src.localization import translate
 from src.overlay.settings import save_settings as save_info_settings
 from src.overlay.statistics import SessionStats
 from src.overlay.widget.shared import ACTIVE_GREEN, LOGGER, OverlayContract
@@ -51,7 +52,7 @@ class _OverlayActions(OverlayContract):
         canvas = tk.Canvas(picker, bg="black", highlightthickness=0)
         canvas.pack(fill="both", expand=True)
 
-        msg = "DRAG ACROSS YOUR EXPERIENCE BAR\n(Escape to cancel)"
+        msg = translate("info.exp_bar.capture_instruction")
         canvas.create_text(
             picker.winfo_screenwidth() // 2,
             picker.winfo_screenheight() // 2,

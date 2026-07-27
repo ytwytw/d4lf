@@ -7,6 +7,7 @@ from contextlib import suppress
 import httpx
 
 from src.automation import is_self_foreground, is_window_foreground
+from src.localization import translate
 from src.loot import get_filter_colors
 from src.overlay.settings import load_settings as load_info_settings
 from src.overlay.settings import setting_int as _setting_int
@@ -144,7 +145,7 @@ class _OverlayTimers(OverlayContract):
 
         wb_remaining = next_wb - now
         if wb_remaining.total_seconds() < 0:
-            self.wb_timer.config(text="ACTIVE")
+            self.wb_timer.config(text=translate("info.state.active"))
             self.wb_timer.config(fg=colors.matched)
         else:
             self.wb_timer.config(
@@ -199,20 +200,21 @@ class _OverlayTimers(OverlayContract):
         with suppress(Exception):
             info_conf = load_info_settings()
             if not info_conf["check_exp_on_inventory_open"]:
-                self.next_scan_value_label.config(text="Off")
+                self.next_scan_value_label.config(text=translate("info.state.off"))
             elif info_conf["exp_age_before_refresh"] == -1:
-                self.next_scan_value_label.config(text="Never")
+                self.next_scan_value_label.config(text=translate("info.state.never"))
             elif SessionStats().last_exp is None:
-                self.next_scan_value_label.config(text="Ready")
+                self.next_scan_value_label.config(text=translate("info.state.ready"))
             else:
                 remaining = (_setting_int(info_conf, "exp_age_before_refresh", 5) * 60) - (
                     time.time() - InventoryExpTracker().last_hover_time
                 )
                 if remaining <= 0:
-                    self.next_scan_value_label.config(text="Ready")
+                    self.next_scan_value_label.config(text=translate("info.state.ready"))
                 else:
                     m, s = divmod(int(remaining), 60)
-                    self.next_scan_value_label.config(text=f"{m}m {s}s" if m > 0 else f"{s}s")
+                    message_id = "info.duration.minutes_seconds" if m > 0 else "info.duration.seconds"
+                    self.next_scan_value_label.config(text=translate(message_id, minutes=m, seconds=s))
 
         aid = self.after(250, self._update_timers)
         self._after_ids.append(aid)

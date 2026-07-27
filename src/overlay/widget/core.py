@@ -5,6 +5,7 @@ from contextlib import suppress
 from typing import override
 
 from src.automation import WindowSpec
+from src.localization import translate
 from src.overlay.settings import InfoSettingValue
 from src.overlay.settings import load_settings as load_info_settings
 from src.overlay.settings import save_settings as save_info_settings
@@ -59,7 +60,7 @@ class _OverlayCore(OverlayContract):
         self.synced_helltide: datetime.datetime | None
         self.labels_to_resize: list[tk.Label] = []
 
-        self.title("D4LF Boss Timer")
+        self.title(translate("info.title"))
         self.attributes("-topmost", 1)
         self.overrideredirect(boolean=True)
         self.wm_attributes("-transparentcolor", TRANSPARENT_KEY)
@@ -72,6 +73,7 @@ class _OverlayCore(OverlayContract):
 
         self._flash_toggle = False
         self._setup_ui()
+        self._setup_localization()
         self._bind_events()
         self._update_timers()  # Initial update for timers
 
@@ -96,6 +98,7 @@ class _OverlayCore(OverlayContract):
         self._close_all_submenus()
 
         self._session_stats.unsubscribe()
+        self._stop_localization()
         self._menu_vars.clear()
 
         # The root is the shared UI thread's root, not ours to tear down —

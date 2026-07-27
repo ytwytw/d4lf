@@ -11,6 +11,7 @@ import numpy as np
 import src.perception
 from src.automation import pointer_position
 from src.item import ASPECT_UPGRADES_LABEL, Filter, SeasonalAttribute, is_sigil
+from src.localization import translate
 from src.loot.colors import get_filter_colors, is_ignored_item
 from src.perception import (
     LocatorResult,
@@ -130,7 +131,10 @@ class HighlightingWorker:
                         if ignored_item:
                             if item_descr.seasonal_attribute == SeasonalAttribute.sanctified:
                                 self.request_empty_outline(
-                                    item_descr, item_roi, get_filter_colors().unhandled, "Sanctified (Not Supported)"
+                                    item_descr,
+                                    item_roi,
+                                    get_filter_colors().unhandled,
+                                    translate("loot.item.sanctified_unsupported"),
                                 )
                             else:
                                 self.request_empty_outline(item_descr, item_roi, get_filter_colors().unhandled)

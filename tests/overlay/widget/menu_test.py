@@ -34,6 +34,9 @@ def test_context_menu_records_pointer_position(monkeypatch):
     overlay._create_config_toggle_btn = lambda *_args, **_kwargs: FakeWidget()
     overlay._create_radio_button = lambda *_args, **_kwargs: FakeWidget()
     overlay._create_submenu_button = lambda *_args, **_kwargs: FakeWidget()
+    overlay._build_gold_submenu_content = lambda *_args: None
+    overlay._build_exp_submenu_content = lambda *_args: None
+    overlay._build_reset_submenu_content = lambda *_args: None
     overlay._destroy_settings_popup = lambda: None
     overlay._on_popup_focus_out = lambda _event: None
     overlay._close_all_submenus = lambda: None

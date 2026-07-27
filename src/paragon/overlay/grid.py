@@ -3,6 +3,7 @@ import tkinter as tk
 from contextlib import suppress
 
 from src.desktop import is_alive
+from src.localization import translate
 from src.paragon.data import _clamp_int, _format_build_display_name, format_board_display_text
 
 # fmt: off
@@ -42,7 +43,8 @@ class OverlayGridMixin(OverlayContract):
         """Switch between the full and compact grid layouts."""
         self._cfg.is_collapsed = not self._cfg.is_collapsed
         with suppress(Exception):
-            self.lbl_mode.config(text="Compact View" if self._cfg.is_collapsed else "Full View")
+            mode_id = "paragon.view.compact" if self._cfg.is_collapsed else "paragon.view.full"
+            self.lbl_mode.config(text=translate(mode_id))
         if is_alive(getattr(self, "btn_view_switch", None)):
             self.btn_view_switch.config(text="⤢" if self._cfg.is_collapsed else "⤡")
         self.redraw()
@@ -52,14 +54,13 @@ class OverlayGridMixin(OverlayContract):
         """Rebuild the board list and refresh the title for the active build."""
         for w in self.board_container.winfo_children():
             w.destroy()
-
-        t = "Paragon"
+        t = translate("paragon.fallback_title")
         if self.builds:
             b = self.builds[self.current_build_idx]
             t = _format_build_display_name(b.get("name"))
             if not t:
                 t = _format_build_display_name(b.get("profile"))
-        self.lbl_title.config(text=t or "Paragon")
+        self.lbl_title.config(text=t or translate("paragon.fallback_title"))
 
         if not self.boards:
             return
