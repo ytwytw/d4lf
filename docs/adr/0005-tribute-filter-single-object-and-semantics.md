@@ -1,5 +1,7 @@
 # Tribute filter uses single-object semantics with OR between name and rarity
 
+[简体中文](0005-tribute-filter-single-object-and-semantics.zh-CN.md)
+
 `Tributes:` accepts one object with a `name` list and a `rarity` list. A tribute is kept when
 its name is in the `name` list **or** its rarity is in the `rarity` list. Omitting a key means
 that dimension is not evaluated. `Tributes: {}` (both lists empty) keeps nothing.

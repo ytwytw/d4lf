@@ -1,5 +1,7 @@
 # Capability-first deep-module architecture
 
+[简体中文](0006-capability-first-deep-module-architecture.zh-CN.md)
+
 D4LF is being refactored from technical-layer packages into capability-first deep modules. Each
 capability owns its behavior and exposes a deliberately small package facade through its
 `__init__.py`. A caller in another capability may import only that facade. The final layout uses

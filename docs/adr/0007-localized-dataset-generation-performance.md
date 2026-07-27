@@ -1,5 +1,7 @@
 # Localized dataset generation uses indexed sequential processing
 
+[简体中文](0007-localized-dataset-generation-performance.zh-CN.md)
+
 ## Context
 
 Localized dataset generation reads a large `d4data` checkout to produce D4LF's JSON assets. The

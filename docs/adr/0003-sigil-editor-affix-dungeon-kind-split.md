@@ -1,5 +1,7 @@
 # Sigil editor affix/dungeon kind split for global affix blacklist (#502)
 
+[简体中文](0003-sigil-editor-affix-dungeon-kind-split.zh-CN.md)
+
 The sigil profile editor was dungeon-first: every sigil row rendered a "Dungeon:" picker plus a condition list, so a user could not express "blacklist this affix on every sigil" — a global, dungeon-less rule. The filter already honors such rules (`_match_affixes_sigils` matches when the named affix is present on a sigil regardless of dungeon), but the editor could not author or load them and raised `KeyError` on a top-level affix name.
 
 ## Decision
