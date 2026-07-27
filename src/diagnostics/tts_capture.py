@@ -6,13 +6,13 @@ import threading
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from src.diagnostics.records import AtomicJsonlWriter, CaptureSession, capture_record, utc_now, utc_timestamp
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
+    from pathlib import Path
 
 
 class CaptureState(enum.StrEnum):
@@ -49,10 +49,7 @@ class CaptureResult:
 
 class AppTtsCaptureController:
     def __init__(
-        self,
-        *,
-        clock: Callable[[], datetime] = utc_now,
-        monotonic: Callable[[], float] = time.monotonic,
+        self, *, clock: Callable[[], datetime] = utc_now, monotonic: Callable[[], float] = time.monotonic
     ) -> None:
         self._clock = clock
         self._monotonic = monotonic
@@ -73,16 +70,12 @@ class AppTtsCaptureController:
             return self._state is CaptureState.RECORDING
 
     def start(
-        self,
-        *,
-        output_dir: Path,
-        locale: str,
-        game_build: str,
-        metadata: Mapping[str, str] | None = None,
+        self, *, output_dir: Path, locale: str, game_build: str, metadata: Mapping[str, str] | None = None
     ) -> CaptureSnapshot:
         with self._lock:
             if self._state is CaptureState.RECORDING:
-                raise CaptureControllerError("A diagnostic TTS capture is already running.")
+                message = "A diagnostic TTS capture is already running."
+                raise CaptureControllerError(message)
             started = self._clock()
             self._locale = locale.strip() or "unknown"
             self._game_build = game_build.strip() or "unknown"
@@ -99,7 +92,8 @@ class AppTtsCaptureController:
             except OSError as error:
                 self._state = CaptureState.ERROR
                 self._error = str(error)
-                raise CaptureControllerError(f"Could not start diagnostic capture: {error}") from error
+                message = f"Could not start diagnostic capture: {error}"
+                raise CaptureControllerError(message) from error
             self._message_count = 0
             self._error = None
             self._started_monotonic = self._monotonic()
@@ -134,12 +128,14 @@ class AppTtsCaptureController:
     def stop(self) -> CaptureResult:
         with self._lock:
             if self._state is not CaptureState.RECORDING or self._writer is None or self._output_path is None:
-                raise CaptureControllerError("No diagnostic TTS capture is running.")
+                message = "No diagnostic TTS capture is running."
+                raise CaptureControllerError(message)
             try:
                 self._writer.commit()
             except (OSError, RuntimeError) as error:
                 self._fail_locked(str(error))
-                raise CaptureControllerError(f"Could not save diagnostic capture: {error}") from error
+                message = f"Could not save diagnostic capture: {error}"
+                raise CaptureControllerError(message) from error
             result = CaptureResult(self._output_path, self._message_count, self._locale, self._game_build)
             self._writer = None
             self._session = None

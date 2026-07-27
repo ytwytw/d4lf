@@ -12,12 +12,7 @@ def test_capture_record_preserves_unicode_and_session_metadata() -> None:
     session = CaptureSession(started_at=utc_timestamp(timestamp), metadata={"category": "manual"})
 
     record = capture_record(
-        text="先祖传奇双手剑",
-        locale="zhCN",
-        game_build="2.4.0",
-        session=session,
-        sequence=1,
-        captured_at=timestamp,
+        text="先祖传奇双手剑", locale="zhCN", game_build="2.4.0", session=session, sequence=1, captured_at=timestamp
     )
 
     assert record["raw_text"] == "先祖传奇双手剑"
@@ -39,5 +34,6 @@ def test_atomic_jsonl_writer_commits_complete_records(tmp_path) -> None:
 
 
 def test_utc_timestamp_rejects_naive_values() -> None:
+    naive = datetime.now(UTC).replace(tzinfo=None)
     with pytest.raises(ValueError, match="timezone-aware"):
-        utc_timestamp(datetime(2026, 7, 26))
+        utc_timestamp(naive)

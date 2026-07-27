@@ -37,13 +37,7 @@ class CaptureSession:
 
 
 def capture_record(
-    *,
-    text: str,
-    locale: str,
-    game_build: str,
-    session: CaptureSession,
-    sequence: int,
-    captured_at: datetime,
+    *, text: str, locale: str, game_build: str, session: CaptureSession, sequence: int, captured_at: datetime
 ) -> dict[str, object]:
     return {
         "schema_version": SCHEMA_VERSION,
@@ -67,9 +61,7 @@ class AtomicJsonlWriter:
     def open(self) -> None:
         self.destination.parent.mkdir(parents=True, exist_ok=True)
         self._fd, temporary_name = tempfile.mkstemp(
-            dir=self.destination.parent,
-            prefix=f".{self.destination.name}.",
-            suffix=".tmp",
+            dir=self.destination.parent, prefix=f".{self.destination.name}.", suffix=".tmp"
         )
         self._temporary_path = Path(temporary_name)
 

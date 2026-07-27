@@ -35,4 +35,10 @@ def record_raw_tts(text: str) -> bool:
     return implementation(text)
 
 
-__all__ = ["allow_game_input", "capture_latest_failure", "game_input_blocked", "is_diagnostic_capture_active", "record_raw_tts"]
+__all__ = [
+    "allow_game_input",
+    "capture_latest_failure",
+    "game_input_blocked",
+    "is_diagnostic_capture_active",
+    "record_raw_tts",
+]

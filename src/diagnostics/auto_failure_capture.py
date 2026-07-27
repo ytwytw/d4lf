@@ -6,11 +6,9 @@ import logging
 import threading
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import cv2
-import numpy as np
 
 from src import __version__
 from src.diagnostics.records import CaptureSession, capture_record, utc_now, utc_timestamp
@@ -18,6 +16,9 @@ from src.settings import get_settings
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
+    from pathlib import Path
+
+    import numpy as np
 
 LOGGER = logging.getLogger(__name__)
 AUTO_CAPTURE_SCHEMA_VERSION = 2
@@ -165,18 +166,13 @@ class AutoFailureCapture:
     def _write_image(path: Path, image: np.ndarray) -> None:
         encoded, png = cv2.imencode(".png", image)
         if not encoded:
-            raise OSError("OpenCV could not encode the failure screenshot")
+            message = "OpenCV could not encode the failure screenshot"
+            raise OSError(message)
         path.write_bytes(png.tobytes())
 
     @staticmethod
     def _write_tts(
-        path: Path,
-        *,
-        raw_lines: Sequence[str],
-        locale: str,
-        game_build: str,
-        reason: str,
-        captured_at: datetime,
+        path: Path, *, raw_lines: Sequence[str], locale: str, game_build: str, reason: str, captured_at: datetime
     ) -> None:
         session = CaptureSession(
             started_at=utc_timestamp(captured_at),
@@ -234,10 +230,7 @@ class AutoFailureCapture:
                 "raw_lines": list(raw_tts_lines),
             },
             "error": (
-                {
-                    "type": type(error).__name__ if isinstance(error, BaseException) else "message",
-                    "message": str(error),
-                }
+                {"type": type(error).__name__ if isinstance(error, BaseException) else "message", "message": str(error)}
                 if error is not None
                 else None
             ),

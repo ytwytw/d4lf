@@ -1,6 +1,5 @@
 """Opt-in manual capture controls embedded in the Settings window."""
 
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QTimer, QUrl
@@ -12,6 +11,8 @@ from src.localization import translate
 from src.settings import get_settings
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from src.diagnostics.tts_capture import AppTtsCaptureController
     from src.settings import Settings
 
@@ -89,17 +90,12 @@ class DiagnosticCaptureWidget(QWidget):
         snapshot = self._controller.snapshot()
         if snapshot.state is CaptureState.RECORDING:
             text = translate(
-                "diagnostics.status.recording",
-                count=snapshot.message_count,
-                seconds=int(snapshot.elapsed_seconds),
+                "diagnostics.status.recording", count=snapshot.message_count, seconds=int(snapshot.elapsed_seconds)
             )
         elif snapshot.state is CaptureState.SAVED:
             text = translate("diagnostics.status.saved", path=snapshot.output_path or "")
         elif snapshot.state is CaptureState.ERROR:
-            text = translate(
-                "diagnostics.status.error",
-                error=snapshot.error or translate("diagnostics.unknown_error"),
-            )
+            text = translate("diagnostics.status.error", error=snapshot.error or translate("diagnostics.unknown_error"))
         else:
             text = translate("diagnostics.status.idle")
         self.status_label.setText(text)

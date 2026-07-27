@@ -1,6 +1,6 @@
 import os
 from types import SimpleNamespace
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -9,7 +9,9 @@ from PyQt6.QtWidgets import QApplication
 
 from src.diagnostics.tts_capture import AppTtsCaptureController, CaptureState
 from src.diagnostics.widget import DiagnosticCaptureWidget
-from src.settings import Settings
+
+if TYPE_CHECKING:
+    from src.settings import Settings
 
 
 @pytest.fixture(scope="module")
@@ -21,11 +23,7 @@ def qapp() -> QApplication:
 def test_diagnostics_widget_starts_and_stops_a_manual_capture(qapp, tmp_path) -> None:
     controller = AppTtsCaptureController()
     settings = SimpleNamespace(general=SimpleNamespace(language="zhCN"))
-    widget = DiagnosticCaptureWidget(
-        controller=controller,
-        settings=cast("Settings", settings),
-        capture_dir=tmp_path,
-    )
+    widget = DiagnosticCaptureWidget(controller=controller, settings=cast("Settings", settings), capture_dir=tmp_path)
 
     assert controller.snapshot().state is CaptureState.IDLE
     assert not widget.stop_button.isEnabled()

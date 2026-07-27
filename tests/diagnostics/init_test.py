@@ -1,4 +1,4 @@
-import src.diagnostics as diagnostics
+from src import diagnostics
 
 
 def test_diagnostics_facade_exposes_capture_and_safety_capabilities() -> None:
