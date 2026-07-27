@@ -20,6 +20,21 @@ def test_find_item_start_uses_localized_header() -> None:
     assert find_item_start(trace, grammar=grammar, catalog=catalog) == 1
 
 
+def test_find_item_start_accepts_localized_tribute_and_compass_suffixes() -> None:
+    grammar = LocaleGrammar.from_dict(
+        "zhCN",
+        {
+            "identifiers": {"COMPASS": ["罗盘"], "TRIBUTE": ["贡品", "供品"]},
+            "labels": {"item_start_ignored": ["罗盘词缀"]},
+        },
+    )
+    catalog = _Catalog({})
+
+    assert find_item_start(["无关文字", "和谐供品"], grammar=grammar, catalog=catalog) == 1
+    assert find_item_start(["无关文字", "炼狱罗盘"], grammar=grammar, catalog=catalog) == 1
+    assert find_item_start(["无关文字", "罗盘词缀"], grammar=grammar, catalog=catalog) is None
+
+
 def test_tts_framer_emits_localized_trace_and_bounds_noise() -> None:
     grammar = LocaleGrammar.from_dict(
         "zhCN",

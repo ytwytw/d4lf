@@ -248,11 +248,10 @@ def _get_item_type(data: str):
 
 
 def _is_codex_upgrade(tts_section: list[str]) -> bool:
-    return any(
-        "upgrades an aspect in the codex of power" in line.lower() or "unlocks new aspect" in line.lower()
-        for line in tts_section
-    )
+    grammar = Dataloader().grammar
+    return any(grammar.contains("codex_upgrade", line) for line in tts_section)
 
 
 def _is_cosmetic_upgrade(tts_section: list[str]):
-    return any("unlocks new look on salvage" in line.lower() for line in tts_section)
+    grammar = Dataloader().grammar
+    return any(grammar.contains("cosmetic_upgrade", line) for line in tts_section)

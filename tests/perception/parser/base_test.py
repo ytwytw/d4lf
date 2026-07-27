@@ -8,8 +8,8 @@ from src.perception.parser import base, details
 from src.perception.parser.base import _create_base_item_from_tts, _is_charm_slot_unlock
 
 
-def _use_zhcn_catalog(monkeypatch) -> Dataloader:
-    settings = SimpleNamespace(general=SimpleNamespace(language="zhCN"))
+def _use_catalog(monkeypatch, language: str) -> Dataloader:
+    settings = SimpleNamespace(general=SimpleNamespace(language=language))
     monkeypatch.setattr(loader_module, "get_settings", lambda: settings)
     catalog = object.__new__(Dataloader)
     catalog.load_data()
@@ -18,7 +18,13 @@ def _use_zhcn_catalog(monkeypatch) -> Dataloader:
     return catalog
 
 
-def test_parser_base_identifies_charm_slot_unlocks() -> None:
+def _use_zhcn_catalog(monkeypatch) -> Dataloader:
+    return _use_catalog(monkeypatch, "zhCN")
+
+
+def test_parser_base_identifies_charm_slot_unlocks(monkeypatch) -> None:
+    _use_catalog(monkeypatch, "enUS")
+
     assert _is_charm_slot_unlock("Unlocks 5 Charm Slots")
     assert not _is_charm_slot_unlock("+10% Movement Speed")
 

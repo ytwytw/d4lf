@@ -35,6 +35,15 @@ def test_localized_paragon_name_matches_paired_legacy_names() -> None:
     assert localized_paragon_name("glyphs", identifier=None, source_name="附魔", locale="enUS") == "Enchanter"
 
 
+def test_unknown_third_party_id_falls_back_to_legacy_name() -> None:
+    assert (
+        localized_paragon_name(
+            "boards", identifier="paragon-board::paragon-barb-00", source_name="Hemorrhage", locale="zhCN"
+        )
+        == "出血"
+    )
+
+
 def test_ambiguous_legacy_glyph_name_is_not_assigned_to_an_arbitrary_class() -> None:
     assert localized_paragon_name("glyphs", identifier=None, source_name="Control", locale="zhCN") == "Control"
 
@@ -43,6 +52,12 @@ def test_starting_board_alias_uses_the_board_class() -> None:
     assert (
         localized_paragon_name(
             "boards", identifier=None, source_name="Starting Board", class_slug="barbarian", locale="zhCN"
+        )
+        == "开始"
+    )
+    assert (
+        localized_paragon_name(
+            "boards", identifier=None, source_name="Starting Board", class_slug="spiritborn", locale="zhCN"
         )
         == "开始"
     )

@@ -30,6 +30,7 @@
         ],
         "TRIBUTE": [
             "贡品",
+            "供品",
             "tribute"
         ],
         "WHISPERING_KEY": [
@@ -79,6 +80,16 @@
             "护符栏位",
             "护符槽位"
         ],
+        "codex_upgrade": [
+            "分解以升级能量法典中的威能",
+            "分解以解锁能量法典中的新威能",
+            "upgrades an aspect in the codex of power",
+            "unlocks new aspect"
+        ],
+        "cosmetic_upgrade": [
+            "分解以解锁新外观",
+            "unlocks new look on salvage"
+        ],
         "cost": [
             "费用",
             "cost"
@@ -117,6 +128,9 @@
         ],
         "sanctified": [
             "圣化"
+        ],
+        "sigil_crafting_screen": [
+            "nightmare sigil is used"
         ]
     },
     "rarities": {

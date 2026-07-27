@@ -27,6 +27,11 @@ def find_item_start(data: list[str], *, grammar: LocaleGrammar, catalog: ItemTyp
 
         if any(grammar.identifier_matches(identifier.name, item, mode="startswith") for identifier in ItemIdentifier):
             return index
+        if any(
+            grammar.identifier_matches(identifier.name, item, mode="endswith")
+            for identifier in (ItemIdentifier.COMPASS, ItemIdentifier.TRIBUTE)
+        ):
+            return index
 
         cleaned_text = re.sub(r"[^A-Za-z]", "", item)
         if len(cleaned_text) >= 3 and item.isupper():

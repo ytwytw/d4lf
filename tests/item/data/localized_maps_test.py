@@ -82,3 +82,16 @@ def test_load_localized_metadata_map_preserves_records_and_ignores_empty_text(tm
         "first": {"display_name": "First", "num_inherents": 2},
         "second": {"num_inherents": 0},
     }
+
+
+@pytest.mark.parametrize("selected_payload", [None, "{broken json"])
+def test_load_localized_string_map_falls_back_when_selected_file_is_unusable(tmp_path, selected_payload) -> None:
+    english = tmp_path / "enUS"
+    chinese = tmp_path / "zhCN"
+    english.mkdir()
+    chinese.mkdir()
+    (english / "values.json").write_text(json.dumps({"first": "one"}), encoding="utf-8")
+    if selected_payload is not None:
+        (chinese / "values.json").write_text(selected_payload, encoding="utf-8")
+
+    assert load_localized_string_map(chinese, "values.json") == {"first": "one"}

@@ -4,7 +4,8 @@ import typing
 
 import pytest
 
-from src.settings import BrowserType, get_settings
+from src.item import Dataloader
+from src.settings import BrowserType, LanguageType, get_settings
 
 if typing.TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -46,6 +47,20 @@ MOBALYTICS_IMPORT_URLS = (
     "https://mobalytics.gg/diablo-4/builds/druid-zaior-pulverize-druid",
     "https://mobalytics.gg/diablo-4/builds/rogue-efficientrogue-dance-of-knives?ws-ngf5-1=activeVariantId%2Ca2977139-f3e2-4b13-aa64-82ba69972528",
 )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def stable_default_language():
+    """Keep tests independent from the developer's persisted UI language."""
+    settings = get_settings()
+    original_language = settings.general.language
+    settings.general.language = LanguageType.EN_US
+    Dataloader._instance = None
+    try:
+        yield
+    finally:
+        settings.general.language = original_language
+        Dataloader._instance = None
 
 
 def pytest_ignore_collect(collection_path, config):

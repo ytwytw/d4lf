@@ -51,6 +51,13 @@
         "charm_slot": [
             "charm slot"
         ],
+        "codex_upgrade": [
+            "upgrades an aspect in the codex of power",
+            "unlocks new aspect"
+        ],
+        "cosmetic_upgrade": [
+            "unlocks new look on salvage"
+        ],
         "cost": [
             "cost:",
             "cost :"
@@ -76,6 +83,9 @@
         ],
         "sanctified": [
             "sanctified"
+        ],
+        "sigil_crafting_screen": [
+            "nightmare sigil is used"
         ]
     },
     "rarities": {

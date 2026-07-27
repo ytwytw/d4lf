@@ -31,13 +31,17 @@ def translate(message_id: str, default: str | None = None, *, locale: str | None
     """Translate a stable message ID with English and caller-provided fallbacks."""
     selected_locale = locale or str(get_settings().general.language)
     template = _load_catalog(selected_locale).get(message_id)
-    if template is None:
-        template = _load_catalog(DEFAULT_LOCALE).get(message_id, default or message_id)
+    if not template or not template.strip():
+        template = _load_catalog(DEFAULT_LOCALE).get(message_id)
+    if not template or not template.strip():
+        template = default or message_id
     try:
         return template.format(**values)
     except KeyError, ValueError:
         LOGGER.exception("Could not format UI message %s for locale %s", message_id, selected_locale)
-        fallback = _load_catalog(DEFAULT_LOCALE).get(message_id, default or message_id)
+        fallback = _load_catalog(DEFAULT_LOCALE).get(message_id)
+        if not fallback or not fallback.strip():
+            fallback = default or message_id
         try:
             return fallback.format(**values)
         except KeyError, ValueError:

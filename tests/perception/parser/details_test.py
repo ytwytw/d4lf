@@ -8,11 +8,13 @@ from src.perception.parser.details import (
     _get_index_of_armor_dps_or_all_resist,
     _get_item_rarity,
     _get_item_type,
+    _is_codex_upgrade,
+    _is_cosmetic_upgrade,
 )
 
 
-def _use_zhcn_catalog(monkeypatch) -> Dataloader:
-    settings = SimpleNamespace(general=SimpleNamespace(language="zhCN"))
+def _use_catalog(monkeypatch, language: str) -> Dataloader:
+    settings = SimpleNamespace(general=SimpleNamespace(language=language))
     monkeypatch.setattr(loader_module, "get_settings", lambda: settings)
     catalog = object.__new__(Dataloader)
     catalog.load_data()
@@ -20,7 +22,13 @@ def _use_zhcn_catalog(monkeypatch) -> Dataloader:
     return catalog
 
 
-def test_parser_details_maps_rarity_and_item_type_labels() -> None:
+def _use_zhcn_catalog(monkeypatch) -> Dataloader:
+    return _use_catalog(monkeypatch, "zhCN")
+
+
+def test_parser_details_maps_rarity_and_item_type_labels(monkeypatch) -> None:
+    _use_catalog(monkeypatch, "enUS")
+
     assert _get_item_rarity("legendary") is ItemRarity.Legendary
     assert _get_item_type("sword") is ItemType.Sword
 
@@ -53,3 +61,13 @@ def test_parser_details_removes_zhcn_duration_before_greater_affix_detection(mon
     assert affix.value == 5
     assert affix.min_value == 4
     assert affix.max_value == 6
+
+
+def test_parser_details_detects_zhcn_codex_and_cosmetic_upgrades(monkeypatch) -> None:
+    _use_zhcn_catalog(monkeypatch)
+
+    assert _is_codex_upgrade(["分解以升级能量法典中的威能"])
+    assert _is_codex_upgrade(["分解以解锁能量法典中的新威能"])
+    assert _is_cosmetic_upgrade(["分解以解锁新外观"])
+    assert not _is_codex_upgrade(["普通出售提示"])
+    assert not _is_cosmetic_upgrade(["普通出售提示"])

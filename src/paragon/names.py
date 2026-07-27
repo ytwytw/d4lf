@@ -95,6 +95,8 @@ def paragon_class_slug(identifier: str | None, source_name: str | None = None) -
 
 def _starting_board_id(class_slug: str) -> str:
     prefix = _CLASS_BOARD_PREFIXES.get(class_slug)
+    if prefix == "spirit":
+        return "Paragon_Spirit_0"
     return f"Paragon_{prefix.title()}_00" if prefix else ""
 
 
@@ -105,7 +107,7 @@ def localized_paragon_name(
     selected_locale = locale or str(get_settings().general.language)
     catalogs = (_load_catalog(selected_locale)[kind], _load_catalog("enUS")[kind])
 
-    resolved_id = identifier or ""
+    resolved_id = identifier if identifier and any(identifier in catalog for catalog in catalogs) else ""
     normalized_source = _normalize(source_name)
     if not resolved_id and kind == "boards" and normalized_source in _START_ALIASES:
         resolved_id = _starting_board_id(class_slug)

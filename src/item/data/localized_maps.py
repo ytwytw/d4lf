@@ -1,10 +1,17 @@
 """Loading helpers for canonical-keyed localized string maps."""
 
+from __future__ import annotations
+
 import json
-from typing import TYPE_CHECKING, TypeGuard
+import logging
+from typing import TYPE_CHECKING, TypeGuard, TypeVar
 
 if TYPE_CHECKING:
     import pathlib
+    from collections.abc import Callable
+
+LOGGER = logging.getLogger(__name__)
+_T = TypeVar("_T")
 
 
 def _is_string_map(value: object) -> TypeGuard[dict[str, str]]:
@@ -45,7 +52,7 @@ def load_string_map(path: pathlib.Path) -> dict[str, str]:
 
 def load_localized_string_map(language_dir: pathlib.Path, file_name: str) -> dict[str, str]:
     """Load localized text while preserving every canonical English key."""
-    selected = load_string_map(language_dir / file_name)
+    selected = _load_selected(language_dir, file_name, load_string_map)
     if language_dir.name == "enUS":
         return selected
     english = load_string_map(language_dir.parent / "enUS" / file_name)
@@ -53,7 +60,7 @@ def load_localized_string_map(language_dir: pathlib.Path, file_name: str) -> dic
 
 
 def load_localized_display_map(language_dir: pathlib.Path, file_name: str) -> dict[str, str]:
-    selected = _load_display_map(language_dir / file_name)
+    selected = _load_selected(language_dir, file_name, _load_display_map)
     if language_dir.name == "enUS":
         return selected
     english = _load_display_map(language_dir.parent / "enUS" / file_name)
@@ -61,7 +68,7 @@ def load_localized_display_map(language_dir: pathlib.Path, file_name: str) -> di
 
 
 def load_localized_nested_string_map(language_dir: pathlib.Path, file_name: str) -> dict[str, dict[str, str]]:
-    selected = _load_nested_string_map(language_dir / file_name)
+    selected = _load_selected(language_dir, file_name, _load_nested_string_map)
     if language_dir.name == "enUS":
         return selected
     english = _load_nested_string_map(language_dir.parent / "enUS" / file_name)
@@ -72,7 +79,7 @@ def load_localized_nested_string_map(language_dir: pathlib.Path, file_name: str)
 
 
 def load_localized_metadata_map(language_dir: pathlib.Path, file_name: str) -> dict[str, dict[str, object]]:
-    selected = _load_metadata_map(language_dir / file_name)
+    selected = _load_selected(language_dir, file_name, _load_metadata_map)
     if language_dir.name == "enUS":
         return selected
     english = _load_metadata_map(language_dir.parent / "enUS" / file_name)
@@ -111,6 +118,18 @@ def _load_metadata_map(path: pathlib.Path) -> dict[str, dict[str, object]]:
 
 def _nonempty_strings(values: dict[str, str]) -> dict[str, str]:
     return {key: value for key, value in values.items() if value.strip()}
+
+
+def _load_selected(language_dir: pathlib.Path, file_name: str, loader: Callable[[pathlib.Path], _T]) -> _T:
+    selected_path = language_dir / file_name
+    try:
+        return loader(selected_path)
+    except OSError, json.JSONDecodeError, ValueError:
+        if language_dir.name == "enUS":
+            raise
+        english_path = language_dir.parent / "enUS" / file_name
+        LOGGER.warning("Falling back to %s because %s could not be loaded", english_path, selected_path, exc_info=True)
+        return loader(english_path)
 
 
 __all__ = [

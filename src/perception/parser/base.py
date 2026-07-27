@@ -197,7 +197,7 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
     if grammar.identifier_matches(ItemIdentifier.COMPASS.name, tts_item[1], mode="endswith"):
         return _update_item_object(item, rarity=ItemRarity.Common, item_type=ItemType.Compass)
     if grammar.identifier_matches(ItemIdentifier.NIGHTMARE_SIGIL.name, tts_item[0]):
-        if "Nightmare Sigil is used" in tts_item[0]:  # This is actually the crafting screen
+        if grammar.contains("sigil_crafting_screen", tts_item[0]):
             return None
         if grammar.contains("bloodied", tts_item[1]):
             item.seasonal_attribute = SeasonalAttribute.bloodied
