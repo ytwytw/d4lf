@@ -55,12 +55,12 @@ class WindowsTTSBackend:
     def read_pipe(self, create_pipe, data_queue, logger, set_connected) -> None:
         while True:
             handle = create_pipe()
-            logger.debug("Waiting for TTS client to connect")
-            win32pipe.ConnectNamedPipe(handle, None)
-            logger.info("TTS client connected")
-            set_connected(True)
-            while True:
-                try:
+            try:
+                logger.debug("Waiting for TTS client to connect")
+                win32pipe.ConnectNamedPipe(handle, None)
+                logger.info("TTS client connected")
+                set_connected(True)
+                while True:
                     win32file.ReadFile(handle, 0)
                     _, _, message_size = win32pipe.PeekNamedPipe(handle, 0)
                     message_size = _require_message_size(message_size)
@@ -70,11 +70,12 @@ class WindowsTTSBackend:
                         data_queue.put(data)
                     elif "DISCONNECTED" in data:
                         break
-                except Exception:
-                    logger.exception("Error while reading data")
-            win32file.CloseHandle(handle)
-            logger.info("TTS client disconnected")
-            set_connected(False)
+            except Exception:
+                logger.exception("TTS pipe connection failed; waiting for a new client")
+            finally:
+                win32file.CloseHandle(handle)
+                logger.info("TTS client disconnected")
+                set_connected(False)
 
     def start_connection(self, start_find_item, start_read_pipe, logger) -> None:
         logger.info("Starting TTS listener. Hover over an item or button to perform the TTS connection.")

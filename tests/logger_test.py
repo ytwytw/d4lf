@@ -131,3 +131,12 @@ def test_startup_log_buffer_captures_and_consumes_records(isolated_root_logger):
     assert logger_module._startup_buffer_handler is None
     assert all(getattr(handler, "name", "") != "D4LF_STARTUP_BUFFER" for handler in isolated_root_logger.handlers)
     assert consume_startup_log_records() == []
+
+
+def test_main_thread_exception_hook_logs_unhandled_errors(caplog):
+    error = RuntimeError("main loop failed")
+
+    with caplog.at_level(logging.CRITICAL, logger="src.logger"):
+        logger_module._log_unhandled_main_exception(RuntimeError, error, error.__traceback__)
+
+    assert "Unhandled exception on the main thread" in caplog.messages

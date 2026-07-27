@@ -9,6 +9,7 @@ import requests
 
 import src.logger
 from src import __version__
+from src.release_versions import is_newer_version, is_prerelease, select_latest_release
 
 LOGGER = logging.getLogger(__name__)
 RELEASE_REPO_OWNER = "ytwytw"
@@ -44,15 +45,15 @@ class D4LFUpdater:
             response = requests.get(api_url, timeout=10)
             response.raise_for_status()
             release_data = response.json()
-            return next(iter(release_data), None) if api_url == self.releases_api_url else release_data
+            if api_url != self.releases_api_url:
+                return release_data
+            return select_latest_release(release_data)
         except requests.exceptions.RequestException as e:
             LOGGER.error(f"Error fetching release info: {e}")
             return None
 
-    @staticmethod
-    def _is_prerelease(version: str) -> bool:
-        normalized = version.casefold()
-        return any(marker in normalized for marker in ("alpha", "beta", "rc"))
+    _is_prerelease = staticmethod(is_prerelease)
+    is_newer_version = staticmethod(is_newer_version)
 
     def print_changes_between_releases(self, current_version, latest_version):
         try:
@@ -101,10 +102,6 @@ class D4LFUpdater:
             with zipfile.ZipFile(zip_path, "r") as zip_ref:
                 zip_ref.extractall(self.temp_dir)
 
-            # Also create an update file with information post processing will need
-            # with Path(self.update_file).open("w") as f:
-            #     update_data = {"version": latest_version, "zip_path": zip_path}
-            #     json.dump(update_data, f)
             Path(self.version_file).write_text(latest_version, encoding="utf-8")
         except (OSError, zipfile.BadZipFile, zipfile.LargeZipFile) as e:
             LOGGER.error(f"Error during extraction: {e}")
@@ -137,12 +134,16 @@ class D4LFUpdater:
             LOGGER.warning("Unable to find latest release on github, can't automatically update.")
             return False
 
-        latest_version = self.normalize_version(release_data.get("tag_name"))
+        raw_latest_version = release_data.get("tag_name")
+        if not isinstance(raw_latest_version, str):
+            LOGGER.error("Latest release is missing a valid version tag.")
+            return False
+        latest_version = self.normalize_version(raw_latest_version)
         LOGGER.info(f"Latest release tag: {latest_version}")
 
         # Check if update needed
-        if current_version == latest_version:
-            LOGGER.info("✓ You're already on the latest version!")
+        if not self.is_newer_version(latest_version, current_version):
+            LOGGER.info("✓ No newer release is available.")
             input("\nPress Enter to exit...")
             sys.exit(2)
 
@@ -263,7 +264,7 @@ def notify_if_update():
         return
 
     latest_version = updater.normalize_version(release.get("tag_name"))
-    if current_version != latest_version:
+    if updater.is_newer_version(latest_version, current_version):
         LOGGER.info("=" * 50)
         LOGGER.info(
             f"An update has been detected. Run d4lf_autoupdater.exe to automatically update. Version {current_version} → {latest_version}"
@@ -293,8 +294,6 @@ def _should_check_for_update(check_interval_hours=4):
     return False
 
 
-# Main is only used for testing as files will not actually be copied
 if __name__ == "__main__":
     src.logger.setup(log_level="debug")
     start_auto_update()
-    # start_auto_update(postprocess=True)

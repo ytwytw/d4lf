@@ -1,5 +1,7 @@
 import zipfile
 
+import pytest
+
 from src.autoupdater import D4LFUpdater
 
 
@@ -15,7 +17,10 @@ def test_get_latest_release_includes_prereleases_for_beta_versions(monkeypatch):
             return None
 
         def json(self):
-            return [{"tag_name": "v10.0.0-beta7", "prerelease": True}, {"tag_name": "v10.0.0", "prerelease": False}]
+            return [
+                {"tag_name": "v10.0.0-beta6", "prerelease": True},
+                {"tag_name": "v10.0.0-beta7", "prerelease": True},
+            ]
 
     requests = []
     monkeypatch.setattr("src.autoupdater.__version__", "10.0.0+zhcn.beta.1")
@@ -60,6 +65,33 @@ def test_get_latest_release_uses_stable_endpoint_for_release_versions(monkeypatc
 def test_release_candidate_version_is_recognized_as_prerelease() -> None:
     assert D4LFUpdater._is_prerelease("v10.0.0+zhcn.beta.1")
     assert not D4LFUpdater._is_prerelease("v10.0.0+zhcn.1")
+
+
+@pytest.mark.parametrize(
+    ("candidate", "current"),
+    [
+        ("v10.0.0+zhcn.beta.2", "v10.0.0+zhcn.beta.1"),
+        ("v10.0.0+zhcn.rc.1", "v10.0.0+zhcn.beta.9"),
+        ("v10.0.0", "v10.0.0+zhcn.beta.1"),
+        ("v10.0.0+zhcn.2", "v10.0.0+zhcn.1"),
+        ("v11.0.0", "v10.0.0+zhcn.99"),
+    ],
+)
+def test_version_comparison_accepts_only_newer_releases(candidate, current) -> None:
+    assert D4LFUpdater.is_newer_version(candidate, current)
+
+
+@pytest.mark.parametrize(
+    ("candidate", "current"),
+    [
+        ("v10.0.0+zhcn.beta.1", "v10.0.0+zhcn.beta.2"),
+        ("v9.3.7", "v10.0.0+zhcn.beta.1"),
+        ("v10.0.0+zhcn.beta.1", "v10.0.0+zhcn.beta.1"),
+        ("not-a-version", "v10.0.0"),
+    ],
+)
+def test_version_comparison_rejects_downgrades_equal_and_invalid_tags(candidate, current) -> None:
+    assert not D4LFUpdater.is_newer_version(candidate, current)
 
 
 def test_extract_release_writes_version_and_files(tmp_path):

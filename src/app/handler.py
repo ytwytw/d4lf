@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 import src.perception
 from src import automation
+from src.app.startup import SETUP_INSTRUCTIONS_URL
 from src.automation import (
     WindowSpec,
     is_window_foreground,
@@ -38,7 +39,6 @@ from src.settings import (
 
 LOGGER = logging.getLogger(__name__)
 LOCK = threading.Lock()
-SETUP_INSTRUCTIONS_URL = "https://github.com/d4lfteam/d4lf/blob/main/README.md#how-to-setup"
 
 
 class ScriptHandler:

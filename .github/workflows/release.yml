@@ -35,7 +35,7 @@ jobs:
         shell: powershell
         run: |
           $version = "${{ steps.build_zip.outputs.version }}"
-          if ($version -like "*beta*" -or $version -like "*alpha*") {
+          if ($version -like "*beta*" -or $version -like "*alpha*" -or $version -like "*rc*") {
             echo "IS_BETA=true" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
           } else {
             echo "IS_BETA=false" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8

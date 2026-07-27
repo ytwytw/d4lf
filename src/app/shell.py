@@ -23,6 +23,7 @@ from src.app.backend import BackendWorker, get_perception_module
 from src.app.dashboard import ActivityLogWidget
 from src.app.lifecycle import UnifiedWindowLifecycle
 from src.app.localization import UnifiedWindowLocalization
+from src.app.startup import REPOSITORY_URL
 from src.desktop.activity import ANSIConsoleWidget, QtLogHandler
 from src.desktop.themes import DARK_THEME_TEMPLATE, LIGHT_THEME_TEMPLATE
 from src.desktop.widgets import set_accent_color
@@ -159,10 +160,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
         self.tts_indicator.setStyleSheet(style)
         layout.addWidget(self.vision_indicator)
         layout.addWidget(self.tts_indicator)
-        for icon, url in (
-            (DISCORD_ICON, "https://discord.gg/YyzaPhAN6T"),
-            (GITHUB_ICON, "https://github.com/d4lfteam/d4lf"),
-        ):
+        for icon, url in ((DISCORD_ICON, "https://discord.gg/YyzaPhAN6T"), (GITHUB_ICON, REPOSITORY_URL)):
             button = QPushButton()
             self._setup_social_button(button, icon, url)
             layout.addWidget(button)

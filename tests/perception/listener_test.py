@@ -34,15 +34,34 @@ def test_item_trace_snapshot_is_isolated_from_global_state(monkeypatch) -> None:
     assert listener.LAST_ITEM_RAW == ["raw"]
 
 
-def test_listener_taps_raw_tts_before_framing(monkeypatch) -> None:
+def test_listener_recovers_after_one_tts_line_fails(monkeypatch, caplog) -> None:
     recorded = []
-    monkeypatch.setattr(listener, "Dataloader", lambda: SimpleNamespace(grammar=SimpleNamespace(locale="enUS")))
-    monkeypatch.setattr(listener, "TtsFramer", lambda *_args: object())
-    monkeypatch.setattr(listener._DATA_QUEUE, "get", lambda: "raw tts")
-    monkeypatch.setattr(listener, "record_raw_tts", recorded.append)
-    monkeypatch.setattr(listener, "fix_data", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("stop")))
+    published = []
+    queued = iter(["bad raw tts", "good raw tts"])
 
-    with pytest.raises(RuntimeError, match="stop"):
+    class Framer:
+        grammar = SimpleNamespace(locale="enUS")
+        last_raw_item = ["good raw tts"]
+
+        def feed(self, data, *, raw_data):
+            assert data == "good raw tts"
+            assert raw_data == "good raw tts"
+            return ["good raw tts"]
+
+    monkeypatch.setattr(listener, "Dataloader", lambda: SimpleNamespace(grammar=SimpleNamespace(locale="enUS")))
+    monkeypatch.setattr(listener, "TtsFramer", lambda *_args: Framer())
+    monkeypatch.setattr(listener._DATA_QUEUE, "get", lambda: next(queued))
+    monkeypatch.setattr(listener, "record_raw_tts", recorded.append)
+    monkeypatch.setattr(
+        listener,
+        "fix_data",
+        lambda data, **_kwargs: (_ for _ in ()).throw(RuntimeError("bad line")) if data.startswith("bad") else data,
+    )
+    monkeypatch.setattr(Publisher(), "publish_item", published.append)
+
+    with caplog.at_level(logging.ERROR, logger="src.perception.listener"), pytest.raises(StopIteration):
         Publisher().find_item()
 
-    assert recorded == ["raw tts"]
+    assert recorded == ["bad raw tts", "good raw tts"]
+    assert published == [["good raw tts"]]
+    assert "TTS line processing failed; continuing with the next line" in caplog.messages

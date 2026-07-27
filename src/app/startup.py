@@ -11,7 +11,8 @@ import psutil
 
 from src.settings import SettingsLoadError, VisionModeType, get_settings
 
-SETUP_INSTRUCTIONS_URL = "https://github.com/d4lfteam/d4lf/blob/main/README.md#how-to-setup"
+REPOSITORY_URL = "https://github.com/ytwytw/d4lf"
+SETUP_INSTRUCTIONS_URL = f"{REPOSITORY_URL}/blob/zhcn-v10/README.md#安装"
 LOGGER = logging.getLogger(__name__)
 
 if TYPE_CHECKING:

@@ -60,21 +60,24 @@ class Publisher:
         framer = TtsFramer(catalog.grammar, catalog)
         while True:
             raw_data = _DATA_QUEUE.get()
-            record_raw_tts(raw_data)
-            data = fix_data(raw_data, grammar=catalog.grammar)
-            if not data:
-                continue
-            if "gold" in data.lower() or "experience" in data.lower():
-                self.publish_info(data)
+            try:
+                record_raw_tts(raw_data)
+                data = fix_data(raw_data, grammar=catalog.grammar)
+                if not data:
+                    continue
+                if "gold" in data.lower() or "experience" in data.lower():
+                    self.publish_info(data)
 
-            if catalog.grammar.locale != framer.grammar.locale:
-                framer = TtsFramer(catalog.grammar, catalog)
-            if not filter_data(data) and (item_trace := framer.feed(data, raw_data=raw_data)) is not None:
-                global LAST_ITEM, LAST_ITEM_RAW
-                with _LAST_ITEM_LOCK:
-                    LAST_ITEM = item_trace
-                    LAST_ITEM_RAW = framer.last_raw_item.copy()
-                self.publish_item(LAST_ITEM)
+                if catalog.grammar.locale != framer.grammar.locale:
+                    framer = TtsFramer(catalog.grammar, catalog)
+                if not filter_data(data) and (item_trace := framer.feed(data, raw_data=raw_data)) is not None:
+                    global LAST_ITEM, LAST_ITEM_RAW
+                    with _LAST_ITEM_LOCK:
+                        LAST_ITEM = item_trace
+                        LAST_ITEM_RAW = framer.last_raw_item.copy()
+                    self.publish_item(LAST_ITEM)
+            except Exception:
+                LOGGER.exception("TTS line processing failed; continuing with the next line")
 
     def publish_item(self, data):
         LOGGER.debug("Raw TTS payload: %s", data)

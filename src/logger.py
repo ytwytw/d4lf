@@ -119,6 +119,7 @@ def setup(
 
     logger = logging.getLogger()
     threading.excepthook = _log_unhandled_exceptions
+    sys.excepthook = _log_unhandled_main_exception
     if buffer_startup:
         _enable_startup_buffer(logger)
 
@@ -196,3 +197,9 @@ def _log_unhandled_exceptions(args: threading.ExceptHookArgs) -> None:
         thread_name,
         exc_info=(args.exc_type, args.exc_value, args.exc_traceback),
     )
+
+
+def _log_unhandled_main_exception(exc_type: type[BaseException], exc_value: BaseException, exc_traceback) -> None:
+    if issubclass(exc_type, SystemExit):
+        return
+    LOGGER.critical("Unhandled exception on the main thread", exc_info=(exc_type, exc_value, exc_traceback))
