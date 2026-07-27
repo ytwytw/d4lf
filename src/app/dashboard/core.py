@@ -17,6 +17,7 @@ from src.app.dashboard.drag import ActivityProfileDragMixin, DragHandleButton
 from src.app.dashboard.profiles import ActivityProfileRowsMixin
 from src.desktop.activity import ANSIConsoleWidget
 from src.desktop.widgets import CheckmarkCheckBox
+from src.localization import translate
 from src.settings import IS_HOTKEY_KEY, get_settings
 
 __all__ = ["ActivityLogWidget", "DragHandleButton"]
@@ -42,18 +43,15 @@ class ActivityLogWidget(ActivityProfileRowsMixin, ActivityProfileDragMixin, Acti
         profile_section = QVBoxLayout()
         profile_section.setSpacing(10)
 
-        profile_hdr = QLabel("ACTIVE PROFILES")
-        profile_hdr.setStyleSheet("font-weight: bold; color: #888; letter-spacing: 1px;")
-        profile_section.addWidget(profile_hdr)
+        self.profile_hdr = QLabel(translate("dashboard.active_profiles"))
+        self.profile_hdr.setStyleSheet("font-weight: bold; color: #888; letter-spacing: 1px;")
+        profile_section.addWidget(self.profile_hdr)
 
         # Inline help text instead of a tooltip for better discovery and clarity
-        profile_help = QLabel(
-            "Toggle profiles to enable them. Drag <b>⠿</b> to set priority; "
-            "the top profile determines affix highlighting."
-        )
-        profile_help.setWordWrap(True)
-        profile_help.setObjectName("profile-help")
-        profile_section.addWidget(profile_help)
+        self.profile_help = QLabel(translate("dashboard.profile_help"))
+        self.profile_help.setWordWrap(True)
+        self.profile_help.setObjectName("profile-help")
+        profile_section.addWidget(self.profile_help)
 
         # Visual drop indicator for drag-and-drop
         self.drop_indicator = QFrame()
@@ -76,14 +74,14 @@ class ActivityLogWidget(ActivityProfileRowsMixin, ActivityProfileDragMixin, Acti
 
         # Search bar for profiles
         self.profile_search_input = QLineEdit()
-        self.profile_search_input.setPlaceholderText("🔍 Filter profiles...")
+        self.profile_search_input.setPlaceholderText(translate("dashboard.filter_profiles"))
         self.profile_search_input.textChanged.connect(self._filter_profiles)
 
         # Bulk selection buttons
         btn_layout = QHBoxLayout()
         btn_layout.setSpacing(10)
-        self.enable_all_btn = QPushButton("Enable All")
-        self.disable_all_btn = QPushButton("Disable All")
+        self.enable_all_btn = QPushButton(translate("dashboard.enable_all"))
+        self.disable_all_btn = QPushButton(translate("dashboard.disable_all"))
         self.enable_all_btn.clicked.connect(self._select_all)
         self.disable_all_btn.clicked.connect(self._deselect_all)
         btn_layout.addWidget(self.enable_all_btn)
@@ -97,9 +95,9 @@ class ActivityLogWidget(ActivityProfileRowsMixin, ActivityProfileDragMixin, Acti
 
         # -- RIGHT: HOTKEY GRID --
         hotkey_section = QVBoxLayout()
-        hotkey_hdr = QLabel("KEYBOARD SHORTCUTS")
-        hotkey_hdr.setStyleSheet("font-weight: bold; color: #888; letter-spacing: 1px;")
-        hotkey_section.addWidget(hotkey_hdr)
+        self.hotkey_hdr = QLabel(translate("dashboard.keyboard_shortcuts"))
+        self.hotkey_hdr.setStyleSheet("font-weight: bold; color: #888; letter-spacing: 1px;")
+        hotkey_section.addWidget(self.hotkey_hdr)
 
         self.hotkey_grid = QGridLayout()
         self.hotkey_grid.setSpacing(10)
@@ -132,18 +130,18 @@ class ActivityLogWidget(ActivityProfileRowsMixin, ActivityProfileDragMixin, Acti
         self.main_layout.addWidget(self.splitter, stretch=1)
 
         # Hidden button that appears when the log viewer is fully collapsed
-        self.show_log_btn = QPushButton("Show Activity Log")
+        self.show_log_btn = QPushButton(translate("dashboard.show_activity_log"))
         self.show_log_btn.setObjectName("secondary")
         self.show_log_btn.setVisible(False)
         self.main_layout.addWidget(self.show_log_btn)
 
         # === ACTION BAR ===
         action_layout = QHBoxLayout()
-        self.import_btn = QPushButton("Import Profile")
+        self.import_btn = QPushButton(translate("dashboard.import_profile"))
         self.import_btn.setObjectName("primary")
-        self.settings_btn = QPushButton("Settings")
+        self.settings_btn = QPushButton(translate("dashboard.settings"))
 
-        self.minimize_to_tray_cb = CheckmarkCheckBox("Minimize to Tray")
+        self.minimize_to_tray_cb = CheckmarkCheckBox(translate("dashboard.minimize_to_tray"))
         self.minimize_to_tray_cb.setObjectName("switch")
 
         for btn in [self.import_btn, self.settings_btn]:
@@ -183,7 +181,8 @@ class ActivityLogWidget(ActivityProfileRowsMixin, ActivityProfileDragMixin, Acti
             if meta.get(IS_HOTKEY_KEY) == "True":
                 val = getattr(opts, key)
                 prop_meta = properties.get(key, {})
-                label = prop_meta.get("title") or key.replace("_", " ").title()
+                default_label = prop_meta.get("title") or key.replace("_", " ").title()
+                label = translate(f"dashboard.hotkey.{key}", default_label)
                 hotkey_items.append((str(val), label))
 
         for i, (key_val, label) in enumerate(hotkey_items):
@@ -196,3 +195,17 @@ class ActivityLogWidget(ActivityProfileRowsMixin, ActivityProfileDragMixin, Acti
             item_layout.addWidget(QLabel(label))
             item_layout.addStretch()
             self.hotkey_grid.addLayout(item_layout, row, col)
+
+    def retranslate_ui(self) -> None:
+        self.profile_hdr.setText(translate("dashboard.active_profiles"))
+        self.profile_help.setText(translate("dashboard.profile_help"))
+        self.profile_search_input.setPlaceholderText(translate("dashboard.filter_profiles"))
+        self.enable_all_btn.setText(translate("dashboard.enable_all"))
+        self.disable_all_btn.setText(translate("dashboard.disable_all"))
+        self.hotkey_hdr.setText(translate("dashboard.keyboard_shortcuts"))
+        self.show_log_btn.setText(translate("dashboard.show_activity_log"))
+        self.import_btn.setText(translate("dashboard.import_profile"))
+        self.settings_btn.setText(translate("dashboard.settings"))
+        self.minimize_to_tray_cb.setText(translate("dashboard.minimize_to_tray"))
+        self._setup_hotkey_grid()
+        self.refresh_profiles()

@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
-from PyQt6.QtCore import QCoreApplication, QSignalBlocker
+from PyQt6.QtCore import QCoreApplication, QSignalBlocker, Qt
 from PyQt6.QtWidgets import (
     QGridLayout,
     QGroupBox,
@@ -19,7 +19,9 @@ from PyQt6.QtWidgets import (
 )
 
 from src.desktop.widgets import CheckmarkCheckBox
+from src.localization import translate
 from src.settings import GeneralModel, MoveItemsType
+from src.settings.localization import option_labels
 from src.settings.widgets import (
     IgnoreScrollWheelComboBox,
     MultiSegmentedControl,
@@ -88,7 +90,7 @@ class ConfigTabMixin:
                         continue
                     nav_item = self.nav_list.item(i)
                     page_widget = page_scroll.widget()
-                    if nav_item is None or page_widget is None or nav_item.text() != name:
+                    if nav_item is None or page_widget is None or nav_item.data(Qt.ItemDataRole.UserRole) != name:
                         continue
                     page_layout = page_widget.layout()
                     if page_layout is not None:
@@ -101,10 +103,10 @@ class ConfigTabMixin:
     def _prompt_restart_for_vision_mode_change(self) -> None:
         msg = QMessageBox(cast("QWidget", self))
         msg.setIcon(QMessageBox.Icon.Question)
-        msg.setWindowTitle("Restart required")
-        msg.setText("Vision mode changes require restarting d4lf. Restart now?")
-        restart_button = msg.addButton("Restart now", QMessageBox.ButtonRole.AcceptRole)
-        msg.addButton("Later", QMessageBox.ButtonRole.RejectRole)
+        msg.setWindowTitle(translate("settings.restart_required.title"))
+        msg.setText(translate("settings.restart_required.body"))
+        restart_button = msg.addButton(translate("settings.restart_required.now"), QMessageBox.ButtonRole.AcceptRole)
+        msg.addButton(translate("settings.restart_required.later"), QMessageBox.ButtonRole.RejectRole)
         msg.exec()
         if msg.clickedButton() is restart_button:
             self._restart_application()
@@ -119,8 +121,8 @@ class ConfigTabMixin:
         except OSError:
             msg = QMessageBox(cast("QWidget", self))
             msg.setIcon(QMessageBox.Icon.Critical)
-            msg.setWindowTitle("Restart failed")
-            msg.setText("d4lf could not be restarted automatically. Please restart it manually.")
+            msg.setWindowTitle(translate("settings.restart_failed.title"))
+            msg.setText(translate("settings.restart_failed.body"))
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
             return
@@ -140,14 +142,14 @@ class ConfigTabMixin:
         if not result.success:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Icon.Critical)
-            message = f"There was an error setting {key} to {value}. See error below.\n\n"
+            message = translate("settings.validation_error.body", key=key, value=value)
             # Only reset the widget if the field is NOT an enum
             if method_to_reset_value and key != "theme":
-                message = message + "Your value has been reset to its previous version.\n\n"
+                message += translate("settings.validation_error.reset")
                 method_to_reset_value(result.previous_value)
             message = message + str(result.validation_error)
             msg.setText(message)
-            msg.setWindowTitle("Error validating value")
+            msg.setWindowTitle(translate("settings.validation_error.title"))
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
             return False
@@ -191,9 +193,9 @@ class ConfigTabMixin:
             parameter_value_widget = SegmentedControl(["6", "7"], str(config_value), on_tabs_changed)
         elif config_key in {"move_to_inv_item_type", "move_to_stash_item_type"}:
             items_map = {
-                "Favorites": MoveItemsType.favorites,
-                "Junk": MoveItemsType.junk,
-                "Unmarked": MoveItemsType.unmarked,
+                translate("settings.option.MoveItemsType.favorites"): MoveItemsType.favorites,
+                translate("settings.option.MoveItemsType.junk"): MoveItemsType.junk,
+                translate("settings.option.MoveItemsType.unmarked"): MoveItemsType.unmarked,
             }
 
             def on_move_changed(val_str):
@@ -224,13 +226,16 @@ class ConfigTabMixin:
                     self.theme_changed_callback()
 
             if len(options) <= 3:
-                parameter_value_widget = SegmentedControl(options, config_value, on_changed)
+                parameter_value_widget = SegmentedControl(options, config_value, on_changed, option_labels(options))
             else:
-                parameter_value_widget = IgnoreScrollWheelComboBox()
-                with QSignalBlocker(parameter_value_widget):
-                    parameter_value_widget.addItems(options)
-                    parameter_value_widget.setCurrentText(config_value)
-                parameter_value_widget.currentTextChanged.connect(on_changed)
+                combo_box = IgnoreScrollWheelComboBox()
+                labels = option_labels(options)
+                with QSignalBlocker(combo_box):
+                    for option in options:
+                        combo_box.addItem(labels[str(option)], str(option))
+                    combo_box.setCurrentIndex(combo_box.findData(str(config_value)))
+                combo_box.currentIndexChanged.connect(lambda: on_changed(combo_box.currentData()))
+                parameter_value_widget = combo_box
         elif isinstance(config_value, bool):
             checkbox = CheckmarkCheckBox()
             checkbox.setObjectName("switch")

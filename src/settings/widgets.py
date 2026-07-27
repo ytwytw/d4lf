@@ -68,7 +68,7 @@ class MultiSegmentedControl(QWidget):
 
 
 class SegmentedControl(QWidget):
-    def __init__(self, items, current_value, callback):
+    def __init__(self, items, current_value, callback, labels: dict[str, str] | None = None):
         super().__init__()
         self.callback = callback
         self.setObjectName("segmented-container")
@@ -77,21 +77,23 @@ class SegmentedControl(QWidget):
         layout.setSpacing(2)
         self.group = QButtonGroup(self)
         self.buttons = {}
-        for text in items:
-            btn = QPushButton(str(text))
+        for item in items:
+            value = str(item)
+            btn = QPushButton(labels.get(value, value) if labels else value)
             btn.setObjectName("segment-btn")
+            btn.setProperty("setting-value", value)
             btn.setCheckable(True)
             btn.setFlat(True)
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-            if text == current_value:
+            if item == current_value or value == str(current_value):
                 btn.setChecked(True)
             self.group.addButton(btn)
             layout.addWidget(btn)
-            self.buttons[str(text)] = btn
+            self.buttons[value] = btn
         self.group.buttonClicked.connect(self._on_btn_clicked)
 
     def _on_btn_clicked(self, btn):
-        self.callback(btn.text())
+        self.callback(btn.property("setting-value"))
 
     def reset_values(self, value):
         val_str = str(value)
@@ -120,7 +122,11 @@ class IgnoreScrollWheelComboBox(QComboBox):
 
     def reset_values(self, value):
         with QSignalBlocker(self):
-            self.setCurrentText(str(value))
+            value_index = self.findData(str(value))
+            if value_index >= 0:
+                self.setCurrentIndex(value_index)
+            else:
+                self.setCurrentText(str(value))
 
 
 class QChestTabWidget(QWidget):
@@ -198,11 +204,13 @@ class QHotkeyWidget(QWidget):
 class HotkeyListenerDialog(QDialog):
     def __init__(self, parent=None, hotkey=""):
         super().__init__(parent)
-        self.setWindowTitle("Set Hotkey")
+        from src.localization import translate  # ruff:ignore[import-outside-top-level]
+
+        self.setWindowTitle(translate("settings.hotkey.title"))
         self.setModal(True)
         self.setFixedSize(320, 180)
         main_layout = QVBoxLayout(self)
-        self.label = QLabel("Press the key or combination of keys you\nwant to use as a hotkey, then click save.", self)
+        self.label = QLabel(translate("settings.hotkey.instructions"), self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.label)
         self.hotkey_label = QLabel(hotkey, self)
@@ -210,11 +218,11 @@ class HotkeyListenerDialog(QDialog):
         self.hotkey_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.hotkey_label)
         self.button_layout = QHBoxLayout()
-        self.save_button = QPushButton("Save", self)
+        self.save_button = QPushButton(translate("common.save"), self)
         self.save_button.setEnabled(False)
         self.save_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.save_button.clicked.connect(self.accept)
-        self.cancel_button = QPushButton("Cancel", self)
+        self.cancel_button = QPushButton(translate("common.cancel"), self)
         self.cancel_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.cancel_button.clicked.connect(self.reject)
         self.button_layout.addStretch()

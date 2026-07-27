@@ -9,6 +9,7 @@ from PyQt6.QtGui import QAction, QCloseEvent, QIcon
 from PyQt6.QtWidgets import QMainWindow, QMenu, QSystemTrayIcon, QTabWidget
 
 from src.app.assets import ICON_PATH
+from src.localization import translate
 
 
 class UnifiedWindowLifecycle(QMainWindow):
@@ -23,16 +24,16 @@ class UnifiedWindowLifecycle(QMainWindow):
         if ICON_PATH.exists():
             self.tray_icon.setIcon(QIcon(str(ICON_PATH)))
         tray_menu = QMenu()
-        restore_action = QAction("Restore", tray_menu)
-        tray_menu.addAction(restore_action)
-        restore_action.triggered.connect(self._restore_from_tray)
+        self.restore_action = QAction(translate("tray.restore"), tray_menu)
+        tray_menu.addAction(self.restore_action)
+        self.restore_action.triggered.connect(self._restore_from_tray)
         tray_menu.addSeparator()
-        exit_action = QAction("Exit", tray_menu)
-        tray_menu.addAction(exit_action)
-        exit_action.triggered.connect(self.close)
+        self.exit_action = QAction(translate("tray.exit"), tray_menu)
+        tray_menu.addAction(self.exit_action)
+        self.exit_action.triggered.connect(self.close)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.activated.connect(self._on_tray_icon_activated)
-        self.tray_icon.setToolTip("D4 Loot Filter")
+        self.tray_icon.setToolTip(translate("app.tray_title"))
         self.tray_icon.show()
 
     def _on_tray_icon_activated(self, reason):

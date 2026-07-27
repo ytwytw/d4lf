@@ -2,6 +2,8 @@
 
 from typing import Any
 
+from src.settings import LANGUAGE_SETTING_KEYS, has_any_changed
+
 
 class ActivityLogControlsMixin:
     def _select_all(self: Any):
@@ -47,6 +49,8 @@ class ActivityLogControlsMixin:
         """Refresh the hotkey grid if any relevant settings changed."""
         if any(k.startswith("advanced_options") for k in changed_keys):
             self._setup_hotkey_grid()
+        if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
+            self.retranslate_ui()
 
     def _on_splitter_moved(self: Any, pos: int, index: int):
         """Show the 'Show Logs' button if the log viewer height becomes zero."""

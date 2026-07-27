@@ -22,10 +22,12 @@ from src.app.assets import DISCORD_ICON, GITHUB_ICON, ICON_PATH
 from src.app.backend import BackendWorker, get_perception_module
 from src.app.dashboard import ActivityLogWidget
 from src.app.lifecycle import UnifiedWindowLifecycle
+from src.app.localization import UnifiedWindowLocalization
 from src.desktop.activity import ANSIConsoleWidget, QtLogHandler
 from src.desktop.themes import DARK_THEME_TEMPLATE, LIGHT_THEME_TEMPLATE
 from src.desktop.widgets import set_accent_color
 from src.importing import create_importer_window
+from src.localization import translate
 from src.logger import (
     apply_log_level,
     consume_startup_log_records,
@@ -51,7 +53,8 @@ LOGGER = logging.getLogger(__name__)
 perception_module = get_perception_module()
 
 
-class UnifiedMainWindow(UnifiedWindowLifecycle):
+class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
+    locale_changed_signal = pyqtSignal()
     profile_load_report_signal = pyqtSignal(object)
     settings_load_error_signal = pyqtSignal(object)
 
@@ -67,6 +70,7 @@ class UnifiedMainWindow(UnifiedWindowLifecycle):
         self._setup_logging()
         self._setup_ui()
         self._setup_tray()
+        self._setup_localization()
         self._init_backend()
         self.restore_geometry()
         self._status_timer = QTimer(self)
@@ -104,8 +108,8 @@ class UnifiedMainWindow(UnifiedWindowLifecycle):
         """Report a hot-reload failure without interrupting the game window."""
         if hasattr(self, "tray_icon"):
             self.tray_icon.showMessage(
-                "D4LF settings reload failed",
-                f"Could not reload {error.config_path.name}; see the Activity log ({error.log_path}).",
+                translate("app.settings_reload_failed.title"),
+                translate("app.settings_reload_failed.body", config=error.config_path.name, log_path=error.log_path),
                 QSystemTrayIcon.MessageIcon.Warning,
                 10000,
             )
@@ -122,14 +126,14 @@ class UnifiedMainWindow(UnifiedWindowLifecycle):
         )
 
     def _setup_ui(self):
-        self.setWindowTitle(f"D4LF - Diablo 4 Loot Filter v{__version__}")
+        self.setWindowTitle(translate("app.title", version=__version__))
         self.setMinimumSize(800, 600)
         self.tabs = QTabWidget()
         self.setCentralWidget(self.tabs)
         self.activity_tab = ActivityLogWidget(parent=self)
         self.console_output = ANSIConsoleWidget()
-        self.tabs.addTab(self.activity_tab, "Dashboard")
-        self.tabs.addTab(self.console_output, "Full Logs")
+        self.tabs.addTab(self.activity_tab, translate("tabs.dashboard"))
+        self.tabs.addTab(self.console_output, translate("tabs.full_logs"))
         self._setup_tab_corner_widgets()
         self.console_handler.log_signal.connect(self.console_output.append_ansi_text)
         self.console_handler.log_signal.connect(self.activity_tab.log_viewer.append_ansi_text)
@@ -144,12 +148,12 @@ class UnifiedMainWindow(UnifiedWindowLifecycle):
         layout.setContentsMargins(0, 0, 15, 0)
         layout.setSpacing(15)
         if sys.platform == "win32":
-            self.vision_indicator = QLabel("Vision Mode: STOPPED")
-            self.tts_indicator = QLabel("TTS: Disconnected")
+            self.vision_indicator = QLabel(translate("status.vision.stopped"))
+            self.tts_indicator = QLabel(translate("status.tts.disconnected"))
             style = "color: #ff4d4d; font-weight: bold; font-size: 10pt;"
         else:
-            self.vision_indicator = QLabel("Vision Mode: Disabled (GUI-only)")
-            self.tts_indicator = QLabel("TTS: Disabled (GUI-only)")
+            self.vision_indicator = QLabel(translate("status.vision.disabled"))
+            self.tts_indicator = QLabel(translate("status.tts.disabled"))
             style = "color: #b0b0b0; font-weight: bold; font-size: 10pt;"
         self.vision_indicator.setStyleSheet(style)
         self.tts_indicator.setStyleSheet(style)
@@ -190,20 +194,20 @@ class UnifiedMainWindow(UnifiedWindowLifecycle):
 
     def update_vision_status(self, is_running: bool | None):
         if is_running is None:
-            self.vision_indicator.setText("Vision Mode: Disabled (GUI-only)")
+            self.vision_indicator.setText(translate("status.vision.disabled"))
             self.vision_indicator.setStyleSheet("color: #b0b0b0; font-weight: bold; font-size: 10pt;")
             return
-        self.vision_indicator.setText(f"Vision Mode: {'RUNNING' if is_running else 'STOPPED'}")
+        self.vision_indicator.setText(translate("status.vision.running" if is_running else "status.vision.stopped"))
         self.vision_indicator.setStyleSheet(
             f"color: {'#23fc5d' if is_running else '#ff4d4d'}; font-weight: bold; font-size: 10pt;"
         )
 
     def update_tts_status(self, connected: bool | None):
         if connected is None:
-            self.tts_indicator.setText("TTS: Disabled (GUI-only)")
+            self.tts_indicator.setText(translate("status.tts.disabled"))
             self.tts_indicator.setStyleSheet("color: #b0b0b0; font-weight: bold; font-size: 10pt;")
             return
-        self.tts_indicator.setText(f"TTS: {'Connected' if connected else 'Disconnected'}")
+        self.tts_indicator.setText(translate("status.tts.connected" if connected else "status.tts.disconnected"))
         self.tts_indicator.setStyleSheet(
             f"color: {'#23fc5d' if connected else '#ff4d4d'}; font-weight: bold; font-size: 10pt;"
         )
@@ -231,7 +235,7 @@ class UnifiedMainWindow(UnifiedWindowLifecycle):
     def _on_profile_load_report(self, report: ProfileLoadReport) -> None:
         if hasattr(self, "tray_icon"):
             self.tray_icon.showMessage(
-                "D4LF profile loading", report.message, QSystemTrayIcon.MessageIcon.Warning, 10000
+                translate("app.profile_loading"), report.message, QSystemTrayIcon.MessageIcon.Warning, 10000
             )
 
     def _show_singleton_modal(self, key: str, window_class, *args, **kwargs):
