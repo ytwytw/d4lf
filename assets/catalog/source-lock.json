@@ -1,0 +1,85 @@
+{
+    "schema_version": 1,
+    "sources": {
+        "d4data": {
+            "role": "canonical_english",
+            "expected_build": "3.1.1.72836",
+            "build_url": "https://raw.githubusercontent.com/DiabloTools/d4data/master/buildVersion.txt"
+        },
+        "diablo4_companion": {
+            "role": "supplemental_bilingual",
+            "raw_base": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/master",
+            "files": {
+                "D4Companion/Data/Affixes.enUS.json": {
+                    "sha256": "b824c7ecfac6e483960b49fc27298e4dee0aeceb2d85e08f4d18c5df162bee98"
+                },
+                "D4Companion/Data/Affixes.zhCN.json": {
+                    "sha256": "cb04139c0f3aaefb2edcacb9103a695cef6d2d8bf544a9b5c68eb583d59fa1b1"
+                },
+                "D4Companion/Data/Aspects.enUS.json": {
+                    "sha256": "9da5b8e8846c84630cbcb16c2351a2ba5e142c2d18e55d06879cb0a6af1cea17"
+                },
+                "D4Companion/Data/Aspects.zhCN.json": {
+                    "sha256": "f271a729f5e5aaa794149ac97d92a83eb36b481e7106df2d372d66651964ef6d"
+                },
+                "D4Companion/Data/ItemTypes.enUS.json": {
+                    "sha256": "df3a042c7764eb433751bb20f18d4fb6b3057c2db9d507b1dc7c62a5759eb6f6"
+                },
+                "D4Companion/Data/ItemTypes.zhCN.json": {
+                    "sha256": "aa21f3358105d6e0004018b469c6f74108e30292e76298061f2f51d3d7bee861"
+                },
+                "D4Companion/Data/Sigils.enUS.json": {
+                    "sha256": "082be4cb1555f4364603f66aee0130f6683a5bfd250153ca953f61e1fc64e76f"
+                },
+                "D4Companion/Data/Sigils.zhCN.json": {
+                    "sha256": "947037542dcf8ca8015e75c15c69399c9d2aa7dfe8c772ca74666f32c0027abb"
+                },
+                "D4Companion/Data/Uniques.enUS.json": {
+                    "sha256": "e482c1d0d83fc30b261eab5e9a04559e7a00b569574a38229acc6eaff8939700"
+                },
+                "D4Companion/Data/Uniques.zhCN.json": {
+                    "sha256": "fd6baad5f1284aad45d60f06199a6df517446192a50f0f8a918b48ac51f65087"
+                }
+            }
+        },
+        "d2core": {
+            "role": "supplemental_licensed",
+            "expected_build": "72698",
+            "site_url": "https://www.d2core.com/",
+            "files": {
+                "affix_enUS.json": {
+                    "sha256": "af24b506e18445d6a3415832024ed9f0a6116beb81a26784c7e9ce86d0e06b09",
+                    "url": "https://cloudstorage.d2core.com/data/d4/72698/affix_enUS.json?env=prod&v=8"
+                },
+                "affix_zhCN.json": {
+                    "sha256": "a5d0b7a8818122d5c5e0e4450e267f0ad179dbb590c1fe9ff76c84fc71d93c60",
+                    "url": "https://cloudstorage.d2core.com/data/d4/72698/affix_zhCN.json?env=prod&v=8"
+                },
+                "aspect_enUS.json": {
+                    "sha256": "f6436abd879c10176bc63942088e430d680f4db5a3af65698331f7c273b24346",
+                    "url": "https://cloudstorage.d2core.com/data/d4/72698/aspect_enUS.json?env=prod&v=8"
+                },
+                "aspect_zhCN.json": {
+                    "sha256": "708d69b43f2c7f71ecd013229e03c89775e728ba4d9930d85c186321a16c82ba",
+                    "url": "https://cloudstorage.d2core.com/data/d4/72698/aspect_zhCN.json?env=prod&v=8"
+                },
+                "talisman_enUS.json": {
+                    "sha256": "dc9505f42c9837117bd3f7498fe14413a2bd9cad6e021c5553ac9e9051593f35",
+                    "url": "https://cloudstorage.d2core.com/data/d4/72698/talisman_enUS.json?env=prod&v=8"
+                },
+                "talisman_zhCN.json": {
+                    "sha256": "690f84c60daefb434a3485ad4416ac40533f8a5eab29eb286d427adf5fa301f0",
+                    "url": "https://cloudstorage.d2core.com/data/d4/72698/talisman_zhCN.json?env=prod&v=8"
+                },
+                "uniqueItem_enUS.json": {
+                    "sha256": "e863d411214fd0236ee00b1da6736a470c9ae9c46bfbbb7a587da013f2fc05dd",
+                    "url": "https://cloudstorage.d2core.com/data/d4/72698/uniqueItem_enUS.json?env=prod&v=8"
+                },
+                "uniqueItem_zhCN.json": {
+                    "sha256": "edbcb292cb137e31c9afc27d5a9ce45cf88574c9d44ee59348bd5c6743eee568",
+                    "url": "https://cloudstorage.d2core.com/data/d4/72698/uniqueItem_zhCN.json?env=prod&v=8"
+                }
+            }
+        }
+    }
+}

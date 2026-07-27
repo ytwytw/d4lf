@@ -1,4 +1,4 @@
-default_install_hook_types = ["pre-push"]
+default_install_hook_types = ["pre-commit", "pre-push"]
 default_language_version = { python = "python3.14" }
 minimum_prek_version = "0.4.8"
 
@@ -18,6 +18,26 @@ hooks = [
     entry = "uv run --frozen --all-extras --all-groups ty check .",
     language = "system",
     pass_filenames = false,
+    priority = 4294967295
+  },
+  {
+    id = "public-safety-index",
+    name = "public safety scan (staged index)",
+    entry = "uv run --frozen python -m src.tools.public_safety --index",
+    language = "system",
+    pass_filenames = false,
+    always_run = true,
+    stages = ["pre-commit"],
+    priority = 4294967295
+  },
+  {
+    id = "public-safety-head",
+    name = "public safety scan (HEAD)",
+    entry = "uv run --frozen python -m src.tools.public_safety --tree HEAD",
+    language = "system",
+    pass_filenames = false,
+    always_run = true,
+    stages = ["pre-push"],
     priority = 4294967295
   }
 ]
