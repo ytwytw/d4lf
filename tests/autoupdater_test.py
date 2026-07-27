@@ -18,13 +18,13 @@ def test_get_latest_release_includes_prereleases_for_beta_versions(monkeypatch):
             return [{"tag_name": "v10.0.0-beta7", "prerelease": True}, {"tag_name": "v10.0.0", "prerelease": False}]
 
     requests = []
-    monkeypatch.setattr("src.autoupdater.__version__", "10.0.0-beta6")
+    monkeypatch.setattr("src.autoupdater.__version__", "10.0.0+zhcn.beta.1")
     monkeypatch.setattr("src.autoupdater.requests.get", lambda url, **_kwargs: requests.append(url) or Response())
 
     release = D4LFUpdater().get_latest_release()
 
     assert release["tag_name"] == "v10.0.0-beta7"
-    assert requests == ["https://api.github.com/repos/d4lfteam/d4lf/releases?per_page=100"]
+    assert requests == ["https://api.github.com/repos/ytwytw/d4lf/releases?per_page=100"]
 
 
 def test_get_latest_release_allows_beta_versions_to_update_to_final_release(monkeypatch):
@@ -54,7 +54,12 @@ def test_get_latest_release_uses_stable_endpoint_for_release_versions(monkeypatc
     monkeypatch.setattr("src.autoupdater.requests.get", lambda url, **_kwargs: requests.append(url) or Response())
 
     assert D4LFUpdater().get_latest_release()["tag_name"] == "v10.0.0"
-    assert requests == ["https://api.github.com/repos/d4lfteam/d4lf/releases/latest"]
+    assert requests == ["https://api.github.com/repos/ytwytw/d4lf/releases/latest"]
+
+
+def test_release_candidate_version_is_recognized_as_prerelease() -> None:
+    assert D4LFUpdater._is_prerelease("v10.0.0+zhcn.beta.1")
+    assert not D4LFUpdater._is_prerelease("v10.0.0+zhcn.1")
 
 
 def test_extract_release_writes_version_and_files(tmp_path):

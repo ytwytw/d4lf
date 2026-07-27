@@ -11,13 +11,15 @@ import src.logger
 from src import __version__
 
 LOGGER = logging.getLogger(__name__)
+RELEASE_REPO_OWNER = "ytwytw"
+RELEASE_REPO_NAME = "d4lf"
 
 
 # This autoupdater was almost entirely provided by iAmPilcrow
 class D4LFUpdater:
     def __init__(self):
-        self.repo_owner = "d4lfteam"
-        self.repo_name = "d4lf"
+        self.repo_owner = RELEASE_REPO_OWNER
+        self.repo_name = RELEASE_REPO_NAME
         self.api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases/latest"
         self.releases_api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases?per_page=100"
         self.changes_base_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/compare/"
@@ -38,11 +40,7 @@ class D4LFUpdater:
             LOGGER.info("Checking for latest release...")
         try:
             current_version = self.normalize_version(__version__)
-            api_url = (
-                self.releases_api_url
-                if any(marker in current_version.lower() for marker in ("-alpha", "-beta"))
-                else self.api_url
-            )
+            api_url = self.releases_api_url if self._is_prerelease(current_version) else self.api_url
             response = requests.get(api_url, timeout=10)
             response.raise_for_status()
             release_data = response.json()
@@ -50,6 +48,11 @@ class D4LFUpdater:
         except requests.exceptions.RequestException as e:
             LOGGER.error(f"Error fetching release info: {e}")
             return None
+
+    @staticmethod
+    def _is_prerelease(version: str) -> bool:
+        normalized = version.casefold()
+        return any(marker in normalized for marker in ("alpha", "beta", "rc"))
 
     def print_changes_between_releases(self, current_version, latest_version):
         try:
