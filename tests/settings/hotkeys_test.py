@@ -185,3 +185,13 @@ class TestGlobalHotkeyRegistry:
 
         assert self.registry._pressed_keys == set()
         assert self.registry._active_hotkeys == set()
+
+
+def test_outgoing_hotkey_is_blocked_during_manual_capture(monkeypatch) -> None:
+    calls = []
+    monkeypatch.setattr(hotkeys, "allow_game_input", lambda _action: False)
+    monkeypatch.setattr(hotkeys._CONTROLLER, "press", calls.append)
+
+    hotkeys.press("i")
+
+    assert calls == []

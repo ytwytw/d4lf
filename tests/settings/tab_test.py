@@ -3,6 +3,9 @@ from typing import TYPE_CHECKING, cast
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+from PyQt6.QtCore import Qt
+
+from src.settings import SettingsCategory
 from src.settings.tab import ConfigTab
 
 if TYPE_CHECKING:
@@ -27,3 +30,25 @@ def test_language_control_displays_localized_labels_but_saves_canonical_value(qa
 
     assert str(isolated_ini_loader.general.language) == "enUS"
     tab.close()
+
+
+def test_diagnostics_page_is_hidden_until_explicitly_enabled(qapp, isolated_ini_loader) -> None:
+    hidden_tab = ConfigTab()
+    hidden_categories = {
+        item.data(Qt.ItemDataRole.UserRole)
+        for index in range(hidden_tab.nav_list.count())
+        if (item := hidden_tab.nav_list.item(index)) is not None
+    }
+    hidden_tab.close()
+
+    isolated_ini_loader.save_value("advanced_options", "show_diagnostics_page", True)
+    visible_tab = ConfigTab()
+    visible_categories = {
+        item.data(Qt.ItemDataRole.UserRole)
+        for index in range(visible_tab.nav_list.count())
+        if (item := visible_tab.nav_list.item(index)) is not None
+    }
+
+    assert SettingsCategory.DIAGNOSTICS not in hidden_categories
+    assert SettingsCategory.DIAGNOSTICS in visible_categories
+    visible_tab.close()

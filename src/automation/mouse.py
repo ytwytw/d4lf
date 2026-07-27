@@ -8,6 +8,8 @@ import numpy as np
 import pytweening
 from pynput.mouse import Button, Controller
 
+from src.diagnostics.safety import allow_game_input
+
 _MOUSE = Controller()
 
 _BUTTONS: dict[str, Button] = {"left": Button.left, "right": Button.right, "middle": Button.middle}
@@ -241,6 +243,8 @@ class Mouse:
         randomize: int | tuple[int, int] = 5,
         delay_factor: tuple[float, float] = (0.2, 0.3),
     ):
+        if not allow_game_input("mouse movement"):
+            return
         from_point = Mouse.get_position()
         if not absolute:
             x = from_point[0] + x
@@ -283,6 +287,8 @@ class Mouse:
 
     @staticmethod
     def click(button):
+        if not allow_game_input(f"{button} mouse click"):
+            return
         if button != "left" or Mouse._is_clicking_safe():
             _MOUSE.click(_BUTTONS[button])
 

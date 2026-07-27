@@ -28,6 +28,7 @@ class SettingsCategory(enum.StrEnum):
     SYSTEM = "⚙️ System & Paths"
     HOTKEYS = "⌨️ Hotkeys"
     ADVANCED = "🛠️ Advanced"
+    DIAGNOSTICS = "Diagnostics"
 
 
 CATEGORY_ORDER = [
@@ -39,6 +40,7 @@ CATEGORY_ORDER = [
     SettingsCategory.SYSTEM,
     SettingsCategory.HOTKEYS,
     SettingsCategory.ADVANCED,
+    SettingsCategory.DIAGNOSTICS,
 ]
 
 
@@ -108,6 +110,15 @@ class _IniBaseModel(BaseModel):
 
 
 class AdvancedOptionsModel(_IniBaseModel):
+    automatic_failure_capture: bool = Field(
+        default=False,
+        description=(
+            "When item parsing fails, save a local screenshot and replayable TTS text under "
+            "~/.d4lf/captures/automatic. Nothing is uploaded and microphone audio is never recorded."
+        ),
+        title="Automatic Failure Capture",
+        json_schema_extra={CATEGORY_KEY: SettingsCategory.ADVANCED},
+    )
     disable_tts_warning: bool = Field(
         default=False,
         description="If TTS is working for you but you are still receiving the warning, check this box to disable it.",
@@ -185,6 +196,12 @@ class AdvancedOptionsModel(_IniBaseModel):
     )
     run_vision_mode: str = Field(
         default="f9", description="Hotkey to enable/disable the vision mode", json_schema_extra={IS_HOTKEY_KEY: "True"}
+    )
+    show_diagnostics_page: bool = Field(
+        default=False,
+        description="Show the manual raw-TTS capture page in Settings. This does not enable automatic capture.",
+        title="Show Diagnostics Page",
+        json_schema_extra={LIVE_RELOAD_GROUP_KEY: "diagnostics", CATEGORY_KEY: SettingsCategory.ADVANCED},
     )
     toggle_paragon_overlay: str = Field(
         default="f10", description="Hotkey to open/close the Paragon overlay", json_schema_extra={IS_HOTKEY_KEY: "True"}

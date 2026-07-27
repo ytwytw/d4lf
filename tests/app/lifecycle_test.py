@@ -9,6 +9,7 @@ import pytest
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
+from src.app import lifecycle as lifecycle_module
 from src.app.lifecycle import UnifiedWindowLifecycle
 from src.app.shell import UnifiedMainWindow
 from src.desktop.activity import QtLogHandler
@@ -51,3 +52,18 @@ def test_close_event_preserves_existing_handler_registration(qapp: QApplication,
         assert not handler_list.was_cleared
     finally:
         root_logger.removeHandler(handler)
+
+
+def test_close_event_finalizes_an_active_manual_capture(qapp: QApplication, monkeypatch) -> None:
+    stopped = []
+    capture = type("Capture", (), {"is_active": True, "stop": lambda _self: stopped.append(True)})()
+    monkeypatch.setattr(lifecycle_module, "APP_TTS_CAPTURE", capture)
+    monkeypatch.setattr(UnifiedMainWindow, "__init__", QMainWindow.__init__)
+    monkeypatch.setattr(UnifiedMainWindow, "save_geometry", lambda _self: None)
+    window = UnifiedMainWindow()
+    window._child_windows = {}
+    window.console_handler = logging.NullHandler()
+
+    window.closeEvent(QCloseEvent())
+
+    assert stopped == [True]

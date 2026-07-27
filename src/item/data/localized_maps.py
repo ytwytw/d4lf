@@ -1,8 +1,10 @@
 """Loading helpers for canonical-keyed localized string maps."""
 
 import json
-import pathlib
-from typing import TypeGuard
+from typing import TYPE_CHECKING, TypeGuard
+
+if TYPE_CHECKING:
+    import pathlib
 
 
 def _is_string_map(value: object) -> TypeGuard[dict[str, str]]:

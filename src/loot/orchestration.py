@@ -5,7 +5,7 @@ import time
 
 from src.automation import character_inventory, move_pointer, stash_inventory
 from src.loot.filter import check_items
-from src.perception import abs_window_to_monitor, capture, screenshot
+from src.perception import abs_window_to_monitor
 from src.settings import ItemRefreshType, get_settings
 
 LOGGER = logging.getLogger(__name__)
@@ -27,7 +27,6 @@ def run_loot_filter(force_refresh: ItemRefreshType = ItemRefreshType.no_refresh,
         check_items(inv, force_refresh, stash_is_open=True, no_match_action="junk")
     else:
         if not inv.open():
-            screenshot("inventory_not_open", img=capture())
             LOGGER.error("Inventory did not open up")
             return
         check_items(inv, force_refresh, no_match_action=no_match_action)

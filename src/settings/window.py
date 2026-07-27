@@ -8,7 +8,7 @@ from PyQt6.QtGui import QCloseEvent, QIcon
 from PyQt6.QtWidgets import QMainWindow
 
 from src.localization import translate
-from src.settings import LANGUAGE_SETTING_KEYS, get_settings, has_any_changed
+from src.settings import DIAGNOSTICS_SETTING_KEYS, LANGUAGE_SETTING_KEYS, get_settings, has_any_changed
 from src.settings.tab import ConfigTab
 
 BASE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[2]
@@ -64,7 +64,7 @@ class ConfigWindow(QMainWindow):
         old_tab.deleteLater()
 
     def _queue_config_change(self, changed_keys) -> None:
-        if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
+        if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS | DIAGNOSTICS_SETTING_KEYS):
             self.language_changed_signal.emit()
 
     def _on_language_changed(self) -> None:

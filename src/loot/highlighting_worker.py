@@ -10,6 +10,7 @@ import numpy as np
 
 import src.perception
 from src.automation import pointer_position
+from src.diagnostics import capture_latest_failure
 from src.item import ASPECT_UPGRADES_LABEL, Filter, SeasonalAttribute, is_sigil
 from src.localization import translate
 from src.loot.colors import get_filter_colors, is_ignored_item
@@ -22,7 +23,6 @@ from src.perception import (
     get_separator_match_in_crop,
     locate_affix_markers,
     monitor_to_window,
-    screenshot,
 )
 
 if TYPE_CHECKING:
@@ -43,8 +43,8 @@ class HighlightingWorker:
         try:
             item_descr = src.perception.read_latest_item()
             LOGGER.debug(f"Parsed item based on TTS: {item_descr}")
-        except Exception:
-            screenshot("tts_error", img=img)
+        except Exception as error:
+            capture_latest_failure(reason="highlight-overlay-item-parse", image=img, error=error)
             LOGGER.exception(f"Error in TTS read_descr. {src.perception.latest_item_lines()=}")
 
         if item_descr is None:

@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING
 
 import src.perception
 from src import automation
+from src.diagnostics import capture_latest_failure
 from src.item import ASPECT_UPGRADES_LABEL, AffixType, Filter, ItemRarity, ItemType, is_sigil
 from src.loot.colors import drop_item_from_inventory, is_ignored_item, mark_as_favorite, mark_as_junk, reset_item_status
-from src.perception import capture, screenshot
+from src.perception import capture
 from src.settings import ItemRefreshType, UnfilteredUniquesType, get_settings
 
 if TYPE_CHECKING:
@@ -54,8 +55,8 @@ def check_items(
                 item_descr = src.perception.read_latest_item()
                 LOGGER.debug(f"Attempt {retry_count} to parse item based on TTS: {item_descr}")
                 retry_count += 1
-            except Exception:
-                screenshot("tts_error", img=img)
+            except Exception as error:
+                capture_latest_failure(reason="loot-filter-item-parse", image=img, error=error)
                 LOGGER.exception(f"Error in TTS read_descr. {src.perception.latest_item_lines()=}")
 
         if item_descr is None:

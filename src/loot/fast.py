@@ -8,12 +8,13 @@ from typing import Literal
 
 import src.perception
 from src.desktop import call_on_ui_thread, create_overlay_toplevel, get_root
+from src.diagnostics import capture_latest_failure
 from src.item import ASPECT_UPGRADES_LABEL, MYTHICS_ALWAYS_KEPT_LABEL, Filter, ItemRarity, MatchedFilter
 from src.localization import translate
 from src.loot.colors import get_filter_colors, is_ignored_item
 from src.loot.singleton import singleton
 from src.loot.text import affix_text, match_profile_text
-from src.perception import Publisher, capture, screenshot
+from src.perception import Publisher, capture
 from src.settings import get_settings, get_ui_coordinates
 
 LOGGER = logging.getLogger(__name__)
@@ -130,9 +131,9 @@ class VisionModeFast:
             try:
                 item_descr = src.perception.read_latest_item()
                 LOGGER.debug(f"Parsed item based on TTS: {item_descr}")
-            except Exception:
+            except Exception as error:
                 img = capture()
-                screenshot("tts_error", img=img)
+                capture_latest_failure(reason="fast-overlay-item-parse", image=img, error=error)
                 LOGGER.exception(f"Error in TTS read_descr. {src.perception.latest_item_lines()=}")
             if item_descr is None:
                 return None

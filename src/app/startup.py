@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 
 import psutil
 
-from src.logger import LOG_DIR
 from src.settings import SettingsLoadError, VisionModeType, get_settings
 
 SETUP_INSTRUCTIONS_URL = "https://github.com/d4lfteam/d4lf/blob/main/README.md#how-to-setup"
@@ -33,7 +32,7 @@ def show_settings_load_error(error: SettingsLoadError, parent: QWidget | None = 
 def prepare_runtime_directories() -> None:
     """Create the user-data and screenshot directories required at startup."""
     settings = get_settings()
-    for directory in (LOG_DIR / "screenshots", settings.user_dir, settings.user_dir / "profiles"):
+    for directory in (settings.user_dir, settings.user_dir / "profiles"):
         Path(directory).mkdir(exist_ok=True, parents=True)
 
 

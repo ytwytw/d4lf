@@ -9,6 +9,7 @@ from PyQt6.QtGui import QAction, QCloseEvent, QIcon
 from PyQt6.QtWidgets import QMainWindow, QMenu, QSystemTrayIcon, QTabWidget
 
 from src.app.assets import ICON_PATH
+from src.diagnostics.tts_capture import APP_TTS_CAPTURE
 from src.localization import translate
 
 
@@ -82,6 +83,9 @@ class UnifiedWindowLifecycle(QMainWindow):
     @override
     def closeEvent(self, a0: QCloseEvent | None):
         event = a0
+        if APP_TTS_CAPTURE.is_active:
+            with suppress(Exception):
+                APP_TTS_CAPTURE.stop()
         for win in list(self._child_windows.values()):
             with suppress(Exception):
                 win.close()

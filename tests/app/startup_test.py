@@ -8,11 +8,10 @@ def test_runtime_directories_are_composed_from_settings(monkeypatch, tmp_path) -
         user_dir = tmp_path / "user"
 
     monkeypatch.setattr("src.app.startup.get_settings", lambda: Settings())
-    monkeypatch.setattr("src.app.startup.LOG_DIR", tmp_path / "logs")
 
     prepare_runtime_directories()
 
-    assert (tmp_path / "logs" / "screenshots").is_dir()
+    assert not (tmp_path / "logs" / "screenshots").exists()
     assert (tmp_path / "user" / "profiles").is_dir()
 
 

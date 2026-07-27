@@ -1,4 +1,5 @@
 from src.settings.reload_groups import (
+    DIAGNOSTICS_SETTING_KEYS,
     HOTKEY_SETTING_KEYS,
     LOG_LEVEL_SETTING_KEYS,
     VISION_MODE_TYPE_SETTING_KEY,
@@ -21,6 +22,10 @@ def test_vision_mode_type_setting_key():
 def test_hotkey_setting_keys_are_namespaced_under_advanced_options():
     assert HOTKEY_SETTING_KEYS
     assert all(key.startswith("advanced_options.") for key in HOTKEY_SETTING_KEYS)
+
+
+def test_diagnostics_page_setting_rebuilds_the_settings_window() -> None:
+    assert {"advanced_options.show_diagnostics_page"} == DIAGNOSTICS_SETTING_KEYS
 
 
 def test_has_any_changed_detects_overlap():

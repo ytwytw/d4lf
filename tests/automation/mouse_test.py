@@ -1,6 +1,7 @@
 import numpy as np
 
-from src.automation.mouse import BezierCurve, is_list_of_points, is_numeric
+from src.automation import mouse as mouse_module
+from src.automation.mouse import BezierCurve, Mouse, is_list_of_points, is_numeric
 
 
 def test_mouse_geometry_helpers_validate_points_and_endpoints():
@@ -14,3 +15,13 @@ def test_is_numeric_accepts_numpy_numbers_and_rejects_strings():
     assert is_numeric(np.int64(1))
     assert is_numeric(np.float64(1.0))
     assert not is_numeric("1")
+
+
+def test_mouse_click_is_blocked_during_manual_capture(monkeypatch) -> None:
+    calls = []
+    monkeypatch.setattr(mouse_module, "allow_game_input", lambda _action: False)
+    monkeypatch.setattr(mouse_module._MOUSE, "click", calls.append)
+
+    Mouse.click("left")
+
+    assert calls == []

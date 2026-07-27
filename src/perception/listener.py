@@ -8,6 +8,7 @@ if TYPE_CHECKING:
 
     from src.locale_data import LocaleGrammar
 
+from src.diagnostics import record_raw_tts
 from src.item import Dataloader
 from src.perception.backend.core import load_backend
 from src.perception.framing import TtsFramer
@@ -59,6 +60,7 @@ class Publisher:
         framer = TtsFramer(catalog.grammar, catalog)
         while True:
             raw_data = _DATA_QUEUE.get()
+            record_raw_tts(raw_data)
             data = fix_data(raw_data, grammar=catalog.grammar)
             if not data:
                 continue

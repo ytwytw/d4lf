@@ -32,6 +32,7 @@ from src.settings.models.core import (
 )
 from src.settings.models.ui import ColorsModel, UiOffsetsModel, UiPosModel, UiRoiModel
 from src.settings.reload_groups import (
+    DIAGNOSTICS_SETTING_KEYS,
     HOTKEY_SETTING_KEYS,
     LANGUAGE_SETTING_KEYS,
     LOG_LEVEL_SETTING_KEYS,
@@ -178,6 +179,7 @@ __all__ = [
     "BASE_DIR",
     "CATEGORY_KEY",
     "CATEGORY_ORDER",
+    "DIAGNOSTICS_SETTING_KEYS",
     "HIDE_FROM_GUI_KEY",
     "HOTKEY_SETTING_KEYS",
     "IS_HOTKEY_KEY",

@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 from pynput import keyboard
 
+from src.diagnostics.safety import allow_game_input
+
 if TYPE_CHECKING:
     from collections.abc import Callable, Hashable
 
@@ -102,14 +104,20 @@ def _to_pressable(token: str):
 
 
 def press(key: str) -> None:
+    if not allow_game_input(f"key press {key}"):
+        return
     _CONTROLLER.press(_to_pressable(key))
 
 
 def release(key: str) -> None:
+    if not allow_game_input(f"key release {key}"):
+        return
     _CONTROLLER.release(_to_pressable(key))
 
 
 def send(hotkey: str) -> None:
+    if not allow_game_input(f"hotkey {hotkey}"):
+        return
     keys = [_to_pressable(token) for token in _split_hotkey_tokens(hotkey)]
     for key in keys:
         _CONTROLLER.press(key)

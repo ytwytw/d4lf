@@ -123,6 +123,14 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
                 self._add_setting_row(grid, grid.rowCount(), model, section, key, val)
             layout.addWidget(gb)
             self._group_boxes[cat_name] = gb
+        advanced = self._settings_store.model_for_section("advanced_options")
+        if bool(getattr(advanced, "show_diagnostics_page", False)):
+            from src.diagnostics.widget import DiagnosticCaptureWidget  # ruff:ignore[import-outside-top-level]
+
+            page = self._create_page(SettingsCategory.DIAGNOSTICS)
+            page_layout = page.findChild(QVBoxLayout)
+            if page_layout is not None:
+                page_layout.addWidget(DiagnosticCaptureWidget(parent=page))
 
     def _create_page(self, name: SettingsCategory) -> QWidget:
         scroll = QScrollArea()

@@ -1,4 +1,7 @@
 import logging
+from types import SimpleNamespace
+
+import pytest
 
 from src.perception import listener
 from src.perception.listener import Publisher, filter_data, find_item_start, fix_data, get_item_trace_snapshot
@@ -29,3 +32,17 @@ def test_item_trace_snapshot_is_isolated_from_global_state(monkeypatch) -> None:
 
     assert listener.LAST_ITEM == ["clean"]
     assert listener.LAST_ITEM_RAW == ["raw"]
+
+
+def test_listener_taps_raw_tts_before_framing(monkeypatch) -> None:
+    recorded = []
+    monkeypatch.setattr(listener, "Dataloader", lambda: SimpleNamespace(grammar=SimpleNamespace(locale="enUS")))
+    monkeypatch.setattr(listener, "TtsFramer", lambda *_args: object())
+    monkeypatch.setattr(listener._DATA_QUEUE, "get", lambda: "raw tts")
+    monkeypatch.setattr(listener, "record_raw_tts", recorded.append)
+    monkeypatch.setattr(listener, "fix_data", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("stop")))
+
+    with pytest.raises(RuntimeError, match="stop"):
+        Publisher().find_item()
+
+    assert recorded == ["raw tts"]
