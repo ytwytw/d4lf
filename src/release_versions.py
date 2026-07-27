@@ -1,7 +1,10 @@
 """Ordering helpers for upstream and zhCN release tags."""
 
 import re
-from collections.abc import Iterable
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 _VERSION_RE = re.compile(r"^v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(?P<suffix>.*)$", re.IGNORECASE)
 _PRERELEASE_RE = re.compile(r"(alpha|beta|rc)[._-]?(\d+)?", re.IGNORECASE)
