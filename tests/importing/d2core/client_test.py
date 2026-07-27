@@ -15,9 +15,7 @@ def _service_response(build: object, *, status_code: int = 200) -> SimpleNamespa
 
 def test_query_public_build_uses_read_only_public_function(mocker) -> None:
     post = mocker.patch.object(
-        client_module.httpx,
-        "post",
-        return_value=_service_response({"title": "Firewall", "variants": []}),
+        client_module.httpx, "post", return_value=_service_response({"title": "Firewall", "variants": []})
     )
 
     result = client_module.query_public_build("20eK")

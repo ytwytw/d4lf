@@ -9,7 +9,7 @@ from src.tools.season_data_watch import network
     [
         "http://www.d2core.com/",
         "https://127.0.0.1/data",
-        "https://user@www.d2core.com/",
+        "https://user" + "@www.d2core.com/",
         "https://www.d2core.com:444/",
         "https://www.d2core.com/#fragment",
     ],

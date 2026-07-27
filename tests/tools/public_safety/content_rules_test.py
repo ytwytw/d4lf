@@ -31,6 +31,16 @@ def test_allows_noreply_placeholder_and_public_d2core_link() -> None:
     assert not content_findings("README.md", payload)
 
 
+def test_rejects_credentials_embedded_in_url() -> None:
+    password = "private-" + "value"
+    payload = ("https:" + f"//user:{password}" + "@example.invalid/data").encode()
+
+    findings = content_findings("config.txt", payload)
+
+    assert [finding.rule for finding in findings] == ["url-credentials"]
+    assert password not in findings[0].detail
+
+
 def test_detects_capture_manifest_outside_capture_directory() -> None:
     manifest = {
         "fingerprint": "a" * 64,

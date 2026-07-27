@@ -67,6 +67,11 @@ _RULES = (
         "remove the bearer token from Git and rotate it if it is real",
     ),
     _ContentRule(
+        "url-credentials",
+        re.compile(r"https?://[^/\s:@]+:[^/\s@]{4,}@", re.IGNORECASE),
+        "remove credentials embedded in the URL and rotate them if they are real",
+    ),
+    _ContentRule(
         "credential-assignment",
         re.compile(
             r"\b(?:api[_-]?key|client[_-]?secret|access[_-]?token|auth[_-]?token|password|passwd|private[_-]?key)"
