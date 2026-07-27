@@ -77,6 +77,7 @@ def test_select_source_uses_supported_hostname_and_rejects_unknown_urls() -> Non
     assert select_source("https://www.maxroll.gg/d4/planner/example").name == "maxroll"
     assert select_source("https://infinitybuilds.gg/en/builds/example").name == "infinitybuilds"
     assert select_source("https://mobalytics.gg/diablo-4/builds/example").name == "mobalytics"
+    assert select_source("https://www.d2core.com/d4/planner?bd=20eK").name == "d2core"
     try:
         select_source("https://example.invalid/build")
     except UnsupportedImportSourceError:

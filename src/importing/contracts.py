@@ -143,6 +143,7 @@ def assemble_profile_file_name(
 
 _SOURCE_TITLE_SUFFIXES = {
     "d4builds": ("D4Builds", "D4 Builds"),
+    "d2core": ("D2Core", "暗黑核"),
     "infinitybuilds": ("InfinityBuilds", "Infinity Builds"),
     "maxroll": ("Maxroll",),
     "mobalytics": ("Mobalytics",),

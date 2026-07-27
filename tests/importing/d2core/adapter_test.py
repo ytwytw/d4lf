@@ -1,6 +1,3 @@
-import typing
-from types import SimpleNamespace
-
 import pytest
 
 from src.importing import ImportOptions, ImportRequest, ImportResult, VariantSelection
@@ -8,39 +5,6 @@ from src.importing.d2core import adapter as adapter_module
 from src.importing.d2core.catalog import D2CoreCatalog
 from src.importing.pipeline import Variant
 from src.profiles import ProfileModel
-
-if typing.TYPE_CHECKING:
-    from selenium.webdriver.remote.webdriver import WebDriver
-
-
-class _ImmediateWait:
-    def __init__(self, driver, _timeout):
-        self.driver = driver
-
-    def until(self, method):
-        result = method(self.driver)
-        if not result:
-            message = "fake wait condition did not pass"
-            raise AssertionError(message)
-        return result
-
-
-class _QueryDriver:
-    def __init__(self, response):
-        self.response = response
-        self.loaded_url = ""
-        self.share_code = ""
-
-    def get(self, url):
-        self.loaded_url = url
-
-    def execute_script(self, _script):
-        return True
-
-    def execute_async_script(self, script, share_code):
-        assert "function-planner-queryplandetail" in script
-        self.share_code = share_code
-        return self.response
 
 
 @pytest.mark.parametrize(
@@ -97,6 +61,7 @@ def test_parse_build_uses_provider_id_hash_fallback_and_skips_empty_gear() -> No
         adapter_module._stable_gear_id({"2": {"itemType": "Helm"}}),
     ]
     assert [variant.name for variant in build.variants] == ["Endgame", "Speedfarm"]
+    assert [variant.position for variant in build.variants] == [0, 1]
 
 
 def test_parse_build_rejects_duplicate_variant_ids() -> None:
@@ -107,23 +72,6 @@ def test_parse_build_rejects_duplicate_variant_ids() -> None:
                 {"id": "same", "gear": {"2": {"itemType": "Helm"}}},
             ]
         })
-
-
-def test_query_public_build_reads_cloudbase_payload(mocker) -> None:
-    mocker.patch.object(adapter_module, "WebDriverWait", _ImmediateWait)
-    driver = _QueryDriver({
-        "ok": True,
-        "data": {
-            "title": "Firewall",
-            "char": "Sorcerer",
-            "variants": [{"id": "v1", "name": "Endgame", "gear": {"1": {"itemType": "Ring"}}}],
-        },
-    })
-
-    build = adapter_module._query_public_build(typing.cast("WebDriver", driver), "20eK")
-
-    assert build.variants[0].id == "v1"
-    assert driver.share_code == "20eK"
 
 
 def test_fetch_variants_returns_provider_ids_and_fallback_names(mocker) -> None:
@@ -139,10 +87,29 @@ def test_fetch_variants_returns_provider_ids_and_fallback_names(mocker) -> None:
     mocker.patch.object(adapter_module, "_load_build", return_value=build)
 
     variants = adapter_module.fetch_variants_d2core.__wrapped__(
-        ImportRequest("https://www.d2core.com/d4/planner?bd=20eK"), driver=SimpleNamespace()
+        ImportRequest("https://www.d2core.com/d4/planner?bd=20eK")
     )
 
     assert [(variant.id, variant.name) for variant in variants] == [("v1", "Endgame"), ("v2", "Variant 2")]
+
+
+def test_single_build_import_uses_one_based_url_variant_position() -> None:
+    variants = (
+        adapter_module._D2CoreVariant("v1", "First", ({"itemType": "Ring"},), position=0),
+        adapter_module._D2CoreVariant("v3", "Third", ({"itemType": "Helm"},), position=2),
+    )
+
+    request = ImportRequest("https://www.d2core.com/d4/planner?bd=20eK&var=3")
+
+    assert [variant.id for variant in adapter_module._selected_variants(request, variants)] == ["v3"]
+
+
+def test_single_build_import_does_not_silently_replace_empty_active_variant() -> None:
+    variants = (adapter_module._D2CoreVariant("v1", "First", ({"itemType": "Ring"},), position=0),)
+
+    request = ImportRequest("https://www.d2core.com/d4/planner?bd=20eK&var=2")
+
+    assert adapter_module._selected_variants(request, variants) == []
 
 
 def test_import_filters_selected_variant_loads_catalog_once_and_runs_pipeline(mocker) -> None:
@@ -173,10 +140,10 @@ def test_import_filters_selected_variant_loads_catalog_once_and_runs_pipeline(mo
         variant_selection=VariantSelection(("v2",)),
     )
 
-    result = adapter_module.import_d2core.__wrapped__(request, driver=SimpleNamespace())
+    result = adapter_module.import_d2core.__wrapped__(request)
 
     assert result is expected
-    load_catalog.assert_called_once()
+    load_catalog.assert_called_once_with()
     extract_variant.assert_called_once_with(({"itemType": "Helm"},), catalog, request.options, name="Speedfarm")
     extracted_build = run_result.call_args.kwargs["adapter"].build
     assert extracted_build.source_name == "d2core"
@@ -189,6 +156,4 @@ def test_import_rejects_selection_without_equipment(mocker) -> None:
     mocker.patch.object(adapter_module, "_load_build", return_value=build)
 
     with pytest.raises(adapter_module.D2CoreImportError, match="No equipment"):
-        adapter_module.import_d2core.__wrapped__(
-            ImportRequest("https://www.d2core.com/d4/planner?bd=20eK"), driver=SimpleNamespace()
-        )
+        adapter_module.import_d2core.__wrapped__(ImportRequest("https://www.d2core.com/d4/planner?bd=20eK"))

@@ -96,6 +96,25 @@ def test_load_catalog_uses_en_us_once_per_dataset_and_drops_ambiguous_keys(mocke
     assert all("_enUS.json" in call.args[0] for call in get_with_retry.call_args_list)
 
 
+def test_load_catalog_without_browser_discovers_current_build(mocker) -> None:
+    mocker.patch.object(catalog_module, "discover_catalog_build", return_value="72698")
+    payloads = {
+        "affix": {"affix": [{"key": "Armor", "id": 1, "descTpl": "+[{VALUE}] Armor"}]},
+        "aspect": [{"key": "AspectKey", "id": 2, "name": "Aspect of the Untarnished Blaze"}],
+        "uniqueItem": [{"key": "UniqueKey", "id": 3, "name": "Drognan's Anguish"}],
+    }
+
+    def fake_get(url):
+        dataset = next(name for name in payloads if f"/{name}_enUS.json" in url)
+        return _response(payloads[dataset])
+
+    mocker.patch.object(catalog_module, "get_with_retry", side_effect=fake_get)
+
+    catalog = catalog_module.load_d2core_catalog()
+
+    assert catalog.build_version == "72698"
+
+
 def test_catalog_validation_rejects_duplicate_json_keys() -> None:
     payload = b'{"affix":[{"key":"Armor","key":"Life","id":1,"descTpl":"Armor"}]}'
 

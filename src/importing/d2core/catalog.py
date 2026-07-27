@@ -125,11 +125,13 @@ def dataset_url(build_version: str, dataset: str) -> str:
     return f"{STATIC_DATA_ROOT}/{build_version}/{dataset}_{CATALOG_LOCALE}.json"
 
 
-def load_d2core_catalog(driver: WebDriver) -> D2CoreCatalog:
-    resource_urls = WebDriverWait(driver, PAGE_TIMEOUT).until(
-        lambda current: current.execute_script(RESOURCE_URLS_SCRIPT) or False
-    )
-    versions = catalog_build_versions(resource_urls if isinstance(resource_urls, list) else [])
+def load_d2core_catalog(driver: WebDriver | None = None) -> D2CoreCatalog:
+    versions: set[str] = set()
+    if driver is not None:
+        resource_urls = WebDriverWait(driver, PAGE_TIMEOUT).until(
+            lambda current: current.execute_script(RESOURCE_URLS_SCRIPT) or False
+        )
+        versions = catalog_build_versions(resource_urls if isinstance(resource_urls, list) else [])
     if len(versions) > 1:
         message = f"D2Core loaded conflicting catalog builds: {sorted(versions)}"
         raise D2CoreCatalogError(message)

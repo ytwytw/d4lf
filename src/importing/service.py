@@ -66,6 +66,10 @@ def select_source(url: str) -> ImportSource:
         )
 
         return _SelectedSource("mobalytics", import_mobalytics, fetch_variants_mobalytics)
+    if host in {"d2core.com", "www.d2core.com"}:
+        from src.importing.d2core import fetch_variants_d2core, import_d2core  # ruff:ignore[import-outside-top-level]
+
+        return _SelectedSource("d2core", import_d2core, fetch_variants_d2core)
     message = f"Unsupported build-guide URL: {url}"
     raise UnsupportedImportSourceError(message)
 

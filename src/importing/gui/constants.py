@@ -81,7 +81,8 @@ INSTRUCTIONS_TEXT = (
     "or\nhttps://maxroll.gg/d4/planner/cm6pf0xa#5\n"
     "or\nhttps://d4builds.gg/builds/ef414fbd-81cd-49d1-9c8d-4938b278e2ee\n"
     "or\nhttps://mobalytics.gg/diablo-4/builds/barbarian/bash\n"
-    "or\nhttps://infinitybuilds.gg/en/builds/barbarian-fL8P6vVSqI\n\n"
+    "or\nhttps://infinitybuilds.gg/en/builds/barbarian-fL8P6vVSqI\n"
+    "or\nhttps://www.d2core.com/d4/planner?bd=20eK\n\n"
     "It will create a file based on the label of the build in the planner in: "
     "{user_dir}\\profiles\n\n"
 )
@@ -98,6 +99,7 @@ IMPORTER_WINDOW_LOGGERS = (
     "src.importing.mobalytics",
     "src.importing.maxroll",
     "src.importing.d4builds",
+    "src.importing.d2core",
     "src.importing.infinitybuilds",
     "src.importing.gui.support",
     "src.importing.pipeline",
