@@ -93,3 +93,14 @@ def test_committed_lock_matches_locale_quality_builds() -> None:
     quality = json.loads((root / "assets/lang/zhCN/quality-report.json").read_text(encoding="utf-8"))
 
     assert quality["source_builds"] == {"d2core": lock.d2core_build, "d4data": lock.d4data_build}
+
+
+def test_committed_lock_tracks_season_15_source_revisions() -> None:
+    root = Path(__file__).parents[3]
+    path = root / "assets/catalog/source-lock.json"
+    document = json.loads(path.read_text(encoding="utf-8"))
+    sources = document["sources"]
+
+    assert sources["d4data"]["commit"] == "33e0bfbb5f717d3e560d14a7fb27d5a7f17fd2c0"
+    assert sources["diablo4_companion"]["commit"] == "a7efa39819ffec10f2dd1c06e874744d2605167f"
+    assert sources["d2core"]["official_zhcn_reference"] == "https://d4.blizzard.cn/news/24295394/"

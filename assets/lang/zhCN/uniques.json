@@ -39,6 +39,10 @@
         "display_name": "银月帷幕",
         "num_inherents": 0
     },
+    "ariocs_needle": {
+        "display_name": "艾里欧克之针",
+        "num_inherents": 0
+    },
     "arreats_bearing": {
         "display_name": "亚瑞特的承载",
         "num_inherents": 0
@@ -475,6 +479,10 @@
         "display_name": "地狱犬马靴",
         "num_inherents": 0
     },
+    "henris_perquisition": {
+        "display_name": "亨利的永恒追捕",
+        "num_inherents": 1
+    },
     "herald_of_zakarum": {
         "display_name": "萨卡兰姆的使者",
         "num_inherents": 3
@@ -505,6 +513,10 @@
     },
     "ifehs_dire_totem": {
         "display_name": "伊菲的恐狼图腾",
+        "num_inherents": 0
+    },
+    "in-geom": {
+        "display_name": "寅剑",
         "num_inherents": 0
     },
     "indiras_memory": {
@@ -645,6 +657,10 @@
     },
     "nails_of_the_gore-crowned": {
         "display_name": "血冠者利爪",
+        "num_inherents": 0
+    },
+    "nemesis_bracers": {
+        "display_name": "复仇者护腕",
         "num_inherents": 0
     },
     "nesekem_the_herald": {
@@ -935,6 +951,10 @@
         "display_name": "塔萨迈特的脊骨",
         "num_inherents": 0
     },
+    "squirts_blouse": {
+        "display_name": "斯奎特的罩衫",
+        "num_inherents": 0
+    },
     "staff_of_endless_rage": {
         "display_name": "无尽怒火法杖",
         "num_inherents": 0
@@ -949,6 +969,10 @@
     },
     "starfall_coronet": {
         "display_name": "星陨冠冕",
+        "num_inherents": 0
+    },
+    "stone_of_jordan": {
+        "display_name": "乔丹之石",
         "num_inherents": 0
     },
     "stone_of_vehemen": {
@@ -1017,6 +1041,10 @@
     },
     "the_fecund_seal": {
         "display_name": "丰饶符印",
+        "num_inherents": 0
+    },
+    "the_furnace": {
+        "display_name": "焚炉",
         "num_inherents": 0
     },
     "the_gloom_ward": {

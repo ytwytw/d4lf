@@ -1,53 +1,53 @@
 {
-    "build_version": "3.1.1.72836",
+    "build_version": "3.2.1.73552",
     "files": [
         {
             "path": "affixes.json",
-            "sha256": "5a0d609078c9ef2ed35f6241922ee8a07f65c79e17e1a150f4f0c27a42a06cd8"
+            "sha256": "b047f37f4cc16e8b28822ef44a5106aaa30a75b7b5caa8ffcff8c6b85fa19406"
         },
         {
             "path": "aspects.json",
-            "sha256": "09c1c4e0efd9f00ee17d9b8379163f94b33ce150dc4c11cc8a0700714622588a"
+            "sha256": "40c7c75c2fe6a3b5e500e7be2031cfce1a1ed87d363ad4ffcd07535155dae32f"
         },
         {
             "path": "charms_affixes.json",
-            "sha256": "01c54ec0fb9c15bfb1f72406069e7a4c6dd387f1b97061008e018df9ef3c1d48"
+            "sha256": "6482baf2fc8dfc0146f3eb681d61fd160c2e480d716a1fba04894193c52efc14"
         },
         {
             "path": "corrections.json",
-            "sha256": "c167aba50f686207bae049e1a9d825c83bcf44e660cd10fc15963dee7b05dbf1"
+            "sha256": "feab8dbb58050f692ae1394e050f48c939052a762347d133fe2051caa8144b71"
         },
         {
             "path": "grammar.json",
-            "sha256": "f09a76e93fd776f4b38e82da5f5c19635685d0ec4b47691ce1b1e1bebdb17ed2"
+            "sha256": "872dd4e61a98f97f85ba4f2f479c9cba6bd11d3f66e2cb6c750503dcf15e8a04"
         },
         {
             "path": "item_types.json",
-            "sha256": "ba7039ee70f0246b3b49e45fb303a83d59948b8d48f9a49ed9f50381b0824a65"
+            "sha256": "dd5e584112cd62e4099d410ccfa06cddbbcf9e6b1bee069056a579e1d5b4f702"
         },
         {
             "path": "seals_affixes.json",
-            "sha256": "f5fa128f0f7fdb8190ab4f2dba09d4e6671ac97d1bc253817d56da0a46e71817"
+            "sha256": "95fdc66c04346c72f98eec24dac2e9d37cc8f737123365072f186493558e22cc"
         },
         {
             "path": "sets.json",
-            "sha256": "ee0d91a95873ee5c823ee1f9600f25dfc72c8ae48cd3d3e063e034dd5a7af484"
+            "sha256": "199834c73550c741e74174509fd689ba7e4e553ac5b9f705bc7eeda742c6c8ce"
         },
         {
             "path": "sigils.json",
-            "sha256": "1697cd8b93b31b3b20564533294b2666ec11a9638f8690c1c22e3fd5bdb7df45"
+            "sha256": "1926d6364e419a8096599b9480efa748eaf0cf055746d3fbecb38c4b0ec1578c"
         },
         {
             "path": "tooltips.json",
-            "sha256": "109629d62706bb2dcb345d7ff109ec6b6991399f59a215b76b39c7e0a7b30718"
+            "sha256": "e71e8f716c04bfbfe8647ed24084dba05daec123cd06457ea4f44568ca5a93c0"
         },
         {
             "path": "tributes.json",
-            "sha256": "6a16f0e562b518dc0c9f5cbdf9388727f99efb4fab84979638e096dd1b422baa"
+            "sha256": "55ed89205369f719a20a62c4abfa058b4ae9f2ab2525656df3f475fad9e2c181"
         },
         {
             "path": "uniques.json",
-            "sha256": "427a5f7a2db0f0f013ff67606b28c222275cb6dac56f06526590d6f463a96c47"
+            "sha256": "b5ac8057ec3f701581906f3a65fa10e3c705100877b6e3d8371d17919a0ccfae"
         }
     ],
     "locale": "zhCN",
@@ -3103,6 +3103,17 @@
                 "provider": "diablo4_companion",
                 "source_id": "affixes:gem_strength_in_this_item",
                 "translation_sha256": "1f0827164d00a7a9c228827df0958e86634b109153f547d6d1d5802da03ece18"
+            }
+        },
+        {
+            "source_sha256": "e2d8d28cf5b9e2083cc186e83af654afb47be4085014003a226f548f1e035234",
+            "stable_id": "affixes:gold_drop_rate",
+            "text": "??????",
+            "translation_source": {
+                "provider": "d2core",
+                "source_id": "affix:Unique_GoldFind:2666102:x1",
+                "source_record_sha256": "38b506ddb38c2d7ab4e755b55ac291b0614753b8cf8466fa6850de2a77ef2089",
+                "translation_sha256": "2c0b4ee2a03c434e1856404d03d57b82c8ef500237be8ae118b1147a1051d5b6"
             }
         },
         {
@@ -24740,6 +24751,18 @@
             }
         },
         {
+            "source_sha256": "22470376e025aacbbb257dabed459558adbba9a45aef9fb5d739c426cb18845b",
+            "stable_id": "uniques:ariocs_needle",
+            "text": "??????",
+            "translation_source": {
+                "official_reference": "https://d4.blizzard.cn/news/24295394/",
+                "provider": "d2core",
+                "source_id": "uniqueItem:2HPolearm_Unique_Generic_002:2647160:x1",
+                "source_record_sha256": "4589d6a75770931a1c310bb95d67b6312be49a011173ece4c8eda4846459bdd6",
+                "translation_sha256": "2c0b4ee2a03c434e1856404d03d57b82c8ef500237be8ae118b1147a1051d5b6"
+            }
+        },
+        {
             "source_sha256": "1b2bee61e7c86fd39c451068b59d61ecdd72f69dcca4e9eb719afb4384724561",
             "stable_id": "uniques:arreats_bearing",
             "text": "亚瑞特的承载",
@@ -25833,6 +25856,18 @@
             }
         },
         {
+            "source_sha256": "efe24625fe44bda22aa87bb1c12dc930933db4c367dbba9d4f2946cf31ba954b",
+            "stable_id": "uniques:henris_perquisition",
+            "text": "???????",
+            "translation_source": {
+                "official_reference": "https://d4.blizzard.cn/news/24295394/",
+                "provider": "d2core",
+                "source_id": "uniqueItem:1HFocus_Unique_Generic_001:2647162:x1",
+                "source_record_sha256": "0f519b44fe7f0585400194faefbd92db83a8705d04116c799fa56c8cf21bae05",
+                "translation_sha256": "4ef566502f45a57067510b893d72ae5395889757df3c17cb5a8d916283d24dd2"
+            }
+        },
+        {
             "source_sha256": "9ffeaebea40e5ccb61e8397805bc5d82194ec5c527f60b58ce26f37baabaa6d3",
             "stable_id": "uniques:herald_of_zakarum",
             "text": "萨卡兰姆的使者",
@@ -25910,6 +25945,18 @@
                 "provider": "diablo4_companion",
                 "source_id": "uniques:ifehs_dire_totem",
                 "translation_sha256": "a00640e01f295468c0d1c9a0c5fd3d23a464723e074aac5c9115b0d5b52feed2"
+            }
+        },
+        {
+            "source_sha256": "96fb7d6e5901c8f58a81e34a1a898c4bdfc7fc20feaf8384ed1f3fad1752f12d",
+            "stable_id": "uniques:in-geom",
+            "text": "??",
+            "translation_source": {
+                "official_reference": "https://d4.blizzard.cn/news/24295394/",
+                "provider": "d2core",
+                "source_id": "uniqueItem:1HSword_Unique_Generic_103:2647158:x1",
+                "source_record_sha256": "a477946a160b67362105c376627e5a5a0cb1b0d04c5a014396df888e14549c88",
+                "translation_sha256": "e270aeb347f2165574c3a5c5bf11d038bcd3acd5abfdb5ae8a1b52d91cb842f0"
             }
         },
         {
@@ -26260,6 +26307,18 @@
                 "provider": "diablo4_companion",
                 "source_id": "uniques:nails_of_the_gore-crowned",
                 "translation_sha256": "b099e1fcdc642b8d27a3c08fe2f330e87149959afa8f5b8343c0686eb4bd1e4e"
+            }
+        },
+        {
+            "source_sha256": "11b365c2207da861dd6dce8c8d301d3028cfd254bfaf98ea7598e520b3ced4a4",
+            "stable_id": "uniques:nemesis_bracers",
+            "text": "?????",
+            "translation_source": {
+                "official_reference": "https://d4.blizzard.cn/news/24295394/",
+                "provider": "d2core",
+                "source_id": "uniqueItem:Gloves_Unique_Generic_006:2647154:x1",
+                "source_record_sha256": "277509414ba87c6314d893d9abb098b80fec2478dd640bd6d5da93360049a3a6",
+                "translation_sha256": "e348d8d0564992652cc3e8e5ae7dbcbed9ecdea4db96c573d8b2087643ee2569"
             }
         },
         {
@@ -26985,6 +27044,18 @@
             }
         },
         {
+            "source_sha256": "4830c01a5cbd501936761101d2b02825f0756525bb70a4795963e79889f0904c",
+            "stable_id": "uniques:squirts_blouse",
+            "text": "??????",
+            "translation_source": {
+                "official_reference": "https://d4.blizzard.cn/news/24295394/",
+                "provider": "d2core",
+                "source_id": "uniqueItem:Chest_Unique_Generic_104:2647150:x1",
+                "source_record_sha256": "389b46d6f986818d7caa9abdf2088125fadb75f630fabb710aa709eea35a2e8a",
+                "translation_sha256": "2c0b4ee2a03c434e1856404d03d57b82c8ef500237be8ae118b1147a1051d5b6"
+            }
+        },
+        {
             "source_sha256": "16a941095a3a25c3e7f099f24a557744d0d129915a03b744c786496acc89ddb6",
             "stable_id": "uniques:staff_of_endless_rage",
             "text": "无尽怒火法杖",
@@ -27022,6 +27093,18 @@
                 "provider": "diablo4_companion",
                 "source_id": "uniques:starfall_coronet",
                 "translation_sha256": "25817dbc9f3665924651f50784d0e8b4a598466559f46b9ddcb09ac861d0b419"
+            }
+        },
+        {
+            "source_sha256": "03a5ed600af1d03c740eae28b4c8c2520cfb73eb84a3e84247406533f0e95373",
+            "stable_id": "uniques:stone_of_jordan",
+            "text": "????",
+            "translation_source": {
+                "official_reference": "https://d4.blizzard.cn/news/24295394/",
+                "provider": "d2core",
+                "source_id": "uniqueItem:Ring_Unique_Generic_108:2647166:x1",
+                "source_record_sha256": "d60b899a2f47f01c35a9f43cf4a4decbe01a3f72134ec5e58230a7d6c4445d61",
+                "translation_sha256": "5d04c6a96439100ad3cb4672ef2fdc219dae8aaa655c9a3095c9e7ad25f4d96c"
             }
         },
         {
@@ -27193,6 +27276,18 @@
                 "provider": "diablo4_companion",
                 "source_id": "uniques:the_fecund_seal",
                 "translation_sha256": "5f3de5632c573d19a7f06732d7fa010ebf7959fe3c78a0a595797b9b9145cc95"
+            }
+        },
+        {
+            "source_sha256": "b9271c98a833e64890326ed4e50f7ce61c4d150de302a45a0abbe4767ac320c0",
+            "stable_id": "uniques:the_furnace",
+            "text": "??",
+            "translation_source": {
+                "official_reference": "https://d4.blizzard.cn/news/24295394/",
+                "provider": "d2core",
+                "source_id": "uniqueItem:2HMace_Unique_Generic_001:223465:x1",
+                "source_record_sha256": "a0a26586eedf1f937eea20d10fe928d9262f6c085c304e4823609c335fa6839e",
+                "translation_sha256": "e270aeb347f2165574c3a5c5bf11d038bcd3acd5abfdb5ae8a1b52d91cb842f0"
             }
         },
         {
@@ -27628,12 +27723,12 @@
         }
     ],
     "reviewed_overrides": {
-        "path": "reviewed_zhCN.json",
-        "sha256": "9151f5176d3d7306b4f89235b1bab43a5d6994179ba52a65fdfad42e42ff8870"
+        "path": "../../../src/tools/data/reviewed_zhCN.json",
+        "sha256": "13208be758752e187a25d1052f0e7fe14747da169ac388f29a0644b0558179c8"
     },
     "runtime_ready": true,
     "schema_version": 1,
-    "source_manifest_sha256": "f28d132ceeb979bb3414905071d360260c9fb7c2dba01051083b275ce04ac00c",
+    "source_lock_sha256": "149d5dee3252cf3c78b8c1758f4e2c507a541427f45388bab1fe8885e1a1fa45",
     "source_quality_ok": true,
     "translation_conflicts": 0
 }

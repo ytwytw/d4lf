@@ -1,5 +1,7 @@
+import hashlib
 import json
 import threading
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -56,6 +58,38 @@ def test_zhcn_catalog_loads_runtime_aliases(monkeypatch) -> None:
     assert catalog.resolve_item_type("胸甲") == "ChestArmor"
     assert catalog.item_type_from_text("胸甲") is ItemType.ChestArmor
     assert catalog.resolve_unique("命运之拳") == "fists_of_fate"
+
+
+def test_zhcn_catalog_contains_season_15_upstream_delta(monkeypatch) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+
+    assert catalog.resolve_affix("金币掉落几率") == "gold_drop_rate"
+    expected_uniques = {
+        "艾里欧克之针": "ariocs_needle",
+        "亨利的永恒追捕": "henris_perquisition",
+        "寅剑": "in-geom",
+        "复仇者护腕": "nemesis_bracers",
+        "斯奎特的罩衫": "squirts_blouse",
+        "乔丹之石": "stone_of_jordan",
+        "焚炉": "the_furnace",
+    }
+    assert {name: catalog.resolve_unique(name) for name in expected_uniques} == expected_uniques
+
+
+def test_zhcn_manifest_locks_runtime_files_and_review_sources() -> None:
+    root = Path(__file__).parents[2]
+    locale_dir = root / "assets/lang/zhCN"
+    manifest = json.loads((locale_dir / "manifest.json").read_text(encoding="utf-8"))
+
+    assert manifest["build_version"] == "3.2.1.73552"
+    for entry in manifest["files"]:
+        assert hashlib.sha256((locale_dir / entry["path"]).read_bytes()).hexdigest() == entry["sha256"]
+    assert (
+        hashlib.sha256((root / "assets/catalog/source-lock.json").read_bytes()).hexdigest()
+        == manifest["source_lock_sha256"]
+    )
+    reviewed_path = locale_dir / manifest["reviewed_overrides"]["path"]
+    assert hashlib.sha256(reviewed_path.resolve().read_bytes()).hexdigest() == manifest["reviewed_overrides"]["sha256"]
 
 
 def test_zhcn_catalog_uses_english_for_unresolved_text(monkeypatch) -> None:

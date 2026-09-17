@@ -1,5 +1,5 @@
 {
-    "build_version": "3.1.1.72836",
+    "build_version": "3.2.1.73552",
     "companion_quality": {
         "ascii_placeholders": [
             {
@@ -51,6 +51,30 @@
                     "kind": "aspect",
                     "locale": "zhCN",
                     "normalised_alias": "恶毒"
+                },
+                {
+                    "aliases": [
+                        "Melted Heart of Selig"
+                    ],
+                    "canonical_ids": [
+                        "unique:1222427",
+                        "unique:2646307"
+                    ],
+                    "kind": "unique",
+                    "locale": "enUS",
+                    "normalised_alias": "melted heart of selig"
+                },
+                {
+                    "aliases": [
+                        "塞利格的溶解之心"
+                    ],
+                    "canonical_ids": [
+                        "unique:1222427",
+                        "unique:2646307"
+                    ],
+                    "kind": "unique",
+                    "locale": "zhCN",
+                    "normalised_alias": "塞利格的溶解之心"
                 }
             ]
         },
@@ -68,22 +92,22 @@
         "schema_version": 1,
         "source_records": {
             "affix": {
-                "enUS": 893,
-                "zhCN": 905
+                "enUS": 905,
+                "zhCN": 917
             },
             "aspect": {
                 "enUS": 523,
                 "zhCN": 524
             },
             "unique": {
-                "enUS": 299,
-                "zhCN": 301
+                "enUS": 310,
+                "zhCN": 318
             }
         },
         "summary": {
             "ascii_placeholders": 3,
             "duplicate_identity_aliases": 0,
-            "duplicate_locale_aliases": 2,
+            "duplicate_locale_aliases": 4,
             "missing_locale_aliases": 0,
             "missing_locale_records": 1
         }
@@ -102,6 +126,23 @@
         ],
         "historical_reason": "No translation provider is authoritative by absence. D2Core may supplement missing translations, but records are never excluded merely because D2Core does not contain them.",
         "reason": "D4LF ignores these non-gear item types before profile filtering."
+    },
+    "season15_upstream_delta": {
+        "d4data_commit": "33e0bfbb5f717d3e560d14a7fb27d5a7f17fd2c0",
+        "d4lf_upstream_commit": "3ecfe3b904b67d5119830668867626ec678fc7ad",
+        "diablo4_companion_commit": "a7efa39819ffec10f2dd1c06e874744d2605167f",
+        "official_zhcn_reference": "https://d4.blizzard.cn/news/24295394/",
+        "resolved_records": [
+            "affixes:gold_drop_rate",
+            "uniques:ariocs_needle",
+            "uniques:henris_perquisition",
+            "uniques:in-geom",
+            "uniques:nemesis_bracers",
+            "uniques:squirts_blouse",
+            "uniques:stone_of_jordan",
+            "uniques:the_furnace"
+        ],
+        "unresolved_records": []
     },
     "selected_quality": {
         "alias_collisions": [],
@@ -158,22 +199,22 @@
         "ok": true
     },
     "source_builds": {
-        "d2core": "72698",
-        "d4data": "3.1.1.72836"
+        "d2core": "73552",
+        "d4data": "3.2.1.73552"
     },
     "summary": {
         "equipment_unresolved_records": 2,
         "excluded_historical_records": 0,
         "excluded_records": 5,
         "extension_unresolved_records": 16,
-        "resolved_records": 2724,
+        "resolved_records": 2732,
         "reviewed_overrides": 66,
-        "source_builds_match": false,
+        "source_builds_match": true,
         "source_quality_ok": true,
-        "source_records": 2742,
+        "source_records": 2750,
         "translation_conflicts": 0,
         "translation_sources": {
-            "d2core": 334,
+            "d2core": 342,
             "diablo4_companion": 2323,
             "locale_grammar": 1,
             "reviewed_override": 66
