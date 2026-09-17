@@ -1,3 +1,4 @@
+import inspect
 import typing
 
 import pytest
@@ -8,6 +9,13 @@ if typing.TYPE_CHECKING:
 from pynput import keyboard
 
 from src.settings.hotkeys import runtime as hotkeys
+
+
+def test_listener_callback_annotations_are_available_at_runtime() -> None:
+    registry = hotkeys._GlobalHotkeyRegistry()
+
+    assert inspect.getfullargspec(registry._on_press).args == ["self", "key"]
+    assert inspect.getfullargspec(registry._on_release).args == ["self", "key"]
 
 
 class _FakeListener:

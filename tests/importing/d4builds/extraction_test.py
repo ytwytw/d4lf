@@ -236,7 +236,7 @@ def test_get_weapon_type_from_paperdoll_tooltip_hovers_given_icon(mocker: Mocker
     assert result == ItemType.Bow
 
 
-def test_match_d4builds_tooltip_affix_uses_guessed_charm_set_for_seal_affixes() -> None:
+def test_match_d4builds_tooltip_affix_uses_guessed_charm_set_for_seal_affixes(mock_ini_loader) -> None:
     affix_name = _d4builds_helpers._match_d4builds_tooltip_affix(
         text="Maximum Resolve", item_type=ItemType.HoradricSeal, guessed_set_name="arms_of_arreat"
     )

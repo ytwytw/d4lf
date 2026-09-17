@@ -81,7 +81,7 @@ def _new_fast_mode() -> _FastMode:
     raise AssertionError
 
 
-def test_fast_mode_preserves_match_details_and_feedback() -> None:
+def test_fast_mode_preserves_match_details_and_feedback(mock_ini_loader) -> None:
     assert create_match_text([MatchedFilter("Build", aspect_match=True, set_match=True)]) == [
         "Build\n  - Aspect\n  - Set"
     ]
@@ -93,7 +93,7 @@ def test_fast_mode_has_no_result_for_a_skipped_item() -> None:
     assert fast_feedback(Item(), FilterResult(keep=False, matched=[], skipped=True)) is None
 
 
-def test_fast_mode_omits_redundant_aspect_for_always_kept_mythics() -> None:
+def test_fast_mode_omits_redundant_aspect_for_always_kept_mythics(mock_ini_loader) -> None:
     assert fast_feedback(
         Item(rarity=ItemRarity.Mythic),
         FilterResult(keep=True, matched=[MatchedFilter("Mythics always kept", aspect_match=True)]),
