@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
 from src.importing.conversion import as_string_keyed_mapping as _as_object
+from src.importing.infinitybuilds._talisman import _catalog_items_by_id, _parse_talisman_gear
 from src.importing.infinitybuilds.models import _ResolvedGearData
 from src.importing.source_locale import match_source_affix
 from src.importing.web import get_with_retry
-from src.item import Affix, AffixType, ItemType
+from src.item import Affix, AffixType
 from src.perception import correct_name
 
 if TYPE_CHECKING:
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
 
     import lxml.html
 
+    from src.game_data import ItemType
     from src.importing.infinitybuilds.models import (
         BuildData,
         CatalogT,
@@ -26,6 +28,7 @@ if TYPE_CHECKING:
         _RawAffix,
         _VariantData,
     )
+    from src.type_aliases import JsonObject, JsonValue
 
 LOGGER = logging.getLogger(__name__)
 TOOLS_API_BASE_URL = "https://tools.infinitybuilds.gg/api/games/diablo4/build-data"
@@ -37,9 +40,10 @@ CATALOG_ID_INSTANCE_PREFIX = re.compile(r"^(item|aspect)-\d+-")
 
 def _extract_build_title(raw_html_data: lxml.html.HtmlElement) -> str:
     title_elems = raw_html_data.xpath("//title")
-    if title_elems and title_elems[0].text:
+    title_text = title_elems[0].text if title_elems else None
+    if isinstance(title_text, str) and title_text:
         # Page titles look like "Build Name | InfinityBuilds"
-        return title_elems[0].text.split("|")[0].strip()
+        return str(title_text).split("|")[0].strip()
     return ""
 
 
@@ -107,16 +111,12 @@ def _extract_balanced(text: str, start_idx: int, open_ch: str, close_ch: str) ->
 
 
 def _canonical_catalog_id(raw_id: str | None) -> str | None:
-    """Strip extra numeric value from catalog id.
-
-    Some build variants embed gear with an extra numeric instance id spliced into the item/aspect
-    which the catalog returned by the API doesn't have. Strip it before lookups.
-    """
+    """Strip the numeric instance value absent from catalog item and aspect IDs."""
     return CATALOG_ID_INSTANCE_PREFIX.sub(r"\1-", raw_id) if raw_id else raw_id
 
 
-def _resolve_gear_data(class_name: str, gear: Sequence[Mapping[str, object]]) -> _ResolvedGearData:
-    normalized_gear = [_parse_gear_piece(_as_object(piece)) for piece in gear]
+def _resolve_gear_data(class_name: str, gear: Sequence[_GearPiece]) -> _ResolvedGearData:
+    normalized_gear = list(gear)
     item_ids = sorted(
         item_id
         for gear_piece in normalized_gear
@@ -141,7 +141,7 @@ def _resolve_gear_data(class_name: str, gear: Sequence[Mapping[str, object]]) ->
     dataset = _as_object(_as_object(response.json()).get("dataset"))
     gear_data = _as_object(dataset.get("gear"))
     return _ResolvedGearData(
-        items=_catalog_by_id(_parse_catalog_items(gear_data.get("items"))),
+        items=_catalog_items_by_id(_parse_catalog_items(gear_data.get("items"))),
         aspects=_catalog_by_id(_parse_catalog_aspects(gear_data.get("aspects"))),
         affixes=_catalog_by_id(_parse_catalog_affixes(gear_data.get("affixes"))),
     )
@@ -153,18 +153,17 @@ def _normalize_aspect_name(name: str) -> str:
 
 
 def _convert_raw_to_affixes(
-    raw_affixes: Sequence[Mapping[str, object]],
-    resolved_affixes: Mapping[str, Mapping[str, object]],
+    raw_affixes: Sequence[_RawAffix],
+    resolved_affixes: Mapping[str, _CatalogAffix],
     import_greater_affixes: bool = False,
     item_type: ItemType | None = None,
 ) -> list[Affix]:
     result = []
     for raw_value in raw_affixes:
-        raw_affix = _as_object(raw_value)
-        if raw_affix.get("tempered"):
+        if raw_value.get("tempered"):
             continue
-        affix_id = raw_affix.get("affixId")
-        resolved_affix = _as_object(resolved_affixes.get(affix_id))
+        affix_id = raw_value.get("affixId")
+        resolved_affix = resolved_affixes.get(affix_id) if affix_id else None
         if not resolved_affix or not resolved_affix.get("label"):
             LOGGER.error(f"Couldn't resolve {affix_id=}")
             continue
@@ -180,14 +179,15 @@ def _convert_raw_to_affixes(
             )
             continue
         affix_obj = Affix(name=matched_name)
-        if import_greater_affixes and resolved_affix.get("greaterAffixEligible") is True:
-            value_range = _as_object(resolved_affix.get("valueRange"))
-            max_value = value_range.get("max")
-            raw_roll = raw_affix.get("value", 0)
+        if import_greater_affixes and raw_value.get("greater") is True:
+            affix_obj.type = AffixType.greater
+        elif import_greater_affixes and resolved_affix.get("greaterAffixEligible") is True:
+            value_range = resolved_affix.get("valueRange")
+            max_value = value_range.get("max") if value_range is not None else None
+            raw_roll = raw_value.get("value", 0)
             if (
                 isinstance(max_value, (int, float))
                 and not isinstance(max_value, bool)
-                and isinstance(raw_roll, (int, float))
                 and not isinstance(raw_roll, bool)
                 and raw_roll >= max_value
             ):
@@ -196,7 +196,7 @@ def _convert_raw_to_affixes(
     return result
 
 
-def _parse_variant_data(value: dict[str, object]) -> _VariantData:
+def _parse_variant_data(value: JsonObject) -> _VariantData:
     variant: _VariantData = {}
     for key in ("id", "name"):
         item = value.get(key)
@@ -208,10 +208,13 @@ def _parse_variant_data(value: dict[str, object]) -> _VariantData:
     paragon = value.get("paragon")
     if isinstance(paragon, dict):
         variant["paragon"] = _as_object(paragon)
+    talisman = value.get("talisman")
+    if isinstance(talisman, dict):
+        variant["talisman"] = _parse_talisman_gear(talisman)
     return variant
 
 
-def _parse_gear_piece(value: dict[str, object]) -> _GearPiece:
+def _parse_gear_piece(value: JsonObject) -> _GearPiece:
     gear_piece: _GearPiece = {}
     for key in ("kind", "itemId", "aspectId", "slot"):
         item = value.get(key)
@@ -225,7 +228,7 @@ def _parse_gear_piece(value: dict[str, object]) -> _GearPiece:
     return gear_piece
 
 
-def _parse_raw_affix(value: dict[str, object]) -> _RawAffix:
+def _parse_raw_affix(value: JsonObject) -> _RawAffix:
     affix: _RawAffix = {}
     affix_id = value.get("affixId")
     if isinstance(affix_id, str):
@@ -236,13 +239,16 @@ def _parse_raw_affix(value: dict[str, object]) -> _RawAffix:
     swapped = value.get("swapped")
     if isinstance(swapped, bool):
         affix["swapped"] = swapped
+    greater = value.get("greater")
+    if isinstance(greater, bool):
+        affix["greater"] = greater
     raw_value = value.get("value")
     if isinstance(raw_value, (int, float)) and not isinstance(raw_value, bool):
         affix["value"] = raw_value
     return affix
 
 
-def _parse_catalog_items(value: object) -> list[_CatalogItem]:
+def _parse_catalog_items(value: JsonValue) -> list[_CatalogItem]:
     result: list[_CatalogItem] = []
     for entry in value if isinstance(value, list) else []:
         entry_object = _as_object(entry)
@@ -250,7 +256,7 @@ def _parse_catalog_items(value: object) -> list[_CatalogItem]:
         if not isinstance(entry_id, str):
             continue
         item: _CatalogItem = {"id": entry_id}
-        for key in ("label", "rarity", "slot"):
+        for key in ("sourceId", "label", "rarity", "slot"):
             item_value = entry_object.get(key)
             if isinstance(item_value, str):
                 item[key] = item_value
@@ -258,7 +264,7 @@ def _parse_catalog_items(value: object) -> list[_CatalogItem]:
     return result
 
 
-def _parse_catalog_aspects(value: object) -> list[_CatalogAspect]:
+def _parse_catalog_aspects(value: JsonValue) -> list[_CatalogAspect]:
     result: list[_CatalogAspect] = []
     for entry in value if isinstance(value, list) else []:
         entry_object = _as_object(entry)
@@ -269,7 +275,7 @@ def _parse_catalog_aspects(value: object) -> list[_CatalogAspect]:
     return result
 
 
-def _parse_catalog_affixes(value: object) -> list[_CatalogAffix]:
+def _parse_catalog_affixes(value: JsonValue) -> list[_CatalogAffix]:
     result: list[_CatalogAffix] = []
     for entry in value if isinstance(value, list) else []:
         entry_object = _as_object(entry)

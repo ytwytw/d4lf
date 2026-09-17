@@ -4,7 +4,8 @@ import cv2
 import numpy as np
 import pytest
 
-from src.item import Affix, Aspect, Item, ItemType
+from src.game_data import ItemType
+from src.item import Affix, Aspect, Item
 from src.perception.geometry import (
     BulletMatchDiagnostics,
     DiagnosticLocatorResult,
@@ -20,9 +21,10 @@ from src.perception.tooltip.texture import (
 from src.settings import get_ui_coordinates
 
 TEMPLATE_DIR = Path(__file__).parents[3] / "assets" / "templates" / "item_descr"
+pytestmark = pytest.mark.usefixtures("use_tooltip_fixture_resolution")
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def use_tooltip_fixture_resolution():
     resolution_manager = get_ui_coordinates()
     previous_resolution = "x".join(str(value) for value in resolution_manager.resolution)

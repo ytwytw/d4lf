@@ -1,24 +1,25 @@
 from typing import TYPE_CHECKING
 
-from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QVBoxLayout
+from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QVBoxLayout, QWidget
 
 from src.desktop.widgets import CheckmarkCheckBox
-from src.localization import translate
 
 if TYPE_CHECKING:
     from src.importing.contracts import VariantMetadata
 
 
-def select_variants_dialog(parent, variants: list[VariantMetadata], source_name: str) -> list[str] | None:
+def select_variants_dialog(
+    parent: QWidget | None, variants: list[VariantMetadata], source_name: str
+) -> list[str] | None:
     dialog = QDialog(parent)
-    dialog.setWindowTitle(translate("importer.variants.title"))
+    dialog.setWindowTitle("Select variants to import")
     dialog.setMinimumWidth(300)
     layout = QVBoxLayout(dialog)
-    label = QLabel(translate("importer.variants.body", count=len(variants), source=source_name))
+    label = QLabel(f"Found {len(variants)} variants in {source_name.title()}.\nSelect which variants to keep:")
     layout.addWidget(label)
     checkboxes = []
     for i, variant in enumerate(variants):
-        cb = CheckmarkCheckBox(variant.name or translate("importer.variants.fallback", number=i + 1))
+        cb = CheckmarkCheckBox(variant.name or f"Variant {i + 1}")
         cb.setChecked(True)
         checkboxes.append((variant.id, cb))
         layout.addWidget(cb)

@@ -2,7 +2,8 @@ import typing
 
 import pytest
 
-from src.item import Affix, AffixType, Item, ItemRarity, ItemType
+from src.game_data import ItemRarity, ItemType
+from src.item import Affix, AffixType, Item
 from src.profiles import (
     AffixFilterCountModel,
     AffixFilterModel,
@@ -13,7 +14,7 @@ from src.profiles import (
 )
 from src.settings import Settings
 
-from .conftest import _create_mocked_filter, filters
+from .conftest import _create_mocked_filter, _patch_override_settings, filters, sigil_jalal, sigil_mythic_fallback
 
 if typing.TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -26,7 +27,7 @@ if typing.TYPE_CHECKING:
         (ItemRarity.Legendary, {"rarity_test.AnyRarity"}),
     ],
 )
-def test_affix_rarity_gate(rarity: ItemRarity, expected: set[str], mocker: MockerFixture):
+def test_affix_rarity_gate(rarity: ItemRarity, expected: set[str], mocker: MockerFixture) -> None:
     boots = Item(
         item_type=ItemType.Boots,
         power=900,
@@ -39,7 +40,7 @@ def test_affix_rarity_gate(rarity: ItemRarity, expected: set[str], mocker: Mocke
     assert {m.profile for m in test_filter.should_keep(boots).matched} == expected
 
 
-def test_duplicate_affix_requirements_match_distinct_item_rows(mocker: MockerFixture):
+def test_duplicate_affix_requirements_match_distinct_item_rows(mocker: MockerFixture) -> None:
     profile = ProfileModel(
         name="duplicates",
         affixes=[
@@ -72,7 +73,7 @@ def test_duplicate_affix_requirements_match_distinct_item_rows(mocker: MockerFix
     assert result.matched[0].matched_affixes[1] is second_armor
 
 
-def test_duplicate_affix_requirements_assign_value_and_greater_constraints(mocker: MockerFixture):
+def test_duplicate_affix_requirements_assign_value_and_greater_constraints(mocker: MockerFixture) -> None:
     profile = ProfileModel(
         name="duplicates",
         affixes=[
@@ -186,3 +187,92 @@ def test_invalid_profile_edit_emits_one_report_per_file_version(tmp_path, mocker
     test_filter.load_files()
 
     assert len(reports) == 2
+
+
+CASES = (
+    (
+        "filter_equipment",
+        Item(item_type=ItemType.Helm, power=900, rarity=ItemRarity.Rare),
+        False,
+        Item(item_type=ItemType.Helm, power=900, rarity=ItemRarity.Mythic),
+    ),
+    ("filter_sigils", sigil_jalal, True, sigil_mythic_fallback),
+    (
+        "filter_tributes",
+        Item(name="tribute_of_harmony", rarity=ItemRarity.Magic, item_type=ItemType.Tribute),
+        True,
+        Item(name="tribute_of_harmony", rarity=ItemRarity.Mythic, item_type=ItemType.Tribute),
+    ),
+    (
+        "filter_seals",
+        Item(name="seal", rarity=ItemRarity.Rare, item_type=ItemType.HoradricSeal),
+        False,
+        Item(name="seal", rarity=ItemRarity.Mythic, item_type=ItemType.HoradricSeal),
+    ),
+    (
+        "filter_charms",
+        Item(name="charm", rarity=ItemRarity.Rare, item_type=ItemType.Charm),
+        False,
+        Item(name="charm", rarity=ItemRarity.Mythic, item_type=ItemType.Charm),
+    ),
+)
+
+
+@pytest.mark.parametrize(("setting", "item", "enabled_keep", "mythic"), CASES)
+def test_filterable_item_category_override_skips_all_items_when_disabled(
+    setting, item, enabled_keep, mythic, mocker
+) -> None:
+    settings = _patch_override_settings(mocker, **{setting: False})
+    test_filter = _create_mocked_filter(mocker)
+
+    skipped = test_filter.should_keep(item)
+
+    assert skipped.skipped
+    assert not skipped.keep
+    assert skipped.matched == []
+
+    setattr(settings.general, setting, True)
+    enabled = test_filter.should_keep(item)
+
+    assert not enabled.skipped
+    assert enabled.keep is enabled_keep
+
+    setattr(settings.general, setting, False)
+    mythic_result = test_filter.should_keep(mythic)
+
+    assert mythic_result.skipped
+    assert not mythic_result.keep
+    assert mythic_result.matched == []
+
+    setattr(settings.general, setting, True)
+    enabled_mythic = test_filter.should_keep(mythic)
+
+    assert not enabled_mythic.skipped
+    assert enabled_mythic.keep
+
+
+def test_disabled_sigils_skip_escalation_before_sigil_behavior(mocker) -> None:
+    _patch_override_settings(mocker, filter_sigils=False, ignore_escalation_sigils=False)
+    test_filter = _create_mocked_filter(mocker)
+    escalation_sigil = Item(item_type=ItemType.EscalationSigil, name="escalation")
+
+    result = test_filter.should_keep(escalation_sigil)
+
+    assert result.skipped
+    assert result.matched == []
+
+
+def test_disabled_category_still_loads_and_reports_invalid_profiles(tmp_path, mocker) -> None:
+    settings = _patch_override_settings(mocker, filter_equipment=False)
+    settings.general.profiles = ["invalid"]
+    settings.user_dir = tmp_path
+    profile_dir = tmp_path / "profiles"
+    profile_dir.mkdir()
+    (profile_dir / "invalid.yaml").write_text("[invalid", encoding="utf-8")
+    test_filter = _create_mocked_filter(mocker)
+    test_filter.files_loaded = False
+
+    result = test_filter.should_keep(Item(item_type=ItemType.Helm, power=900, rarity=ItemRarity.Rare))
+
+    assert result.skipped
+    assert test_filter.load_failures == ("invalid",)

@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from string import Formatter
+from typing import cast
 
 from src.localization import catalog, translate
 
@@ -9,7 +10,7 @@ CATALOG_ROOT = Path(__file__).parents[2] / "assets" / "lang"
 
 def _catalog(locale: str) -> dict[str, str]:
     with (CATALOG_ROOT / locale / "ui.json").open(encoding="utf-8") as catalog_file:
-        return json.load(catalog_file)
+        return cast("dict[str, str]", json.load(catalog_file))
 
 
 def _placeholders(template: str) -> set[str]:

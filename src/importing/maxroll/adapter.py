@@ -2,6 +2,7 @@ import json
 import logging
 from typing import TYPE_CHECKING, cast
 
+from src.game_data import GameCatalog, ItemRarity, ItemType
 from src.importing.contracts import ImportRequest, ImportResult, VariantMetadata
 from src.importing.filters import (
     create_item_affix_pool,
@@ -9,7 +10,13 @@ from src.importing.filters import (
     is_unique_like_rarity,
     update_mingreateraffixcount,
 )
-from src.importing.maxroll.constants import BUILD_GUIDE_BASE_URL, PLANNER_API_DATA_URL, PLANNER_BASE_URL
+from src.importing.maxroll.constants import (
+    BUILD_GUIDE_BASE_URL,
+    PLANNER_API_DATA_URL,
+    PLANNER_API_NAMES_DATA_URL,
+    PLANNER_BASE_URL,
+)
+from src.importing.maxroll.data import _find_item_name, _merge_localized_data
 from src.importing.maxroll.items import _find_item_affixes, _find_item_rarity
 from src.importing.maxroll.paragon import extract_maxroll_paragon_steps
 from src.importing.maxroll.planner import (
@@ -22,16 +29,16 @@ from src.importing.maxroll.planner import (
 )
 from src.importing.pipeline import ExtractedBuild, ImportPipeline, StaticBuildGuideAdapter, Variant
 from src.importing.web import get_with_retry, retry_importer
-from src.item import Dataloader, ItemRarity, ItemType
 from src.perception import correct_name
 from src.profiles import AspectUniqueFilterModel, CharmFilterModel, ItemFilterModel, SealFilterModel
+from src.type_aliases import JsonObject, JsonValue
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.propagate = True
-type PlannerObject = dict[str, object]
+type PlannerObject = JsonObject
 
 
 def _planner_api_url(url: str) -> str:
@@ -42,11 +49,10 @@ def _planner_api_url(url: str) -> str:
     return api_url
 
 
-def _load_planner_data(url: str) -> tuple[dict[str, object], dict[str, object]]:
-    """Fetch and decode planner data once for either discovery or import."""
+def _load_planner_data(url: str) -> tuple[JsonObject, JsonObject]:
     response = get_with_retry(url=_planner_api_url(url))
-    all_data = cast("dict[str, object]", response.json())
-    return all_data, cast("dict[str, object]", json.loads(str(all_data["data"])))
+    all_data = cast("JsonObject", response.json())
+    return all_data, cast("JsonObject", json.loads(str(all_data["data"])))
 
 
 def _validated_url(request: ImportRequest) -> str | None:
@@ -81,7 +87,7 @@ def _extract_profile_variant(
     *,
     profile_data: PlannerObject,
     items: dict[str, PlannerObject],
-    mapping_data: dict[str, object],
+    mapping_data: JsonObject,
     class_name: str,
     build_header: str,
     request: ImportRequest,
@@ -95,19 +101,14 @@ def _extract_profile_variant(
     charm_filters: list[CharmFilterModel] = []
     seal_filters: list[SealFilterModel] = []
     aspect_upgrade_filters: list[str] = []
-    item_mapping = cast("dict[str, dict[str, object]]", mapping_data["items"])
+    item_mapping = cast("dict[str, JsonObject]", mapping_data["items"])
     item_type_mapping = cast("Mapping[str, Mapping[str, str]]", item_mapping)
-    item_sets = cast("dict[str, dict[str, object]]", mapping_data.get("itemSets", {}))
+    item_sets = cast("dict[str, JsonObject]", mapping_data.get("itemSets", {}))
 
-    profile_items = cast("dict[str, object]", profile_data["items"])
+    profile_items = cast("JsonObject", profile_data["items"])
     for item_id in profile_items.values():
         resolved_item = items[str(item_id)]
         resolved_item_id = str(resolved_item["id"])
-        item_name = str(item_mapping[resolved_item_id]["name"])
-        rarity = _find_item_rarity(resolved_item_id, mapping_data)
-        is_unique_like = is_unique_like_rarity(rarity)
-
-        item_filter = ItemFilterModel()
         if (
             item_type := _find_item_type(
                 mapping_data=item_type_mapping, value=str(resolved_item["id"]), class_name=class_name
@@ -117,6 +118,18 @@ def _extract_profile_variant(
                 f"Couldn't find item type for {resolved_item['id']} from mapping data provided by Maxroll. Skipping item."
             )
             continue
+        item_name = _find_item_name(
+            resolved_item=resolved_item, resolved_item_id=resolved_item_id, item_mapping=item_mapping
+        )
+        if item_name is None:
+            LOGGER.warning(
+                f"Couldn't determine item name for {resolved_item_id} from data provided by Maxroll. Skipping item."
+            )
+            continue
+        rarity = _find_item_rarity(resolved_item_id, mapping_data)
+        is_unique_like = is_unique_like_rarity(rarity)
+
+        item_filter = ItemFilterModel()
 
         if item_type in [ItemType.HoradricSeal, ItemType.Charm]:
             if "explicits" not in resolved_item:
@@ -126,7 +139,7 @@ def _extract_profile_variant(
                 continue
             seal_charm_affixes = _find_item_affixes(
                 mapping_data=mapping_data,
-                item_affixes=cast("list[dict[str, object]]", resolved_item["explicits"]),
+                item_affixes=cast("list[JsonObject]", resolved_item["explicits"]),
                 item_type=item_type,
                 import_greater_affixes=request.options.import_greater_affixes,
             )
@@ -169,12 +182,12 @@ def _extract_profile_variant(
             legendary_aspect = _find_legendary_aspect(
                 mapping_data,
                 cast(
-                    "dict[str, object] | list[object]",
+                    "JsonObject | list[JsonValue]",
                     resolved_item.get("legendaryPower", resolved_item.get("aspects", {})),
                 ),
             )
             if legendary_aspect:
-                if legendary_aspect not in Dataloader().aspect_list:
+                if legendary_aspect not in GameCatalog().aspect_list:
                     LOGGER.warning(
                         f"Found legendary aspect '{legendary_aspect}' that is not in our aspect data, unable to add "
                         f"to AspectUpgrades. Please report a bug."
@@ -192,7 +205,7 @@ def _extract_profile_variant(
 
         affixes = _find_item_affixes(
             mapping_data=mapping_data,
-            item_affixes=cast("list[dict[str, object]]", resolved_item["explicits"]),
+            item_affixes=cast("list[JsonObject]", resolved_item["explicits"]),
             item_type=item_type,
             import_greater_affixes=request.options.import_greater_affixes,
         )
@@ -235,12 +248,14 @@ def import_maxroll(request: ImportRequest) -> ImportResult | None:
     profiles = cast("list[PlannerObject]", build_data["profiles"])
     items = cast("dict[str, PlannerObject]", build_data["items"])
     try:
-        mapping_data = get_with_retry(url=PLANNER_API_DATA_URL).json()
+        mapping_data = cast("JsonObject", get_with_retry(url=PLANNER_API_DATA_URL).json())
+        names_data = cast("JsonObject", get_with_retry(url=PLANNER_API_NAMES_DATA_URL).json())
+        _merge_localized_data(mapping_data=mapping_data, localized_data=names_data)
     except ConnectionError:
         LOGGER.error("Couldn't get planner data")
         return None
-    # The attribute descriptions are not always consistent with the casing for the key so we fix that here
-    mapping_data["attributeDescriptions"] = {k.lower(): v for k, v in mapping_data["attributeDescriptions"].items()}
+    attribute_descriptions = cast("dict[str, JsonValue]", mapping_data["attributeDescriptions"])
+    mapping_data["attributeDescriptions"] = {k.lower(): v for k, v in attribute_descriptions.items()}
     class_name = str(all_data.get("class", "") or "")
     build_header = str(all_data.get("name", "") or class_name)
     finished_variants: list[Variant] = []

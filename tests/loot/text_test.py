@@ -16,7 +16,7 @@ def test_affix_text_uses_active_locale_catalog_and_falls_back(monkeypatch) -> No
     data = SimpleNamespace(
         affix_dict={"armor": "护甲"}, seal_affix_dict={"seal_damage": "印记伤害"}, charm_affix_dict={}
     )
-    monkeypatch.setattr(text_module, "Dataloader", lambda: data)
+    monkeypatch.setattr(text_module, "GameCatalog", lambda: data)
 
     assert affix_text("armor") == "护甲"
     assert affix_text("seal_damage") == "印记伤害"

@@ -1,246 +1,211 @@
-"""Discover and load the English D2Core equipment catalogs."""
+"""Versioned English catalog transport and shape validation."""
 
-import json
 import logging
-import re
-import unicodedata
-from collections import defaultdict
-from dataclasses import dataclass
-from html.parser import HTMLParser
-from pathlib import PurePosixPath
+import time
+from collections.abc import Callable, Mapping
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, cast, override
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import urlsplit
 
-from selenium.webdriver.support.wait import WebDriverWait
+import httpx
 
-from src.importing.web import get_with_retry
+from src.importing.d2core.errors import EQUIPMENT_CATALOG, D2CoreCatalogError
+from src.perception import clean_str, correct_name
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping, Sequence
-
-    from selenium.webdriver.remote.webdriver import WebDriver
+    from src.type_aliases import JsonObject, JsonValue
 
 LOGGER = logging.getLogger(__name__)
-CATALOG_LOCALE = "enUS"
-DEFAULT_SITE_URL = "https://www.d2core.com/"
-STATIC_DATA_ROOT = "https://cloudstorage.d2core.com/data/d4"
-PAGE_TIMEOUT = 20
-MAX_DISCOVERY_BUNDLES = 8
-RESOURCE_URLS_SCRIPT = "return performance.getEntriesByType('resource').map(entry => entry.name);"
-DATA_RESOURCE_BUILD_PATTERN = re.compile(
-    r"/data/d4/(?P<build>[1-9]\d{0,11})/(?:affix|aspect|uniqueItem)_(?:enUS|zhCN)\.json(?:[?#]|$)"
-)
-BUILD_VERSION_PATTERN = re.compile(
-    r"(?<![A-Za-z0-9_$])D4_BUILD_VERSION\s*[:=]\s*[\"']?(?P<version>[1-9]\d{0,11})[\"']?"
-)
-FORMULA_PATTERN = re.compile(r"\[[^\[\]]*\]|\{[^{}]*\}")
+CATALOG_HOST = "cloudstorage.d2core.com"
+COLLECTIONS = {
+    "affix": ("affix",),
+    "uniqueItem": (),
+    "aspect": (),
+    "talisman": ("charm", "seal", "itemSets", "affixes"),
+    "paragon": (),
+}
+AFFIX_COLLECTION_MISSING = "affix collection missing"
+TALISMAN_COLLECTIONS_MISSING = "talisman collections missing"
+TALISMAN_AFFIX_COLLECTIONS_MISSING = "talisman affix collections missing"
+PARAGON_COLLECTIONS_MISSING = "paragon collections missing"
+UNSUPPORTED_CATALOG = "unsupported catalog"
+CATALOG_COLLECTION_MISSING = "catalog collection must be a list or object"
+CATALOG_RECORD_MISSING_KEY = "catalog record missing stable key"
+CATALOG_URL_INVALID = "catalog URL is not a versioned English d2core catalog"
+CATALOG_VERSION_MISSING = "catalog version missing"
 
 
-class D2CoreCatalogError(RuntimeError):
-    pass
+class CatalogTransport:
+    def get(self, url: str, *, timeout: float) -> JsonValue:  # pragma: no cover - protocol-shaped base
+        raise NotImplementedError
 
 
-@dataclass(frozen=True, slots=True)
-class D2CoreCatalog:
-    build_version: str
-    affix_aliases: dict[str, tuple[str, ...]]
-    aspect_names: dict[str, str]
-    unique_names: dict[str, str]
-
-
-class _ScriptSourceParser(HTMLParser):
-    def __init__(self) -> None:
-        super().__init__()
-        self.sources: list[str] = []
-
+class HttpCatalogTransport(CatalogTransport):
     @override
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if tag.casefold() != "script":
-            return
-        source = dict(attrs).get("src")
-        if source:
-            self.sources.append(source)
+    def get(self, url: str, *, timeout: float) -> JsonValue:
+        response = httpx.get(url, timeout=timeout)
+        response.raise_for_status()
+        return cast("JsonValue", response.json())
 
 
-def catalog_build_versions(resource_urls: Sequence[object]) -> set[str]:
-    return {
-        match.group("build")
-        for value in resource_urls
-        if isinstance(value, str) and (match := DATA_RESOURCE_BUILD_PATTERN.search(value))
-    }
+@dataclass(slots=True)
+class CatalogStore:
+    version: str
+    transport: CatalogTransport
+    sleeper: Callable[[float], None] = time.sleep
+    attempts: int = 3
+    timeout: float = 10.0
+    data: dict[str, JsonObject] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        self.attempts = min(max(self.attempts, 1), 3)
+        self.timeout = min(max(self.timeout, 0.01), 10.0)
+
+    def require(self, kind: str) -> JsonObject:
+        return self._load(kind)
+
+    def optional(self, kind: str) -> JsonObject:
+        return self._load(kind)
+
+    def clear(self) -> None:
+        self.data.clear()
+
+    def _load(self, kind: str) -> JsonObject:
+        if kind in self.data:
+            return self.data[kind]
+        if kind not in COLLECTIONS:
+            raise D2CoreCatalogError(EQUIPMENT_CATALOG, "Unknown d2core catalog kind")
+        url = catalog_url(self.version, kind)
+        last_error: Exception | None = None
+        for attempt in range(self.attempts):
+            try:
+                raw = self._get(url)
+                checked = validate_catalog(kind, raw)
+            except (httpx.HTTPError, OSError, TimeoutError, ValueError) as error:
+                last_error = error
+                if attempt + 1 < self.attempts and _retryable(error):
+                    self.sleeper(0.05 * (2**attempt))
+                elif not _retryable(error):
+                    break
+            else:
+                self.data[kind] = checked
+                return checked
+        detail = f"Unable to fetch the d2core {kind} catalog"
+        raise D2CoreCatalogError(EQUIPMENT_CATALOG, detail, context={"catalog": kind}) from last_error
+
+    def _get(self, url: str) -> JsonValue:
+        return self.transport.get(url, timeout=self.timeout)
 
 
-def discover_catalog_build(fetch: Callable[[str], bytes], site_url: str = DEFAULT_SITE_URL) -> str:
-    index_payload = fetch(site_url)
-    if version := _single_build_version(index_payload):
-        return version
-
-    parser = _ScriptSourceParser()
-    try:
-        parser.feed(index_payload.decode("utf-8-sig"))
-        parser.close()
-    except (UnicodeDecodeError, ValueError) as error:
-        message = "Could not parse the D2Core index"
-        raise D2CoreCatalogError(message) from error
-
-    site = urlsplit(site_url)
-    candidates = []
-    for source in dict.fromkeys(parser.sources):
-        absolute = urljoin(site_url, source)
-        parsed = urlsplit(absolute)
-        if parsed.scheme == site.scheme and parsed.netloc == site.netloc and parsed.path.casefold().endswith(".js"):
-            candidates.append(absolute)
-    preferred = [url for url in candidates if PurePosixPath(urlsplit(url).path).name.casefold().startswith("index-")]
-    versions = {
-        version
-        for url in (preferred or candidates)[:MAX_DISCOVERY_BUNDLES]
-        if (version := _single_build_version(fetch(url)))
-    }
-    if len(versions) != 1:
-        message = f"Could not discover one D2Core catalog build: {sorted(versions)}"
-        raise D2CoreCatalogError(message)
-    return next(iter(versions))
+def catalog_url(version: str, kind: str) -> str:
+    return f"https://{CATALOG_HOST}/data/d4/{version}/{kind}_enUS.json?env=prod&v=8"
 
 
-def _single_build_version(payload: bytes) -> str | None:
-    try:
-        text = payload.decode("utf-8-sig")
-    except UnicodeDecodeError as error:
-        message = "D2Core returned non-UTF-8 catalog metadata"
-        raise D2CoreCatalogError(message) from error
-    versions = {match.group("version") for match in BUILD_VERSION_PATTERN.finditer(text)}
-    if len(versions) > 1:
-        message = f"D2Core metadata contains conflicting catalog builds: {sorted(versions)}"
-        raise D2CoreCatalogError(message)
-    return next(iter(versions), None)
-
-
-def dataset_url(build_version: str, dataset: str) -> str:
-    if not re.fullmatch(r"[1-9]\d{0,11}", build_version):
-        message = "Invalid D2Core catalog build"
-        raise D2CoreCatalogError(message)
-    if dataset not in {"affix", "aspect", "uniqueItem"}:
-        message = f"Unsupported D2Core catalog: {dataset}"
-        raise D2CoreCatalogError(message)
-    return f"{STATIC_DATA_ROOT}/{build_version}/{dataset}_{CATALOG_LOCALE}.json"
-
-
-def load_d2core_catalog(driver: WebDriver | None = None) -> D2CoreCatalog:
-    versions: set[str] = set()
-    if driver is not None:
-        resource_urls = WebDriverWait(driver, PAGE_TIMEOUT).until(
-            lambda current: current.execute_script(RESOURCE_URLS_SCRIPT) or False
-        )
-        versions = catalog_build_versions(resource_urls if isinstance(resource_urls, list) else [])
-    if len(versions) > 1:
-        message = f"D2Core loaded conflicting catalog builds: {sorted(versions)}"
-        raise D2CoreCatalogError(message)
-    build_version = (
-        next(iter(versions)) if versions else discover_catalog_build(lambda url: get_with_retry(url).content)
-    )
-    records = {
-        dataset: _validated_records(dataset, get_with_retry(dataset_url(build_version, dataset)).content)
-        for dataset in ("affix", "aspect", "uniqueItem")
-    }
-    return D2CoreCatalog(
-        build_version=build_version,
-        affix_aliases=_index_affix_aliases(records["affix"]),
-        aspect_names=_index_unique_values(records["aspect"], "name", "aspect"),
-        unique_names=_index_unique_values(records["uniqueItem"], "name", "uniqueItem"),
-    )
-
-
-def _validated_records(dataset: str, payload: bytes) -> tuple[dict[str, object], ...]:
-    try:
-        value = json.loads(
-            payload.decode("utf-8-sig"),
-            object_pairs_hook=_unique_object,
-            parse_constant=lambda constant: _reject_constant(constant),
-        )
-    except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
-        message = f"Invalid D2Core {dataset} JSON"
-        raise D2CoreCatalogError(message) from error
-    raw_records = value.get("affix") if dataset == "affix" and isinstance(value, dict) else value
-    if not isinstance(raw_records, list):
-        message = f"Invalid D2Core {dataset} catalog root"
-        raise D2CoreCatalogError(message)
-    content_field = "descTpl" if dataset == "affix" else "name"
-    records = []
-    for index, raw_record in enumerate(raw_records):
-        if not isinstance(raw_record, dict):
-            message = f"Invalid D2Core {dataset} record {index}"
-            raise D2CoreCatalogError(message)
-        record = cast("dict[str, object]", raw_record)
-        if (
-            not isinstance(record.get("key"), str)
-            or type(record.get("id")) is not int
-            or not isinstance(record.get(content_field), str)
+def validate_catalog(kind: str, value: JsonValue) -> JsonObject:
+    if kind == "affix":
+        if not isinstance(value, Mapping) or not isinstance(value.get("affix"), list):
+            raise ValueError(AFFIX_COLLECTION_MISSING)
+        source = cast("Mapping[str, JsonValue]", value)
+        return {kind: _index_records(source["affix"])}
+    if kind == "talisman":
+        if not isinstance(value, Mapping) or any(
+            not isinstance(value.get(key), (dict, list)) for key in COLLECTIONS[kind]
         ):
-            message = f"Invalid D2Core {dataset} record {index}"
-            raise D2CoreCatalogError(message)
-        records.append(record)
-    return tuple(records)
-
-
-def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
-    result: dict[str, object] = {}
-    for key, value in pairs:
-        if key in result:
-            message = f"Duplicate JSON key: {key}"
+            raise ValueError(TALISMAN_COLLECTIONS_MISSING)
+        source = cast("Mapping[str, JsonValue]", value)
+        indexed: JsonObject = {key: _index_records(source[key]) for key in COLLECTIONS[kind] if key != "affixes"}
+        affixes = source["affixes"]
+        if not isinstance(affixes, Mapping):
+            raise ValueError(TALISMAN_AFFIX_COLLECTIONS_MISSING)
+        indexed["affixes"] = {str(category): _index_records(records) for category, records in affixes.items()}
+        return indexed
+    if kind in {"uniqueItem", "aspect"}:
+        if not isinstance(value, (Mapping, list)):
+            message = f"{kind} collection missing"
             raise ValueError(message)
-        result[key] = value
-    return result
+        return {kind: _index_records(value)}
+    if kind == "paragon":
+        if not isinstance(value, Mapping) or not any(_valid_paragon_class(item) for item in value.values()):
+            raise ValueError(PARAGON_COLLECTIONS_MISSING)
+        source = cast("Mapping[str, JsonValue]", value)
+        return {str(key): item for key, item in source.items()}
+    raise ValueError(UNSUPPORTED_CATALOG)
 
 
-def _reject_constant(value: str) -> object:
-    message = f"Non-standard JSON value: {value}"
-    raise ValueError(message)
-
-
-def _index_affix_aliases(records: Sequence[Mapping[str, object]]) -> dict[str, tuple[str, ...]]:
-    grouped: dict[str, set[tuple[str, ...]]] = defaultdict(set)
+def _index_records(records: JsonValue) -> JsonObject:
+    if isinstance(records, Mapping):
+        source = cast("Mapping[str, JsonValue]", records)
+        return {str(key): value for key, value in source.items()}
+    if not isinstance(records, list):
+        raise ValueError(CATALOG_COLLECTION_MISSING)
+    result: JsonObject = {}
     for record in records:
-        key, description = record.get("key"), record.get("descTpl")
-        if not isinstance(key, str) or not isinstance(description, str):
-            continue
-        aliases = set(d2core_affix_aliases(description, key))
-        if isinstance(resolved := record.get("desc"), str):
-            aliases.update(d2core_affix_aliases(resolved, key))
-        grouped[key].add(tuple(sorted(aliases)))
-    result = {}
-    for key, aliases in grouped.items():
-        if len(aliases) == 1:
-            result[key] = next(iter(aliases))
-        else:
-            LOGGER.warning("D2Core affix key %r is ambiguous and will not be imported.", key)
+        if not isinstance(record, Mapping) or not record.get("key"):
+            raise ValueError(CATALOG_RECORD_MISSING_KEY)
+        source = cast("Mapping[str, JsonValue]", record)
+        result[str(source["key"])] = {str(key): value for key, value in source.items()}
     return result
 
 
-def _index_unique_values(records: Sequence[Mapping[str, object]], field_name: str, dataset_name: str) -> dict[str, str]:
-    grouped: dict[str, set[str]] = defaultdict(set)
-    for record in records:
-        key, value = record.get("key"), record.get(field_name)
-        if isinstance(key, str) and isinstance(value, str) and value.strip():
-            grouped[key].add(value.strip())
-    result = {}
-    for key, values in grouped.items():
-        if len(values) == 1:
-            result[key] = next(iter(values))
-        else:
-            LOGGER.warning("D2Core %s key %r is ambiguous and will not be imported.", dataset_name, key)
-    return result
+def observed_catalog_version(catalog_url_value: str) -> str:
+    parts = urlsplit(catalog_url_value)
+    segments = parts.path.split("/")
+    if (
+        parts.scheme.casefold() != "https"
+        or parts.hostname != CATALOG_HOST
+        or len(segments) != 5
+        or segments[1:3] != ["data", "d4"]
+        or not segments[3]
+        or not segments[-1].casefold().endswith("_enus.json")
+    ):
+        raise ValueError(CATALOG_URL_INVALID)
+    version = segments[-2]
+    if not version:
+        raise ValueError(CATALOG_VERSION_MISSING)
+    return version
 
 
-def d2core_affix_aliases(description: str, source_key: str) -> tuple[str, ...]:
-    cleaned = FORMULA_PATTERN.sub("", unicodedata.normalize("NFKC", description))
-    cleaned = "".join(character if character.isalpha() or character.isspace() else " " for character in cleaned)
-    cleaned = " ".join(cleaned.split())
-    aliases = {cleaned, source_key}
-    if cleaned.casefold().startswith("x "):
-        aliases.add(cleaned[2:])
-    aliases.add(cleaned.removesuffix(" at level"))
-    corrected = cleaned.replace("Wild Lighting", "Wild Lightning").replace(" Second After ", " Seconds After ")
-    aliases.add(corrected)
-    if corrected.casefold().startswith("x "):
-        aliases.add(corrected[2:])
-    return tuple(sorted(alias for alias in aliases if alias))
+def canonical_catalog_name(record: Mapping[str, JsonValue] | JsonValue, mapping: Mapping[str, object]) -> str | None:
+    """Match a catalog record's stable key or localized names to D4LF's canonical name."""
+    if not isinstance(record, Mapping):
+        return None
+    for value in (record.get("key"), record.get("name"), record.get("engName")):
+        normalized = correct_name(str(value or "")) or ""
+        if normalized in mapping:
+            return normalized
+        key_match = next((key for key in mapping if correct_name(str(key)) == normalized), None)
+        if key_match is not None:
+            return key_match
+        match = next((key for key, label in mapping.items() if correct_name(str(label)) == normalized), None)
+        if match:
+            return match
+    return None
+
+
+def canonical_affix_name(record: Mapping[str, JsonValue] | JsonValue, mapping: Mapping[str, JsonValue]) -> str | None:
+    """Match a current d2core affix description to D4LF's canonical name."""
+    if not isinstance(record, Mapping):
+        return None
+    description = record.get("desc")
+    if not isinstance(description, str):
+        return None
+    normalized = correct_name(clean_str(description)) or ""
+    if normalized in mapping:
+        return normalized
+    match = next((key for key, label in mapping.items() if correct_name(str(label)) == normalized), None)
+    if match:
+        return match
+    return None
+
+
+def _valid_paragon_class(value: JsonValue) -> bool:
+    return isinstance(value, Mapping) and all(isinstance(value.get(key), Mapping) for key in ("board", "node", "glyph"))
+
+
+def _retryable(error: Exception) -> bool:
+    if isinstance(error, ValueError):
+        return False
+    if isinstance(error, httpx.HTTPStatusError):
+        status = error.response.status_code
+        return status in {408, 429} or status >= 500
+    return True

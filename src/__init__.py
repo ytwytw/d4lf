@@ -1,5 +1,1 @@
-import concurrent.futures
-
-TP = concurrent.futures.ThreadPoolExecutor()
-
-__version__ = "10.0.0+zhcn.beta.1"
+__version__ = "10.0.3"

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import cv2
 
 from src.logger import setup
-from src.perception import TemplateMatch, search_templates
+from src.perception import TemplateMatch, search
 from src.settings import get_ui_coordinates
 from src.tools.replay.common import ReplayConfigurationError, load_replay_image, show_replay_result
 from src.tools.replay.common import font_scale as _font_scale
@@ -15,6 +15,8 @@ from src.tools.replay.common import raise_configuration_error as _raise_configur
 from src.tools.replay.common import write_image as _write_image
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     import numpy as np
 
 
@@ -33,7 +35,7 @@ TEMPLATES = [
 class ReplayConfig:
     game_resolution: str
     image_path: Path | str
-    templates: list[str]
+    templates: Sequence[str | int]
     threshold: float
 
 
@@ -140,24 +142,20 @@ def show_result(image: np.ndarray) -> None:
 def run_replay(config: ReplayConfig, *, display: bool = True) -> ReplayResult:
     """Match every configured template against a screen and save an annotated copy."""
     image_path, image = validate_replay_config(config)
+    templates = [template for template in config.templates if isinstance(template, str)]
     LOGGER.info(
         "Template matching inputs: image=%s resolution=%s templates=%s threshold=%.4f",
         image_path,
         config.game_resolution,
-        config.templates,
+        templates,
         config.threshold,
     )
     resolution_manager = get_ui_coordinates()
     previous_resolution = "x".join(str(value) for value in resolution_manager.resolution)
     try:
         resolution_manager.set_resolution(config.game_resolution)
-        search_result = search_templates(
-            config.templates,
-            inp_img=image,
-            threshold=config.threshold,
-            use_grayscale=True,
-            mode="all",
-            do_multi_process=False,
+        search_result = search(
+            templates, inp_img=image, threshold=config.threshold, use_grayscale=True, mode="all", do_multi_process=False
         )
     finally:
         resolution_manager.set_resolution(previous_resolution)
@@ -165,7 +163,7 @@ def run_replay(config: ReplayConfig, *, display: bool = True) -> ReplayResult:
     _log_matches(matches)
 
     output_path = image_path.with_name(f"{image_path.stem}_all_template_matches.png")
-    annotated = _annotate(image, matches, len(config.templates), config.threshold)
+    annotated = _annotate(image, matches, len(templates), config.threshold)
     _write_image(output_path, annotated)
     LOGGER.info("Template matching output: %s", output_path)
     if display:

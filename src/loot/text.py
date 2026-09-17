@@ -1,6 +1,7 @@
 """Localized presentation for stable loot-filter match identifiers."""
 
-from src.item import ASPECT_UPGRADES_LABEL, MYTHICS_ALWAYS_KEPT_LABEL, Dataloader
+from src.game_data import GameCatalog
+from src.item import ASPECT_UPGRADES_LABEL, MYTHICS_ALWAYS_KEPT_LABEL
 from src.localization import translate
 
 _BUILTIN_PROFILE_MESSAGES = {
@@ -28,7 +29,7 @@ def match_profile_text(profile: str) -> str:
 
 def affix_text(canonical_name: str) -> str:
     """Resolve a canonical affix ID through the active game locale catalog."""
-    data = Dataloader()
+    data = GameCatalog()
     for catalog in (data.affix_dict, data.seal_affix_dict, data.charm_affix_dict):
         if localized_name := catalog.get(canonical_name):
             return localized_name

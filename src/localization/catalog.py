@@ -3,6 +3,7 @@
 import json
 import logging
 from functools import cache
+from typing import cast
 
 from src.settings import BASE_DIR, get_settings
 
@@ -24,7 +25,7 @@ def _load_catalog(locale: str) -> dict[str, str]:
     ):
         LOGGER.error("UI translation catalog must contain only string keys and values: %s", catalog_path)
         return {}
-    return data
+    return cast("dict[str, str]", data)
 
 
 def translate(message_id: str, default: str | None = None, *, locale: str | None = None, **values: object) -> str:

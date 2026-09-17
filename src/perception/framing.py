@@ -51,7 +51,7 @@ def find_item_start(data: list[str], *, grammar: LocaleGrammar, catalog: ItemTyp
 class TtsFramer:
     """Turn raw accessibility lines into bounded, replayable item traces."""
 
-    def __init__(self, grammar: LocaleGrammar, catalog: ItemTypeCatalog, *, max_lines: int = _MAX_CACHED_LINES):
+    def __init__(self, grammar: LocaleGrammar, catalog: ItemTypeCatalog, *, max_lines: int = _MAX_CACHED_LINES) -> None:
         self.grammar = grammar
         self.catalog = catalog
         self.max_lines = max_lines

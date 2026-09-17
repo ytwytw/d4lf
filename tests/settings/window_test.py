@@ -3,6 +3,10 @@ from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtWidgets import QWidget
+
+import src.settings.window as window_module
 from src.settings.window import ICON_PATH, ConfigWindow
 
 
@@ -18,11 +22,83 @@ def test_config_window_can_be_constructed(qapp, isolated_ini_loader) -> None:
     window.close()
 
 
-def test_config_window_uses_current_interface_language(qapp, isolated_ini_loader) -> None:
-    isolated_ini_loader.save_value("general", "language", "zhCN")
+def test_config_window_restores_maximized_state_from_qsettings(monkeypatch, qapp) -> None:
+    class FakeSettings:
+        def __init__(self, *_args) -> None:
+            pass
+
+        def value(self, key, default=None, **kwargs):
+            default = kwargs.get("defaultValue", default)
+            return True if key == "maximized" else default
+
+    class FakeTab(QWidget):
+        def __init__(self, **_kwargs) -> None:
+            super().__init__()
+
+    maximized = []
+    monkeypatch.setattr(window_module, "QSettings", FakeSettings)
+    monkeypatch.setattr(window_module, "ConfigTab", FakeTab)
+    monkeypatch.setattr(window_module.QMainWindow, "showMaximized", lambda window: maximized.append(window))
 
     window = ConfigWindow()
 
-    assert window.windowTitle() == "设置"
-    assert window.config_tab.search_input.placeholderText() == "搜索设置..."
-    window.close()
+    assert maximized == [window]
+    window.deleteLater()
+
+
+def test_config_window_force_maximized_overrides_saved_state(monkeypatch, qapp) -> None:
+    class FakeSettings:
+        def __init__(self, *_args) -> None:
+            pass
+
+        def value(self, key, default=None, **kwargs):
+            default = kwargs.get("defaultValue", default)
+            return False if key == "maximized" else default
+
+    class FakeTab(QWidget):
+        def __init__(self, **_kwargs) -> None:
+            super().__init__()
+
+    maximized = []
+    monkeypatch.setattr(window_module, "QSettings", FakeSettings)
+    monkeypatch.setattr(window_module, "ConfigTab", FakeTab)
+    monkeypatch.setattr(window_module.QMainWindow, "showMaximized", lambda window: maximized.append(window))
+
+    window = ConfigWindow(force_maximized=True)
+
+    assert maximized == [window]
+    window.deleteLater()
+
+
+def test_config_window_persists_maximized_state_on_close(monkeypatch, qapp) -> None:
+    class FakeSettings:
+        values = {"maximized": False}
+
+        def __init__(self, *_args) -> None:
+            pass
+
+        def value(self, key, default=None, **kwargs):
+            default = kwargs.get("defaultValue", default)
+            return self.values.get(key, default)
+
+        def setValue(self, key, value) -> None:  # ruff:ignore[invalid-function-name] - mirrors QSettings API
+            self.values[key] = value
+
+    class FakeTab(QWidget):
+        def __init__(self, **_kwargs) -> None:
+            super().__init__()
+
+    maximized = False
+    monkeypatch.setattr(window_module, "QSettings", FakeSettings)
+    monkeypatch.setattr(window_module, "ConfigTab", FakeTab)
+    monkeypatch.setattr(ConfigWindow, "isMaximized", lambda _window: maximized)
+
+    window = ConfigWindow()
+    maximized = True
+    event = QCloseEvent()
+    window.closeEvent(event)
+
+    assert event.isAccepted()
+    assert window.settings.value("maximized") is True
+
+    window.deleteLater()

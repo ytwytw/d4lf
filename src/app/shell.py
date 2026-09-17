@@ -38,17 +38,19 @@ from src.logger import (
 )
 from src.logger import setup as setup_logging
 from src.loot import get_filter_colors
-from src.profiles import create_profile_editor_window
-from src.settings import (
-    LOG_LEVEL_SETTING_KEYS,
-    SettingsLoadError,
-    create_settings_window,
-    get_settings,
-    has_any_changed,
-)
+from src.profiles.ui import ProfileEditorWindow
+from src.settings import LOG_LEVEL_SETTING_KEYS, Settings, SettingsLoadError, get_settings, has_any_changed
+from src.settings.ui import ConfigWindow
 
+if sys.platform == "win32":
+    from src.item.filter import Filter
+else:
+    Filter = None
 if TYPE_CHECKING:
-    from src.item import ProfileLoadReport
+    from collections.abc import Callable
+    from pathlib import Path
+
+    from src.item.filter import ProfileLoadReport
 
 LOGGER = logging.getLogger(__name__)
 perception_module = get_perception_module()
@@ -59,7 +61,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
     profile_load_report_signal = pyqtSignal(object)
     settings_load_error_signal = pyqtSignal(object)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.profile_load_report_signal.connect(self._on_profile_load_report)
         self.settings_load_error_signal.connect(self._on_settings_load_error)
@@ -78,7 +80,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
         self._status_timer.timeout.connect(self._refresh_dashboard_status)
         self._status_timer.start(500)
 
-    def _setup_logging(self):
+    def _setup_logging(self) -> None:
         running_from_source = not getattr(sys, "frozen", False)
         root_logger = logging.getLogger()
         adv = self._config.advanced_options
@@ -115,7 +117,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
                 10000,
             )
 
-    def _on_config_changed_log_level(self, changed_keys) -> None:
+    def _on_config_changed_log_level(self, changed_keys: frozenset[str]) -> None:
         if not has_any_changed(changed_keys, LOG_LEVEL_SETTING_KEYS):
             return
         adv = self._config.advanced_options
@@ -126,8 +128,8 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
             "Updated log settings (Level: %s, Tech: %s, TS: %s)", new_level, adv.technical_log_info, adv.log_timestamp
         )
 
-    def _setup_ui(self):
-        self.setWindowTitle(translate("app.title", version=__version__))
+    def _setup_ui(self) -> None:
+        self.setWindowTitle(f"D4LF - Diablo 4 Loot Filter v{__version__}")
         self.setMinimumSize(800, 600)
         self.tabs = QTabWidget()
         self.setCentralWidget(self.tabs)
@@ -142,7 +144,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
         self._emit_startup_logs()
         self._emit_deferred_config_cleanup_logs(self._config)
 
-    def _setup_tab_corner_widgets(self):
+    def _setup_tab_corner_widgets(self) -> None:
         """Add status indicators and social buttons to the tab bar."""
         container = QWidget()
         layout = QHBoxLayout(container)
@@ -166,7 +168,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
             layout.addWidget(button)
         self.tabs.setCornerWidget(container, Qt.Corner.TopRightCorner)
 
-    def _setup_social_button(self, btn, icon_path, url: str):
+    def _setup_social_button(self, btn: QPushButton, icon_path: Path, url: str) -> None:
         final_path = icon_path
         if not final_path.exists():
             alt_path = icon_path.parent / icon_path.name.lower()
@@ -185,12 +187,12 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
         )
         btn.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(url)))
 
-    def _refresh_dashboard_status(self):
+    def _refresh_dashboard_status(self) -> None:
         self.update_tts_status(perception_module.is_connected() if perception_module is not None else None)
         if self.worker and self.worker.script_handler:
             self.update_vision_status(self.worker.script_handler.vision_mode.running())
 
-    def update_vision_status(self, is_running: bool | None):
+    def update_vision_status(self, is_running: bool | None) -> None:
         if is_running is None:
             self.vision_indicator.setText(translate("status.vision.disabled"))
             self.vision_indicator.setStyleSheet("color: #b0b0b0; font-weight: bold; font-size: 10pt;")
@@ -200,7 +202,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
             f"color: {'#23fc5d' if is_running else '#ff4d4d'}; font-weight: bold; font-size: 10pt;"
         )
 
-    def update_tts_status(self, connected: bool | None):
+    def update_tts_status(self, connected: bool | None) -> None:
         if connected is None:
             self.tts_indicator.setText(translate("status.tts.disabled"))
             self.tts_indicator.setStyleSheet("color: #b0b0b0; font-weight: bold; font-size: 10pt;")
@@ -210,15 +212,15 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
             f"color: {'#23fc5d' if connected else '#ff4d4d'}; font-weight: bold; font-size: 10pt;"
         )
 
-    def _init_backend(self):
+    def _init_backend(self) -> None:
         if sys.platform != "win32":
             self._backend_thread = None
             self.worker = None
             self.update_vision_status(None)
             self.update_tts_status(None)
             return
-        from src.item import Filter  # ruff:ignore[import-outside-top-level]
-
+        if Filter is None:
+            return
         Filter().register_profile_failure_listener(self._queue_profile_load_report)
         self._backend_thread = QThread()
         self.worker = BackendWorker()
@@ -236,7 +238,9 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
                 translate("app.profile_loading"), report.message, QSystemTrayIcon.MessageIcon.Warning, 10000
             )
 
-    def _show_singleton_modal(self, key: str, window_class, *args, **kwargs):
+    def _show_singleton_modal[**P](
+        self, key: str, window_class: Callable[P, QMainWindow], *args: P.args, **kwargs: P.kwargs
+    ) -> QMainWindow:
         existing_window = self._child_windows.get(key)
         if existing_window is not None and existing_window.isVisible():
             existing_window.raise_()
@@ -250,7 +254,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
         win.show()
         return win
 
-    def _emit_deferred_config_cleanup_logs(self, config):
+    def _emit_deferred_config_cleanup_logs(self, config: Settings) -> None:
         for record in config.consume_deferred_cleanup_log_records():
             if (
                 logging.getLogger(record.name).isEnabledFor(record.levelno)
@@ -258,7 +262,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
             ):
                 self.console_handler.handle(record)
 
-    def _emit_startup_logs(self):
+    def _emit_startup_logs(self) -> None:
         for record in consume_startup_log_records():
             if (
                 logging.getLogger(record.name).isEnabledFor(record.levelno)
@@ -266,28 +270,28 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
             ):
                 self.console_handler.handle(record)
 
-    def open_import_dialog(self):
+    def open_import_dialog(self) -> None:
         win = self._show_singleton_modal("importer", create_importer_window, accent_color=get_filter_colors().matched)
-        win.import_completed.connect(self.activity_tab.refresh_profiles, Qt.ConnectionType.UniqueConnection)
+        win.import_completed.connect(self.activity_tab.refresh_profiles, Qt.ConnectionType.UniqueConnection)  # ty: ignore[unresolved-attribute]
 
-    def open_settings_dialog(self):
+    def open_settings_dialog(self) -> None:
         set_accent_color(get_filter_colors().matched)
-        self._show_singleton_modal("config", create_settings_window, theme_changed_callback=self.apply_theme)
-
-    def open_profile_editor(self, profile_name: str | None = None):
         self._show_singleton_modal(
-            "editor", create_profile_editor_window, profile_name=profile_name, force_maximized=self.isMaximized()
+            "config", ConfigWindow, theme_changed_callback=self.apply_theme, force_maximized=self.isMaximized()
         )
 
-    def emit_startup_direct_to_console(self):
+    def open_profile_editor(self, profile_name: str | None = None) -> None:
+        self._show_singleton_modal(
+            "editor", ProfileEditorWindow, profile_name=profile_name, force_maximized=self.isMaximized()
+        )
+
+    def emit_startup_direct_to_console(self) -> None:
         self.console_output.append_ansi_text(
-            "═══════════════════════════════════════════════════════════════════════════════\n"
-            "D4LF - Diablo 4 Loot Filter\n"
-            "═══════════════════════════════════════════════════════════════════════════════"
+            "═══════════════════════════════════════════════════════════════════════════════\nD4LF - Diablo 4 Loot Filter\n═══════════════════════════════════════════════════════════════════════════════"
         )
         self.console_output.append_ansi_text("")
 
-    def apply_theme(self):
+    def apply_theme(self) -> None:
         theme_name = get_settings().general.theme
         accent_color = get_filter_colors().matched
         set_accent_color(accent_color)

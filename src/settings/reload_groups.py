@@ -5,24 +5,28 @@ the flat ``section.field`` keys emitted by config change events, so multiple par
 the app (the script handler, the main window) can react to the same setting changes.
 """
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, cast
 
 from src.settings.models import GeneralModel
 from src.settings.models.core import IS_HOTKEY_KEY, LIVE_RELOAD_GROUP_KEY, AdvancedOptionsModel
 
 if TYPE_CHECKING:
-    from collections.abc import Set as AbstractSet
+    from collections.abc import Collection
+
+    from pydantic import BaseModel
+
+    from src.type_aliases import JsonObject
 
 
 def _setting_key(section: str, field_name: str) -> str:
     return f"{section}.{field_name}"
 
 
-def _field_metadata(model_class: type[Any], field_name: str) -> dict[str, Any]:
-    return model_class.model_fields[field_name].json_schema_extra or {}
+def _field_metadata(model_class: type[BaseModel], field_name: str) -> JsonObject:
+    return cast("JsonObject", model_class.model_fields[field_name].json_schema_extra or {})
 
 
-def _collect_reload_group_keys(section: str, model_class: type[Any], group_name: str) -> set[str]:
+def _collect_reload_group_keys(section: str, model_class: type[BaseModel], group_name: str) -> set[str]:
     return {
         _setting_key(section, field_name)
         for field_name in model_class.model_fields
@@ -40,7 +44,7 @@ def _collect_hotkey_setting_keys() -> set[str]:
     return hotkey_keys
 
 
-def has_any_changed(changed_keys: AbstractSet[str], relevant_keys: set[str]) -> bool:
+def has_any_changed(changed_keys: Collection[str], relevant_keys: set[str]) -> bool:
     return any(key in changed_keys for key in relevant_keys)
 
 

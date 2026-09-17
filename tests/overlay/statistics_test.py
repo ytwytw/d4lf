@@ -1,10 +1,29 @@
 import time
+from typing import TYPE_CHECKING
 
 from src.overlay import SessionStats
 from src.overlay import statistics as _statistics
+from src.overlay.statistics import StatsSnapshot, subscribe_stats, unsubscribe_stats
+
+if TYPE_CHECKING:
+    from src.type_aliases import JsonValue
 
 
-def test_experience_increments_and_reset_clears_session(monkeypatch):
+def test_statistics_publishes_a_snapshot_without_lifecycle(monkeypatch) -> None:
+    monkeypatch.setattr(_statistics, "load_settings", lambda: {"capture_gold_stats": False, "capture_exp_stats": True})
+    stats = SessionStats()
+    received: list[StatsSnapshot] = []
+    subscribe_stats(received.append)
+
+    try:
+        stats.on_info_stat("Level 10 Experience: 100 / 500")
+    finally:
+        unsubscribe_stats(received.append)
+
+    assert received == [StatsSnapshot(total_exp=0, t2l="-")]
+
+
+def test_experience_increments_and_reset_clears_session(monkeypatch) -> None:
     stats = SessionStats()
     stats.reset_exp()
     monkeypatch.setattr(_statistics, "load_settings", lambda: {"capture_gold_stats": False, "capture_exp_stats": True})
@@ -18,7 +37,7 @@ def test_experience_increments_and_reset_clears_session(monkeypatch):
     assert stats.last_exp is None
 
 
-def test_gold_updates_only_after_three_monotonic_observations(monkeypatch):
+def test_gold_updates_only_after_three_monotonic_observations(monkeypatch) -> None:
     stats = SessionStats()
     stats.reset_gold()
     monkeypatch.setattr(_statistics, "load_settings", lambda: {"capture_gold_stats": True, "capture_exp_stats": False})
@@ -34,8 +53,8 @@ def test_gold_updates_only_after_three_monotonic_observations(monkeypatch):
     assert stats.total_gold == 100
 
 
-def test_verified_totals_are_saved_and_restored_without_qsettings(monkeypatch):
-    stored: dict[str, object] = {
+def test_verified_totals_are_saved_and_restored_without_qsettings(monkeypatch) -> None:
+    stored: dict[str, JsonValue] = {
         "capture_gold_stats": True,
         "capture_exp_stats": True,
         "session_total_gold": 50,
@@ -43,7 +62,7 @@ def test_verified_totals_are_saved_and_restored_without_qsettings(monkeypatch):
     }
     monkeypatch.setattr(_statistics, "load_settings", lambda: dict(stored))
     monkeypatch.setattr(_statistics, "save_settings", lambda values: stored.update(values))
-    notifications: list[dict[str, object]] = []
+    notifications: list[dict[str, JsonValue]] = []
     monkeypatch.setattr(_statistics, "_notify", lambda **values: notifications.append(values))
 
     stats = _statistics._SessionStats()

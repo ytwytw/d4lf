@@ -14,7 +14,7 @@ class _OverlayLocalization(OverlayContract):
         self._locale_config.register_change_listener(self._queue_language_change)
         self._retranslate_ui()
 
-    def _queue_language_change(self, changed_keys) -> None:
+    def _queue_language_change(self, changed_keys: set[str] | frozenset[str]) -> None:
         if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
             call_on_ui_thread(self._retranslate_ui)
 

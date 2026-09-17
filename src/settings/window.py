@@ -1,7 +1,7 @@
 import logging
 import sys
 from pathlib import Path
-from typing import override
+from typing import TYPE_CHECKING, override
 
 from PyQt6.QtCore import QPoint, QSettings, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QIcon
@@ -10,6 +10,9 @@ from PyQt6.QtWidgets import QMainWindow
 from src.localization import translate
 from src.settings import DIAGNOSTICS_SETTING_KEYS, LANGUAGE_SETTING_KEYS, get_settings, has_any_changed
 from src.settings.tab import ConfigTab
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 BASE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[2]
 
@@ -22,7 +25,12 @@ class ConfigWindow(QMainWindow):
 
     language_changed_signal = pyqtSignal()
 
-    def __init__(self, parent=None, theme_changed_callback=None):
+    def __init__(
+        self,
+        parent: QMainWindow | None = None,
+        theme_changed_callback: Callable[[], None] | None = None,
+        force_maximized: bool = False,
+    ) -> None:
         super().__init__(parent)
 
         if ICON_PATH.exists():
@@ -40,21 +48,21 @@ class ConfigWindow(QMainWindow):
         self.resize(self.settings.value("size", QSize(650, 800)))
         self.move(self.settings.value("pos", QPoint(0, 0)))
 
-        if self.settings.value("maximized", "false") == "true":
+        if force_maximized or self.settings.value("maximized", defaultValue=False, type=bool):
             self.showMaximized()
 
         # Create initial config tab
         self.config_tab = ConfigTab(theme_changed_callback=self._on_theme_changed)
         self.setCentralWidget(self.config_tab)
 
-    def _on_theme_changed(self):
+    def _on_theme_changed(self) -> None:
         if self.theme_changed_callback:
             self.theme_changed_callback()
 
         # Rebuild the tab so the settings window updates visually too
         self._rebuild_tab()
 
-    def _rebuild_tab(self):
+    def _rebuild_tab(self) -> None:
         current_idx = self.config_tab.nav_list.currentRow()
         old_tab = self.config_tab
         self.config_tab = ConfigTab(theme_changed_callback=self._on_theme_changed)
@@ -63,7 +71,7 @@ class ConfigWindow(QMainWindow):
             self.config_tab.nav_list.setCurrentRow(current_idx)
         old_tab.deleteLater()
 
-    def _queue_config_change(self, changed_keys) -> None:
+    def _queue_config_change(self, changed_keys: set[str] | frozenset[str]) -> None:
         if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS | DIAGNOSTICS_SETTING_KEYS):
             self.language_changed_signal.emit()
 

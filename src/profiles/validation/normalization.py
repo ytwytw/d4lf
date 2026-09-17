@@ -1,36 +1,49 @@
 from typing import TYPE_CHECKING
 
-from src.item import ItemRarity
+from src.game_data import GameCatalog, ItemRarity, ItemType
 from src.perception import correct_name
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from src.profiles.affixes import AffixFilterCountModel
+    from src.type_aliases import YamlValue
 
 
-def _parse_item_type_or_rarities(data: str | list[str]) -> list[str]:
-    if isinstance(data, str):
-        return [data]
-    return data
+def _parse_item_type_or_rarities(data: str | ItemType | Sequence[str | ItemType]) -> list[str]:
+    values = [data] if isinstance(data, (str, ItemType)) else data
+    catalog = GameCatalog()
+    normalized: list[str] = []
+    for value in values:
+        if isinstance(value, ItemType):
+            normalized.append(value.value)
+            continue
+        item_type = catalog.item_type_from_text(value)
+        normalized.append(item_type.value if item_type else value)
+    return normalized
 
 
 def _validate_set_name(name: str | None, field_name: str) -> str | None:
     if not name:
         return None
 
-    # This on module level would be a circular import, so we do it lazy for now
-    from src.item import Dataloader  # ruff:ignore[import-outside-top-level]
-
     name = correct_name(name)
-    if name not in Dataloader().set_list:
+    if name not in GameCatalog().set_list:
         msg = f"{field_name} {name} does not exist"
         raise ValueError(msg)
     return name
 
 
-def _normalize_rarities(data: str | list[str] | list[ItemRarity]) -> list[str]:
-    values = [data] if isinstance(data, str) else data
-    values = [v.value if isinstance(v, ItemRarity) else v for v in values]
-    return [v.lower() if isinstance(v, str) else v for v in values]
+def _normalize_rarities(data: str | ItemRarity | int | Sequence[str | ItemRarity | int]) -> list[str]:
+    values = [data] if isinstance(data, (str, ItemRarity, int)) else data
+    normalized: list[str] = []
+    invalid_rarity_message = "rarities must be strings or item rarity values"
+    for value in values:
+        normalized_value = value.value if isinstance(value, ItemRarity) else value
+        if not isinstance(normalized_value, str):
+            raise ValueError(invalid_rarity_message)
+        normalized.append(normalized_value.lower())
+    return normalized
 
 
 def _normalize_tribute_names(data: str | list[str] | None) -> list[str]:
@@ -38,10 +51,7 @@ def _normalize_tribute_names(data: str | list[str] | None) -> list[str]:
         return []
     values = [data] if isinstance(data, str) else data
 
-    # This on module level would be a circular import, so we do it lazy for now
-    from src.item import Dataloader  # ruff:ignore[import-outside-top-level]
-
-    tribute_dict = Dataloader().tribute_dict
+    tribute_dict = GameCatalog().tribute_dict
     normalized_names: list[str] = []
     for name in values:
         if not name:
@@ -58,11 +68,11 @@ def _normalize_tribute_names(data: str | list[str] | None) -> list[str]:
     return normalized_names
 
 
-def _as_string_keyed_dict(data: object) -> dict[str, object] | None:
+def _as_string_keyed_dict(data: YamlValue) -> dict[str, YamlValue] | None:
     if not isinstance(data, dict):
         return None
 
-    normalized: dict[str, object] = {}
+    normalized: dict[str, YamlValue] = {}
     for key, value in data.items():
         if not isinstance(key, str):
             return None
@@ -70,7 +80,7 @@ def _as_string_keyed_dict(data: object) -> dict[str, object] | None:
     return normalized
 
 
-def _legacy_filter_values(value: object) -> list[object]:
+def _legacy_filter_values(value: YamlValue) -> list[YamlValue]:
     if isinstance(value, str) or value is None:
         return [value]
     if isinstance(value, list):

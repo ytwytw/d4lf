@@ -36,6 +36,7 @@ if TYPE_CHECKING:
     from pydantic import BaseModel
 
     from src.settings.store import SettingsStore
+    from src.settings.types import SettingValue
 CONFIG_TABNAME = "config"
 
 
@@ -53,9 +54,11 @@ class ConfigTabMixin:
 
     if TYPE_CHECKING:
 
-        def _add_setting_row(self, grid, row, model, section, key, val) -> None: ...
+        def _add_setting_row(
+            self, grid: QGridLayout, row: int, model: BaseModel, section: str, key: str, val: SettingValue
+        ) -> None: ...
 
-    def _filter_settings(self, text):
+    def _filter_settings(self, text: str) -> None:
         query = text.lower().strip()
         if query:
             # Condensed View: Move all groupboxes into the search layout
@@ -131,11 +134,11 @@ class ConfigTabMixin:
 
     def _save_setting_value(
         self,
-        model,
-        section_header,
-        key,
-        value,
-        method_to_reset_value: Callable[[object], None] | None = None,
+        model: BaseModel,
+        section_header: str,
+        key: str,
+        value: SettingValue,
+        method_to_reset_value: Callable[[SettingValue], None] | None = None,
         post_save_callback: Callable[[], None] | None = None,
     ) -> bool:
         result = self._settings_store.set_value(model, section_header, key, value)
@@ -157,7 +160,9 @@ class ConfigTabMixin:
             post_save_callback()
         return True
 
-    def _generate_params_section(self, model: BaseModel, section_readable_header: str, section_config_header: str):
+    def _generate_params_section(
+        self, model: BaseModel, section_readable_header: str, section_config_header: str
+    ) -> QGroupBox:
         group_box = QGroupBox(section_readable_header.replace("&", "&&"))
         grid = QGridLayout(group_box)
         grid.setSpacing(10)
@@ -168,14 +173,14 @@ class ConfigTabMixin:
         return group_box
 
     def _generate_parameter_value_widget(
-        self, model: BaseModel, section_config_header, config_key, config_value, is_hotkey
-    ):
+        self, model: BaseModel, section_config_header: str, config_key: str, config_value: SettingValue, is_hotkey: bool
+    ) -> QWidget:
         if config_key == "check_chest_tabs":
             if not isinstance(model, GeneralModel):
                 msg = "check_chest_tabs is only available in GeneralModel"
                 raise TypeError(msg)
             parameter_value_widget = QChestTabWidget(
-                model, section_config_header, config_key, config_value, self._save_setting_value
+                model, section_config_header, config_key, cast("list[int]", config_value), self._save_setting_value
             )
         elif config_key == "max_stash_tabs":
             if not isinstance(model, GeneralModel):
@@ -183,7 +188,7 @@ class ConfigTabMixin:
                 raise TypeError(msg)
             settings_model = model
 
-            def on_tabs_changed(val):
+            def on_tabs_changed(val: str) -> None:
                 if self._save_setting_value(settings_model, section_config_header, config_key, val):
                     # Refresh the stash tabs widget to show the correct number of checkboxes
                     tabs_widget = self.model_to_parameter_value_map.get(f"{section_config_header}.check_chest_tabs")
@@ -198,19 +203,23 @@ class ConfigTabMixin:
                 translate("settings.option.MoveItemsType.unmarked"): MoveItemsType.unmarked,
             }
 
-            def on_move_changed(val_str):
+            def on_move_changed(val_str: str) -> None:
                 self._save_setting_value(model, section_config_header, config_key, val_str)
 
-            parameter_value_widget = MultiSegmentedControl(items_map, config_value, on_move_changed)
+            parameter_value_widget = MultiSegmentedControl(
+                items_map, cast("list[MoveItemsType]", config_value), on_move_changed
+            )
         elif is_hotkey:
             parameter_value_widget = QHotkeyWidget(
                 model, section_config_header, config_key, str(config_value), self._save_setting_value
             )
         elif isinstance(config_value, enum.StrEnum):
             enum_type = type(config_value)
-            options = list(enum_type)
+            enum_options = list(enum_type)
+            options: list[SettingValue] = []
+            options.extend(str(option) for option in enum_options)
 
-            def on_changed(new_text):
+            def on_changed(new_text: str) -> None:
                 self._save_setting_value(
                     model,
                     section_config_header,
@@ -226,22 +235,24 @@ class ConfigTabMixin:
                     self.theme_changed_callback()
 
             if len(options) <= 3:
-                parameter_value_widget = SegmentedControl(options, config_value, on_changed, option_labels(options))
+                parameter_value_widget = SegmentedControl(
+                    options, config_value, on_changed, option_labels(enum_options)
+                )
             else:
-                combo_box = IgnoreScrollWheelComboBox()
-                labels = option_labels(options)
-                with QSignalBlocker(combo_box):
-                    for option in options:
-                        combo_box.addItem(labels[str(option)], str(option))
-                    combo_box.setCurrentIndex(combo_box.findData(str(config_value)))
-                combo_box.currentIndexChanged.connect(lambda: on_changed(combo_box.currentData()))
-                parameter_value_widget = combo_box
+                parameter_value_widget = IgnoreScrollWheelComboBox()
+                with QSignalBlocker(parameter_value_widget):
+                    parameter_value_widget.addItems([str(option) for option in options])
+                    parameter_value_widget.setCurrentText(config_value)
+                parameter_value_widget.currentTextChanged.connect(on_changed)
         elif isinstance(config_value, bool):
             checkbox = CheckmarkCheckBox()
             checkbox.setObjectName("switch")
             checkbox.setChecked(config_value)
+            if config_key in {"filter_equipment", "filter_sigils", "filter_tributes", "filter_seals", "filter_charms"}:
+                description = type(model).model_json_schema()["properties"].get(config_key, {}).get("description", "")
+                checkbox.setToolTip(description)
 
-            def on_bool_changed():
+            def on_bool_changed() -> None:
                 self._save_setting_value(
                     model,
                     section_config_header,

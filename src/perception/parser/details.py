@@ -2,7 +2,8 @@ import logging
 import re
 from typing import TYPE_CHECKING
 
-from src.item import Affix, AffixType, Aspect, Dataloader, ItemRarity, ItemType, is_armor, is_jewelry, is_weapon
+from src.game_data import GameCatalog, ItemRarity, ItemType, is_armor, is_jewelry, is_weapon
+from src.item import Affix, AffixType, Aspect
 from src.perception.text import correct_name
 
 if TYPE_CHECKING:
@@ -18,7 +19,7 @@ _DURATION_RES = (
 )
 
 
-def _update_item_object(item: Item, rarity=None, item_type=None) -> Item:
+def _update_item_object(item: Item, rarity: ItemRarity | None = None, item_type: ItemType | None = None) -> Item:
     if rarity:
         item.rarity = rarity
     if item_type:
@@ -51,7 +52,7 @@ def _get_affix_starting_location_from_tts_section(tts_section: list[str], item: 
 
 def _skip_armory_loadout_banner(tts_section: list[str], index: int) -> int:
     """Equipped seals/charms may show an "Armory Loadout" banner right after Item Power; skip past it."""
-    if index < len(tts_section) and Dataloader().grammar.contains("armory_loadout", tts_section[index]):
+    if index < len(tts_section) and GameCatalog().grammar.contains("armory_loadout", tts_section[index]):
         return index + 1
     return index
 
@@ -59,7 +60,7 @@ def _skip_armory_loadout_banner(tts_section: list[str], index: int) -> int:
 def _get_index_of_armor_dps_or_all_resist(tts_section: list[str], indicator: str) -> int:
     for i, line in enumerate(tts_section):
         clean_line = keep_letters_and_spaces(_REPLACE_COMPARE_RE.sub("", line.lower())).strip()
-        if Dataloader().grammar.equals(indicator, clean_line):
+        if GameCatalog().grammar.equals(indicator, clean_line):
             return i
 
     return 0
@@ -73,18 +74,18 @@ def _get_index_after_item_power(tts_section: list[str], fallback: int) -> int:
     when Diablo inserts extra lines above it, e.g. an Armory loadout banner on equipped charms/seals.
     """
     for i, line in enumerate(tts_section):
-        if Dataloader().grammar.contains("item_power", line):
+        if GameCatalog().grammar.contains("item_power", line):
             return i + 1
 
     LOGGER.warning(f"Could not find 'Item Power' line in TTS section, falling back to index {fallback}: {tts_section}")
     return fallback
 
 
-def _get_affixes_from_tts_section(tts_section: list[str], start: int, length: int):
+def _get_affixes_from_tts_section(tts_section: list[str], start: int, length: int) -> list[str]:
     return tts_section[start : start + length]
 
 
-def _get_aspect_or_set_from_tts_section(tts_section: list[str], item: Item, start: int, num_affixes: int):
+def _get_aspect_or_set_from_tts_section(tts_section: list[str], item: Item, start: int, num_affixes: int) -> str | None:
     if item.item_type == ItemType.HoradricSeal and item.rarity == ItemRarity.Legendary:
         return None
     # Grab the aspect/set as well in this case
@@ -101,10 +102,10 @@ def _get_aspect_or_set_from_tts_section(tts_section: list[str], item: Item, star
 
 
 def _get_set_from_text(set_text: str) -> str | None:
-    set_name = Dataloader().resolve_set(set_text) or correct_name(set_text) or ""
-    if set_name in Dataloader().bad_tts_uniques:
-        set_name = Dataloader().bad_tts_uniques[set_name]
-    if set_name in Dataloader().set_dict:
+    set_name = correct_name(set_text)
+    if set_name in GameCatalog().bad_tts_uniques:
+        set_name = GameCatalog().bad_tts_uniques[set_name]
+    if set_name in GameCatalog().set_list:
         return set_name
     return None
 
@@ -125,7 +126,7 @@ def _affix_range_precision(text: str) -> str | None:
 def _resolve_affix_name(text: str, item_type: ItemType | None = None, *, exact: bool = False) -> str | None:
     display_text = keep_letters_and_spaces(_REPLACE_COMPARE_RE.sub("", text).strip())
     display_text = re.sub(r"^[xX]\s+", "", display_text)
-    catalog = Dataloader()
+    catalog = GameCatalog()
     resolver = catalog.resolve_affix_exact if exact else catalog.resolve_affix
     return resolver(
         display_text,
@@ -174,7 +175,7 @@ def _get_affix_from_text(text: str, item_type: ItemType | None = None) -> Affix:
         result.min_value = float(only_value)
         result.max_value = float(only_value)
 
-    if Dataloader().grammar.contains("charm_slot", text):
+    if GameCatalog().grammar.contains("charm_slot", text):
         result.type = AffixType.normal
 
     resolved_name = _resolve_affix_name(result.text, item_type)
@@ -185,7 +186,7 @@ def _get_affix_from_text(text: str, item_type: ItemType | None = None) -> Affix:
     return result
 
 
-def _has_numbers(affix_text):
+def _has_numbers(affix_text: str) -> bool:
     return any(char.isdigit() for char in affix_text)
 
 
@@ -194,6 +195,14 @@ def _clean_value_text(text: str) -> str:
     for x in _AFFIX_REPLACEMENTS:
         text = text.replace(x, "")
     return _REPLACE_COMPARE_RE.sub("", text).strip()
+
+
+def _get_affix_dictionary(item_type: ItemType | None) -> dict[str, str]:
+    if item_type == ItemType.HoradricSeal:
+        return GameCatalog().affix_dict | GameCatalog().seal_affix_dict
+    if item_type == ItemType.Charm:
+        return GameCatalog().affix_dict | GameCatalog().charm_affix_dict
+    return GameCatalog().affix_dict
 
 
 def _is_known_affix_text(text: str, item_type: ItemType | None) -> bool:
@@ -224,15 +233,16 @@ def _get_aspect_from_text(text: str, name: str) -> Aspect:
 
 # For legendary aspects
 def _get_aspect_from_name(text: str, name: str) -> Aspect | None:
-    if aspect_name := Dataloader().resolve_aspect(name):
-        return Aspect(text=text, name=aspect_name)
+    for aspect_name in GameCatalog().aspect_list:
+        if aspect_name in name:
+            return Aspect(text=text, name=aspect_name)
 
     LOGGER.warning(f"Could not find an aspect representing {name} in our data.")
     return None
 
 
 def _get_item_rarity(data: str) -> ItemRarity | None:
-    catalog = Dataloader()
+    catalog = GameCatalog()
     normalized = catalog.grammar.strip_terms(data, "ancestral", "bloodied")
     rarity_name = catalog.grammar.rarity_name(normalized)
     if isinstance(rarity_name, str) and rarity_name in ItemRarity.__members__:
@@ -240,18 +250,35 @@ def _get_item_rarity(data: str) -> ItemRarity | None:
     return ItemRarity.Common if catalog.resolve_item_type(normalized) else None
 
 
-def _get_item_type(data: str):
-    item_type_name = Dataloader().resolve_item_type(data)
-    return (
-        ItemType[item_type_name] if isinstance(item_type_name, str) and item_type_name in ItemType.__members__ else None
+def _get_item_type(data: str) -> ItemType | None:
+    return GameCatalog().item_type_from_text(data)
+
+
+def _item_type_text_matches(data: str, item_type: ItemType) -> bool:
+    normalized = data.strip().casefold()
+    return any(normalized == candidate.strip().casefold() for candidate in GameCatalog().item_type_names(item_type))
+
+
+def _has_item_type_suffix(data: str, item_type: ItemType) -> bool:
+    normalized = data.strip().casefold()
+    return any(
+        normalized.endswith(candidate.strip().casefold()) for candidate in GameCatalog().item_type_names(item_type)
+    )
+
+
+def _has_item_type_prefix(data: str, item_type: ItemType) -> bool:
+    normalized = data.strip().casefold()
+    return any(
+        normalized.startswith(candidate.strip().casefold()) for candidate in GameCatalog().item_type_names(item_type)
     )
 
 
 def _is_codex_upgrade(tts_section: list[str]) -> bool:
-    grammar = Dataloader().grammar
-    return any(grammar.contains("codex_upgrade", line) for line in tts_section)
+    return any(
+        "upgrades an aspect in the codex of power" in line.lower() or "unlocks new aspect" in line.lower()
+        for line in tts_section
+    )
 
 
-def _is_cosmetic_upgrade(tts_section: list[str]):
-    grammar = Dataloader().grammar
-    return any(grammar.contains("cosmetic_upgrade", line) for line in tts_section)
+def _is_cosmetic_upgrade(tts_section: list[str]) -> bool:
+    return any("unlocks new look on salvage" in line.lower() for line in tts_section)

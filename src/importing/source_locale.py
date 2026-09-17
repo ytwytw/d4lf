@@ -2,8 +2,9 @@
 
 import json
 from functools import cache
+from typing import cast
 
-from src.item import ItemType
+from src.game_data import ItemType
 from src.locale_data import normalize_locale_text
 from src.settings import BASE_DIR
 
@@ -26,7 +27,7 @@ def _load_string_map(locale: str, file_name: str) -> dict[str, str]:
     ):
         msg = f"Invalid source data in {locale}/{file_name}"
         raise ValueError(msg)
-    return data
+    return cast("dict[str, str]", data)
 
 
 @cache
@@ -69,7 +70,7 @@ def source_set_names(source_locale: str = "enUS") -> tuple[str, ...]:
     with path.open(encoding="utf-8") as source:
         data = json.load(source)
     if isinstance(data, list) and all(isinstance(value, str) for value in data):
-        return tuple(data)
+        return tuple(cast("list[str]", data))
     if isinstance(data, dict) and all(isinstance(value, str) for value in data):
         return tuple(str(key) for key in data)
     msg = f"Invalid source data in {source_locale}/sets.json"

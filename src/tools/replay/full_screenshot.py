@@ -65,7 +65,7 @@ def validate_replay_config(config: ReplayConfig) -> tuple[Path, np.ndarray]:
     if (
         not isinstance(anchor, (tuple, list))
         or len(anchor) != 2
-        or any(not isinstance(value, int) or isinstance(value, bool) for value in anchor)
+        or any(isinstance(value, bool) for value in anchor)
         or any(value < 0 for value in anchor)
     ):
         _raise_configuration_error("Item anchor must be a pair of non-negative integers.")
@@ -93,7 +93,7 @@ def _log_detection(detection: DescrDetection) -> None:
     LOGGER.info("Full replay detection: found=%s failure_reason=%s", detection.found, detection.failure_reason)
 
 
-def _draw_match(image: np.ndarray, label: str, match, color: tuple[int, int, int]) -> None:
+def _draw_match(image: np.ndarray, label: str, match: TemplateMatch, color: tuple[int, int, int]) -> None:
     x, y, width, height = match.region
     font_scale = _font_scale(image)
     cv2.rectangle(image, (x, y), (x + width, y + height), color, 3)

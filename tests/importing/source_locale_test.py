@@ -1,5 +1,5 @@
+from src.game_data import ItemType
 from src.importing.source_locale import match_source_affix, source_affix_dict_for_item_type
-from src.item import ItemType
 
 
 def test_source_affix_catalog_is_selected_explicitly() -> None:

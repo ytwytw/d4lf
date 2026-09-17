@@ -2,6 +2,7 @@ import logging
 import re
 from typing import TYPE_CHECKING
 
+from src.game_data import ItemRarity, ItemType
 from src.importing.conversion import as_string_keyed_mapping as _as_mapping
 from src.importing.conversion import as_string_keyed_mapping_list as _as_mapping_list
 from src.importing.conversion import as_text as _as_text
@@ -11,11 +12,13 @@ from src.importing.maxroll.constants import (
     SKILL_RANK_DESC_LABEL_REGEX,
 )
 from src.importing.source_locale import source_affix_dict_for_item_type
-from src.item import Affix, AffixType, ItemRarity, ItemType
+from src.item import Affix, AffixType
 from src.perception import clean_str, closest_match
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
+
+    from src.type_aliases import JsonValue
 
 
 LOGGER = logging.getLogger(__name__)
@@ -32,10 +35,12 @@ def _attribute_description_corrections(input_str: str) -> str:
     return input_str.lower()
 
 
-def _find_item_rarity(resolved_item_id, mapping_data) -> ItemRarity:
+def _find_item_rarity(resolved_item_id: str, mapping_data: Mapping[str, JsonValue]) -> ItemRarity:
     # magic/rare = 0, legendary = 1, unique = 2, set = 3, mythic = 4
-    if resolved_item_id in mapping_data["items"]:
-        rarity_id = mapping_data["items"][resolved_item_id]["magicType"]
+    items = _as_mapping(mapping_data.get("items"))
+    item = _as_mapping(items.get(resolved_item_id))
+    if item:
+        rarity_id = item.get("magicType")
         if rarity_id == 1:
             return ItemRarity.Legendary
         if rarity_id == 2:
@@ -48,10 +53,9 @@ def _find_item_rarity(resolved_item_id, mapping_data) -> ItemRarity:
     return ItemRarity.Common
 
 
-def _as_text_mapping(value: object) -> Mapping[str, str]:
-    if not isinstance(value, dict):
-        return {}
-    return {key: item for key, item in value.items() if isinstance(key, str) and isinstance(item, str)}
+def _as_text_mapping(value: JsonValue) -> Mapping[str, str]:
+    mapping = _as_mapping(value)
+    return {key: item for key, item in mapping.items() if isinstance(item, str)}
 
 
 def _attr_desc_special_handling(affix_id: int | str) -> str:
@@ -59,8 +63,8 @@ def _attr_desc_special_handling(affix_id: int | str) -> str:
 
 
 def _find_item_affixes(
-    mapping_data: Mapping[str, object],
-    item_affixes: Sequence[Mapping[str, object]],
+    mapping_data: Mapping[str, JsonValue],
+    item_affixes: Sequence[Mapping[str, JsonValue]],
     item_type: ItemType,
     import_greater_affixes: bool = False,
 ) -> list[Affix]:
@@ -163,10 +167,11 @@ def _find_item_affixes(
                 continue
 
             affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
-            affix_obj = Affix(name=closest_match(clean_str(clean_desc), affix_dict))
-            if import_greater_affixes and affix_id.get("greater") is True:
-                affix_obj.type = AffixType.greater
-            if affix_obj.name is not None:
+            matched_name = closest_match(clean_str(clean_desc), affix_dict)
+            if matched_name is not None:
+                affix_obj = Affix(name=matched_name)
+                if import_greater_affixes and affix_id.get("greater") is True:
+                    affix_obj.type = AffixType.greater
                 res.append(affix_obj)
             elif (
                 attributes_list
@@ -181,7 +186,7 @@ def _find_item_affixes(
 
 
 def _find_skill_rank_affix_description(
-    mapping_data: Mapping[str, object], affix_key: str, attribute: Mapping[str, object]
+    mapping_data: Mapping[str, JsonValue], affix_key: str, attribute: Mapping[str, JsonValue]
 ) -> str:
     if attribute.get("formula") not in SKILL_RANK_BONUS_FORMULAS:
         return ""
@@ -194,7 +199,7 @@ def _find_skill_rank_affix_description(
     return ""
 
 
-def _find_skill_rank_label_from_descriptions(mapping_data: Mapping[str, object], param: int | None) -> str:
+def _find_skill_rank_label_from_descriptions(mapping_data: Mapping[str, JsonValue], param: int | None) -> str:
     if param is None:
         return ""
     for raw_affix in _as_mapping(mapping_data.get("affixes")).values():
@@ -205,7 +210,7 @@ def _find_skill_rank_label_from_descriptions(mapping_data: Mapping[str, object],
         ):
             continue
         if match := SKILL_RANK_DESC_LABEL_REGEX.search(_as_text(affix.get("desc"))):
-            return match.group(1)
+            return str(match.group(1))
     return ""
 
 

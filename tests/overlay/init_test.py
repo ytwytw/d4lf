@@ -2,12 +2,12 @@ from src import overlay
 from src.overlay import tracking as _tracking
 
 
-def test_overlay_facade_exposes_lifecycle_and_tracking_contract():
+def test_overlay_facade_exposes_lifecycle_and_tracking_contract() -> None:
     expected = {
         "InventoryExpTracker",
         "SessionStats",
-        "is_info_overlay_open",
-        "open_boss_timer_overlay",
+        "is_open",
+        "open_overlay",
         "request_close",
         "set_busy_checker",
         "update_stats",
@@ -16,7 +16,7 @@ def test_overlay_facade_exposes_lifecycle_and_tracking_contract():
     assert all(hasattr(overlay, name) for name in expected)
 
 
-def test_overlay_facade_delegates_busy_check(monkeypatch):
+def test_overlay_facade_delegates_busy_check(monkeypatch) -> None:
     overlay.set_busy_checker(lambda: True)
 
     assert _tracking._busy_checker()

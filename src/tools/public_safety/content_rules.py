@@ -99,7 +99,7 @@ _CAPTURE_DIGEST_FIELD = '"input_' + 'sha256"'
 
 def _email_allowed(match: re.Match[str]) -> bool:
     domain = match.group(1).casefold()
-    return domain in _ALLOWED_EMAIL_DOMAINS or domain.endswith(".invalid")
+    return bool(domain in _ALLOWED_EMAIL_DOMAINS or domain.endswith(".invalid"))
 
 
 def _denylist_findings(path: str, payload: bytes, text: str | None, deny_terms: Sequence[str]) -> list[Finding]:

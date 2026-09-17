@@ -2,7 +2,7 @@
 
 import logging
 from contextlib import suppress
-from typing import Any, override
+from typing import TYPE_CHECKING, override
 
 from PyQt6.QtCore import QEvent, QPoint, QSettings, QSize
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon
@@ -12,14 +12,18 @@ from src.app.assets import ICON_PATH
 from src.diagnostics.tts_capture import APP_TTS_CAPTURE
 from src.localization import translate
 
+if TYPE_CHECKING:
+    from src.app.dashboard import ActivityLogWidget
+    from src.desktop.activity import QtLogHandler
+
 
 class UnifiedWindowLifecycle(QMainWindow):
     _child_windows: dict[str, QMainWindow]
-    activity_tab: Any
-    console_handler: Any
+    activity_tab: ActivityLogWidget
+    console_handler: QtLogHandler
     tabs: QTabWidget
 
-    def _setup_tray(self):
+    def _setup_tray(self) -> None:
         """Initialize the system tray icon and its context menu."""
         self.tray_icon = QSystemTrayIcon(self)
         if ICON_PATH.exists():
@@ -37,15 +41,15 @@ class UnifiedWindowLifecycle(QMainWindow):
         self.tray_icon.setToolTip(translate("app.tray_title"))
         self.tray_icon.show()
 
-    def _on_tray_icon_activated(self, reason):
+    def _on_tray_icon_activated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
             self._restore_from_tray()
 
-    def _restore_from_tray(self):
+    def _restore_from_tray(self) -> None:
         self.showNormal()
         self.activateWindow()
 
-    def restore_geometry(self):
+    def restore_geometry(self) -> None:
         settings = QSettings("d4lf", "mainwindow")
         size = settings.value("size", QSize(1000, 800))
         pos = settings.value("pos", QPoint(100, 100))
@@ -59,7 +63,7 @@ class UnifiedWindowLifecycle(QMainWindow):
             settings.value("minimize_to_tray", False, type=bool)  # ruff:ignore[boolean-positional-value-in-call]
         )
 
-    def save_geometry(self):
+    def save_geometry(self) -> None:
         settings = QSettings("d4lf", "mainwindow")
         if not self.isMaximized():
             settings.setValue("size", self.size())
@@ -69,7 +73,7 @@ class UnifiedWindowLifecycle(QMainWindow):
         settings.setValue("minimize_to_tray", self.activity_tab.minimize_to_tray_cb.isChecked())
 
     @override
-    def changeEvent(self, a0: QEvent | None):
+    def changeEvent(self, a0: QEvent | None) -> None:
         event = a0
         if (
             event is not None
@@ -81,7 +85,7 @@ class UnifiedWindowLifecycle(QMainWindow):
         super().changeEvent(event)
 
     @override
-    def closeEvent(self, a0: QCloseEvent | None):
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
         event = a0
         if APP_TTS_CAPTURE.is_active:
             with suppress(Exception):

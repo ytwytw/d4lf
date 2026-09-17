@@ -4,7 +4,7 @@ import math
 import queue
 import tkinter as tk
 from tkinter.font import Font
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -18,11 +18,19 @@ DARK_GRAY_BG = "#111111"
 
 if TYPE_CHECKING:
     from src.item import FilterResult
+    from src.loot.highlighting import _VisionModeWithHighlighting
     from src.perception import LocatorResult
 
 
 class HighlightingRenderer:
-    def draw_rect(self: Any, canvas: tk.Canvas, bullet_width: int, loc: tuple[int, int], off: int, color: str) -> None:
+    def draw_rect(
+        self: _VisionModeWithHighlighting,
+        canvas: tk.Canvas,
+        bullet_width: int,
+        loc: tuple[int, int],
+        off: int,
+        color: str,
+    ) -> None:
         offset_loc = np.array(loc) + off
         x1 = int(offset_loc[0] - bullet_width / 2)
         y1 = int(offset_loc[1] - bullet_width / 2)
@@ -31,7 +39,13 @@ class HighlightingRenderer:
         canvas.create_rectangle(x1, y1, x2, y2, fill=color)
 
     def draw_text(
-        self: Any, canvas: tk.Canvas, text: str, color: str, previous_text_y: int, offset: int, canvas_center_x: int
+        self: _VisionModeWithHighlighting,
+        canvas: tk.Canvas,
+        text: str,
+        color: str,
+        previous_text_y: int,
+        offset: int,
+        canvas_center_x: int,
     ) -> int:
         if not text:
             return previous_text_y
@@ -84,7 +98,9 @@ class HighlightingRenderer:
         )
         return int(previous_text_y - offset - text_height)
 
-    def create_signal_rect(self: Any, canvas, w, thick, color):
+    def create_signal_rect(
+        self: _VisionModeWithHighlighting, canvas: tk.Canvas, w: int, thick: int, color: str
+    ) -> None:
         canvas.create_rectangle(0, 0, w, thick * 2, outline="", fill=color)
         steps = int((thick * 20) / 40)
         for i in range(100):
@@ -103,7 +119,7 @@ class HighlightingRenderer:
             canvas.create_rectangle(0, start_y, thick * 2, end_y, fill=color, outline="", stipple=stipple)
             canvas.create_rectangle(w - thick * 2, start_y, w, end_y, fill=color, outline="", stipple=stipple)
 
-    def draw_from_queue(self: Any):
+    def draw_from_queue(self: _VisionModeWithHighlighting) -> None:
         try:
             task = self.queue.get_nowait()
             # LOGGER.debug(f"Queue size: {self.queue.qsize()}, task: {task}")
@@ -127,7 +143,9 @@ class HighlightingRenderer:
 
         self.canvas.after(10, self.draw_from_queue)
 
-    def draw_empty_outline(self: Any, item_roi, color, text: str | None):
+    def draw_empty_outline(
+        self: _VisionModeWithHighlighting, item_roi: tuple[int, int, int, int], color: str, text: str | None
+    ) -> None:
         reset_canvas(self.root, self.canvas)
 
         x, y, w, h, off = self.get_coords_from_roi(item_roi)
@@ -141,7 +159,12 @@ class HighlightingRenderer:
         self.root.update_idletasks()
         self.root.update()
 
-    def draw_match_outline(self: Any, item_roi, should_keep_res, locator_result: LocatorResult | None):
+    def draw_match_outline(
+        self: _VisionModeWithHighlighting,
+        item_roi: tuple[int, int, int, int],
+        should_keep_res: FilterResult,
+        locator_result: LocatorResult | None,
+    ) -> None:
         reset_canvas(self.root, self.canvas)
 
         x, y, w, h, off = self.get_coords_from_roi(item_roi)
@@ -165,7 +188,7 @@ class HighlightingRenderer:
         self.root.update_idletasks()
         self.root.update()
 
-    def draw_no_match_outline(self: Any, item_roi):
+    def draw_no_match_outline(self: _VisionModeWithHighlighting, item_roi: tuple[int, int, int, int]) -> None:
         reset_canvas(self.root, self.canvas)
 
         x, y, w, h, off = self.get_coords_from_roi(item_roi)
@@ -175,7 +198,9 @@ class HighlightingRenderer:
         self.root.update_idletasks()
         self.root.update()
 
-    def draw_codex_upgrade_outline(self: Any, item_roi, should_keep_result: FilterResult):
+    def draw_codex_upgrade_outline(
+        self: _VisionModeWithHighlighting, item_roi: tuple[int, int, int, int], should_keep_result: FilterResult
+    ) -> None:
         reset_canvas(self.root, self.canvas)
 
         x, y, w, h, off = self.get_coords_from_roi(item_roi)
@@ -200,7 +225,9 @@ class HighlightingRenderer:
         self.root.update_idletasks()
         self.root.update()
 
-    def get_coords_from_roi(self: Any, item_roi):
+    def get_coords_from_roi(
+        self: _VisionModeWithHighlighting, item_roi: tuple[int, int, int, int]
+    ) -> tuple[int, int, int, int, int]:
         x, y, w, h = item_roi
         off = int(w * 0.1)
         x -= off

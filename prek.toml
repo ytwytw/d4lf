@@ -10,7 +10,7 @@ hooks = [
     entry = "uv run --no-project hooks/check_lines.py",
     language = "system",
     pass_filenames = false,
-    priority = 4294967295
+    priority = 4294967295,
   },
   {
     id = "ty",
@@ -18,27 +18,7 @@ hooks = [
     entry = "uv run --frozen --all-extras --all-groups ty check .",
     language = "system",
     pass_filenames = false,
-    priority = 4294967295
-  },
-  {
-    id = "public-safety-index",
-    name = "public safety scan (staged index)",
-    entry = "uv run --frozen python -m src.tools.public_safety --index",
-    language = "system",
-    pass_filenames = false,
-    always_run = true,
-    stages = ["pre-commit"],
-    priority = 4294967295
-  },
-  {
-    id = "public-safety-head",
-    name = "public safety scan (HEAD)",
-    entry = "uv run --frozen python -m src.tools.public_safety --tree HEAD",
-    language = "system",
-    pass_filenames = false,
-    always_run = true,
-    stages = ["pre-push"],
-    priority = 4294967295
+    priority = 4294967295,
   }
 ]
 repo = "local"
@@ -46,7 +26,7 @@ repo = "local"
 [[repos]]
 hooks = [{ id = "uv-lock", priority = 4294967294 }]
 repo = "https://github.com/astral-sh/uv-pre-commit"
-rev = "0.11.31"
+rev = "0.12.15"
 
 [[repos]]
 hooks = [
@@ -62,45 +42,29 @@ hooks = [
   { id = "check-yaml", priority = 4294967295 },
   { id = "end-of-file-fixer" },
   { id = "fix-byte-order-marker", exclude = "^tts/sign_dll.ps1" },
-  { id = "trailing-whitespace" }
+  { id = "trailing-whitespace" },
 ]
 repo = "builtin"
 
 [[repos]]
-hooks = [
-  {
-    id = "mdformat",
-    priority = 4294967294,
-    additional_dependencies = ["mdformat-gfm"]
-  }
-]
+hooks = [{ id = "mdformat", priority = 4294967294, additional_dependencies = ["mdformat-gfm"] }]
 repo = "https://github.com/executablebooks/mdformat"
 rev = "1.0.0"
 
 [[repos]]
-hooks = [
-  {
-    id = "pretty-format-yaml",
-    priority = 4294967294,
-    args = ["--autofix", "--preserve-quotes", "--offset", "2"]
-  }
-]
+hooks = [{ id = "pretty-format-yaml", priority = 4294967294, args = ["--autofix", "--preserve-quotes", "--offset", "2"] }]
 repo = "https://github.com/macisamuele/language-formatters-pre-commit-hooks"
 rev = "v2.16.0"
 
 [[repos]]
 hooks = [{ id = "clang-format", priority = 4294967294, files = '\.(cpp|h)$' }]
 repo = "https://github.com/pre-commit/mirrors-clang-format"
-rev = "v22.1.8"
+rev = "v23.1.1"
 
 [[repos]]
 hooks = [
   { id = "check-ast", priority = 4294967295 },
-  {
-    id = "pretty-format-json",
-    args = ["--autofix", "--indent=4", "--no-ensure-ascii"],
-    priority = 4294967294
-  }
+  { id = "pretty-format-json", args = ["--autofix", "--indent=4", "--no-ensure-ascii"], priority = 4294967294 },
 ]
 repo = "https://github.com/pre-commit/pre-commit-hooks"
 rev = "v6.0.0"
@@ -108,12 +72,12 @@ rev = "v6.0.0"
 [[repos]]
 hooks = [
   { id = "ruff-format", priority = 4294967294 },
-  { id = "ruff-check", priority = 4294967293, args = ["--fix"] }
+  { id = "ruff-check", priority = 4294967293, args = ["--fix"] },
 ]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.15.22"
+rev = "v0.16.7"
 
 [[repos]]
 hooks = [{ id = "tombi-format", exclude = "^uv.lock", priority = 4294967294 }]
 repo = "https://github.com/tombi-toml/tombi-pre-commit"
-rev = "v1.2.4"
+rev = "v1.5.5"

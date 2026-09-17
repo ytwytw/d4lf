@@ -48,7 +48,7 @@ def test_listener_recovers_after_one_tts_line_fails(monkeypatch, caplog) -> None
             assert raw_data == "good raw tts"
             return ["good raw tts"]
 
-    monkeypatch.setattr(listener, "Dataloader", lambda: SimpleNamespace(grammar=SimpleNamespace(locale="enUS")))
+    monkeypatch.setattr(listener, "GameCatalog", lambda: SimpleNamespace(grammar=SimpleNamespace(locale="enUS")))
     monkeypatch.setattr(listener, "TtsFramer", lambda *_args: Framer())
     monkeypatch.setattr(listener._DATA_QUEUE, "get", lambda: next(queued))
     monkeypatch.setattr(listener, "record_raw_tts", recorded.append)

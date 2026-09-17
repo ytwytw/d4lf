@@ -19,7 +19,7 @@ def _read_test_image(name: str) -> np.ndarray:
     return image
 
 
-def test_search():
+def test_search() -> None:
     """Test default search behavior (first match)."""
     image = _read_test_image("stash_slots.png")
     slash = _read_test_image("stash_slot_slash.png")
@@ -30,7 +30,7 @@ def test_search():
     assert threshold <= match.score <= 1
 
 
-def test_search_best_match():
+def test_search_best_match() -> None:
     """Test search "best_match" behavior."""
     image = _read_test_image("stash_slots.png")
     slash = _read_test_image("stash_slot_slash.png")
@@ -42,7 +42,7 @@ def test_search_best_match():
     assert is_point_in_roi(slash_expected_roi, match.center)
 
 
-def test_search_all():
+def test_search_all() -> None:
     """Test all matches for a single template in argument."""
     image = _read_test_image("stash_slots.png")
     empty = _read_test_image("stash_slot_empty.png")
@@ -51,7 +51,7 @@ def test_search_all():
     assert len(matches) == 3
 
 
-def test_search_all_multiple_templates():
+def test_search_all_multiple_templates() -> None:
     """Test all matches with multiple templates in argument."""
     image = _read_test_image("stash_slots.png")
     empty = _read_test_image("stash_slot_empty.png")
@@ -61,24 +61,20 @@ def test_search_all_multiple_templates():
     assert len(matches) == 4
 
 
-def test_search_all_stops_when_condition_is_met():
+def test_search_all_stops_when_condition_is_met() -> None:
     """Test all matches can stop early once callers have enough matches."""
     image = _read_test_image("stash_slots.png")
     empty = _read_test_image("stash_slot_empty.png")
 
     result = matching.search(
-        empty,
-        image,
-        threshold=0.98,
-        mode="all",
-        do_multi_process=False,
-        stop_condition=lambda matches: len(matches) >= 2,
+        empty, image, threshold=0.98, mode="all", use_parallel=False, stop_condition=lambda matches: len(matches) >= 2
     )
 
     assert len(result.matches) == 2
 
 
-def test_parallel_stop_condition_preserves_template_order(mocker):
+@pytest.mark.parametrize("mode", ["all", "first"])
+def test_parallel_stop_condition_preserves_template_order(mocker, mode: str) -> None:
     """A fast lower-priority template must not win a parallel early-stop search."""
     correct_template = Template(name="correct")
     false_template = Template(name="false")
@@ -98,15 +94,15 @@ def test_parallel_stop_condition_preserves_template_order(mocker):
 
     mocker.patch("src.perception.matching.engine._get_cv_result", side_effect=fake_get_cv_result)
     executor = ThreadPoolExecutor(max_workers=2)
-    mocker.patch("src.perception.matching.engine.TP", executor)
 
     try:
         result = matching.search(
             ref=["correct", "false"],
             inp_img=np.zeros((10, 10, 3), dtype=np.uint8),
             threshold=0.8,
-            mode="all",
+            mode=mode,
             stop_condition=lambda matches: len(matches) >= 1,
+            _executor=executor,
         )
     finally:
         executor.shutdown(wait=True)
@@ -114,7 +110,21 @@ def test_parallel_stop_condition_preserves_template_order(mocker):
     assert [match.name for match in result.matches] == ["correct"]
 
 
-def test_process_template_refs_preserves_transparent_template_mask():
+def test_parallel_polling_reuses_one_owned_executor(mocker) -> None:
+    templates = [Template(name="first"), Template(name="second")]
+    mocker.patch("src.perception.matching.engine._process_template_refs", return_value=templates)
+    mocker.patch("src.perception.matching.engine._find_template_matches", return_value=[])
+    executor_type = mocker.patch("src.perception.matching.engine.ThreadPoolExecutor", wraps=ThreadPoolExecutor)
+    clock = iter((0.0, 0.0, 0.5, 1.0))
+    mocker.patch("src.perception.matching.engine.time.monotonic", side_effect=clock)
+
+    result = matching.search(ref=["first", "second"], inp_img=np.zeros((2, 2, 3), dtype=np.uint8), timeout=1)
+
+    assert not result.success
+    assert executor_type.call_count == 1
+
+
+def test_process_template_refs_preserves_transparent_template_mask() -> None:
     image = np.full((4, 4, 4), 255, dtype=np.uint8)
     image[0, 0, 3] = 0
 
@@ -125,7 +135,7 @@ def test_process_template_refs_preserves_transparent_template_mask():
     assert template.alpha_mask[1, 1] == 255
 
 
-def test_search_rejects_missing_named_roi(monkeypatch):
+def test_search_rejects_missing_named_roi(monkeypatch) -> None:
     image = _read_test_image("stash_slots.png")
     template = _read_test_image("stash_slot_cross.png")
 
@@ -135,7 +145,7 @@ def test_search_rejects_missing_named_roi(monkeypatch):
     class EmptyResources:
         roi = EmptyRoi()
 
-    monkeypatch.setattr(matching, "get_ui_coordinates", lambda: EmptyResources())
+    monkeypatch.setattr("src.perception.matching.resources.get_ui_coordinates", lambda: EmptyResources())
 
     with pytest.raises(ValueError, match="Invalid roi key: missing"):
         matching.search(template, image, threshold=0.6, roi="missing")

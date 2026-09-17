@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from src.item import ItemType, is_weapon
+from src.game_data import GameCatalog, ItemType, is_weapon
 
 AFFIXES_TABNAME = "Affixes"
 AFFIX_VALUE_MODE = "Value"
@@ -20,7 +20,7 @@ UNIQUE_ASPECTS_TITLE = "Unique Aspects"
 
 
 class ItemTypePicker(QDialog):
-    def __init__(self, parent: QWidget | None, item_types: list[ItemType], selected_item_types: list[ItemType]):
+    def __init__(self, parent: QWidget | None, item_types: list[ItemType], selected_item_types: list[ItemType]) -> None:
         super().__init__(parent)
         self.setWindowTitle("Select Item Types")
         self.resize(650, 500)
@@ -66,7 +66,7 @@ class ItemTypePicker(QDialog):
         content_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         for item_type in item_types:
-            checkbox = QCheckBox(item_type.value)
+            checkbox = QCheckBox(GameCatalog().item_type_label(item_type))
             checkbox.setChecked(item_type in selected_item_types)
             self.checkboxes[item_type] = checkbox
             content_layout.addWidget(checkbox)
@@ -75,7 +75,7 @@ class ItemTypePicker(QDialog):
         group_layout.addWidget(scroll_area)
         return group_box
 
-    def clear_selection(self):
+    def clear_selection(self) -> None:
         for checkbox in self.checkboxes.values():
             checkbox.setChecked(False)
 

@@ -5,9 +5,9 @@ import pathlib
 import subprocess
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import psutil
+from PyQt6.QtWidgets import QMessageBox, QWidget
 
 from src.settings import SettingsLoadError, VisionModeType, get_settings
 
@@ -15,14 +15,9 @@ REPOSITORY_URL = "https://github.com/ytwytw/d4lf"
 SETUP_INSTRUCTIONS_URL = f"{REPOSITORY_URL}/blob/zhcn-v10/README.md#安装"
 LOGGER = logging.getLogger(__name__)
 
-if TYPE_CHECKING:
-    from PyQt6.QtWidgets import QWidget
-
 
 def show_settings_load_error(error: SettingsLoadError, parent: QWidget | None = None) -> None:
     """Show the startup settings failure without allowing the app to continue."""
-    from PyQt6.QtWidgets import QMessageBox  # ruff:ignore[import-outside-top-level]
-
     QMessageBox.critical(
         parent,
         "D4LF settings error",

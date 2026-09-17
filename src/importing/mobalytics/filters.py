@@ -1,10 +1,11 @@
 """Convert one Mobalytics variant's slots to normalized profile filters."""
 
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import jsonpath
 
+from src.game_data import WEAPON_TYPES, GameCatalog, ItemType
 from src.importing.conversion import as_string_keyed_mapping_list as _as_mapping_list
 from src.importing.conversion import as_text as _as_text
 from src.importing.filters import (
@@ -27,7 +28,6 @@ from src.importing.mobalytics.extraction import (
 )
 from src.importing.mobalytics.paragon import extract_mobalytics_paragon_steps
 from src.importing.pipeline import Variant
-from src.item import WEAPON_TYPES, Dataloader, ItemType
 from src.perception import correct_name
 from src.profiles import (
     AffixFilterCountModel,
@@ -44,17 +44,18 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
 
     from src.importing.contracts import ImportRequest
+    from src.type_aliases import JsonValue
 
 
 def build_variant(
     *,
-    items: Sequence[Mapping[str, object]],
+    items: Sequence[Mapping[str, JsonValue]],
     class_name: str,
     request: ImportRequest,
     driver: WebDriver,
     variant_name: str,
     build_name: str,
-    paragon_data: Mapping[str, object],
+    paragon_data: Mapping[str, JsonValue],
     error_type: type[Exception],
 ) -> Variant:
     finished_filters: list[ItemFilterModel] = []
@@ -83,11 +84,11 @@ def build_variant(
             msg = f"No slot type found for {item_name}"
             raise error_type(msg)
         raw_affixes = _as_mapping_list(
-            jsonpath.findall(".gameEntity.modifiers.gearStats[*]", item)
-            + jsonpath.findall(".gameEntity.modifiers.sealStats[*]", item)
-            + jsonpath.findall(".gameEntity.modifiers.charmStats[*]", item)
+            _find_jsonpath_values(".gameEntity.modifiers.gearStats[*]", item)
+            + _find_jsonpath_values(".gameEntity.modifiers.sealStats[*]", item)
+            + _find_jsonpath_values(".gameEntity.modifiers.charmStats[*]", item)
         )
-        raw_inherents = _as_mapping_list(jsonpath.findall(".gameEntity.modifiers.implicitStats[*]", item))
+        raw_inherents = _as_mapping_list(_find_jsonpath_values(".gameEntity.modifiers.implicitStats[*]", item))
         is_unique = entity_type == "uniqueItems"
         if is_unique:
             try:
@@ -130,24 +131,31 @@ def build_variant(
         inherents = _convert_raw_to_affixes(raw_inherents, item_type=item_type, guessed_set_name=guessed_set_name)
         if item_type in [ItemType.HoradricSeal, ItemType.Charm]:
             unique_name = (
-                correct_name(item_name) if correct_name(item_name) in Dataloader().aspect_unique_dict else None
+                correct_name(item_name) if correct_name(item_name) in GameCatalog().aspect_unique_dict else None
             )
             set_name = _extract_mobalytics_charm_set_name(item) if item_type == ItemType.Charm else None
             if not affixes and not unique_name and not set_name:
                 LOGGER.warning(f"Skipping {item_name} because it had no supported affixes, unique aspect, or set name.")
                 continue
-            filter_model = create_seal_charm_filter(
-                affixes=affixes,
-                require_gas=request.options.require_greater_affixes,
-                model_type=CharmFilterModel if item_type == ItemType.Charm else SealFilterModel,
-                unique_name=unique_name,
-                set_name=set_name,
-            )
             if item_type == ItemType.Charm:
+                filter_model = create_seal_charm_filter(
+                    affixes=affixes,
+                    require_gas=request.options.require_greater_affixes,
+                    model_type=CharmFilterModel,
+                    unique_name=unique_name,
+                    set_name=set_name,
+                )
                 charm_filters.append(filter_model)
                 if not guessed_set_name and filter_model.set:
                     guessed_set_name = filter_model.set[0]
             else:
+                filter_model = create_seal_charm_filter(
+                    affixes=affixes,
+                    require_gas=request.options.require_greater_affixes,
+                    model_type=SealFilterModel,
+                    unique_name=unique_name,
+                    set_name=set_name,
+                )
                 seal_filters.append(filter_model)
             continue
         if affixes:
@@ -174,8 +182,12 @@ def build_variant(
     )
 
 
+def _find_jsonpath_values(path: str, item: Mapping[str, JsonValue]) -> list[JsonValue]:
+    return [cast("JsonValue", value) for value in jsonpath.findall(path, item)]
+
+
 def _resolve_item_type(
-    raw_inherents: Sequence[Mapping[str, object]], slot_type: str, class_name: str
+    raw_inherents: Sequence[Mapping[str, JsonValue]], slot_type: str, class_name: str
 ) -> ItemType | None:
     is_weapon = "weapon" in slot_type
     for inherent in raw_inherents:

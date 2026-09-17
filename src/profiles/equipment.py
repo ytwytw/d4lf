@@ -1,10 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field, RootModel, field_validator, model_validator
 
-from src.item import ItemRarity, ItemType  # ruff:ignore[typing-only-first-party-import]
-from src.profiles.affixes import (  # ruff:ignore[typing-only-first-party-import]
-    AffixFilterCountModel,
-    AspectUniqueFilterModel,
-)
+from src.game_data import GameCatalog, ItemRarity, ItemType
+from src.profiles.affixes import AffixFilterCountModel, AspectUniqueFilterModel  # ruff:ignore[typing-only-first-party-import]
 from src.profiles.validation.constraints import check_greater_than_zero, validate_greater_affix_count
 from src.profiles.validation.normalization import (
     _normalize_rarities,
@@ -12,6 +9,7 @@ from src.profiles.validation.normalization import (
     _validate_affix_pool_names,
     _validate_set_name,
 )
+from src.type_aliases import JsonObject  # ruff:ignore[typing-only-first-party-import]
 
 
 class ItemFilterModel(BaseModel):
@@ -36,17 +34,17 @@ class ItemFilterModel(BaseModel):
 
     @field_validator("item_type", mode="before")
     @classmethod
-    def parse_item_type(cls, data: str | list[str]) -> list[str]:
+    def parse_item_type(cls, data: str | ItemType | list[str | ItemType]) -> list[str]:
         return _parse_item_type_or_rarities(data)
 
     @field_validator("rarities", mode="before")
     @classmethod
-    def parse_rarities(cls, data: str | list[str]) -> list[str]:
+    def parse_rarities(cls, data: str | ItemRarity | int | list[str | ItemRarity | int]) -> list[str]:
         return _normalize_rarities(data)
 
     @field_validator("unique_aspect", mode="before")
     @classmethod
-    def parse_unique_aspect(cls, data: dict[str, object] | list[dict[str, object]] | None) -> list[dict[str, object]]:
+    def parse_unique_aspect(cls, data: JsonObject | list[JsonObject] | None) -> list[JsonObject]:
         if not data:
             return []
         if isinstance(data, dict):
@@ -62,10 +60,7 @@ class ItemFilterModel(BaseModel):
 
     @model_validator(mode="after")
     def affix_names_must_match_item_pool(self) -> ItemFilterModel:
-        # This on module level would be a circular import, so we do it lazy for now
-        from src.item import Dataloader  # ruff:ignore[import-outside-top-level]
-
-        affix_dict = Dataloader().affix_dict
+        affix_dict = GameCatalog().affix_dict
         _validate_affix_pool_names(self.affix_pool, affix_dict, "affixPool")
         _validate_affix_pool_names(self.inherent_pool, affix_dict, "inherentPool")
         return self
@@ -129,20 +124,14 @@ class CharmFilterModel(_BaseSealOrCharmFilterModel):
 
     @model_validator(mode="after")
     def affix_names_must_match_charm_pool(self) -> CharmFilterModel:
-        # This on module level would be a circular import, so we do it lazy for now
-        from src.item import Dataloader  # ruff:ignore[import-outside-top-level]
-
-        _validate_affix_pool_names(self.affix_pool, Dataloader().charm_affix_dict, "affixPool")
+        _validate_affix_pool_names(self.affix_pool, GameCatalog().charm_affix_dict, "affixPool")
         return self
 
 
 class SealFilterModel(_BaseSealOrCharmFilterModel):
     @model_validator(mode="after")
     def affix_names_must_match_seal_pool(self) -> SealFilterModel:
-        # This on module level would be a circular import, so we do it lazy for now
-        from src.item import Dataloader  # ruff:ignore[import-outside-top-level]
-
-        _validate_affix_pool_names(self.affix_pool, Dataloader().seal_affix_dict, "affixPool")
+        _validate_affix_pool_names(self.affix_pool, GameCatalog().seal_affix_dict, "affixPool")
         return self
 
 

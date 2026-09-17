@@ -1,5 +1,14 @@
 """Public local-only diagnostic capture interface."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
+
+    from src.diagnostics.auto_failure_capture import AutoFailureCaptureResult
+
 
 def allow_game_input(action: str) -> bool:
     from src.diagnostics.safety import allow_game_input as implementation  # ruff:ignore[import-outside-top-level]
@@ -7,12 +16,12 @@ def allow_game_input(action: str) -> bool:
     return implementation(action)
 
 
-def capture_latest_failure(**kwargs):
-    from src.diagnostics.auto_failure_capture import (  # ruff:ignore[import-outside-top-level]
-        capture_latest_failure as implementation,
-    )
+def capture_latest_failure(
+    *, reason: str, image: np.ndarray, error: BaseException | str | None = None
+) -> AutoFailureCaptureResult | None:
+    from src.diagnostics.auto_failure_capture import capture_latest_failure as implementation  # ruff:ignore[import-outside-top-level]
 
-    return implementation(**kwargs)
+    return implementation(reason=reason, image=image, error=error)
 
 
 def game_input_blocked() -> bool:
@@ -22,9 +31,7 @@ def game_input_blocked() -> bool:
 
 
 def is_diagnostic_capture_active() -> bool:
-    from src.diagnostics.tts_capture import (  # ruff:ignore[import-outside-top-level]
-        is_diagnostic_capture_active as implementation,
-    )
+    from src.diagnostics.tts_capture import is_diagnostic_capture_active as implementation  # ruff:ignore[import-outside-top-level]
 
     return implementation()
 

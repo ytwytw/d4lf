@@ -2,7 +2,6 @@ import numpy as np
 import pytest
 from natsort import natsorted
 
-from src.settings.coordinates import COLORS
 from src.settings.scaling import ResManager, _ResTransformer
 
 _PIXELS = [np.array([0, 0]), np.array([3840, 0]), np.array([0, 2160]), np.array([3840, 2160])]
@@ -22,13 +21,13 @@ _TESTS = [
 
 
 @pytest.mark.parametrize("res", natsorted([x[0] for x in _TESTS]), ids=natsorted([x[0] for x in _TESTS]))
-def test_set_resolution(res):
+def test_set_resolution(res) -> None:
     ResManager().set_resolution(res)
     assert ResManager().pos
 
 
 @pytest.mark.parametrize("result", _TESTS, ids=[x[0] for x in _TESTS])
-def test_transformation(result):
+def test_transformation(result) -> None:
     for pixel in _PIXELS:
         new_pixel = _ResTransformer(result[0])._transform_array(pixel)
         expected = next(result[1])
@@ -36,9 +35,5 @@ def test_transformation(result):
         assert new_pixel[1] == expected[1]
 
 
-def test_colors():
-    assert COLORS is not None
-
-
-def test_templates():
+def test_templates() -> None:
     assert len(ResManager().templates) == 74

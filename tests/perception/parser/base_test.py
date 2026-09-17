@@ -2,23 +2,25 @@ from types import SimpleNamespace
 
 import pytest
 
-from src.item import Dataloader, ItemRarity, ItemType
-from src.item.data import loader as loader_module
+from src.game_data import GameCatalog, ItemRarity, ItemType
+from src.game_data import catalog as catalog_module
+from src.perception import text as text_module
 from src.perception.parser import base, details
 from src.perception.parser.base import _create_base_item_from_tts, _is_charm_slot_unlock
 
 
-def _use_catalog(monkeypatch, language: str) -> Dataloader:
+def _use_catalog(monkeypatch, language: str) -> GameCatalog:
     settings = SimpleNamespace(general=SimpleNamespace(language=language))
-    monkeypatch.setattr(loader_module, "get_settings", lambda: settings)
-    catalog = object.__new__(Dataloader)
+    monkeypatch.setattr(catalog_module, "get_settings", lambda: settings)
+    catalog = object.__new__(GameCatalog)
     catalog.load_data()
-    monkeypatch.setattr(base, "Dataloader", lambda: catalog)
-    monkeypatch.setattr(details, "Dataloader", lambda: catalog)
+    monkeypatch.setattr(base, "GameCatalog", lambda: catalog)
+    monkeypatch.setattr(details, "GameCatalog", lambda: catalog)
+    monkeypatch.setattr(text_module, "GameCatalog", lambda: catalog)
     return catalog
 
 
-def _use_zhcn_catalog(monkeypatch) -> Dataloader:
+def _use_zhcn_catalog(monkeypatch) -> GameCatalog:
     return _use_catalog(monkeypatch, "zhCN")
 
 

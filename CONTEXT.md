@@ -2,9 +2,28 @@
 
 ## Glossary
 
+### Game catalog
+
+The localized reference data D4LF uses to recognize Diablo 4 affixes, aspects, item types, sets,
+sigil rule targets, tributes, and tooltip terms. It describes what the game can contain; it is
+independent of both encountered Items and user-authored Profiles.
+_Avoid_: Dataloader, item data.
+
 ### Profile
 
 A user-defined loot filtering configuration for one Diablo 4 build. A profile may include at most one stored Paragon payload for the Paragon overlay.
+
+### Loot filter override
+
+A persistent, profile-independent user setting that disables profile-based and ordinary built-in filtering for an item category without changing the active profile. Changes apply to the next evaluated item; non-Mythic items in a disabled category are left untouched and produce no keep, junk, or filtering-statistics outcome. Built-in Mythic always-keep behavior remains active in every category. The profile's rules resume applying when the category is enabled again. Every category is enabled by default.
+
+### Filterable item category
+
+One of the item groups controlled by a loot filter override: Equipment, Sigils, Tributes, Seals, or Charms. Categories are based on the encountered item, not on individual sections of a profile.
+
+### Mythic always-keep rule
+
+The built-in rule that gives Mythic items a keep outcome independently of profile rules. It remains active when the item's filterable item category is disabled and produces the normal keep statistics and actions.
 
 ### Paragon payload
 
@@ -25,6 +44,11 @@ The quality tier of a droppable object: common, magic, rare, legendary, unique, 
 ### Ancestral Mythic Unique
 
 The visual presentation of an existing Mythic/Unique equipment item with an animated tooltip border. It is not a separate item type or rarity in D4LF.
+
+### Transfiguration
+
+A crafting transformation applied to an item after it drops. It is not the item's intrinsic loot
+identity and does not define a profile's loot-filter target.
 
 ### Rarity filter
 
@@ -63,6 +87,16 @@ _Avoid_: Filename box, build name selector.
 
 A named alternative within an imported build. Use this term for source-specific labels such as subbuilds.
 _Avoid_: Subbuild.
+
+### Variant identifier
+
+A source-relative, stable identity used to select a Variant independently of its user-facing name.
+Variant names may be empty or duplicated and are never identities.
+
+### Importable Variant
+
+A Variant containing at least one supported equipment item. A partial equipment loadout may be
+importable; a narrative-only Variant is not.
 
 ### Sigil rule
 

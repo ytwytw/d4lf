@@ -5,7 +5,7 @@ from contextlib import suppress
 
 from src.desktop import is_alive
 from src.localization import translate
-from src.paragon.shared import OverlayContract
+from src.paragon.overlay.contracts import OverlayContract
 
 
 class OverlayLocalizationMixin(OverlayContract):

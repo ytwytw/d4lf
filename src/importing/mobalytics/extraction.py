@@ -5,14 +5,15 @@ from urllib.parse import unquote
 
 import jsonpath
 import lxml.html
+from lxml import etree
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from selenium.webdriver.common.by import By
 
-from src.importing.conversion import as_text as _as_text  # ruff:ignore[unused-import]
+from src.game_data import GameCatalog, ItemType
 from src.importing.filters import fix_weapon_type, match_set_aware_seal_affix
 from src.importing.source_locale import source_affix_dict_for_item_type
 from src.importing.web import hover_and_get_tooltip_html
-from src.item import Affix, AffixType, Dataloader, ItemType
+from src.item import Affix, AffixType
 from src.perception import clean_str, closest_match, correct_name
 
 if TYPE_CHECKING:
@@ -20,6 +21,8 @@ if TYPE_CHECKING:
 
     from selenium.webdriver.remote.webdriver import WebDriver
     from selenium.webdriver.remote.webelement import WebElement
+
+    from src.type_aliases import JsonValue
 
 LOGGER = logging.getLogger(__name__)
 SOURCE_LOCALE = "enUS"
@@ -37,7 +40,6 @@ PAGE_DIAGNOSTIC_MARKERS = (
     "forbidden",
     "just a moment",
 )
-type _JsonPathValue = str | int | float | bool | list[object] | dict[str, object] | None
 
 
 def _corrections(input_str: str) -> str:
@@ -51,11 +53,11 @@ def _fix_input_url(url: str) -> str:
     return unquote(url)
 
 
-def _first_jsonpath_result(path: str, value: object) -> object | None:
-    results = jsonpath.findall(path, cast("_JsonPathValue", value))
-    if not isinstance(results, list) or not results:
+def _first_jsonpath_result(path: str, value: JsonValue) -> JsonValue | None:
+    results = jsonpath.findall(path, value)
+    if not results:
         return None
-    return results[0]
+    return cast("JsonValue", results[0])
 
 
 def _log_mobalytics_page_diagnostics(driver: WebDriver, page_source: str, script_count: int) -> None:
@@ -79,15 +81,12 @@ def _read_mobalytics_driver_value(driver: WebDriver, value_name: str) -> str:
     return str(value)
 
 
-def _extract_mobalytics_season_number(full_script_data_json: Mapping[str, object]) -> str:
+def _extract_mobalytics_season_number(full_script_data_json: Mapping[str, JsonValue]) -> str:
     tag_names = jsonpath.findall("$..userGeneratedDocumentBySlug.data.tags.data[*].name", full_script_data_json)
     for tag_name in tag_names:
         if season_match := re.search(r"\bSeason\s+(\d+)\b", str(tag_name), flags=re.IGNORECASE):
-            season_number = season_match.group(1)
-            break
-    else:
-        season_number = ""
-    return season_number
+            return str(season_match.group(1))
+    return ""
 
 
 def _humanize_mobalytics_slot(slot_type: str) -> str:
@@ -122,11 +121,12 @@ def _get_weapon_type_from_slot_tooltip(driver: WebDriver, slot_type: str) -> Ite
     )
     if not tooltip_html:
         return None
-    tooltip = lxml.html.fromstring(tooltip_html)
-    type_nodes = tooltip.xpath("(.//p)[2]")
-    if not type_nodes:
+    tooltip = lxml.html.fromstring(tooltip_html, parser=lxml.html.HTMLParser())
+    type_nodes = tooltip.findall(".//p")
+    if len(type_nodes) < 2:
         return None
-    return fix_weapon_type(input_str=" ".join(type_nodes[0].text_content().split()))
+    type_text = etree.tostring(type_nodes[1], method="text", encoding="unicode")
+    return fix_weapon_type(input_str=" ".join(type_text.split()))
 
 
 def _get_legendary_aspect(name: str) -> str:
@@ -134,7 +134,7 @@ def _get_legendary_aspect(name: str) -> str:
         aspect_name = correct_name(name.lower().replace("aspect", "").strip())
         if aspect_name is None:
             return ""
-        if aspect_name not in Dataloader().aspect_list:
+        if aspect_name not in GameCatalog().aspect_list:
             LOGGER.warning(
                 f"Legendary aspect '{aspect_name}' that is not in our aspect data, unable to add to AspectUpgrades."
             )
@@ -143,7 +143,7 @@ def _get_legendary_aspect(name: str) -> str:
     return ""
 
 
-def _extract_mobalytics_charm_set_name(item: Mapping[str, object]) -> str | None:
+def _extract_mobalytics_charm_set_name(item: Mapping[str, JsonValue]) -> str | None:
     icon_url = (jsonpath.findall(".gameEntity.iconUrl", item) or [""])[0]
     match = CHARM_ICON_SET_SLUG_REGEX.search(str(icon_url))
     if not match:
@@ -151,13 +151,13 @@ def _extract_mobalytics_charm_set_name(item: Mapping[str, object]) -> str | None
     set_candidate = correct_name(match.group("slug").replace("-", " "))
     if set_candidate is None:
         return None
-    if set_candidate in Dataloader().set_list:
+    if set_candidate in GameCatalog().set_list:
         return set_candidate
     compact_candidate = set_candidate.replace("_", "").replace("-", "")
     return next(
         (
             set_name
-            for set_name in Dataloader().set_list
+            for set_name in GameCatalog().set_list
             if set_name.replace("_", "").replace("-", "") == compact_candidate
         ),
         None,
@@ -165,7 +165,7 @@ def _extract_mobalytics_charm_set_name(item: Mapping[str, object]) -> str | None
 
 
 def _convert_raw_to_affixes(
-    raw_stats: Sequence[Mapping[str, object]],
+    raw_stats: Sequence[Mapping[str, JsonValue]],
     import_greater_affixes: bool = False,
     item_type: ItemType | None = None,
     guessed_set_name: str | None = None,
@@ -185,10 +185,10 @@ def _convert_raw_to_affixes(
                 )
             if matched_name is None:
                 matched_name = closest_match(stat_clean, affix_dict)
-            affix_obj = Affix(name=matched_name)
-            if affix_obj.name is None:
+            if matched_name is None:
                 LOGGER.error(f"Couldn't match {stat=}")
                 continue
+            affix_obj = Affix(name=matched_name)
             if import_greater_affixes and stat.get("isGreater", False):
                 affix_obj.type = AffixType.greater
             result.append(affix_obj)

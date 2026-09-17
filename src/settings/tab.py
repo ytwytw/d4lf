@@ -1,4 +1,4 @@
-from typing import override
+from typing import TYPE_CHECKING, cast, override
 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import (
@@ -22,11 +22,18 @@ from src.settings.reset import ConfigResetMixin
 from src.settings.store import SettingsStore
 from src.settings.tab_mixin import ConfigTabMixin
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from pydantic import BaseModel
+
+    from src.settings.types import SettingValue
+
 CONFIG_TABNAME = "config"
 
 
 class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
-    def __init__(self, theme_changed_callback=None):
+    def __init__(self, theme_changed_callback: Callable[[], None] | None = None) -> None:
         self._initializing = True
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -83,10 +90,10 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
         self.setLayout(layout)
         QTimer.singleShot(0, self._finish_init)
 
-    def _finish_init(self):
+    def _finish_init(self) -> None:
         self._initializing = False
 
-    def _build_sections(self):
+    def _build_sections(self) -> None:
         models = self._settings_store.models_with_sections()
         # 1. Bucket settings by category using model metadata
         categories_map = {}
@@ -129,8 +136,7 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
 
             page = self._create_page(SettingsCategory.DIAGNOSTICS)
             page_layout = page.findChild(QVBoxLayout)
-            if page_layout is not None:
-                page_layout.addWidget(DiagnosticCaptureWidget(parent=page))
+            page_layout.addWidget(DiagnosticCaptureWidget(parent=page))
 
     def _create_page(self, name: SettingsCategory) -> QWidget:
         scroll = QScrollArea()
@@ -148,7 +154,9 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
         return container
 
     @override
-    def _add_setting_row(self, grid, row, model, section, key, val):
+    def _add_setting_row(
+        self, grid: QGridLayout, row: int, model: BaseModel, section: str, key: str, val: SettingValue
+    ) -> None:
         meta = model.model_json_schema()["properties"].get(key, {})
         if meta.get(HIDE_FROM_GUI_KEY):
             return
@@ -171,4 +179,10 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
         self.model_to_parameter_value_map[f"{section}.{key}"] = control
         grid.addWidget(label_container, row, 0, Qt.AlignmentFlag.AlignTop)
         grid.addWidget(control, row, 2, Qt.AlignmentFlag.AlignTop)
-        self._all_rows.append((human_label, description, label_container, control, grid.parentWidget()))
+        self._all_rows.append((
+            human_label,
+            meta.get("description", ""),
+            label_container,
+            control,
+            cast("QGroupBox", grid.parentWidget()),
+        ))

@@ -1,19 +1,25 @@
 """Information-overlay submenu content."""
 
 import tkinter as tk
+from typing import TYPE_CHECKING
 
 from src.localization import translate
 from src.overlay.settings import setting_int as _setting_int
 from src.overlay.widget.shared import ACCENT, ACTIVE_GREEN, CARD_BG, MUTED, TEXT, OverlayContract
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 
 class _OverlayMenuContent(OverlayContract):
-    def _build_gold_submenu_content(self, submenu_frame) -> None:
+    def _build_gold_submenu_content(self, submenu_frame: tk.Misc) -> None:
         def update_dependent_widgets() -> None:
-            is_tracking = self.capture_gold_stats
+            is_tracking = bool(self.capture_gold_stats)
+            show_gph = bool(self.show_gph)
+            show_total_gold = bool(self.show_total_gold)
             state = tk.NORMAL if is_tracking else tk.DISABLED
-            btn_gph.config(state=state, fg=ACTIVE_GREEN if is_tracking and self.show_gph else MUTED)
-            btn_gained.config(state=state, fg=ACTIVE_GREEN if is_tracking and self.show_total_gold else MUTED)
+            btn_gph.config(state=state, fg=ACTIVE_GREEN if is_tracking and show_gph else MUTED)
+            btn_gained.config(state=state, fg=ACTIVE_GREEN if is_tracking and show_total_gold else MUTED)
 
         self._create_toggle_btn(
             submenu_frame, translate("info.menu.gold.track"), "capture_gold_stats", callback=update_dependent_widgets
@@ -23,9 +29,9 @@ class _OverlayMenuContent(OverlayContract):
         btn_gained = self._create_toggle_btn(submenu_frame, translate("info.menu.gold.show_gained"), "show_total_gold")
         update_dependent_widgets()
 
-    def _build_exp_submenu_content(self, submenu_frame) -> None:
+    def _build_exp_submenu_content(self, submenu_frame: tk.Misc) -> None:
         def update_dependent_widgets() -> None:
-            is_tracking = self.capture_exp_stats
+            is_tracking = bool(self.capture_exp_stats)
             state = tk.NORMAL if is_tracking else tk.DISABLED
             for button, enabled in (
                 (btn_eph, self.show_eph),
@@ -34,7 +40,7 @@ class _OverlayMenuContent(OverlayContract):
                 (btn_next, self.show_next_scan),
                 (btn_inv, self.settings.get("check_exp_on_inventory_open")),
             ):
-                button.config(state=state, fg=ACTIVE_GREEN if is_tracking and enabled else MUTED)
+                button.config(state=state, fg=ACTIVE_GREEN if is_tracking and bool(enabled) else MUTED)
             for button in (btn_age, btn_pick, btn_reset_pos):
                 button.config(state=state, fg=TEXT if is_tracking else MUTED)
             if self.settings.get("exp_bar_pos") is None:
@@ -65,7 +71,7 @@ class _OverlayMenuContent(OverlayContract):
         btn_reset_pos = self._submenu_action_button(submenu_frame, "info.menu.exp.reset_bar", self._reset_exp_bar_pos)
         update_dependent_widgets()
 
-    def _build_exp_age_submenu_content(self, submenu_frame) -> None:
+    def _build_exp_age_submenu_content(self, submenu_frame: tk.Misc) -> None:
         options = [(-1, translate("info.state.never"))]
         options.extend(
             (minutes, translate("info.duration.minutes", minutes=minutes)) for minutes in (0, 3, 5, 10, 30, 60)
@@ -80,7 +86,9 @@ class _OverlayMenuContent(OverlayContract):
                 config_key="exp_age_before_refresh",
             ).pack(fill="x")
 
-    def _submenu_action_button(self, submenu_frame, message_id: str, command) -> tk.Button:
+    def _submenu_action_button(
+        self, submenu_frame: tk.Misc, message_id: str, command: Callable[[], object]
+    ) -> tk.Button:
         button = tk.Button(
             submenu_frame,
             text=translate(message_id),
@@ -98,7 +106,7 @@ class _OverlayMenuContent(OverlayContract):
         button.pack(fill="x")
         return button
 
-    def _build_reset_submenu_content(self, submenu_frame) -> None:
+    def _build_reset_submenu_content(self, submenu_frame: tk.Misc) -> None:
         for message_id, command in (
             ("info.menu.reset_gold", self._reset_gold_stats),
             ("info.menu.reset_exp", self._reset_exp_stats),

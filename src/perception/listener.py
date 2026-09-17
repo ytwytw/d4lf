@@ -1,7 +1,7 @@
 import logging
 import queue
 import threading
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, Self
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from src.locale_data import LocaleGrammar
 
 from src.diagnostics import record_raw_tts
-from src.item import Dataloader
+from src.game_data import GameCatalog
 from src.perception.backend.core import load_backend
 from src.perception.framing import TtsFramer
 from src.perception.framing import find_item_start as _find_item_start
@@ -25,9 +25,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 def find_item_start(
-    data: list[str], *, grammar: LocaleGrammar | None = None, catalog: Dataloader | None = None
+    data: list[str], *, grammar: LocaleGrammar | None = None, catalog: GameCatalog | None = None
 ) -> int | None:
-    catalog = catalog or Dataloader()
+    catalog = catalog or GameCatalog()
     return _find_item_start(data, grammar=grammar or catalog.grammar, catalog=catalog)
 
 
@@ -36,17 +36,17 @@ def filter_data(data: str) -> bool:
 
 
 def fix_data(data: str, *, grammar: LocaleGrammar | None = None) -> str:
-    return _fix_data(data, grammar=grammar or Dataloader().grammar)
+    return _fix_data(data, grammar=grammar or GameCatalog().grammar)
 
 
 class Publisher:
-    _instance: ClassVar[Publisher | None] = None
+    _instance: ClassVar[Self | None] = None
     _instance_lock: ClassVar[threading.Lock] = threading.Lock()
     _item_subscribers: set[Callable[..., None]]
     _info_subscribers: set[Callable[..., None]]
     _subscriber_lock: threading.Lock
 
-    def __new__(cls):
+    def __new__(cls) -> Self:
         with cls._instance_lock:
             if cls._instance is None:
                 cls._instance = super().__new__(cls)
@@ -56,7 +56,7 @@ class Publisher:
         return cls._instance
 
     def find_item(self) -> None:
-        catalog = Dataloader()
+        catalog = GameCatalog()
         framer = TtsFramer(catalog.grammar, catalog)
         while True:
             raw_data = _DATA_QUEUE.get()
@@ -79,7 +79,7 @@ class Publisher:
             except Exception:
                 LOGGER.exception("TTS line processing failed; continuing with the next line")
 
-    def publish_item(self, data):
+    def publish_item(self, data: list[str]) -> None:
         LOGGER.debug("Raw TTS payload: %s", data)
         with self._subscriber_lock:
             subscribers = tuple(self._item_subscribers)
@@ -89,15 +89,15 @@ class Publisher:
             except Exception:
                 LOGGER.exception("TTS item subscriber failed: %r", subscriber)
 
-    def subscribe_item(self, subscriber):
+    def subscribe_item(self, subscriber: Callable[[list[str]], None]) -> None:
         with self._subscriber_lock:
             self._item_subscribers.add(subscriber)
 
-    def unsubscribe_item(self, subscriber):
+    def unsubscribe_item(self, subscriber: Callable[[list[str]], None]) -> None:
         with self._subscriber_lock:
             self._item_subscribers.discard(subscriber)
 
-    def publish_info(self, data):
+    def publish_info(self, data: str) -> None:
         with self._subscriber_lock:
             subscribers = tuple(self._info_subscribers)
         for subscriber in subscribers:
@@ -106,11 +106,11 @@ class Publisher:
             except Exception:
                 LOGGER.exception("TTS info subscriber failed: %r", subscriber)
 
-    def subscribe_info(self, subscriber):
+    def subscribe_info(self, subscriber: Callable[[str], None]) -> None:
         with self._subscriber_lock:
             self._info_subscribers.add(subscriber)
 
-    def unsubscribe_info(self, subscriber):
+    def unsubscribe_info(self, subscriber: Callable[[str], None]) -> None:
         with self._subscriber_lock:
             self._info_subscribers.discard(subscriber)
 
@@ -125,7 +125,7 @@ def get_item_trace_snapshot() -> tuple[list[str], list[str]]:
         return LAST_ITEM.copy(), LAST_ITEM_RAW.copy()
 
 
-def create_pipe():
+def create_pipe() -> int:
     return _backend.create_pipe(LOGGER)
 
 

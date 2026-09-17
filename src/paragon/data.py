@@ -1,22 +1,23 @@
 import configparser
+import logging
 import re
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSettings
 
-from src.item import Filter
+from src.item.filter import Filter
 from src.localization import translate
-from src.paragon import shared as _shared
 from src.paragon.names import localized_paragon_name, paragon_class_slug
-from src.paragon.shared import BUILD_SOURCES, LOGGER, PLAYER_CLASSES, BuildRow, OverlaySettings
+from src.paragon.overlay.theme import BUILD_SOURCES, PLAYER_CLASSES
 from src.paragon.transform import parse_rotation
 from src.settings import get_settings
 
-globals().update({name: getattr(_shared, name) for name in _shared.__all__})
+LOGGER = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from src.paragon.overlay.contracts import BuildRow, OverlaySettings
     from src.profiles import ParagonBoardModel
 
 
@@ -115,7 +116,7 @@ def _import_settings_from_ini(qs: QSettings) -> bool:
             p.write(f)
 
         LOGGER.info("Successfully migrated and cleaned up Paragon Overlay settings from %s", ini)
-    except Exception:  # ruff:ignore[blind-except] - preserve migration fallback behavior
+    except Exception:
         LOGGER.debug("Failed to migrate legacy Paragon Overlay settings", exc_info=True)
         return False
     else:
@@ -130,7 +131,7 @@ def _clamp_int(v: int | None, lo: int, hi: int, default: int) -> int:
         return default
 
 
-def _format_build_display_name(raw_name: object) -> str:
+def _format_build_display_name(raw_name: str | None) -> str:
     """Convert stored build/profile names into a cleaner title-card label."""
     text = str(raw_name or "").strip()
     if not text:
@@ -234,11 +235,3 @@ def format_board_display_text(board: ParagonBoardModel) -> str:
             glyph_name = re.sub(r"[-_]+", " ", glyph_source).strip().title()
 
     return f"{class_name} - {board_name} - {glyph_name} - {parse_rotation(board.rotation)}°"
-
-
-# =============================================================================
-# DATA CLASSES
-# =============================================================================
-
-
-__all__ = [name for name in globals() if not name.startswith("__")]

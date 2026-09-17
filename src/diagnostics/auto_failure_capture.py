@@ -71,7 +71,7 @@ class AutoFailureCapture:
         locale: str | None = None,
         game_build: str | None = None,
     ) -> AutoFailureCaptureResult | None:
-        if not self._enabled() or image is None or not tts_lines:
+        if not self._enabled() or not tts_lines:
             return None
 
         cleaned_lines = tuple(str(line) for line in tts_lines)
@@ -245,11 +245,32 @@ class AutoFailureCapture:
 AUTO_FAILURE_CAPTURE = AutoFailureCapture()
 
 
-def capture_failure(**kwargs) -> AutoFailureCaptureResult | None:
-    return AUTO_FAILURE_CAPTURE.capture(**kwargs)
+def capture_failure(
+    *,
+    reason: str,
+    image: np.ndarray,
+    tts_lines: Sequence[str],
+    detail_image: np.ndarray | None = None,
+    raw_tts_lines: Sequence[str] | None = None,
+    error: BaseException | str | None = None,
+    locale: str | None = None,
+    game_build: str | None = None,
+) -> AutoFailureCaptureResult | None:
+    return AUTO_FAILURE_CAPTURE.capture(
+        reason=reason,
+        image=image,
+        tts_lines=tts_lines,
+        detail_image=detail_image,
+        raw_tts_lines=raw_tts_lines,
+        error=error,
+        locale=locale,
+        game_build=game_build,
+    )
 
 
-def capture_latest_failure(*, reason: str, image: np.ndarray, error: BaseException | str | None = None):
+def capture_latest_failure(
+    *, reason: str, image: np.ndarray, error: BaseException | str | None = None
+) -> AutoFailureCaptureResult | None:
     from src.perception.listener import get_item_trace_snapshot  # ruff:ignore[import-outside-top-level]
 
     framed, raw = get_item_trace_snapshot()

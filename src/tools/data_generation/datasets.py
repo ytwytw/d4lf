@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 from time import perf_counter
+from typing import TYPE_CHECKING, cast
 
 from src.tools.data_generation.affixes import generate_affixes, get_string_list_name, merge_custom_data
 from src.tools.data_generation.common import (
@@ -14,8 +15,13 @@ from src.tools.data_generation.common import (
 )
 from src.tools.data_generation.constants import GEAR_TYPES, SIGIL_RARITY_COLOR_TAGS
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
-def _run_stage(name, function, *args, **kwargs):
+    from src.type_aliases import JsonObject, JsonValue
+
+
+def _run_stage(name: str, function: Callable[..., int], *args: JsonValue | Path, **kwargs: JsonValue | Path) -> int:
     print(f"START {name}")
     started = perf_counter()
     count = function(*args, **kwargs) or 0
@@ -23,7 +29,7 @@ def _run_stage(name, function, *args, **kwargs):
     return count
 
 
-def main(d4data_dir: Path):
+def main(d4data_dir: Path) -> None:
     lang_arr = ["enUS"]  # "deDE", "frFR", "esES", "esMX", "itIT", "jaJP", "koKR", "plPL", "ptBR", "ruFR"
 
     for lang in lang_arr:
@@ -40,8 +46,7 @@ def main(d4data_dir: Path):
             f"assets/lang/{lang}/tooltips.json",
         ]
         for f in file_names:
-            if Path(f).exists():
-                Path(f).unlink()
+            Path(f).unlink(missing_ok=True)
         Path(f"assets/lang/{lang}").mkdir(exist_ok=True, parents=True)
 
     for language in lang_arr:
@@ -60,8 +65,8 @@ def main(d4data_dir: Path):
             with Path(json_file).open(encoding="utf-8") as file:
                 data = json.load(file)
                 name_idx, _ = (0, 1) if data["arStrings"][0]["szLabel"] == "Name" else (1, 0)
-                tribute_name: str = (
-                    data["arStrings"][name_idx]["szText"].lower().strip().replace("’", "").replace("'", "")
+                tribute_name: str = cast(
+                    "str", data["arStrings"][name_idx]["szText"].lower().strip().replace("’", "").replace("'", "")
                 )
                 tribute_dict[tribute_name.replace(" ", "_").replace("(", "").replace(")", "")] = tribute_name
 
@@ -117,7 +122,7 @@ def main(d4data_dir: Path):
         print("=============================")
 
 
-def generate_aspects(d4data_dir, language):
+def generate_aspects(d4data_dir: Path, language: str) -> int:
     print(f"Gen Aspects for {language}")
     aspects_list = []
     aspect_pattern = "json/base/meta/Aspect/*.json"
@@ -145,7 +150,7 @@ def generate_aspects(d4data_dir, language):
     return len(aspect_files)
 
 
-def generate_sigils(d4data_dir, language):
+def generate_sigils(d4data_dir: Path, language: str) -> int:
     print(f"Gen Sigils for {language}")
     sigil_dict = {"dungeons": {}, "minor": {}, "major": {}, "positive": {}}
     sigil_rarity_dict = {}
@@ -207,14 +212,15 @@ def generate_sigils(d4data_dir, language):
     return source_file_count
 
 
-def string_list_value(data, label):
-    for entry in data["arStrings"]:
+def string_list_value(data: JsonObject, label: str) -> str:
+    entries = cast("list[dict[str, str]]", data.get("arStrings", []))
+    for entry in entries:
         if entry["szLabel"] == label:
             return entry["szText"]
     return ""
 
 
-def generate_uniques(d4data_dir, language):
+def generate_uniques(d4data_dir: Path, language: str) -> int:
     items_to_ignore = ["halo", "pact_amulet", "wilted_potential", "mythic_unique_horadric_seal"]
     print(f"Gen Uniques for {language}")
     unique_dict = {}
@@ -237,13 +243,6 @@ def generate_uniques(d4data_dir, language):
             inherent_affixes = unique_item_data.get("arInherentAffixes", [])
         if item_type not in GEAR_TYPES and item_type not in ("FocusBookOffHand", "HoradricSeal"):
             continue
-        for inherent_affix in inherent_affixes:
-            if inherent_affix["name"].startswith("UNIQUE_INHERENT_Evade_MovementSpeed_"):
-                num_inherents += 1
-                continue
-            affix_file = d4data_dir / f"json/{inherent_affix['__targetFileName__']}.json"
-            with Path(affix_file).open(encoding="utf-8") as unique_affix_file:
-                num_inherents += len(json.load(unique_affix_file)["ptItemAffixAttributes"])
         core_unique_file_id = core_unique_file.name.split(".")[0]
         string_item_file = d4data_dir / f"json/{language}_Text/meta/StringList/Item_{core_unique_file_id}.stl.json"
         if not string_item_file.exists():
@@ -252,6 +251,13 @@ def generate_uniques(d4data_dir, language):
         name_clean = get_string_list_name(string_item_file)
         if name_clean is None or name_clean in items_to_ignore or is_placeholder_or_test_name(name_clean):
             continue
+        for inherent_affix in inherent_affixes:
+            if inherent_affix["name"].startswith("UNIQUE_INHERENT_Evade_MovementSpeed_"):
+                num_inherents += 1
+                continue
+            affix_file = d4data_dir / f"json/{inherent_affix['__targetFileName__']}.json"
+            with Path(affix_file).open(encoding="utf-8") as unique_affix_file:
+                num_inherents += len(json.load(unique_affix_file)["ptItemAffixAttributes"])
         unique_dict[name_clean] = {"num_inherents": num_inherents}
 
     merge_custom_data(unique_dict, "uniques", language)
@@ -261,7 +267,7 @@ def generate_uniques(d4data_dir, language):
     return len(unique_files)
 
 
-def generate_sets(d4data_dir, language):
+def generate_sets(d4data_dir: Path, language: str) -> int:
     print(f"Gen Sets for {language}")
     sets_list = []
     charm_pattern = "json/base/meta/Item/Talisman_Charm*.itm.json"

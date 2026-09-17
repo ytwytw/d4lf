@@ -5,6 +5,7 @@ from types import SimpleNamespace
 import lxml.html
 import pytest
 
+from src.game_data import GameCatalog
 from src.importing import ImportOptions, ImportRequest
 from src.importing.infinitybuilds import import_infinitybuilds
 from src.importing.infinitybuilds.extraction import (
@@ -15,13 +16,17 @@ from src.importing.infinitybuilds.extraction import (
     _normalize_aspect_name,
     _resolve_gear_data,
 )
-from src.item import Dataloader
 
 if typing.TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
     from pytest_mock import MockerFixture
     from selenium.webdriver.remote.webdriver import WebDriver
+    from selenium.webdriver.remote.webelement import WebElement
+
+    from src.importing.infinitybuilds.models import _CatalogAffix, _GearPiece, _RawAffix
+
+type VariantFixture = dict[str, str | list[_GearPiece]]
 
 
 def _request(
@@ -55,14 +60,14 @@ class _InfinityBuildsImportDriver:
     def get(self, url: str) -> None:
         self.current_url = url
 
-    def find_element(self, *_args, **_kwargs) -> object:
-        return object()
+    def find_element(self, *_args, **_kwargs) -> WebElement:
+        return typing.cast("WebElement", object())
 
     def quit(self) -> None:
         return None
 
 
-def _push_chunk(payload: Mapping[str, object]) -> str:
+def _push_chunk(payload: Mapping[str, str | Sequence[VariantFixture]]) -> str:
     # Mirrors InfinityBuilds' React Flight payload: a JSON-encoded string embedded in a
     # self.__next_f.push([id, "<json-string>"]) call, with the interesting data (classId, variants)
     # inside that string. Real payloads are minified (no spaces around separators), which matters
@@ -71,9 +76,7 @@ def _push_chunk(payload: Mapping[str, object]) -> str:
     return f"self.__next_f.push([1,{json.dumps(inner)}])"
 
 
-def _infinitybuilds_page_source(
-    class_id: str, variants: Sequence[Mapping[str, object]], title: str = "Test Build"
-) -> str:
+def _infinitybuilds_page_source(class_id: str, variants: Sequence[VariantFixture], title: str = "Test Build") -> str:
     payload = {"classId": class_id, "variants": variants}
     script = _push_chunk(payload)
     return f"<html><head><title>{title} | InfinityBuilds</title></head><body><script>{script}</script></body></html>"
@@ -81,7 +84,7 @@ def _infinitybuilds_page_source(
 
 def _gear_piece(
     slot: str, item_id: str, affix_ids: list[str], kind: str = "custom_legendary", aspect_id: str | None = None
-) -> dict[str, object]:
+) -> _GearPiece:
     piece = {
         "kind": kind,
         "slot": slot,
@@ -90,7 +93,7 @@ def _gear_piece(
     }
     if aspect_id:
         piece["aspectId"] = aspect_id
-    return piece
+    return typing.cast("_GearPiece", piece)
 
 
 def test_extract_balanced_handles_nested_strings_with_escaped_quotes() -> None:
@@ -138,12 +141,12 @@ def test_normalize_aspect_name_strips_the_word_aspect(name: str, expected: str) 
 def test_convert_raw_to_affixes_skips_tempered_affixes() -> None:
     # Tempered affixes (e.g. a tempered "Physical Damage" roll) are applied via the Tempering
     # system, not innate item rolls, so they must not be treated as filterable gear affixes.
-    Dataloader()  # ensure real affix data is loaded before we assert against it
-    raw_affixes = [
+    GameCatalog()  # ensure real affix data is loaded before we assert against it
+    raw_affixes: list[_RawAffix] = [
         {"affixId": "affix-strength", "value": 100},
         {"affixId": "affix-physical-damage-tempered", "value": 50, "tempered": True},
     ]
-    resolved_affixes = {
+    resolved_affixes: dict[str, _CatalogAffix] = {
         "affix-strength": {"label": "Strength", "greaterAffixEligible": False},
         "affix-physical-damage-tempered": {"label": "Physical Damage", "greaterAffixEligible": False},
     }
@@ -154,14 +157,16 @@ def test_convert_raw_to_affixes_skips_tempered_affixes() -> None:
 
 
 def test_convert_raw_to_affixes_does_not_guess_unknown_catalog_labels() -> None:
-    raw_affixes = [{"affixId": "affix-unknown", "value": 100}]
-    resolved_affixes = {"affix-unknown": {"label": "Maximum Lif", "greaterAffixEligible": False}}
+    raw_affixes: list[_RawAffix] = [{"affixId": "affix-unknown", "value": 100}]
+    resolved_affixes: dict[str, _CatalogAffix] = {
+        "affix-unknown": {"label": "Maximum Lif", "greaterAffixEligible": False}
+    }
 
     assert _convert_raw_to_affixes(raw_affixes, resolved_affixes) == []
 
 
 def test_resolve_gear_data_queries_view_endpoint_with_unique_sorted_ids(mocker: MockerFixture) -> None:
-    gear = [
+    gear: list[_GearPiece] = [
         _gear_piece("helm", "item-1", ["affix-1", "affix-2"], aspect_id="aspect-1"),
         _gear_piece("chest", "item-2", ["affix-1"]),
     ]
@@ -191,7 +196,7 @@ def test_resolve_gear_data_queries_view_endpoint_with_unique_sorted_ids(mocker: 
 
 
 def test_import_infinitybuilds_maps_gear_and_aspect_upgrades(mock_ini_loader, mocker: MockerFixture) -> None:
-    Dataloader()  # ensure real affix/aspect data is loaded before we assert against it
+    GameCatalog()  # ensure real affix/aspect data is loaded before we assert against it
     variants = [
         {
             "id": "v-1",

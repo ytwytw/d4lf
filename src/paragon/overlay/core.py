@@ -6,12 +6,10 @@ from typing import TYPE_CHECKING
 
 from src.automation import WindowSpec
 from src.localization import translate
-from src.paragon import data as _data
 from src.paragon.data import _clamp_int, _load_overlay_settings, _resolve_build_index
-from src.paragon.shared import TRANSPARENT_KEY, BuildRow, OverlayConfig, OverlayContract, OverlaySettings
+from src.paragon.overlay.contracts import BuildRow, OverlayConfig, OverlayContract, OverlaySettings
+from src.paragon.overlay.theme import TRANSPARENT_KEY
 from src.settings import get_settings, get_ui_coordinates
-
-globals().update({name: getattr(_data, name) for name in _data.__all__})
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -68,7 +66,7 @@ class OverlayCoreMixin(OverlayContract):
                 setattr(self._cfg, attr, val)
 
         self._config_loader = get_settings()
-        self._config_listener = self._on_config_changed
+        self._config_listener: Callable[[set[str] | frozenset[str]], None] = self._on_config_changed
         self._config_loader.register_change_listener(self._config_listener)
         self._res = get_ui_coordinates()
         self._win_spec = WindowSpec(self._config_loader.advanced_options.process_name)

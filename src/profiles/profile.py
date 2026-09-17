@@ -1,14 +1,14 @@
+from typing import cast
+
 from pydantic import BaseModel, ConfigDict, Field, field_serializer, model_validator
 
+from src.game_data import GameCatalog
 from src.profiles.affixes import GlobalUniqueModel  # ruff:ignore[typing-only-first-party-import]
-from src.profiles.equipment import (  # ruff:ignore[typing-only-first-party-import]
-    DynamicCharmFilterModel,
-    DynamicItemFilterModel,
-    DynamicSealFilterModel,
-)
+from src.profiles.equipment import DynamicCharmFilterModel, DynamicItemFilterModel, DynamicSealFilterModel  # ruff:ignore[typing-only-first-party-import]
 from src.profiles.paragon import ParagonPayloadModel  # ruff:ignore[typing-only-first-party-import]
 from src.profiles.sigils import SigilFilterModel, SigilPriority, TributeFilterModel
 from src.profiles.validation.normalization import _as_string_keyed_dict, _legacy_filter_values
+from src.type_aliases import YamlObject, YamlValue  # ruff:ignore[typing-only-first-party-import]
 
 
 class ProfileModel(BaseModel):
@@ -27,7 +27,7 @@ class ProfileModel(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def migrate_list_tributes(cls, data: object) -> object:
+    def migrate_list_tributes(cls, data: YamlValue) -> YamlValue:
         """Merge legacy list-shaped Tributes into a single object."""
         data_dict = _as_string_keyed_dict(data)
         if data_dict is None:
@@ -38,8 +38,8 @@ class ProfileModel(BaseModel):
         tributes = data_dict[key]
         if not isinstance(tributes, list):
             return data
-        names: list[object] = []
-        rarities: list[object] = []
+        names: list[YamlValue] = []
+        rarities: list[YamlValue] = []
         for entry in tributes:
             entry_dict = _as_string_keyed_dict(entry)
             if entry_dict is None:
@@ -70,10 +70,7 @@ class ProfileModel(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def aspects_must_exist(cls, data: object) -> object:
-        # This on module level would be a circular import, so we do it lazy for now
-        from src.item import Dataloader  # ruff:ignore[import-outside-top-level]
-
+    def aspects_must_exist(cls, data: YamlValue) -> YamlValue:
         data_dict = _as_string_keyed_dict(data)
         if data_dict is None:
             return data
@@ -83,7 +80,7 @@ class ProfileModel(BaseModel):
         if aspect_key not in data_dict:
             return data
 
-        all_aspects_list = Dataloader().aspect_list
+        all_aspects_list = GameCatalog().aspect_list
         raw_aspects = data_dict[aspect_key]
         if not isinstance(raw_aspects, list):
             return data
@@ -101,7 +98,7 @@ class ProfileModel(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def normalize_paragon(cls, data: object) -> object:
+    def normalize_paragon(cls, data: YamlValue) -> YamlValue:
         data_dict = _as_string_keyed_dict(data)
         if data_dict is None:
             return data
@@ -124,10 +121,19 @@ class ProfileModel(BaseModel):
         if paragon_payload is None:
             msg = "Paragon legacy list entries must be objects"
             raise ValueError(msg)
-        return {**data_dict, key: paragon_payload}
+        normalized: YamlObject = {}
+        for normalized_key, normalized_value in data_dict.items():
+            normalized[normalized_key] = normalized_value
+        normalized_paragon: YamlObject = {}
+        for normalized_key, normalized_value in paragon_payload.items():
+            normalized_paragon[normalized_key] = normalized_value
+        normalized[key] = normalized_paragon
+        return normalized
 
     @field_serializer("paragon", when_used="json-unless-none")
-    def serialize_paragon(self, paragon: ParagonPayloadModel | None) -> object:
+    def serialize_paragon(self, paragon: ParagonPayloadModel | None) -> YamlObject | None:
         if paragon is None:
             return None
-        return paragon.model_dump(mode="python", by_alias=True, exclude_none=True, exclude_defaults=True)
+        return cast(
+            "YamlObject", paragon.model_dump(mode="python", by_alias=True, exclude_none=True, exclude_defaults=True)
+        )

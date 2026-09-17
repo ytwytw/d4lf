@@ -2,6 +2,7 @@ import logging
 import re
 from typing import TYPE_CHECKING
 
+from src.game_data import WEAPON_TYPES, ItemType
 from src.importing.d4builds.constants import (
     BUILD_OVERVIEW_XPATH,
     GA_XPATH,
@@ -19,6 +20,7 @@ from src.importing.d4builds.extraction import (
 from src.importing.d4builds.metadata import D4BuildsError, _get_affix_name, _get_item_slots, _get_legendary_aspects
 from src.importing.d4builds.paragon import extract_d4builds_paragon_steps
 from src.importing.filters import (
+    affix_dict_for_item_type,
     create_item_affix_pool,
     fix_offhand_type,
     fix_weapon_type,
@@ -28,8 +30,7 @@ from src.importing.filters import (
     weapon_slot_name_hint,
 )
 from src.importing.pipeline import Variant
-from src.importing.source_locale import source_affix_dict_for_item_type
-from src.item import WEAPON_TYPES, Affix, AffixType, ItemType
+from src.item import Affix, AffixType
 from src.perception import clean_str, closest_match
 from src.profiles import AffixFilterCountModel, AffixFilterModel, AspectUniqueFilterModel, ItemFilterModel
 
@@ -41,7 +42,6 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
-SOURCE_LOCALE = "enUS"
 
 
 def extract_variant(
@@ -95,7 +95,7 @@ def extract_variant(
         is_unique_like = is_unique_like_rarity(rarity)
 
         is_weapon = "weapon" in slot.lower()
-        affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
+        affix_dict = affix_dict_for_item_type(item_type=item_type)
         for stat in stats:
             if stat.xpath(TEMPERING_ICON_XPATH) or stat.xpath(SANCTIFIED_ICON_XPATH):
                 continue
@@ -115,10 +115,11 @@ def extract_variant(
                 item_type = x
                 if any(substring in affix_name.lower() for substring in ["focus", "offhand", "shield", "totem"]):
                     continue
-            affix_obj = Affix(name=closest_match(clean_str(_corrections(input_str=affix_name)), affix_dict))
-            if affix_obj.name is None:
+            matched_name = closest_match(clean_str(_corrections(input_str=affix_name)), affix_dict)
+            if matched_name is None:
                 LOGGER.error(f"Couldn't match {affix_name=}")
                 continue
+            affix_obj = Affix(name=matched_name)
             if request.options.import_greater_affixes and stat.xpath("../../../..")[0].xpath(GA_XPATH):
                 affix_obj.type = AffixType.greater
             affixes.append(affix_obj)

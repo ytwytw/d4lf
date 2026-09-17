@@ -26,7 +26,7 @@ class UnifiedWindowLocalization:
         self._config.register_change_listener(self._on_config_changed_language)
         self._retranslate_ui()
 
-    def _on_config_changed_language(self, changed_keys) -> None:
+    def _on_config_changed_language(self, changed_keys: set[str] | frozenset[str]) -> None:
         if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
             self.locale_changed_signal.emit()
 

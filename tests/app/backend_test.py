@@ -1,5 +1,8 @@
 import logging
+import sys
 from types import SimpleNamespace
+
+import pytest
 
 import src.app.backend as backend_module
 from src.app.backend import BackendWorker
@@ -18,6 +21,7 @@ def test_backend_worker_finishes_in_gui_only_mode(monkeypatch, caplog) -> None:
     assert "GUI-only mode" in caplog.text
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="The game backend runtime is Windows-only.")
 def test_backend_starts_tts_listener_before_waiting_for_game_window(monkeypatch) -> None:
     calls = []
 
@@ -36,7 +40,7 @@ def test_backend_starts_tts_listener_before_waiting_for_game_window(monkeypatch)
     monkeypatch.setattr(backend_module, "Overlay", Overlay)
     monkeypatch.setattr(backend_module, "start_detecting_window", lambda _spec: calls.append("detect_window"))
     monkeypatch.setattr(backend_module, "game_window_ready", lambda: True)
-    monkeypatch.setattr(backend_module, "create_script_handler", lambda: calls.append("script_handler"))
+    monkeypatch.setattr(backend_module, "ScriptHandler", lambda: calls.append("script_handler"))
     monkeypatch.setattr(backend_module, "check_for_proper_tts_configuration", lambda: calls.append("diagnostics"))
     monkeypatch.setattr(
         backend_module,

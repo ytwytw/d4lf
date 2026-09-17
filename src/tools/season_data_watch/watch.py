@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, TypedDict
 
-from src.importing.d2core.catalog import D2CoreCatalogError, discover_catalog_build
+from src.tools.season_data_watch.discovery import D2CoreDiscoveryError, discover_catalog_build
 from src.tools.season_data_watch.manifest import LockedFile, WatchInputError, load_source_lock
 from src.tools.season_data_watch.network import fetch_source, sha256_hex
 
@@ -39,7 +39,7 @@ def check_sources(source_lock: Path, *, fetch: Callable[[str], bytes] = fetch_so
 
     try:
         upstream_d2core_build = discover_catalog_build(fetch, locked.d2core_site_url)
-    except D2CoreCatalogError as error:
+    except D2CoreDiscoveryError as error:
         message = f"could not discover current D2Core build: {error}"
         raise WatchInputError(message) from error
     if upstream_d2core_build != locked.d2core_build:

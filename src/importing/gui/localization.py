@@ -34,7 +34,7 @@ class ImporterWindowLocalization:
         self._config.register_change_listener(self._queue_language_change)
         self.retranslate_ui()
 
-    def _queue_language_change(self, changed_keys) -> None:
+    def _queue_language_change(self, changed_keys: set[str] | frozenset[str]) -> None:
         if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
             self.language_changed_signal.emit()
 

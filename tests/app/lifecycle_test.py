@@ -3,6 +3,8 @@ import os
 from collections import UserList
 from typing import override
 
+from src.type_aliases import JsonValue
+
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
@@ -26,7 +28,7 @@ def test_lifecycle_is_a_qt_main_window_subclass() -> None:
 
 
 def test_close_event_preserves_existing_handler_registration(qapp: QApplication, monkeypatch) -> None:
-    class TrackingHandlerList(UserList[object]):
+    class TrackingHandlerList(UserList[JsonValue]):
         was_cleared = False
 
         @override
@@ -62,7 +64,7 @@ def test_close_event_finalizes_an_active_manual_capture(qapp: QApplication, monk
     monkeypatch.setattr(UnifiedMainWindow, "save_geometry", lambda _self: None)
     window = UnifiedMainWindow()
     window._child_windows = {}
-    window.console_handler = logging.NullHandler()
+    window.console_handler = QtLogHandler()
 
     window.closeEvent(QCloseEvent())
 
