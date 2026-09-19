@@ -106,7 +106,7 @@ def test_fast_mode_clears_unmatched_items_without_drawing(monkeypatch, mocker: M
     mode.request_draw = mocker.Mock()
 
     monkeypatch.setattr(fast_module, "is_ignored_item", lambda _item: False)
-    monkeypatch.setattr(fast_module.src.perception, "read_latest_item", lambda: Item())
+    monkeypatch.setattr(fast_module.src.perception, "parse_item_text", lambda _lines: Item())
     monkeypatch.setattr(
         fast_module,
         "Filter",
@@ -128,6 +128,30 @@ def test_clearing_before_next_match_does_not_leave_a_dead_textbox() -> None:
     mode.clear_textbox()
 
     assert mode.textbox is None
+
+
+@pytest.mark.parametrize("failure", ["none", "parse", "capture", "filter"])
+def test_fast_mode_clears_stale_match_on_every_failure(monkeypatch, mocker, failure) -> None:
+    mode = _new_fast_mode()
+    mode.request_clear = mocker.Mock()
+    mode.request_draw = mocker.Mock()
+    parse = mocker.Mock(return_value=None if failure == "none" else Item())
+    if failure in {"parse", "capture"}:
+        parse.side_effect = ValueError("unknown aspect")
+    monkeypatch.setattr(fast_module.src.perception, "parse_item_text", parse)
+    monkeypatch.setattr(fast_module, "is_ignored_item", lambda _: False)
+    mocker.patch.object(fast_module, "capture_latest_failure")
+    capture = mocker.patch.object(fast_module, "capture")
+    if failure == "capture":
+        capture.side_effect = RuntimeError("no screenshot")
+    evaluator = mocker.patch.object(fast_module, "Filter")
+    evaluator.return_value.should_keep.side_effect = RuntimeError("invalid profile")
+
+    mode.on_tts(["current callback payload"])
+
+    parse.assert_called_once_with(["current callback payload"])
+    assert mode.request_clear.called
+    mode.request_draw.assert_not_called()
 
 
 def test_fast_match_textbox_gets_content_sized_geometry(monkeypatch) -> None:

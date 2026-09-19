@@ -1,50 +1,26 @@
 import logging
-import re
 
 from src.game_data import GameCatalog, ItemRarity, ItemType, SigilRules, is_consumable, is_seal_or_charm
 from src.item import Affix, AffixType, Aspect, Item, SeasonalAttribute
 from src.perception.framing import ItemIdentifier
+from src.perception.parser.details import (
+    _get_affix_from_text,
+    _get_affix_starting_location_from_tts_section,
+    _get_affixes_from_tts_section,
+    _get_aspect_from_name,
+    _get_aspect_from_text,
+    _get_aspect_or_set_from_tts_section,
+    _get_item_rarity,
+    _get_item_type,
+    _has_item_type_prefix,
+    _has_item_type_suffix,
+    _is_known_affix_text,
+    _update_item_object,
+)
+from src.perception.parser.tokens import _REPLACE_COMPARE_RE, _is_affix_stop_marker
 from src.perception.text import correct_name, find_number, keep_letters_and_spaces
 
 LOGGER = logging.getLogger(__name__)
-
-_AFFIX_RE = re.compile(
-    r"(?P<affixvalue1>[0-9]+)[^0-9]+\[(?P<minvalue1>[0-9]+) - (?P<maxvalue1>[0-9]+)]|"
-    r"(?P<affixvalue2>[0-9]+\.[0-9]+).+?\[(?P<minvalue2>[0-9]+\.[0-9]+) - (?P<maxvalue2>[0-9]+\.[0-9]+)]|"
-    r"(?P<affixvalue3>[.0-9]+)[^0-9]+\[(?P<onlyvalue>[.0-9]+)]|"
-    r".?![^\[\]]*[\[\]](?P<affixvalue4>\d+.?:\.\d+?)(?P<greateraffix1>[ ]*)|"
-    r"(?P<greateraffix2>[0-9]+[.0-9]*)(?![^\[]*\[).*",
-    re.DOTALL,
-)
-
-_ASPECT_RE = re.compile(
-    r"(?P<affixvalue>[0-9]+[.]?[0-9]*)[^0-9]+\[(?P<minvalue>[0-9]+[.]?[0-9]*)"
-    r" - (?P<maxvalue>[0-9]+[.]?[0-9]*)]"
-)
-
-_REPLACE_COMPARE_RE = re.compile(r"[\(（].*?[\)）]")
-
-_AFFIX_REPLACEMENTS = ["%", "+", ",", "[+]", "[x]", "per 5 Seconds"]
-_AFFIX_STOP_MARKERS = (
-    "empty socket",
-    "requires level",
-    "properties lost when equipped",
-    "cannot salvage",
-    "sell value",
-    "rampage:",
-    "feast:",
-    "hunger:",
-    "right mouse button",
-    "left mouse button",
-    "action button",
-)
-
-
-def _is_affix_stop_marker(line: str) -> bool:
-    normalized = line.lower()
-    return any(normalized.startswith(marker) for marker in _AFFIX_STOP_MARKERS) or GameCatalog().grammar.startswith(
-        "affix_stop", line
-    )
 
 
 def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[int, int]:
@@ -66,7 +42,7 @@ def _get_affix_counts(tts_section: list[str], item: Item, start: int) -> tuple[i
     if item.item_type == ItemType.HoradricSeal and start < len(tts_section):
         inherent_num = int(_is_charm_slot_unlock(tts_section[start]))
 
-    if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic] and item.name is not None:
+    if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic] and item.name and item.item_type != ItemType.Charm:
         # Uniques can have variable amounts of inherents.
         unique_data = GameCatalog().aspect_unique_dict.get(item.name)
         if isinstance(unique_data, dict) and isinstance(inherent_value := unique_data.get("num_inherents"), int):
@@ -107,6 +83,11 @@ def _compute_affix_layout(tts_section: list[str], item: Item) -> tuple[int, int,
     starting_index = _get_affix_starting_location_from_tts_section(tts_section, item)
     inherent_num, affixes_num = _get_affix_counts(tts_section, item, starting_index)
     affixes: list[str] = _get_affixes_from_tts_section(tts_section, starting_index, inherent_num + affixes_num)
+    if len(affixes) != inherent_num + affixes_num or any(
+        _is_affix_stop_marker(line) and not _is_known_affix_text(line, item.item_type) for line in affixes
+    ):
+        msg = f"Incomplete affix section for {item.original_name}"
+        raise ValueError(msg)
     aspect_or_set_text: str | None = _get_aspect_or_set_from_tts_section(
         tts_section, item, starting_index, len(affixes)
     )
@@ -153,7 +134,10 @@ def _add_sigil_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
         3 if item.item_type == ItemType.EscalationSigil or item.seasonal_attribute == SeasonalAttribute.bloodied else 2
     )
     raw_name = tts_section[name_index]
-    item.name = catalog.resolve_sigil(raw_name, "dungeons") or correct_name(raw_name.split(" in ")[0]) or ""
+    item.name = catalog.resolve_sigil(raw_name, "dungeons")
+    if item.name is None:
+        msg = f"Could not resolve sigil dungeon: {raw_name}"
+        raise ValueError(msg)
 
     start = next((i for i, line in enumerate(tts_section) if catalog.grammar.contains("affixes_header", line)), None)
     if start is not None:
@@ -170,7 +154,10 @@ def _add_sigil_affixes_from_tts(tts_section: list[str], item: Item) -> Item:
     for affix_name in affixes:
         cleaned_name = keep_letters_and_spaces(affix_name)
         canonical_name = catalog.resolve_sigil(cleaned_name, "major", "minor", "positive")
-        affix = Affix(name=canonical_name or correct_name(cleaned_name) or "")
+        if canonical_name is None:
+            msg = f"Could not resolve sigil affix: {affix_name}"
+            raise ValueError(msg)
+        affix = Affix(name=canonical_name)
         affix.type = AffixType.normal
         item.affixes.append(affix)
 
@@ -195,19 +182,18 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
         return _update_item_object(item, item_type=ItemType.Sigil)
     if grammar.identifier_matches(ItemIdentifier.ESCALATION_SIGIL.name, tts_item[0], mode="startswith"):
         return _update_item_object(item, item_type=ItemType.EscalationSigil)
-    metadata_parts = tts_item[1].split(" ")
-    descriptor_parts = metadata_parts[1:]
-    if _has_item_type_suffix(" ".join(descriptor_parts), ItemType.Tribute) or any(
-        _item_type_text_matches(part, ItemType.Tribute) for part in descriptor_parts
+    if grammar.identifier_matches(ItemIdentifier.TRIBUTE.name, tts_item[1]) or _has_item_type_suffix(
+        tts_item[1], ItemType.Tribute
     ):
         item.item_type = ItemType.Tribute
         item.rarity = _get_item_rarity(tts_item[1])
         if item.rarity is None:
             return None
         tribute_text = grammar.strip_rarity(tts_item[1], item.rarity.name)
-        item.name = (
-            catalog.resolve_tribute(tts_item[0]) or catalog.resolve_tribute(tribute_text) or correct_name(tribute_text)
-        )
+        item.name = catalog.resolve_tribute(tts_item[0]) or catalog.resolve_tribute(tribute_text)
+        if item.name is None:
+            msg = f"Could not resolve tribute name: {tts_item[0]}"
+            raise ValueError(msg)
         return item
     if grammar.identifier_matches(ItemIdentifier.WHISPERING_KEY.name, tts_item[0], mode="startswith"):
         return _update_item_object(item, item_type=ItemType.Consumable)
@@ -277,20 +263,3 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
             item.power = int(item_power)
             break
     return item
-
-
-from src.perception.parser.details import (  # ruff:ignore[module-import-not-at-top-of-file]
-    _get_affix_from_text,
-    _get_affix_starting_location_from_tts_section,
-    _get_affixes_from_tts_section,
-    _get_aspect_from_name,
-    _get_aspect_from_text,
-    _get_aspect_or_set_from_tts_section,
-    _get_item_rarity,
-    _get_item_type,
-    _has_item_type_prefix,
-    _has_item_type_suffix,
-    _is_known_affix_text,
-    _item_type_text_matches,
-    _update_item_object,
-)

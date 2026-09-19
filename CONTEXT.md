@@ -15,7 +15,7 @@ A user-defined loot filtering configuration for one Diablo 4 build. A profile ma
 
 ### Loot filter override
 
-A persistent, profile-independent user setting that disables profile-based and ordinary built-in filtering for an item category without changing the active profile. Changes apply to the next evaluated item; non-Mythic items in a disabled category are left untouched and produce no keep, junk, or filtering-statistics outcome. Built-in Mythic always-keep behavior remains active in every category. The profile's rules resume applying when the category is enabled again. Every category is enabled by default.
+A persistent, profile-independent user setting that disables all filtering for an item category without changing the active profile. Changes apply to the next evaluated item; all items in a disabled category, including Mythics, are left untouched and produce no keep, junk, or filtering-statistics outcome. The profile's rules and built-in Mythic protection resume applying when the category is enabled again. Every category is enabled by default.
 
 ### Filterable item category
 
@@ -23,7 +23,7 @@ One of the item groups controlled by a loot filter override: Equipment, Sigils, 
 
 ### Mythic always-keep rule
 
-The built-in rule that gives Mythic items a keep outcome independently of profile rules. It remains active when the item's filterable item category is disabled and produces the normal keep statistics and actions.
+The built-in rule that gives Mythic items a keep outcome independently of profile rules when their filterable item category is enabled. Disabling the category skips Mythics too; it never makes them a junk outcome.
 
 ### Paragon payload
 

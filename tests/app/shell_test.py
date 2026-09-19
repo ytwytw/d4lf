@@ -1,3 +1,4 @@
+import logging
 import threading
 from pathlib import Path
 from types import SimpleNamespace
@@ -86,3 +87,24 @@ def test_settings_window_inherits_main_window_maximized_state(monkeypatch) -> No
     assert calls == [
         ("config", shell_module.ConfigWindow, {"theme_changed_callback": window.apply_theme, "force_maximized": True})
     ]
+
+
+def test_startup_log_replay_includes_cleanup_records_and_respects_level(monkeypatch) -> None:
+    app = QApplication.instance() or QApplication([])
+    window = UnifiedMainWindow.__new__(UnifiedMainWindow)
+    QMainWindow.__init__(window)  # ruff:ignore[unnecessary-dunder-call] - initialize without full UI
+    received = []
+    startup_record = logging.makeLogRecord({"name": "d4lf-startup-test", "levelno": logging.WARNING})
+    cleanup_record = logging.makeLogRecord({"name": "d4lf-startup-test", "levelno": logging.ERROR})
+    quiet_record = logging.makeLogRecord({"name": "d4lf-startup-test", "levelno": logging.DEBUG})
+    monkeypatch.setattr(shell_module, "consume_startup_log_records", lambda: [startup_record])
+    window._config = SimpleNamespace(consume_deferred_cleanup_log_records=lambda: [cleanup_record, quiet_record])
+    monkeypatch.setattr(
+        window, "console_handler", SimpleNamespace(level=logging.WARNING, handle=received.append), raising=False
+    )
+
+    window._emit_startup_logs()
+
+    assert received == [startup_record, cleanup_record]
+    window.deleteLater()
+    app.processEvents()

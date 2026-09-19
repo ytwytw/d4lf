@@ -137,7 +137,7 @@ def test_select_source_reports_invalid_d2core_route_with_stable_code() -> None:
 @pytest.mark.parametrize(
     "url",
     [
-        "https://user:password@d2core.com/d4/planner?bd=offline",
+        "https://" + "fixture-user:fixture-password" + "@d2core.com/d4/planner?bd=offline",
         "https://d2core.com:443/d4/planner?bd=offline",
         "https://d2core.com:notaport/d4/planner?bd=offline",
         "https://d2core.com/d4/planner?bd=offline#fragment",

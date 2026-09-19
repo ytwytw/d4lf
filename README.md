@@ -26,14 +26,33 @@ D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和
 
 1. 从本仓库的 [Releases](https://github.com/ytwytw/d4lf/releases) 下载最新 ZIP 并解压。
 1. 找到《暗黑破坏神 IV》安装目录。
+1. 先退出游戏；安装脚本会替换游戏目录中的 `saapi64.dll` 并可能关闭仍在运行的游戏。
 1. 双击 `install_dll.cmd`，按提示提供游戏目录并允许安装本地签名证书。
 1. 启动 `d4lf.exe`，在 `设置 > 系统 > 语言` 中选择游戏客户端实际使用的语言。
 1. 在游戏中启用高级说明信息、屏幕阅读器和第三方屏幕阅读器；字体大小使用小或中，关闭 HDR。
 1. 导入 Build 或创建 Profile，在设置中启用需要使用的 Profile。
-1. 启动游戏后使用主界面显示的热键；默认 `F11` 运行装备过滤。
+1. 首次使用先启用“仅视觉模式”，用快速视觉模式悬停已装备物品和背包装备，确认解析和保留提示正确。
+1. 核对 Profile 后再关闭“仅视觉模式”并使用主界面热键；默认 `F11` 会自动标记未匹配装备，不是只读预览。
 
-如果 TTS 一直无法连接，可尝试以管理员身份运行游戏和启动器。配置损坏时，退出 D4LF 后删除
+如果 TTS 一直无法连接，可尝试以管理员身份运行游戏和启动器。配置损坏时，退出 D4LF 后备份并重命名
 `%USERPROFILE%\.d4lf\params.ini`，再通过设置界面重新配置。
+
+## 第 15 赛季版本与升级
+
+当前中文发行版本为 `10.0.3+zhcn.1`，基于上游 `10.0.3`。中文数据只纳入有来源的映射；
+未知词条不会自动编造译名。发布说明应区分自动回归、已执行的实机样本和未覆盖功能。
+
+当前仍是部分中文支持的待发布测试版本：数据审计包含缺失翻译和有歧义的中文别名，
+不代表全部第 15 赛季物品已支持，也不承诺无人值守安全。`manifest.json` 和 `quality-report.json`
+中的就绪标记为否时，发布工作流会阻止公开发布；本地构建和 Build 工作流仍可产生测试包。
+建议保持“仅视觉模式”，逐项人工核对识别结果。
+
+- 请下载 `d4lf_v10.0.3+zhcn.1.zip` 这类完整发布包，而不是 GitHub 自动生成的 Source code ZIP。
+- 配置和 Profile 位于 `%USERPROFILE%\.d4lf`；升级前备份此目录。V9 升 V10 建议解压到新目录并重新导入不兼容的 Profile。
+- 从旧版本升级到此版本建议手动下载、解压到新目录；旧版 `autoupdater.bat` 的行为不会被本次修复追溯改变。
+- 本版本随附的 `autoupdater.bat` 仅检查本仓库更新，不降级，不删除安装目录中的额外文件。
+  复制失败会保留 `temp_update` 供恢复；需要时从发布 ZIP 手动解压修复，不要混用不同版本的 EXE 和 assets。
+- 应用升级不会替换游戏目录中的 DLL；只有发布说明要求更新 DLL 时，才在关闭游戏后重新运行 `install_dll.cmd`。
 
 ## 跨语言 Build 导入
 
@@ -105,7 +124,7 @@ Some commonly modified setting sections:
 This is where you activate/deactivate your profiles. You can change the order of the profiles as well by dragging on the
 6 dot icon. The top listed profile is what Vision Mode With Highlighting will show squares for when hovering over an
 item so the order can matter. However, a matching rule produces a keep only when the item's filterable item category is
-enabled; the Mythic always-keep rule still applies.
+enabled. Disabling a category leaves every item in that category untouched, including Mythics.
 
 #### Loot Behavior
 
@@ -119,8 +138,8 @@ category:
 - Filter Seals
 - Filter Charms
 
-When an override is disabled, non-Mythic items in that category are left untouched while the active profile rules are
-preserved. Mythic items are always kept by the Mythic always-keep rule.
+When an override is disabled, all items in that category are left untouched while the active profile rules are
+preserved. The Mythic always-keep rule applies only when that category is enabled.
 
 #### Stash & Transfer
 
@@ -153,7 +172,7 @@ The Profile Editor allows you to edit your profiles. It is still in beta. The Si
 ## How to filter / Profiles
 
 All profiles define whitelist filters. If no filter included in your profiles matches an item in an enabled filterable
-item category, it will be discarded. Disabled categories are left untouched, except that Mythics are always kept.
+item category, it will be marked as junk (or dropped in drop mode). Disabled categories are left untouched, including Mythics.
 
 Your config files will be validated on startup and will prevent the program from starting if the structure or syntax is
 incorrect. The error message will provide hints about the specific problem.
@@ -576,7 +595,7 @@ Charms:
 
 </details>
 
-Mythic seals and charms will always be kept, even if they don't match a profile.
+Mythic seals and charms are kept without matching a profile when their category is enabled; disabled categories are untouched.
 
 ### AspectUpgrades
 
@@ -694,7 +713,7 @@ Tributes are defined by the top-level key `Tributes`. Use an object with `name` 
 A tribute is kept if its name is in the `name` list **or** its rarity is in the `rarity` list.
 Omitting a key means that dimension is not checked at all. If no `Tributes` filter is provided, all tributes are kept.
 
-Mythic tributes are always kept no matter what.
+Mythic tributes are kept without matching a profile when tribute filtering is enabled; otherwise they are untouched.
 
 <details><summary>Config Examples</summary>
 
@@ -742,8 +761,8 @@ additionally want to keep other uniques that have particular stats, use the `Glo
 
 Global unique filters are defined by the top-level key `GlobalUniques`. It contains a list of parameters that you want
 to filter for. If no global unique filter is provided or if the item does not match any unique filter (affix or otherwise),
-uniques will be handled according to the handle_uniques configuration. All mythics are marked as favorite regardless of
-any filter or configuration.
+uniques will be handled according to the handle_uniques configuration. Mythics in enabled categories are kept regardless of
+profile matching; marking kept items as favorites still depends on `mark_as_favorite`. Disabled categories are untouched.
 
 The following global filters are available:
 
@@ -904,7 +923,7 @@ If you intend to submit PRs, create your own fork of d4lf and clone that in the 
 Before beginning, [install uv](https://docs.astral.sh/uv/getting-started/installation/#winget).
 
 ```bash
-git clone https://github.com/d4lfteam/d4lf
+git clone https://github.com/ytwytw/d4lf
 cd d4lf
 uv sync
 uv run pytest . -m "not selenium" -n logical

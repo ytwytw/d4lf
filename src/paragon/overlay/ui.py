@@ -36,8 +36,7 @@ class OverlayUIMixin(OverlayContract):
         scale = dpi_scale_for_widget(self) * float(self._cfg.ui_scale or 1.0)
         self._cfg.ui_scale = eff = max(0.75, min(4.0, float(scale)))
 
-        # The panel width always scales with DPI. Cell sizes only scale
-        # automatically when the user has not stored an explicit override.
+        # Scale panel width with DPI; keep explicit cell-size overrides.
         self._cfg.panel_w = round(self._cfg.panel_w * eff)
         if dict(self._settings).get("cell_size") is None:
             self._cfg.cell_size = round(self._cfg.cell_size * eff)
@@ -49,8 +48,7 @@ class OverlayUIMixin(OverlayContract):
         accent = self._accent_frame_color()
         outer = tk.Frame(self, bg=TRANSPARENT_KEY)
         outer.pack(fill="both", expand=True)
-        # The canvas owns all grid drawing. The left panel is a separate Frame
-        # placed on top of the same transparent outer container.
+        # The grid canvas and left control panel share the transparent outer container.
         self.canvas = tk.Canvas(outer, highlightthickness=0, bg=TRANSPARENT_KEY)
         self.canvas.pack(fill="both", expand=True)
         self.left = tk.Frame(outer, bg=TRANSPARENT_KEY)

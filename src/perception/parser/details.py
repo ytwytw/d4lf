@@ -9,7 +9,13 @@ from src.perception.text import correct_name
 if TYPE_CHECKING:
     from src.item import Item
 
-from src.perception.parser.base import _AFFIX_RE, _AFFIX_REPLACEMENTS, _ASPECT_RE, _REPLACE_COMPARE_RE
+from src.perception.parser.tokens import (
+    _AFFIX_RE,
+    _AFFIX_REPLACEMENTS,
+    _ASPECT_RE,
+    _REPLACE_COMPARE_RE,
+    _is_affix_stop_marker,
+)
 from src.perception.text import keep_letters_and_spaces
 
 LOGGER = logging.getLogger(__name__)
@@ -91,17 +97,24 @@ def _get_aspect_or_set_from_tts_section(tts_section: list[str], item: Item, star
     # Grab the aspect/set as well in this case
     if item.rarity in [ItemRarity.Mythic, ItemRarity.Unique, ItemRarity.Legendary]:
         aspect_index = start + num_affixes
-        return tts_section[aspect_index] if aspect_index < len(tts_section) else None
+        if aspect_index >= len(tts_section) or _is_affix_stop_marker(tts_section[aspect_index]):
+            msg = f"Missing aspect text for {item.original_name}"
+            raise ValueError(msg)
+        return tts_section[aspect_index]
     if item.rarity == ItemRarity.Set:
         for line in tts_section[start + num_affixes :]:
             set_name = _get_set_from_text(line)
             if set_name:
                 return set_name
+        msg = f"Could not resolve set name in TTS: {tts_section}"
+        raise ValueError(msg)
 
     return None
 
 
 def _get_set_from_text(set_text: str) -> str | None:
+    if set_name := GameCatalog().resolve_set(set_text):
+        return set_name
     set_name = correct_name(set_text)
     if set_name in GameCatalog().bad_tts_uniques:
         set_name = GameCatalog().bad_tts_uniques[set_name]
@@ -125,8 +138,18 @@ def _affix_range_precision(text: str) -> str | None:
 
 def _resolve_affix_name(text: str, item_type: ItemType | None = None, *, exact: bool = False) -> str | None:
     display_text = keep_letters_and_spaces(_REPLACE_COMPARE_RE.sub("", text).strip())
-    display_text = re.sub(r"^[xX]\s+", "", display_text)
     catalog = GameCatalog()
+    if item_type == ItemType.HoradricSeal and catalog.grammar.contains("charm_slot", text):
+        return "charm_slot"
+    # Some localized catalog labels include the multiplier marker; English labels do not.
+    if canonical := catalog.resolve_affix_exact(
+        display_text,
+        include_charms=item_type == ItemType.Charm,
+        include_seals=item_type == ItemType.HoradricSeal,
+        range_precision=_affix_range_precision(text),
+    ):
+        return canonical
+    display_text = re.sub(r"^[xX]\s+", "", display_text)
     resolver = catalog.resolve_affix_exact if exact else catalog.resolve_affix
     return resolver(
         display_text,
@@ -183,6 +206,8 @@ def _get_affix_from_text(text: str, item_type: ItemType | None = None) -> Affix:
         msg = f"Could not resolve affix name: {result.text}"
         raise ValueError(msg)
     result.name = resolved_name
+    if result.value is not None and result.value == GameCatalog().grammar.fixed_affix_values.get(resolved_name):
+        result.type = AffixType.normal
     return result
 
 
@@ -195,14 +220,6 @@ def _clean_value_text(text: str) -> str:
     for x in _AFFIX_REPLACEMENTS:
         text = text.replace(x, "")
     return _REPLACE_COMPARE_RE.sub("", text).strip()
-
-
-def _get_affix_dictionary(item_type: ItemType | None) -> dict[str, str]:
-    if item_type == ItemType.HoradricSeal:
-        return GameCatalog().affix_dict | GameCatalog().seal_affix_dict
-    if item_type == ItemType.Charm:
-        return GameCatalog().affix_dict | GameCatalog().charm_affix_dict
-    return GameCatalog().affix_dict
 
 
 def _is_known_affix_text(text: str, item_type: ItemType | None) -> bool:
@@ -232,13 +249,12 @@ def _get_aspect_from_text(text: str, name: str) -> Aspect:
 
 
 # For legendary aspects
-def _get_aspect_from_name(text: str, name: str) -> Aspect | None:
-    for aspect_name in GameCatalog().aspect_list:
-        if aspect_name in name:
-            return Aspect(text=text, name=aspect_name)
+def _get_aspect_from_name(text: str, name: str) -> Aspect:
+    if aspect_name := GameCatalog().resolve_aspect(name):
+        return Aspect(text=text, name=aspect_name)
 
-    LOGGER.warning(f"Could not find an aspect representing {name} in our data.")
-    return None
+    msg = f"Could not resolve legendary aspect name: {name}"
+    raise ValueError(msg)
 
 
 def _get_item_rarity(data: str) -> ItemRarity | None:
@@ -252,11 +268,6 @@ def _get_item_rarity(data: str) -> ItemRarity | None:
 
 def _get_item_type(data: str) -> ItemType | None:
     return GameCatalog().item_type_from_text(data)
-
-
-def _item_type_text_matches(data: str, item_type: ItemType) -> bool:
-    normalized = data.strip().casefold()
-    return any(normalized == candidate.strip().casefold() for candidate in GameCatalog().item_type_names(item_type))
 
 
 def _has_item_type_suffix(data: str, item_type: ItemType) -> bool:
@@ -274,11 +285,8 @@ def _has_item_type_prefix(data: str, item_type: ItemType) -> bool:
 
 
 def _is_codex_upgrade(tts_section: list[str]) -> bool:
-    return any(
-        "upgrades an aspect in the codex of power" in line.lower() or "unlocks new aspect" in line.lower()
-        for line in tts_section
-    )
+    return any(GameCatalog().grammar.contains("codex_upgrade", line) for line in tts_section)
 
 
 def _is_cosmetic_upgrade(tts_section: list[str]) -> bool:
-    return any("unlocks new look on salvage" in line.lower() for line in tts_section)
+    return any(GameCatalog().grammar.contains("cosmetic_upgrade", line) for line in tts_section)

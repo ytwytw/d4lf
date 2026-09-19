@@ -33,7 +33,6 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 TOOLS_API_BASE_URL = "https://tools.infinitybuilds.gg/api/games/diablo4/build-data"
 CATALOG_ASSET_LOCALE = "enUS"
-SCRIPT_XPATH = "//script"
 NEXT_F_PUSH_REGEX = re.compile(r'^self\.__next_f\.push\(\[(?:\d+),(".*")\]\)\s*;?$', re.DOTALL)
 CATALOG_ID_INSTANCE_PREFIX = re.compile(r"^(item|aspect)-\d+-")
 
@@ -54,7 +53,7 @@ def _extract_build_data(raw_html_data: lxml.html.HtmlElement) -> BuildData | Non
     pushed value is itself a JSON-encoded string, so ``json.loads`` on it yields the real
     (properly unescaped) page content, inside which we bracket-match the ``"variants":[...]`` array.
     """
-    for script in raw_html_data.xpath(SCRIPT_XPATH):
+    for script in raw_html_data.xpath("//script"):
         if not script.text or "self.__next_f.push" not in script.text or "classId" not in script.text:
             continue
         match = NEXT_F_PUSH_REGEX.match(script.text.strip())

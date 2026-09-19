@@ -1,7 +1,76 @@
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+
 from src import perception
-from src.game_data import ItemRarity, ItemType
+from src.game_data import GameCatalog, ItemRarity, ItemType
+from src.game_data import catalog as catalog_module
 from src.item import AffixType, Aspect, Item
 from src.perception import parse_item_text
+
+pytestmark = pytest.mark.usefixtures("english_catalog")
+
+
+@pytest.fixture
+def english_catalog(monkeypatch) -> None:
+    _use_catalog(monkeypatch, "enUS")
+
+
+def _use_catalog(monkeypatch, language: str) -> None:
+    settings = SimpleNamespace(general=SimpleNamespace(language=language))
+    monkeypatch.setattr(catalog_module, "get_settings", lambda: settings)
+    catalog = object.__new__(GameCatalog)
+    catalog.load_data()
+    monkeypatch.setattr(GameCatalog, "_instance", catalog)
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        case
+        for name in ("zhcn_live_smoke.json", "zhcn_live_talisman.json")
+        for case in json.loads((Path(__file__).parents[1] / "data" / name).read_text(encoding="utf-8"))
+    ],
+    ids=lambda case: case["input"][0],
+)
+def test_real_zhcn_equipment_and_backpack_capture(monkeypatch, case) -> None:
+    _use_catalog(monkeypatch, "zhCN")
+
+    item = parse_item_text(case["input"])
+    expected = case["expected"]
+
+    assert item is not None
+    assert item.item_type is ItemType[expected["type"]]
+    assert item.rarity is ItemRarity[expected["rarity"]]
+    assert item.power == expected["power"]
+    assert [[affix.name, affix.value] for affix in item.affixes] == expected["affixes"]
+    assert (item.aspect.name if item.aspect else None) == expected["aspect"]
+    assert (item.aspect.value if item.aspect else None) == expected["aspect_value"]
+    if "set" in expected:
+        assert item.set == expected["set"]
+    if "inherent" in expected:
+        assert [[affix.name, affix.value] for affix in item.inherent] == expected["inherent"]
+    if "affix_types" in expected:
+        assert [affix.type.name for affix in item.affixes] == expected["affix_types"]
+    if item.rarity is ItemRarity.Unique:
+        assert item.name == expected["aspect"]
+
+
+@pytest.mark.parametrize("missing", ["power", "affixes", "aspect"])
+def test_incomplete_equipment_capture_fails_closed(monkeypatch, missing) -> None:
+    _use_catalog(monkeypatch, "zhCN")
+    trace = json.loads((Path(__file__).parents[1] / "data/zhcn_live_smoke.json").read_text(encoding="utf-8"))[0][
+        "input"
+    ]
+    if missing == "power":
+        trace.pop(2)
+    else:
+        trace = trace[: (6 if missing == "affixes" else 8)] + ["鼠标右键"]
+
+    with pytest.raises(ValueError, match="Missing|Incomplete"):
+        parse_item_text(trace)
 
 
 def test_captured_tts_cases_parse_without_item_description_modules(parser_cases) -> None:
@@ -160,3 +229,58 @@ def test_sigil_rarity_is_derived_from_tts_affixes() -> None:
     assert item.name == "beast_graveyard"
     assert [affix.name for affix in item.affixes] == ["horadric_strongroom", "hellbound_elites"]
     assert item.rarity == ItemRarity.Rare
+
+
+def test_localized_set_charm_uses_verified_type_and_set_aliases(monkeypatch) -> None:
+    _use_catalog(monkeypatch, "zhCN")
+    item = parse_item_text([
+        "测试神符",
+        "套装神符",
+        "850 物品强度",
+        "+10% 攻击速度 [8 - 12]%",
+        "+810 荆棘 [576 - 865]",
+        "赛斯切隆怒火",
+        "需要等级 70",
+        "鼠标右键",
+    ])
+
+    assert item is not None
+    assert item.item_type is ItemType.Charm
+    assert item.set == "sescherons_fury"
+    assert [affix.name for affix in item.affixes] == ["attack_speed", "thorns"]
+
+
+def test_unknown_set_charm_is_rejected_instead_of_junked_as_incomplete_item(monkeypatch) -> None:
+    _use_catalog(monkeypatch, "zhCN")
+
+    with pytest.raises(ValueError, match="set name"):
+        parse_item_text([
+            "测试神符",
+            "套装神符",
+            "850 物品强度",
+            "+10% 攻击速度 [8 - 12]%",
+            "+810 荆棘 [576 - 865]",
+            "未有来源的套装",
+            "鼠标右键",
+        ])
+
+
+def test_chinese_legendary_seal_parses_charm_slot_without_legendary_aspect(monkeypatch) -> None:
+    _use_catalog(monkeypatch, "zhCN")
+    item = parse_item_text([
+        "测试封印",
+        "传奇赫拉迪姆封印",
+        "850 物品强度",
+        "解锁 5 个神符插槽",
+        "+10% 攻击速度 [8 - 12]%",
+        "+810 荆棘 [576 - 865]",
+        "+746 生命上限 [741 - 1000]",
+        "需要等级 70",
+        "鼠标右键",
+    ])
+
+    assert item is not None
+    assert item.item_type is ItemType.HoradricSeal
+    assert [(affix.name, affix.value) for affix in item.inherent] == [("charm_slot", 5)]
+    assert len(item.affixes) == 3
+    assert item.aspect is None

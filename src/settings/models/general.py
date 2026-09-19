@@ -110,7 +110,7 @@ class GeneralModel(_IniBaseModel):
     )
     handle_uniques: UnfilteredUniquesType = Field(
         default=UnfilteredUniquesType.favorite,
-        description="What should be done with uniques that do not match any profile. Mythics are always favorited. If mark_as_favorite is unchecked then uniques that match a profile will not be favorited.",
+        description="How to handle uniques that match no profile. Disabling a category skips all its items. Mythics are always kept when their category is enabled, but only favorited when mark_as_favorite is enabled.",
         title="Unfiltered Unique Behavior",
         json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
     )

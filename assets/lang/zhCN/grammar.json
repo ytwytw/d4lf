@@ -9,11 +9,8 @@
             "integer": "poison_damage"
         }
     },
-    "aspect_alias_equivalence": {
-        "恶毒": [
-            "malicious",
-            "virulent"
-        ]
+    "fixed_affix_values": {
+        "mastery_to_all_skills": 1
     },
     "identifiers": {
         "COMPASS": [
@@ -77,6 +74,8 @@
             "染血"
         ],
         "charm_slot": [
+            "神符插槽",
+            "神符槽位",
             "护符栏位",
             "护符槽位"
         ],

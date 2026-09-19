@@ -79,7 +79,7 @@ def main(d4data_dir: Path) -> None:
         print(f"START item_types for {language}")
         started = perf_counter()
         whitelist_types = GEAR_TYPES.copy()
-        whitelist_types.extend(["Elixir", "TemperManual", "Tome"])
+        whitelist_types.extend(["Charm", "HoradricSeal", "Elixir", "TemperManual", "Tome"])
         item_typ_dict = {
             "Material": "custom type material",
             "Sigil": "custom type sigil",

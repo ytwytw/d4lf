@@ -1,10 +1,12 @@
 """Shared Tk UI thread. Every overlay subsystem attaches to this one root instead of creating its own tk.Tk()."""
 
+import gc
 import logging
 import queue
 import threading
 import tkinter as tk
 from collections.abc import Callable
+from tkinter.font import Font
 
 from src.type_aliases import JsonValue
 
@@ -17,6 +19,36 @@ _UI_QUEUE: queue.Queue[tuple[UiCallback, threading.Event | None, dict[str, UiRes
 _UI_ROOT: tk.Tk | None = None
 _UI_READY = threading.Event()
 _START_LOCK = threading.Lock()
+_UI_STOPPING = threading.Event()
+_UI_STOPPED = threading.Event()
+
+
+def _release_tk_resources(root: tk.Tk) -> None:
+    """Finalize Tcl-backed resources on their owner, including externally retained handles."""
+    for resource in gc.get_objects():
+        if isinstance(resource, tk.Variable) and getattr(resource, "_tk", None) is root.tk:
+            try:
+                resource.__del__()  # ruff:ignore[unnecessary-dunder-call] - finalization must run on the Tcl owner
+            except tk.TclError:
+                LOGGER.debug("Tk variable was already removed", exc_info=True)
+            finally:
+                resource._tk = None
+        elif isinstance(resource, Font) and getattr(resource, "_tk", None) is root.tk:
+            resource.__del__()  # ruff:ignore[unnecessary-dunder-call] - finalization must run on the Tcl owner
+            resource.delete_font = False
+        elif isinstance(resource, tk.Image) and getattr(resource, "tk", None) is root.tk:
+            resource.__del__()  # ruff:ignore[unnecessary-dunder-call] - finalization must run on the Tcl owner
+            resource.name = None
+
+
+def _retain_interpreter_until_process_exit(root: tk.Tk) -> None:
+    """Keep Tcl owned by its daemon thread after windows and callbacks are destroyed.
+
+    Overlay singletons may retain destroyed widgets. Releasing the final interpreter
+    reference later on Qt's thread aborts Tcl. This retired owner does no UI work and
+    holds the interpreter until normal process teardown; no caller joins it afterward.
+    """
+    threading.Event().wait()
 
 
 def _tk_thread_main() -> None:
@@ -31,6 +63,9 @@ def _tk_thread_main() -> None:
 
     def _pump_queue() -> None:
         """Run all queued UI callbacks and reschedule the queue pump."""
+        if _UI_STOPPING.is_set():
+            root.quit()
+            return
         while True:
             try:
                 fn, done, box = _UI_QUEUE.get_nowait()
@@ -49,13 +84,33 @@ def _tk_thread_main() -> None:
         root.after(25, _pump_queue)
 
     root.after(0, _pump_queue)
-    root.mainloop()
+    try:
+        root.mainloop()
+    finally:
+        _release_tk_resources(root)
+        root.destroy()
+        _UI_ROOT = None
+        _UI_READY.clear()
+        while not _UI_QUEUE.empty():
+            try:
+                _, done, box = _UI_QUEUE.get_nowait()
+            except queue.Empty:
+                break
+            box["error"] = RuntimeError("Shared Tk UI thread stopped")
+            if done:
+                done.set()
+        gc.collect()
+        _UI_STOPPED.set()
+        _retain_interpreter_until_process_exit(root)
 
 
 def ensure_ui_thread() -> None:
     """Start the shared Tk UI thread once and wait until it is ready."""
     global _UI_THREAD
     with _START_LOCK:
+        if _UI_STOPPING.is_set():
+            message = "Shared Tk UI thread is shutting down"
+            raise RuntimeError(message)
         if _UI_THREAD is None or not _UI_THREAD.is_alive():
             _UI_READY.clear()
             _UI_THREAD = threading.Thread(target=_tk_thread_main, name="d4lf-ui-thread", daemon=True)
@@ -74,22 +129,45 @@ def get_root() -> tk.Tk:
     return _UI_ROOT
 
 
-def join_ui_thread() -> None:
-    """Block the calling thread until the shared UI thread exits."""
+def join_ui_thread(stop_event: threading.Event | None = None) -> None:
+    """Wait for the shared UI thread, or return when the application requests shutdown."""
     ensure_ui_thread()
     if _UI_THREAD is None:
         message = "Shared Tk UI thread is unavailable"
         raise RuntimeError(message)
-    _UI_THREAD.join()
+    while _UI_THREAD.is_alive():
+        if _UI_STOPPED.is_set():
+            return
+        if stop_event is not None and stop_event.is_set():
+            return
+        _UI_THREAD.join(timeout=0.1)
+
+
+def shutdown_ui_thread(timeout: float = 5.0) -> bool:
+    """Destroy Tk windows on their owner and wait boundedly for UI shutdown, not daemon retirement."""
+    _UI_STOPPING.set()
+    thread = _UI_THREAD
+    if thread is None or not thread.is_alive():
+        return True
+    if thread is threading.current_thread():
+        return _UI_STOPPED.is_set()
+    if not _UI_STOPPED.wait(timeout=timeout):
+        LOGGER.error("Shared Tk UI did not shut down within %.1f seconds", timeout)
+        return False
+    return True
 
 
 def call_on_ui_thread(fn: UiCallback) -> JsonValue | tk.Misc | None:
     """Execute a callback on the Tk thread and wait for its return value."""
     ensure_ui_thread()
+    if threading.current_thread() is _UI_THREAD:
+        return fn()
     done = threading.Event()
     box: dict[str, UiResult] = {}
     _UI_QUEUE.put((fn, done, box))
-    done.wait()
+    if not done.wait(timeout=5.0):
+        message = "Shared Tk UI callback did not complete within 5 seconds"
+        raise TimeoutError(message)
     exc = box.get("error")
     if isinstance(exc, BaseException):
         raise exc

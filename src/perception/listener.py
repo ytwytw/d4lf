@@ -18,6 +18,7 @@ from src.perception.framing import fix_data as _fix_data
 CONNECTED = False
 LAST_ITEM: list[str] = []
 LAST_ITEM_RAW: list[str] = []
+_LAST_ITEM_SEQUENCE = 0
 _DATA_QUEUE = queue.Queue(maxsize=100)
 _LAST_ITEM_LOCK = threading.Lock()
 _backend = load_backend()
@@ -71,10 +72,11 @@ class Publisher:
                 if catalog.grammar.locale != framer.grammar.locale:
                     framer = TtsFramer(catalog.grammar, catalog)
                 if not filter_data(data) and (item_trace := framer.feed(data, raw_data=raw_data)) is not None:
-                    global LAST_ITEM, LAST_ITEM_RAW
+                    global LAST_ITEM, LAST_ITEM_RAW, _LAST_ITEM_SEQUENCE
                     with _LAST_ITEM_LOCK:
                         LAST_ITEM = item_trace
                         LAST_ITEM_RAW = framer.last_raw_item.copy()
+                        _LAST_ITEM_SEQUENCE += 1
                     self.publish_item(LAST_ITEM)
             except Exception:
                 LOGGER.exception("TTS line processing failed; continuing with the next line")
@@ -123,6 +125,12 @@ def set_connected(value: bool) -> None:
 def get_item_trace_snapshot() -> tuple[list[str], list[str]]:
     with _LAST_ITEM_LOCK:
         return LAST_ITEM.copy(), LAST_ITEM_RAW.copy()
+
+
+def get_latest_item_snapshot() -> tuple[int, list[str]]:
+    """Atomically pair a completed item's sequence with its text, including repeated names."""
+    with _LAST_ITEM_LOCK:
+        return _LAST_ITEM_SEQUENCE, LAST_ITEM.copy()
 
 
 def create_pipe() -> int:

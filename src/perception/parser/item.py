@@ -43,6 +43,9 @@ class _TtsItemParser:
             return item
         if not self._is_supported_equipment():
             return None
+        if item.power is None:
+            msg = f"Missing Item Power for {item.original_name}"
+            raise ValueError(msg)
         if item.rarity == ItemRarity.Mythic and item.is_in_shop:
             return None
 

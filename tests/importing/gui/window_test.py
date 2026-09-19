@@ -1,14 +1,12 @@
 import importlib
 import os
-from typing import cast
+from typing import TYPE_CHECKING, Never, cast
 
 import pytest
 
 from src.importing.contracts import ImportSession
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
-
-from typing import TYPE_CHECKING, Never
 
 from PyQt6.QtWidgets import QApplication
 

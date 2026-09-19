@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from src.diagnostics.safety import GameInputCancelledError, begin_shutdown
+
 if TYPE_CHECKING:
     import numpy as np
 
@@ -43,7 +45,9 @@ def record_raw_tts(text: str) -> bool:
 
 
 __all__ = [
+    "GameInputCancelledError",
     "allow_game_input",
+    "begin_shutdown",
     "capture_latest_failure",
     "game_input_blocked",
     "is_diagnostic_capture_active",

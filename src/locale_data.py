@@ -68,6 +68,14 @@ def _nested_string_map(value: object) -> dict[str, dict[str, str]]:
     return result
 
 
+def _numeric_map(value: object) -> dict[str, float]:
+    if not isinstance(value, dict):
+        return {}
+    return {
+        key: float(number) for key, number in value.items() if isinstance(key, str) and type(number) in (int, float)
+    }
+
+
 @dataclass(frozen=True)
 class LocaleGrammar:
     locale: str
@@ -75,6 +83,7 @@ class LocaleGrammar:
     identifiers: dict[str, tuple[str, ...]] = field(default_factory=dict)
     rarities: dict[str, tuple[str, ...]] = field(default_factory=dict)
     affix_range_precision: dict[str, dict[str, str]] = field(default_factory=dict)
+    fixed_affix_values: dict[str, float] = field(default_factory=dict)
     aspect_alias_equivalence: dict[str, tuple[str, ...]] = field(default_factory=dict)
     schema_version: int = 1
 
@@ -89,6 +98,7 @@ class LocaleGrammar:
             identifiers=_term_map(data.get("identifiers")),
             rarities=_term_map(data.get("rarities")),
             affix_range_precision=_nested_string_map(data.get("affix_range_precision")),
+            fixed_affix_values=_numeric_map(data.get("fixed_affix_values")),
             aspect_alias_equivalence=_normalized_term_map(data.get("aspect_alias_equivalence")),
         )
 

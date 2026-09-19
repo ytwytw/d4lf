@@ -1,4 +1,7 @@
 {
+    "fixed_affix_values": {
+        "mastery_to_all_skills": 1
+    },
     "identifiers": {
         "COMPASS": [
             "compass"

@@ -1,6 +1,7 @@
 """Startup preparation and Windows runtime diagnostics."""
 
 import logging
+import os
 import pathlib
 import subprocess
 import sys
@@ -14,6 +15,45 @@ from src.settings import SettingsLoadError, VisionModeType, get_settings
 REPOSITORY_URL = "https://github.com/ytwytw/d4lf"
 SETUP_INSTRUCTIONS_URL = f"{REPOSITORY_URL}/blob/zhcn-v10/README.md#安装"
 LOGGER = logging.getLogger(__name__)
+
+
+def _check_tts_dll_signature(tts_dll: Path) -> None:
+    """Check trust without loading profiles or modules from another PowerShell edition."""
+    powershell = Path(os.environ["SYSTEMROOT"]) / "System32/WindowsPowerShell/v1.0/powershell.exe"
+    environment = os.environ.copy()
+    environment["D4LF_TTS_DLL_PATH"] = str(tts_dll)
+    # PSModulePath can contain PowerShell 7 modules when launched from pwsh. Windows
+    # PowerShell must load its own security module; incompatible type data prevents autoload.
+    script = (
+        "$ErrorActionPreference = 'Stop'; "
+        "Import-Module ($PSHOME + '\\Modules\\Microsoft.PowerShell.Security\\Microsoft.PowerShell.Security.psd1'); "
+        "(Get-AuthenticodeSignature -LiteralPath $env:D4LF_TTS_DLL_PATH).Status"
+    )
+    try:
+        result = subprocess.run(
+            [str(powershell), "-NoProfile", "-NonInteractive", "-Command", script],
+            capture_output=True,
+            text=True,
+            errors="replace",
+            check=True,
+            timeout=15,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            env=environment,
+        )
+    except (OSError, subprocess.SubprocessError) as error:
+        details = error.stderr.strip() if isinstance(error, subprocess.CalledProcessError) and error.stderr else error
+        LOGGER.warning("Unable to check saapi64.dll signature; trust status is unknown: %s", details)
+        return
+    status = result.stdout.strip()
+    if status == "Valid":
+        LOGGER.debug("%s is locally signed and valid.", tts_dll)
+    else:
+        LOGGER.error(
+            "As of season 12, the saapi64.dll must be locally signed. Follow all instructions in %s "
+            "to get the dll signed (specifically, run install_dll.bat). It currently has a status of %s",
+            SETUP_INSTRUCTIONS_URL,
+            status or "Unknown",
+        )
 
 
 def show_settings_load_error(error: SettingsLoadError, parent: QWidget | None = None) -> None:
@@ -41,9 +81,12 @@ def check_for_proper_tts_configuration() -> None:
     d4_process_found = False
     tts_dll = None
     for proc in psutil.process_iter(["name", "exe"]):
-        if proc.name().lower() != "diablo iv.exe":
+        try:
+            if proc.name().lower() != "diablo iv.exe":
+                continue
+            d4_dir = Path(proc.exe()).parent
+        except psutil.NoSuchProcess, psutil.AccessDenied:
             continue
-        d4_dir = Path(proc.exe()).parent
         tts_dll = d4_dir / "saapi64.dll"
         if not tts_dll.exists():
             LOGGER.warning(
@@ -55,19 +98,7 @@ def check_for_proper_tts_configuration() -> None:
         break
 
     if tts_dll and tts_dll.exists():
-        try:
-            command = ["powershell", "-Command", f"(Get-AuthenticodeSignature '{tts_dll}').Status"]
-            status = subprocess.run(command, capture_output=True, text=True, check=True).stdout.strip()
-            if status == "Valid":
-                LOGGER.debug(f"{tts_dll} is locally signed and valid.")
-            else:
-                LOGGER.error(
-                    f"As of season 12, the saapi64.dll must be locally signed. Follow all instructions in "
-                    f"{SETUP_INSTRUCTIONS_URL} to get the dll signed (specifically, run install_dll.bat). "
-                    f"It currently has a status of {status}"
-                )
-        except subprocess.CalledProcessError as error:
-            LOGGER.error(f"Error checking saapi64.dll signature: {error}")
+        _check_tts_dll_signature(tts_dll)
 
     if not d4_process_found:
         LOGGER.warning(

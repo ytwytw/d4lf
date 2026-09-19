@@ -39,7 +39,7 @@ from src.logger import (
 from src.logger import setup as setup_logging
 from src.loot import get_filter_colors
 from src.profiles.ui import ProfileEditorWindow
-from src.settings import LOG_LEVEL_SETTING_KEYS, Settings, SettingsLoadError, get_settings, has_any_changed
+from src.settings import LOG_LEVEL_SETTING_KEYS, SettingsLoadError, get_settings, has_any_changed
 from src.settings.ui import ConfigWindow
 
 if sys.platform == "win32":
@@ -142,7 +142,6 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
         self.console_handler.log_signal.connect(self.activity_tab.log_viewer.append_ansi_text)
         self.emit_startup_direct_to_console()
         self._emit_startup_logs()
-        self._emit_deferred_config_cleanup_logs(self._config)
 
     def _setup_tab_corner_widgets(self) -> None:
         """Add status indicators and social buttons to the tab bar."""
@@ -254,16 +253,9 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
         win.show()
         return win
 
-    def _emit_deferred_config_cleanup_logs(self, config: Settings) -> None:
-        for record in config.consume_deferred_cleanup_log_records():
-            if (
-                logging.getLogger(record.name).isEnabledFor(record.levelno)
-                and record.levelno >= self.console_handler.level
-            ):
-                self.console_handler.handle(record)
-
     def _emit_startup_logs(self) -> None:
-        for record in consume_startup_log_records():
+        records = [*consume_startup_log_records(), *self._config.consume_deferred_cleanup_log_records()]
+        for record in records:
             if (
                 logging.getLogger(record.name).isEnabledFor(record.levelno)
                 and record.levelno >= self.console_handler.level

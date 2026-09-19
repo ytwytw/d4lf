@@ -8,7 +8,7 @@ import pytest
 
 from src.game_data import GameCatalog, ItemType
 from src.game_data import catalog as catalog_module
-from src.game_data.localized_maps import load_localized_nested_string_map, load_string_map
+from src.game_data.localized_maps import load_string_map
 from src.item import Item, ItemJSONEncoder
 
 
@@ -58,12 +58,25 @@ def test_zhcn_catalog_loads_runtime_aliases(monkeypatch) -> None:
     assert catalog.resolve_item_type("胸甲") == "ChestArmor"
     assert catalog.item_type_from_text("胸甲") is ItemType.ChestArmor
     assert catalog.resolve_unique("命运之拳") == "fists_of_fate"
+    assert catalog.item_type_from_text("神符") is ItemType.Charm
+    assert catalog.item_type_from_text("赫拉迪姆封印") is ItemType.HoradricSeal
+    assert catalog.item_type_from_text("horadric seal") is ItemType.HoradricSeal
+
+
+def test_shared_chinese_aspect_label_does_not_imply_equivalent_powers(monkeypatch) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+
+    assert catalog.resolve_aspect("恶毒之胸甲") is None
+    assert catalog.resolve_aspect("malicious") == "malicious"
+    assert catalog.resolve_aspect("virulent") == "virulent"
 
 
 def test_zhcn_catalog_contains_season_15_upstream_delta(monkeypatch) -> None:
     catalog = _load_zhcn_catalog(monkeypatch)
 
     assert catalog.resolve_affix("金币掉落几率") == "gold_drop_rate"
+    assert catalog.resolve_tribute("强效精炼贡品") == "greater_tribute_of_refinement"
+    assert catalog.resolve_tribute("巧思贡品") == "tribute_of_ingenuity"
     expected_uniques = {
         "艾里欧克之针": "ariocs_needle",
         "亨利的永恒追捕": "henris_perquisition",
@@ -92,15 +105,42 @@ def test_zhcn_manifest_locks_runtime_files_and_review_sources() -> None:
     assert hashlib.sha256(reviewed_path.resolve().read_bytes()).hexdigest() == manifest["reviewed_overrides"]["sha256"]
 
 
+def test_zhcn_manifest_matches_runtime_text_and_reports_remaining_release_gaps() -> None:
+    locale_dir = Path(__file__).parents[2] / "assets/lang/zhCN"
+    manifest = json.loads((locale_dir / "manifest.json").read_text(encoding="utf-8"))
+    quality = json.loads((locale_dir / "quality-report.json").read_text(encoding="utf-8"))
+    datasets = {
+        entry["path"].removesuffix(".json"): json.loads((locale_dir / entry["path"]).read_text(encoding="utf-8"))
+        for entry in manifest["files"]
+    }
+    records = manifest["records"]
+    assert len({record["stable_id"] for record in records}) == len(records)
+    assert quality["summary"]["resolved_records"] == len(records)
+    assert quality["summary"]["unresolved_records"] == len(quality["unresolved"])
+    for record in records:
+        namespace, *keys = record["stable_id"].split(":")
+        value = datasets[namespace]
+        for key in keys:
+            value = value[key]
+        if namespace == "uniques":
+            value = value["display_name"]
+        assert value == record["text"], record["stable_id"]
+        assert hashlib.sha256(value.encode("utf-8")).hexdigest() == record["translation_source"]["translation_sha256"]
+    if quality["unresolved"] or quality["selected_quality"]["alias_collisions"]:
+        assert manifest["runtime_ready"] is False
+        assert quality["runtime_ready"] is False
+        assert manifest["readiness_blockers"]
+        assert quality["readiness_blockers"]
+
+
 def test_zhcn_catalog_uses_english_for_unresolved_text(monkeypatch) -> None:
     catalog = _load_zhcn_catalog(monkeypatch)
     english = catalog_module.BASE_DIR / "assets" / "lang" / "enUS"
-    english_sigils = load_localized_nested_string_map(english, "sigils.json")
     english_tributes = load_string_map(english / "tributes.json")
 
-    assert catalog.affix_dict["crafting_material_drop_rate"] == "crafting material drop rate"
-    assert catalog.charm_affix_dict["crafting_material_drop_rate"] == "crafting material drop rate"
-    assert catalog.affix_sigil_dict_all["positive"]["ruptures"] == english_sigils["positive"]["ruptures"]
+    assert catalog.affix_dict["crafting_material_drop_rate"] == "制作材料掉率"
+    assert catalog.charm_affix_dict["crafting_material_drop_rate"] == "制作材料掉率"
+    assert catalog.affix_sigil_dict_all["positive"]["ruptures"] == "混沌裂隙"
     assert catalog.tribute_dict["greater_tribute_of_armaments"] == english_tributes["greater_tribute_of_armaments"]
 
 

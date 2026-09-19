@@ -23,10 +23,13 @@ runs:
       env:
         VERSION_OVERRIDE: ${{ inputs.version }}
       run: |
+        $ErrorActionPreference = "Stop"
         python build.py
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         $version = $env:VERSION_OVERRIDE
         if ([string]::IsNullOrWhiteSpace($version)) {
           $version = python -c "from src import __version__; print(__version__)"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         }
         $folderName = "d4lf"
         $zipName = "d4lf_v" + $version

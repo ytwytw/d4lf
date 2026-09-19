@@ -6,10 +6,11 @@ import zipfile
 from pathlib import Path
 from typing import TypedDict, cast
 
-import requests
+import httpx
 
 import src.logger
 from src import __version__
+from src.release_payload import stage_release
 from src.release_versions import is_newer_version, is_prerelease, select_latest_release
 
 LOGGER = logging.getLogger(__name__)
@@ -36,9 +37,9 @@ class D4LFUpdater:
     @staticmethod
     def normalize_version(version: str | None) -> str | None:
         """Ensure version has 'v' prefix."""
-        if version and not version.startswith("v"):
-            return f"v{version.strip()}"
-        return version
+        if version is None:
+            return None
+        return "v" + version.strip().removeprefix("v").removeprefix("V")
 
     def get_latest_release(self, silent: bool = False) -> ReleaseData | None:
         """Fetch latest release info from GitHub API."""
@@ -47,12 +48,13 @@ class D4LFUpdater:
         try:
             current_version = self.normalize_version(__version__) or ""
             api_url = self.releases_api_url if self._is_prerelease(current_version) else self.api_url
-            response = requests.get(api_url, timeout=10)
+            response = httpx.get(api_url, timeout=10)
             response.raise_for_status()
             release_data = response.json()
-            selected = select_latest_release(release_data) if api_url == self.releases_api_url else release_data
+            releases = release_data if isinstance(release_data, list) else [release_data]
+            selected = select_latest_release(release for release in releases if isinstance(release, dict))
             return cast("ReleaseData | None", selected)
-        except requests.exceptions.RequestException as e:
+        except (httpx.HTTPError, ValueError) as e:
             LOGGER.error(f"Error fetching release info: {e}")
             return None
 
@@ -62,13 +64,13 @@ class D4LFUpdater:
     def print_changes_between_releases(self, current_version: str, latest_version: str) -> None:
         try:
             url = self.changes_base_url + current_version + "..." + latest_version
-            response = requests.get(url, timeout=10)
+            response = httpx.get(url, timeout=10)
             response.raise_for_status()
 
             LOGGER.info("Changes since last update:")
             for commit in response.json()["commits"]:
                 LOGGER.info(f"- {commit['commit']['message']}")
-        except requests.exceptions.RequestException as e:
+        except (httpx.HTTPError, ValueError, KeyError, TypeError) as e:
             LOGGER.error(f"Error fetching changes since last update: {e}")
 
     @staticmethod
@@ -76,22 +78,18 @@ class D4LFUpdater:
         """Download file with progress indication."""
         LOGGER.info(f"Downloading {filename}...")
         try:
-            response = requests.get(url, stream=True, timeout=30)
-            response.raise_for_status()
-
-            total_size = int(response.headers.get("content-length", 0))
-            downloaded = 0
-
-            with Path(filename).open("wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
+            with httpx.stream("GET", url, timeout=30, follow_redirects=True) as response:
+                response.raise_for_status()
+                total_size = int(response.headers.get("content-length", 0))
+                downloaded = 0
+                with filename.open("wb") as output:
+                    for chunk in response.iter_bytes(chunk_size=8192):
+                        output.write(chunk)
                         downloaded += len(chunk)
                         if total_size > 0:
-                            percent = (downloaded / total_size) * 100
-                            print(f"\rProgress: {percent:.1f}%", end="")
+                            print(f"\rProgress: {(downloaded / total_size) * 100:.1f}%", end="")
                 print("\n")
-        except requests.exceptions.RequestException as e:
+        except (httpx.HTTPError, OSError, ValueError) as e:
             LOGGER.error(f"\nError downloading file: {e}")
             return False
         LOGGER.info("Download complete!")
@@ -102,12 +100,9 @@ class D4LFUpdater:
         LOGGER.info("Extracting files...")
 
         try:
-            # Extract zip
-            with zipfile.ZipFile(zip_path, "r") as zip_ref:
-                zip_ref.extractall(self.temp_dir)
-
+            stage_release(zip_path, self.temp_dir)
             Path(self.version_file).write_text(latest_version, encoding="utf-8")
-        except (OSError, zipfile.BadZipFile, zipfile.LargeZipFile) as e:
+        except (OSError, ValueError, KeyError, zipfile.BadZipFile, zipfile.LargeZipFile) as e:
             LOGGER.error(f"Error during extraction: {e}")
             return False
         LOGGER.info("Files extracted successfully!")
@@ -164,7 +159,7 @@ class D4LFUpdater:
         zip_asset = None
 
         for asset in assets:
-            if asset["name"].startswith("d4lf_") and asset["name"].endswith(".zip"):
+            if asset["name"] == f"d4lf_{latest_version}.zip":
                 zip_asset = asset
                 break
 
@@ -261,10 +256,10 @@ def notify_if_update() -> None:
         return
 
     latest_version = updater.normalize_version(release.get("tag_name")) or ""
-    if current_version != latest_version:
+    if updater.is_newer_version(latest_version, current_version):
         LOGGER.info("=" * 50)
         LOGGER.info(
-            f"An update has been detected. Run d4lf_autoupdater.exe to automatically update. Version {current_version} → {latest_version}"
+            f"An update has been detected. Run autoupdater.bat to update. Version {current_version} → {latest_version}"
         )
         updater.print_changes_between_releases(current_version=current_version, latest_version=latest_version)
         LOGGER.info("=" * 50)
@@ -277,8 +272,11 @@ def _should_check_for_update(check_interval_hours: float = 4) -> bool:
     last_check_time = 0
 
     # Read the last check time from file if it exists
-    if Path.exists(check_file):
-        last_check_time = float(Path(check_file).read_text(encoding="utf-8").strip())
+    try:
+        if check_file.exists():
+            last_check_time = float(check_file.read_text(encoding="utf-8").strip())
+    except OSError, ValueError:
+        LOGGER.debug("Ignoring unreadable update-check timestamp", exc_info=True)
 
     # Calculate elapsed time since last check
     elapsed_time = current_time - last_check_time
@@ -286,7 +284,11 @@ def _should_check_for_update(check_interval_hours: float = 4) -> bool:
     # Check if enough time has passed
     if elapsed_time >= (check_interval_hours * 3600):
         # Update the last check time
-        Path(check_file).write_text(str(current_time), encoding="utf-8")
+        try:
+            check_file.parent.mkdir(parents=True, exist_ok=True)
+            check_file.write_text(str(current_time), encoding="utf-8")
+        except OSError:
+            LOGGER.debug("Could not save update-check timestamp", exc_info=True)
         return True
     return False
 

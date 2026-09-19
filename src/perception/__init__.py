@@ -42,8 +42,15 @@ find_item_start = _listener.find_item_start
 fix_data = _listener.fix_data
 
 
-def read_latest_item() -> Item | None:
-    return parse_item_text(list(_listener.LAST_ITEM))
+def latest_item_sequence() -> int:
+    return _listener.get_latest_item_snapshot()[0]
+
+
+def read_latest_item(*, after_sequence: int | None = None) -> Item | None:
+    sequence, lines = _listener.get_latest_item_snapshot()
+    if after_sequence is not None and sequence <= after_sequence:
+        return None
+    return parse_item_text(lines)
 
 
 def latest_item_lines() -> list[str]:
@@ -125,6 +132,7 @@ __all__ = [
     "is_connected",
     "keep_letters_and_spaces",
     "latest_item_lines",
+    "latest_item_sequence",
     "locate_affix_markers",
     "locate_affix_markers_with_diagnostics",
     "monitor_to_window",

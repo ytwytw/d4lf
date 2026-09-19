@@ -31,6 +31,7 @@ of upstream [D4LF](https://github.com/d4lfteam/d4lf) V10.
 1. Download and extract the latest ZIP from this repository's
    [Releases](https://github.com/ytwytw/d4lf/releases).
 1. Locate the Diablo IV installation directory.
+1. Close the game first. The installer replaces `saapi64.dll` and may close a running game.
 1. Run `install_dll.cmd`, provide the game directory, and allow installation of the local signing
    certificate when prompted.
 1. Start `d4lf.exe` and select the language used by the game client under
@@ -38,10 +39,34 @@ of upstream [D4LF](https://github.com/d4lfteam/d4lf) V10.
 1. Enable Advanced Tooltip Information, Use Screen Reader, and 3rd Party Screen Reader in the game.
    Use small or medium font scaling and disable HDR.
 1. Import a build or create a profile, then enable the profiles you want in Settings.
-1. Start the game and use the hotkeys shown on the main screen. `F11` runs item filtering by default.
+1. First enable Vision Mode Only and use fast vision mode to inspect equipped and inventory items without marking them.
+1. After reviewing the profile, disable Vision Mode Only to use automation. Default `F11` marks non-matching items;
+   it is not a read-only preview.
 
 If TTS never connects, try running the game and launcher as administrator. If the configuration is
-invalid, exit D4LF, delete `%USERPROFILE%\.d4lf\params.ini`, and configure it again through Settings.
+invalid, exit D4LF, back up and rename `%USERPROFILE%\.d4lf\params.ini`, and configure it again through Settings.
+
+## Season 15 release and upgrades
+
+The Chinese release version is `10.0.3+zhcn.1`, based on upstream `10.0.3`. Only source-backed Chinese
+names are included. Unverified translations are not invented.
+
+This is a pending, partially localized test version. The audit still lists missing translations and ambiguous
+Chinese aliases; it does not establish support for every Season 15 item or readiness for unattended automation.
+The Release workflow refuses publication when `manifest.json` or `quality-report.json` reports incomplete
+readiness. Local builds and the Build workflow remain available for test artifacts. Keep Vision Mode Only enabled
+and manually verify recognition results.
+
+- Download the full `d4lf_v10.0.3+zhcn.1.zip` release asset, not GitHub's automatic Source code ZIP.
+- Back up `%USERPROFILE%\.d4lf`, which holds settings and profiles. For V9 to V10, use a fresh extraction directory
+  and reimport incompatible profiles.
+- Upgrade from older versions by manually extracting the full ZIP to a fresh directory: this release cannot change
+  the behavior of an old updater already running.
+- This release's `autoupdater.bat` checks this fork only, refuses downgrades, and preserves extra local files.
+  A failed copy retains `temp_update` for recovery; manually extract the full release if needed. Do not mix EXE and assets versions.
+- App updates do not replace the game's DLL. Rerun `install_dll.cmd` with the game closed only when release notes require a DLL update.
+- Disabling a loot category leaves all of its items untouched, including Mythics. In enabled categories Mythics are kept,
+  and favoriting still respects `mark_as_favorite`.
 
 ## Cross-language build imports
 

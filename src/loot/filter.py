@@ -46,22 +46,25 @@ def check_items(
     for item in occupied:
         if item.is_junk or item.is_fav:
             continue
+        sequence_before_hover = src.perception.latest_item_sequence()
         inv.hover_item_with_delay(item)
         time.sleep(0.1)
         img = capture()
         item_descr = None
-        retry_count = 0
-
-        while item_descr is None and retry_count != 2:
+        for retry_count in range(10):
             try:
-                item_descr = src.perception.read_latest_item()
+                item_descr = src.perception.read_latest_item(after_sequence=sequence_before_hover)
                 LOGGER.debug(f"Attempt {retry_count} to parse item based on TTS: {item_descr}")
-                retry_count += 1
             except Exception as error:
                 capture_latest_failure(reason="loot-filter-item-parse", image=img, error=error)
                 LOGGER.exception(f"Error in TTS read_descr. {src.perception.latest_item_lines()=}")
+                break
+            if item_descr is not None:
+                break
+            time.sleep(0.1)
 
         if item_descr is None:
+            LOGGER.warning("Skipping inventory slot: no fresh, valid item text after hovering.")
             continue
 
         # Hardcoded filters

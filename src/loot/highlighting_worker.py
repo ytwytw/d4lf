@@ -6,13 +6,12 @@ import time
 from threading import Event, Thread
 from typing import TYPE_CHECKING
 
-import src.perception
 from src.automation import pointer_position
-from src.diagnostics import capture_latest_failure
 from src.game_data import is_sigil
 from src.item import SeasonalAttribute
 from src.item.filter import Filter
 from src.loot.colors import get_filter_colors, is_ignored_item
+from src.loot.highlighting_events import HighlightingEvents
 from src.loot.highlighting_pipeline import (
     EmptyOutlineCommand,
     FilterOutcome,
@@ -50,37 +49,7 @@ class CancellationRequestedError(Exception):
     """Exception raised when a cancellation is requested."""
 
 
-class HighlightingWorker:
-    def on_tts(self: _VisionModeWithHighlighting, _: list[str]) -> None:
-        img = capture()
-        item_descr = None
-        try:
-            item_descr = src.perception.read_latest_item()
-            LOGGER.debug(f"Parsed item based on TTS: {item_descr}")
-        except Exception as error:
-            capture_latest_failure(reason="highlight-overlay-item-parse", image=img, error=error)
-            LOGGER.exception(f"Error in TTS read_descr. {src.perception.latest_item_lines()=}")
-
-        if item_descr is None:
-            # Diablo can emit a transient second TTS event for the same tooltip. The
-            # screen watcher is responsible for clearing an overlay when the tooltip
-            # actually disappears, so an unparseable event must not erase valid markers.
-            return
-
-        self.current_item = item_descr
-
-        # Kick off a thread that will evaluate the item and queue up the appropriate drawings.
-        # If one already exists we'll kill it since a new item has come in
-        if self.evaluate_item_thread:
-            self.stop_thread_and_wait(self.evaluate_item_thread, self.evaluate_item_thread_cancel_event)
-
-        cancel_event = threading.Event()
-        self.evaluate_item_thread_cancel_event = cancel_event
-        self.evaluate_item_thread = threading.Thread(
-            target=self.evaluate_item_and_queue_draw, args=(item_descr, cancel_event), daemon=True
-        )
-        self.evaluate_item_thread.start()
-
+class HighlightingWorker(HighlightingEvents):
     def evaluate_item_and_queue_draw(self: _VisionModeWithHighlighting, item_descr: Item, cancel_event: Event) -> None:
         if not self.is_cleared:
             self.request_clear()
@@ -110,6 +79,7 @@ class HighlightingWorker:
                 self.check_for_thread_cancellation(cancel_event)
                 # Before we get the cropped_descr we need to ensure there is no previous overlay on screen
                 while not self.is_cleared:
+                    self.check_for_thread_cancellation(cancel_event)
                     time.sleep(0.10)
                 detection = find_descr_with_diagnostics(capture(), item_center)
                 confirmation = confirm_stable_tooltip(detection, already_confirmed=is_confirmed)
@@ -279,7 +249,9 @@ class HighlightingWorker:
         if thread is None or cancel_event is None:
             return
         cancel_event.set()
-        thread.join()
+        thread.join(timeout=2)
+        if thread.is_alive():
+            LOGGER.warning("Tooltip worker did not finish within 2 seconds after cancellation")
 
     def check_for_item_still_selected(
         self: _VisionModeWithHighlighting, item_center: tuple[int, int], cancel_event: Event

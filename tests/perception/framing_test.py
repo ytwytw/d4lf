@@ -35,6 +35,13 @@ def test_find_item_start_accepts_localized_tribute_and_compass_suffixes() -> Non
     assert find_item_start(["无关文字", "罗盘词缀"], grammar=grammar, catalog=catalog) is None
 
 
+def test_localized_tribute_metadata_does_not_replace_item_name() -> None:
+    grammar = LocaleGrammar.from_dict("zhCN", {"identifiers": {"TRIBUTE": ["贡品"]}, "rarities": {"Rare": ["稀有"]}})
+    trace = ["无关文字", "巨人贡品 (4)", "稀有巨人贡品", "鼠标右键"]
+
+    assert find_item_start(trace, grammar=grammar, catalog=_Catalog({})) == 1
+
+
 def test_tts_framer_emits_localized_trace_and_bounds_noise() -> None:
     grammar = LocaleGrammar.from_dict(
         "zhCN",

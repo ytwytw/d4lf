@@ -2,17 +2,19 @@
 
 import logging
 import sys
-import time
+from threading import Event
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from src.autoupdater import notify_if_update
+from src.desktop import shutdown_ui_thread
+from src.diagnostics import begin_shutdown
 from src.settings import get_settings
 
 if sys.platform == "win32":
     from src import perception as _perception
     from src.app.handler import ScriptHandler
-    from src.automation import WindowSpec, start_detecting_window
+    from src.automation import WindowSpec, start_detecting_window, stop_detecting_window
     from src.item.filter import Filter
     from src.overlay import Overlay
     from src.perception import game_window_ready
@@ -38,7 +40,16 @@ class BackendWorker(QObject):
     """Own the game-facing runtime and expose its lifecycle to the Qt shell."""
 
     finished = pyqtSignal()
-    script_handler = None
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.script_handler: ScriptHandler | None = None
+        self._stop_requested = Event()
+
+    def request_stop(self) -> None:
+        """Cancel waits and stop accepting game input immediately, from any thread."""
+        begin_shutdown()
+        self._stop_requested.set()
 
     def run(self) -> None:
         if sys.platform != "win32":
@@ -46,23 +57,46 @@ class BackendWorker(QObject):
             self.finished.emit()
             return
 
+        try:
+            self._run_windows()
+        except Exception:
+            LOGGER.exception("Game backend failed")
+        finally:
+            self.request_stop()
+            for cleanup in (self._stop_scripts, stop_detecting_window, shutdown_ui_thread):
+                try:
+                    cleanup()
+                except Exception:
+                    LOGGER.exception("Game backend cleanup failed")
+            self.finished.emit()
+
+    def _stop_scripts(self) -> None:
+        if self.script_handler is not None:
+            self.script_handler.shutdown()
+
+    def _run_windows(self) -> None:
+        if self._stop_requested.is_set():
+            return
         _perception.start_connection()
         Filter().load_files()
         if getattr(sys, "frozen", False):
             notify_if_update()
         else:
             LOGGER.debug("Skipping autoupdate check as code is being run from source.")
-
-        win_spec = WindowSpec(get_settings().advanced_options.process_name)
-        start_detecting_window(win_spec)
+        if self._stop_requested.is_set():
+            return
+        start_detecting_window(WindowSpec(get_settings().advanced_options.process_name))
         while not game_window_ready():
-            time.sleep(0.2)
-        time.sleep(0.5)
-
+            if self._stop_requested.wait(0.2):
+                return
+        if self._stop_requested.wait(0.5):
+            return
         self.script_handler = ScriptHandler()
+        if self._stop_requested.is_set():
+            return
         check_for_proper_tts_configuration()
-        Overlay().run()
-        self.finished.emit()
+        if not self._stop_requested.is_set():
+            Overlay().run(self._stop_requested)
 
 
 def run_backend() -> None:

@@ -127,27 +127,26 @@ class VisionModeFast:
     def request_draw(self, text: str, color: str) -> None:
         self.queue.put(("text", text, color))
 
-    def on_tts(self, _: list[str]) -> None:
+    def on_tts(self, data: list[str]) -> None:
         try:
             item_descr = None
             try:
-                item_descr = src.perception.read_latest_item()
+                item_descr = src.perception.parse_item_text(data)
                 LOGGER.debug(f"Parsed item based on TTS: {item_descr}")
             except Exception as error:
+                self.request_clear()
                 img = capture()
                 capture_latest_failure(reason="fast-overlay-item-parse", image=img, error=error)
                 LOGGER.exception(f"Error in TTS read_descr. {src.perception.latest_item_lines()=}")
+                return None
             if item_descr is None:
+                self.request_clear()
                 return None
 
             ignored_item = is_ignored_item(item_descr)
             if ignored_item:
                 self.request_clear()
                 return None
-
-            if item_descr is None:
-                LOGGER.info("Unknown Item")
-                return self.request_draw(translate("loot.item.unknown"), "#ce7e00")
 
             feedback = fast_feedback(item_descr, Filter().should_keep(item_descr))
             if feedback is None:
@@ -156,6 +155,7 @@ class VisionModeFast:
             text, color = feedback
             return self.request_draw(text, color)
         except Exception:
+            self.request_clear()
             LOGGER.exception("Error in vision mode. Please create a bug report")
 
     def start(self) -> None:

@@ -4,6 +4,7 @@ import pytest
 
 from src.game_data import GameCatalog, ItemRarity, ItemType
 from src.game_data import catalog as catalog_module
+from src.item import Item
 from src.perception import text as text_module
 from src.perception.parser import base, details
 from src.perception.parser.base import _create_base_item_from_tts, _is_charm_slot_unlock
@@ -61,3 +62,43 @@ def test_create_base_item_rejects_unknown_zhcn_rarity_or_type(monkeypatch) -> No
 
     assert _create_base_item_from_tts(["未知物品", "未知稀有度戒指", "925 物品强度"]) is None
     assert _create_base_item_from_tts(["未知物品", "暗金未知类型", "925 物品强度"]) is None
+
+
+@pytest.mark.parametrize("metadata", ["稀有巨人贡品", "稀有 巨人贡品"])
+def test_chinese_tribute_header_does_not_require_spaces(monkeypatch, metadata) -> None:
+    _use_zhcn_catalog(monkeypatch)
+
+    item = _create_base_item_from_tts(["巨人贡品 (4)", metadata])
+
+    assert item is not None
+    assert item.item_type is ItemType.Tribute
+    assert item.name == "tribute_of_titans"
+    assert item.rarity is ItemRarity.Rare
+
+
+def test_unique_charm_does_not_inherit_equipment_inherent_count(monkeypatch) -> None:
+    _use_catalog(monkeypatch, "enUS")
+    charm = Item(name="the_grandfather", item_type=ItemType.Charm, rarity=ItemRarity.Mythic)
+
+    inherent_count, _ = base._get_affix_counts([], charm, 0)
+
+    assert inherent_count == 0
+
+
+def test_unknown_chinese_tribute_name_is_not_returned_as_a_profile_key(monkeypatch) -> None:
+    _use_zhcn_catalog(monkeypatch)
+
+    with pytest.raises(ValueError, match="tribute name"):
+        _create_base_item_from_tts(["未确认译名贡品", "稀有未确认译名贡品"])
+
+
+@pytest.mark.parametrize(
+    ("name", "affix", "message"),
+    [("未知地下城", "赫拉迪姆密室", "sigil dungeon"), ("beast graveyard", "未知词缀", "sigil affix")],
+)
+def test_unknown_sigil_reference_fails_closed(monkeypatch, name, affix, message) -> None:
+    _use_zhcn_catalog(monkeypatch)
+    trace = ["梦魇符印", "说明", name, "词缀", affix, "说明", "未知次要词缀", "说明", "鼠标右键"]
+
+    with pytest.raises(ValueError, match=message):
+        base._add_sigil_affixes_from_tts(trace, Item(item_type=ItemType.Sigil))

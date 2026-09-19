@@ -1,4 +1,5 @@
 import typing
+from queue import Queue
 from typing import cast
 from unittest.mock import Mock
 
@@ -7,7 +8,8 @@ if typing.TYPE_CHECKING:
 
     from src.loot.highlighting import _VisionModeWithHighlighting
 
-from src.item import FilterResult, MatchedFilter
+from src.item import FilterResult, Item, MatchedFilter
+from src.loot.highlighting import _VisionModeWithHighlighting
 from src.loot.highlighting_render import HighlightingRenderer
 from src.perception import LocatedMarker, LocatorResult
 
@@ -37,3 +39,18 @@ def test_highlighting_renderer_places_reliable_affix_markers(monkeypatch, mocker
         LocatorResult([LocatedMarker("affix", 0, (30, 40), 0.99)], reliable=True),
     )
     draw_rect.assert_called_once_with(renderer.canvas, 12, (30, 40), 10, "#23fc5d")
+
+
+def test_invalidated_item_cannot_redraw_queued_keep_marks_at_the_same_position(monkeypatch, mocker) -> None:
+    renderer = object.__new__(_VisionModeWithHighlighting)
+    renderer.current_item = None
+    renderer.queue = Queue()
+    renderer.canvas = mocker.Mock()
+    item = Item(name="previously_kept_item")
+    renderer.queue.put(("match", item, (10, 20, 100, 200), FilterResult(keep=True, matched=[]), None))
+    draw = mocker.Mock()
+    monkeypatch.setattr(renderer, "draw_match_outline", draw)
+
+    renderer.draw_from_queue()
+
+    draw.assert_not_called()

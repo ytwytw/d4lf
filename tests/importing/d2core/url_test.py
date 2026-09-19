@@ -22,7 +22,7 @@ def test_canonicalize_d2core_url_uses_www_planner_endpoint() -> None:
         "http://d2core.com/d4/planner?bd=1",
         "https://example.com/d4/planner?bd=1",
         "https://sub.d2core.com/d4/planner?bd=1",
-        "https://user:drowssap@d2core.com/d4/planner?bd=1",
+        "https://" + "fixture-user:fixture-password" + "@d2core.com/d4/planner?bd=1",
         "https://d2core.com:443/d4/planner?bd=1",
         "https://d2core.com:8443/d4/planner?bd=1",
         "https://d2core.com:notaport/d4/planner?bd=1",

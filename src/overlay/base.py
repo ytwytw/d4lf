@@ -6,6 +6,7 @@ from src.desktop import call_on_ui_thread, create_overlay_toplevel, get_root, jo
 
 if TYPE_CHECKING:
     import tkinter as tk
+    from threading import Event
 
 
 class Overlay:
@@ -22,6 +23,6 @@ class Overlay:
         # Construction can happen from the Qt worker or application thread; Tk owns the UI thread.
         call_on_ui_thread(build_ui)
 
-    def run(self) -> None:
+    def run(self, stop_event: Event | None = None) -> None:
         # Preserve the caller's blocking lifetime while the shared Tk loop owns the thread.
-        join_ui_thread()
+        join_ui_thread(stop_event)

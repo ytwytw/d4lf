@@ -4,7 +4,7 @@ import logging
 from contextlib import suppress
 from typing import TYPE_CHECKING, override
 
-from PyQt6.QtCore import QEvent, QPoint, QSettings, QSize
+from PyQt6.QtCore import QEvent, QPoint, QSettings, QSize, QThread
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon
 from PyQt6.QtWidgets import QMainWindow, QMenu, QSystemTrayIcon, QTabWidget
 
@@ -13,11 +13,15 @@ from src.diagnostics.tts_capture import APP_TTS_CAPTURE
 from src.localization import translate
 
 if TYPE_CHECKING:
+    from src.app.backend import BackendWorker
     from src.app.dashboard import ActivityLogWidget
     from src.desktop.activity import QtLogHandler
 
 
 class UnifiedWindowLifecycle(QMainWindow):
+    _backend_thread: QThread | None = None
+    worker: BackendWorker | None = None
+    _shutdown_pending = False
     _child_windows: dict[str, QMainWindow]
     activity_tab: ActivityLogWidget
     console_handler: QtLogHandler
@@ -87,6 +91,17 @@ class UnifiedWindowLifecycle(QMainWindow):
     @override
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         event = a0
+        thread = self._backend_thread
+        if thread is not None and thread.isRunning():
+            if not self._shutdown_pending:
+                self._shutdown_pending = True
+                thread.finished.connect(self.close)
+                if self.worker is not None:
+                    self.worker.request_stop()
+            if thread.isRunning():
+                if event is not None:
+                    event.ignore()
+                return
         if APP_TTS_CAPTURE.is_active:
             with suppress(Exception):
                 APP_TTS_CAPTURE.stop()

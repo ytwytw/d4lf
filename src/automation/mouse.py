@@ -290,15 +290,10 @@ class Mouse:
         time.sleep(0.05)
 
     @staticmethod
-    def _is_clicking_safe() -> bool:
-        return True
-
-    @staticmethod
     def click(button: str) -> None:
         if not allow_game_input(f"{button} mouse click"):
             return
-        if button != "left" or Mouse._is_clicking_safe():
-            _MOUSE.click(_BUTTONS[button])
+        _MOUSE.click(_BUTTONS[button])
 
     @staticmethod
     def get_position() -> tuple[int, int]:

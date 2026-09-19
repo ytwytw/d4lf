@@ -113,7 +113,11 @@
         }
     },
     "locale": "zhCN",
-    "runtime_ready": true,
+    "readiness_blockers": [
+        "13 tribute records have no verified Simplified Chinese translation; see unresolved.",
+        "The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; runtime rejects it instead of guessing."
+    ],
+    "runtime_ready": false,
     "schema_version": 1,
     "scope": {
         "excluded_historical_records": [],
@@ -145,7 +149,20 @@
         "unresolved_records": []
     },
     "selected_quality": {
-        "alias_collisions": [],
+        "alias_collisions": [
+            {
+                "namespace": "aspects",
+                "normalized_alias": "恶毒",
+                "stable_ids": [
+                    "malicious",
+                    "virulent"
+                ],
+                "strategy": "reject_ambiguous_input",
+                "texts": [
+                    "恶毒"
+                ]
+            }
+        ],
         "disambiguated_alias_collisions": [
             {
                 "mapping": {
@@ -178,72 +195,38 @@
                 "texts": [
                     "毒素伤害"
                 ]
-            },
-            {
-                "canonical_ids": [
-                    "malicious",
-                    "virulent"
-                ],
-                "namespace": "aspects",
-                "normalized_alias": "恶毒",
-                "stable_ids": [
-                    "malicious",
-                    "virulent"
-                ],
-                "strategy": "equivalent_canonical_ids",
-                "texts": [
-                    "恶毒"
-                ]
             }
         ],
-        "ok": true
+        "ok": false
     },
     "source_builds": {
         "d2core": "73552",
         "d4data": "3.2.1.73552"
     },
     "summary": {
-        "equipment_unresolved_records": 2,
+        "equipment_unresolved_records": 0,
         "excluded_historical_records": 0,
         "excluded_records": 5,
-        "extension_unresolved_records": 16,
-        "resolved_records": 2732,
-        "reviewed_overrides": 66,
+        "extension_unresolved_records": 13,
+        "resolved_records": 2740,
+        "reviewed_overrides": 74,
         "source_builds_match": true,
-        "source_quality_ok": true,
-        "source_records": 2750,
+        "source_quality_ok": false,
+        "source_records": 2753,
         "translation_conflicts": 0,
         "translation_sources": {
             "d2core": 342,
             "diablo4_companion": 2323,
             "locale_grammar": 1,
-            "reviewed_override": 66
+            "reviewed_override": 74
         },
         "unresolved_by_kind": {
-            "affixes": 1,
-            "charms_affixes": 1,
-            "sigils": 1,
-            "tributes": 15
+            "tributes": 13
         },
-        "unresolved_records": 18
+        "unresolved_records": 13
     },
     "translation_conflicts": [],
     "unresolved": [
-        {
-            "reason": "missing_translation",
-            "source_text": "crafting material drop rate",
-            "stable_id": "affixes:crafting_material_drop_rate"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "crafting material drop rate",
-            "stable_id": "charms_affixes:crafting_material_drop_rate"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "ruptures close ruptures here to access the deathtoll chambers",
-            "stable_id": "sigils:positive:ruptures"
-        },
         {
             "reason": "missing_translation",
             "source_text": "greater tribute of armaments",
@@ -258,11 +241,6 @@
             "reason": "missing_translation",
             "source_text": "greater tribute of ingenuity",
             "stable_id": "tributes:greater_tribute_of_ingenuity"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "greater tribute of refinement",
-            "stable_id": "tributes:greater_tribute_of_refinement"
         },
         {
             "reason": "missing_translation",
@@ -308,11 +286,6 @@
             "reason": "missing_translation",
             "source_text": "tribute of heritage",
             "stable_id": "tributes:tribute_of_heritage"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "tribute of ingenuity",
-            "stable_id": "tributes:tribute_of_ingenuity"
         },
         {
             "reason": "missing_translation",

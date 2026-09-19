@@ -15,7 +15,6 @@ if typing.TYPE_CHECKING:
     from src.perception import LocatorResult
 
 import src.loot.highlighting_worker as worker_module
-import src.perception
 from src.game_data import ItemRarity, ItemType
 from src.item import FilterResult, Item, MatchedFilter
 from src.loot.highlighting_worker import CancellationRequestedError, HighlightingWorker
@@ -63,17 +62,16 @@ def test_cancellation_check_raises_for_set_event() -> None:
         HighlightingWorker.check_for_thread_cancellation(event)
 
 
-def test_unparsed_tts_does_not_clear_existing_item_overlay(monkeypatch, mocker: MockerFixture) -> None:
-    worker = _WorkerHarness()
-    worker.current_item = Item(name="gohrs_devastating_grips")
-    worker.request_clear_mock = mocker.Mock()
+def test_worker_shutdown_join_is_bounded(mocker, caplog) -> None:
+    thread = mocker.Mock()
+    thread.is_alive.return_value = True
+    cancel = Event()
 
-    monkeypatch.setattr("src.loot.highlighting_worker.capture", mocker.Mock())
-    monkeypatch.setattr(src.perception, "read_latest_item", lambda: None)
+    HighlightingWorker.stop_thread_and_wait(thread, cancel)
 
-    cast("_VisionModeWithHighlighting", worker).on_tts([])
-
-    worker.request_clear_mock.assert_not_called()
+    assert cancel.is_set()
+    thread.join.assert_called_once_with(timeout=2)
+    assert "did not finish within 2 seconds" in caplog.text
 
 
 @pytest.mark.parametrize(

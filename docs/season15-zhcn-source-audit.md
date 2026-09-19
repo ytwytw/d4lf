@@ -15,16 +15,16 @@
 
 ## 已采用翻译
 
-| 稳定 ID | 英文 | 简体中文 | 依据 |
-| --- | --- | --- | --- |
-| `affixes:gold_drop_rate` | Gold Drop Rate | 金币掉落几率 | 构建 73552 的 D2Core 英/简中同 ID 配对记录；该文本也已存在于本项目同名护身符词缀中 |
-| `uniques:ariocs_needle` | Arioc's Needle | 艾里欧克之针 | 暴雪国服第 15 赛季文章及构建 73552 配对记录 |
-| `uniques:henris_perquisition` | Henri's Perquisition | 亨利的永恒追捕 | 暴雪国服第 15 赛季文章及构建 73552 配对记录 |
-| `uniques:in-geom` | In-geom | 寅剑 | 暴雪国服第 15 赛季文章及构建 73552 配对记录 |
-| `uniques:nemesis_bracers` | Nemesis Bracers | 复仇者护腕 | 暴雪国服第 15 赛季文章及构建 73552 配对记录 |
-| `uniques:squirts_blouse` | Squirt's Blouse | 斯奎特的罩衫 | 暴雪国服第 15 赛季文章及构建 73552 配对记录 |
-| `uniques:stone_of_jordan` | Stone of Jordan | 乔丹之石 | 暴雪国服第 15 赛季文章及构建 73552 配对记录 |
-| `uniques:the_furnace` | The Furnace | 焚炉 | 暴雪国服第 15 赛季文章及构建 73552 配对记录 |
+| 稳定 ID                       | 英文                 | 简体中文       | 依据                                                                               |
+| ----------------------------- | -------------------- | -------------- | ---------------------------------------------------------------------------------- |
+| `affixes:gold_drop_rate`      | Gold Drop Rate       | 金币掉落几率   | 构建 73552 的 D2Core 英/简中同 ID 配对记录；该文本也已存在于本项目同名护身符词缀中 |
+| `uniques:ariocs_needle`       | Arioc's Needle       | 艾里欧克之针   | 暴雪国服第 15 赛季文章及构建 73552 配对记录                                        |
+| `uniques:henris_perquisition` | Henri's Perquisition | 亨利的永恒追捕 | 暴雪国服第 15 赛季文章及构建 73552 配对记录                                        |
+| `uniques:in-geom`             | In-geom              | 寅剑           | 暴雪国服第 15 赛季文章及构建 73552 配对记录                                        |
+| `uniques:nemesis_bracers`     | Nemesis Bracers      | 复仇者护腕     | 暴雪国服第 15 赛季文章及构建 73552 配对记录                                        |
+| `uniques:squirts_blouse`      | Squirt's Blouse      | 斯奎特的罩衫   | 暴雪国服第 15 赛季文章及构建 73552 配对记录                                        |
+| `uniques:stone_of_jordan`     | Stone of Jordan      | 乔丹之石       | 暴雪国服第 15 赛季文章及构建 73552 配对记录                                        |
+| `uniques:the_furnace`         | The Furnace          | 焚炉           | 暴雪国服第 15 赛季文章及构建 73552 配对记录                                        |
 
 暴雪简中原文：<https://d4.blizzard.cn/news/24295394/>。文章中的“经典暗金”与 `3.2.1` 补丁说明分别重复列出了上述七件装备，可相互核对。
 

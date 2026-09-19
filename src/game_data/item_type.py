@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-# Values are replaced with the localized labels when GameCatalog loads a language.
+# Values remain canonical; GameCatalog owns localized display labels.
 class ItemType(Enum):
     Amulet = "amulet"
     Axe = "axe"

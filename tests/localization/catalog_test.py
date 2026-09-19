@@ -41,3 +41,12 @@ def test_translate_treats_empty_localized_text_as_missing(monkeypatch) -> None:
     monkeypatch.setattr(catalog, "_load_catalog", lambda locale: catalogs.get(locale, {}))
 
     assert catalog.translate("message", locale="zhCN") == "English"
+
+
+def test_filter_descriptions_distinguish_skip_keep_and_favorite() -> None:
+    chinese = _catalog("zhCN")
+    for category in ("equipment", "charms", "seals", "sigils", "tributes"):
+        description = chinese[f"settings.field.general.filter_{category}.description"]
+        assert "关闭后跳过所有" in description
+        assert "是否收藏取决于" in description
+    assert "始终会被收藏" not in chinese["settings.field.general.handle_uniques.description"]

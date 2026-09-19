@@ -153,8 +153,6 @@ class GameCatalog:
     def _item_type_alias_index(cls, data: dict[str, str]) -> dict[str, str]:
         aliases = cls._alias_index({key: value for key, value in data.items() if key in ItemType.__members__})
         for member_name, item_type in ItemType.__members__.items():
-            if member_name in data:
-                continue
             aliases.setdefault(normalize_locale_text(member_name), member_name)
             aliases.setdefault(normalize_locale_text(item_type.value), member_name)
         return aliases
@@ -240,21 +238,8 @@ class GameCatalog:
             candidates = {canonical for length, canonical in matches if length == longest}
             if len(candidates) == 1:
                 return next(iter(candidates))
-        equivalent_matches = [
-            (len(alias), canonicals)
-            for alias, canonicals in self.grammar.aspect_alias_equivalence.items()
-            if alias in normalized
-        ]
-        if not equivalent_matches:
-            return None
-        longest = max(length for length, _ in equivalent_matches)
-        groups = {canonicals for length, canonicals in equivalent_matches if length == longest}
-        return min(next(iter(groups))) if len(groups) == 1 else None
-
-    def aspect_names_equivalent(self, left: str, right: str) -> bool:
-        return left == right or any(
-            left in group and right in group for group in self.grammar.aspect_alias_equivalence.values()
-        )
+        # A shared translation is not proof that distinct legendary powers are equivalent.
+        return None
 
     def resolve_item_type(self, value: str) -> str | None:
         return self._resolve_alias(value, self._item_type_alias_index(self.item_types_dict))

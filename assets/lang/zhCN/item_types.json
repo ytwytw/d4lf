@@ -4,6 +4,7 @@
     "Axe2H": "双手斧",
     "Boots": "靴子",
     "Bow": "弓",
+    "Charm": "神符",
     "ChestArmor": "胸甲",
     "Crossbow2H": "弩",
     "Dagger": "匕首",
@@ -13,6 +14,7 @@
     "Glaive": "剑刃戟",
     "Gloves": "手套",
     "Helm": "头盔",
+    "HoradricSeal": "赫拉迪姆封印",
     "Incense": "",
     "Legs": "裤子",
     "Mace": "钉锤",
@@ -31,5 +33,6 @@
     "Sword2H": "双手剑",
     "TemperManual": "",
     "Tome": "",
+    "Tribute": "贡品",
     "Wand": "魔杖"
 }

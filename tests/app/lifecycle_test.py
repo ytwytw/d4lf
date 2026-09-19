@@ -1,6 +1,8 @@
 import logging
 import os
 from collections import UserList
+from threading import Event
+from types import SimpleNamespace
 from typing import override
 
 from src.type_aliases import JsonValue
@@ -8,6 +10,7 @@ from src.type_aliases import JsonValue
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
+from PyQt6.QtCore import QThread
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
@@ -69,3 +72,34 @@ def test_close_event_finalizes_an_active_manual_capture(qapp: QApplication, monk
     window.closeEvent(QCloseEvent())
 
     assert stopped == [True]
+
+
+def test_normal_close_waits_for_backend_without_blocking_qt(qapp: QApplication, monkeypatch) -> None:
+    stop = Event()
+
+    class WaitingThread(QThread):
+        @override
+        def run(self) -> None:
+            stop.wait(2)
+
+    monkeypatch.setattr(UnifiedMainWindow, "__init__", QMainWindow.__init__)
+    monkeypatch.setattr(UnifiedMainWindow, "save_geometry", lambda _: None)
+    window = UnifiedMainWindow()
+    window._child_windows = {}
+    window.console_handler = QtLogHandler()
+    thread = WaitingThread()
+    window._backend_thread = thread
+    monkeypatch.setattr(window, "worker", SimpleNamespace(request_stop=stop.set))
+    thread.start()
+    close = QCloseEvent()
+
+    window.closeEvent(close)
+
+    assert not close.isAccepted()
+    assert stop.is_set()
+    assert thread.wait(1000)
+    qapp.processEvents()
+    final_close = QCloseEvent()
+    window.closeEvent(final_close)
+    assert final_close.isAccepted()
+    window.deleteLater()

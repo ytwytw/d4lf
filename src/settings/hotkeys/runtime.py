@@ -1,5 +1,6 @@
 """pynput-backed keyboard operations for the settings hotkey seam."""
 
+import logging
 import threading
 from collections import defaultdict
 from collections.abc import Callable, Hashable  # ruff: ignore[typing-only-standard-library-import] - runtime introspection
@@ -11,6 +12,7 @@ from src.diagnostics import allow_game_input
 from src.settings.binding.core import _canonicalize_token, _split_hotkey_tokens, normalize_hotkey
 
 _CONTROLLER: keyboard.Controller | None = None
+LOGGER = logging.getLogger(__name__)
 
 
 def _controller() -> keyboard.Controller:
@@ -28,6 +30,8 @@ def _to_pressable(token: str) -> str | keyboard.Key:
 
 
 def press(key: str) -> None:
+    if not allow_game_input(f"key press {key}"):
+        return
     _controller().press(_to_pressable(key))
 
 
@@ -76,7 +80,12 @@ class _GlobalHotkeyRegistry:
                     callbacks.extend(self._callbacks.get(hotkey, {}).values())
 
         for callback in callbacks:
-            callback()
+            try:
+                callback()
+            except Exception:
+                # An application error must not terminate pynput's listener and
+                # silently disable every hotkey, particularly the emergency exit.
+                LOGGER.exception("Global hotkey callback failed")
 
     def _on_release(self, key: Hashable) -> None:
         with self._lock:

@@ -7,6 +7,7 @@ from src.desktop.ui_thread import (
     is_alive,
     join_ui_thread,
     post_to_ui_thread,
+    shutdown_ui_thread,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "is_alive",
     "join_ui_thread",
     "post_to_ui_thread",
+    "shutdown_ui_thread",
 ]

@@ -10,6 +10,8 @@ from src.release_versions import is_newer_version, select_latest_release, versio
         ("v10.0.0+zhcn.rc.1", "v10.0.0+zhcn.beta.9"),
         ("v10.0.0", "v10.0.0+zhcn.rc.9"),
         ("v10.0.0+zhcn.2", "v10.0.0+zhcn.1"),
+        ("v10.0.3+zhcn.1", "v10.0.3"),
+        ("v10.0.4", "v10.0.3+zhcn.9"),
     ],
 )
 def test_release_versions_order_prereleases_and_zhcn_revisions(newer, older) -> None:
@@ -30,3 +32,9 @@ def test_select_latest_release_ignores_drafts_and_list_order() -> None:
     ]
 
     assert select_latest_release(releases) == {"tag_name": "v10.0.0+zhcn.beta.3"}
+
+
+@pytest.mark.parametrize("tag", ["nonsense", "v99.0.0-garbage", "v99.0.0+zhcn.not-a-release", "v10.0.3/../../bad"])
+def test_invalid_tags_are_never_selected(tag) -> None:
+    assert version_key(tag) is None
+    assert select_latest_release([{"tag_name": tag}]) is None

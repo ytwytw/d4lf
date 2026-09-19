@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 
 import src.perception
 from src import automation
+from src.app.hotkeys import hotkey_signature
+from src.app.shutdown import shutdown_scripts
 from src.app.startup import SETUP_INSTRUCTIONS_URL
 from src.automation import (
     WindowSpec,
@@ -22,6 +24,7 @@ from src.automation import (
     move_items_to_stash,
     safe_exit,
 )
+from src.diagnostics import GameInputCancelledError
 from src.game_data import GameCatalog
 from src.loot import VisionMode, create_vision_mode, run_loot_filter
 from src.overlay import InventoryExpTracker, is_open, open_overlay, request_close
@@ -35,7 +38,6 @@ from src.settings import (
     VISION_MODE_TYPE_SETTING_KEY,
     ItemRefreshType,
     Settings,
-    VisionModeType,
     get_settings,
     has_any_changed,
 )
@@ -46,6 +48,7 @@ LOCK = threading.Lock()
 
 class ScriptHandler:
     def __init__(self) -> None:
+        self._shutting_down = False
         self.loot_interaction_thread: threading.Thread | None = None
         self.paragon_overlay_thread: threading.Thread | None = None
         self._info_overlay_last_toggle_time: float = 0
@@ -57,7 +60,7 @@ class ScriptHandler:
         self._config = get_settings()
         self._win_spec = WindowSpec(self._config.advanced_options.process_name)
         self._language = self._config.general.language
-        self.vision_mode: VisionMode = self._create_vision_mode(self._config.general.vision_mode_type)
+        self.vision_mode: VisionMode = create_vision_mode(self._config.general.vision_mode_type)
 
         set_info_busy_checker(lambda: self.loot_interaction_thread is not None)
 
@@ -66,15 +69,14 @@ class ScriptHandler:
         if self._config.general.run_vision_mode_on_startup:
             self.run_vision_mode()
 
-    def _create_vision_mode(self, vision_mode_type: VisionModeType) -> VisionMode:
-        return create_vision_mode(vision_mode_type)
-
-    def _graceful_exit(self) -> None:
-        safe_exit()
+    def shutdown(self) -> None:
+        shutdown_scripts(self)
 
     def _on_config_changed(self, changed_keys: AbstractSet[str]) -> None:
         """Apply relevant settings after a config change event."""
         with self._runtime_config_lock:
+            if self._shutting_down:
+                return
             if has_any_changed(changed_keys, HOTKEY_SETTING_KEYS):
                 self._refresh_hotkeys(self._config)
             if has_any_changed(changed_keys, LANGUAGE_SETTING_KEYS):
@@ -84,24 +86,8 @@ class ScriptHandler:
             elif has_any_changed(changed_keys, MANUAL_RESTART_SETTING_KEYS):
                 self._notify_manual_restart_required("settings changes")
 
-    def _hotkey_signature(self, config: Settings) -> tuple[str | bool, ...]:
-        advanced_options = config.advanced_options
-        return (
-            advanced_options.run_vision_mode,
-            advanced_options.exit_key,
-            advanced_options.info_overlay,
-            advanced_options.toggle_paragon_overlay,
-            advanced_options.vision_mode_only,
-            advanced_options.run_filter,
-            advanced_options.run_filter_drop,
-            advanced_options.run_filter_force_refresh,
-            advanced_options.force_refresh_only,
-            advanced_options.move_to_inv,
-            advanced_options.move_to_chest,
-        )
-
     def _refresh_hotkeys(self, config: Settings) -> None:
-        current_signature = self._hotkey_signature(config)
+        current_signature = hotkey_signature(config)
         if getattr(self, "_current_hotkey_signature", None) == current_signature:
             return
 
@@ -167,7 +153,11 @@ class ScriptHandler:
             LOGGER.exception("Paragon overlay crashed")
         finally:
             try:
-                if self._vision_mode_was_running_before_overlay and not self.vision_mode.running():
+                if (
+                    not self._shutting_down
+                    and self._vision_mode_was_running_before_overlay
+                    and not self.vision_mode.running()
+                ):
                     self.vision_mode.start()
             except Exception:
                 LOGGER.exception("Failed to restore vision mode after Paragon overlay")
@@ -201,7 +191,7 @@ class ScriptHandler:
 
     def _register_hotkey(self, hotkey: str, callback: Callable[[], None], check_focus: bool = True) -> None:
         def wrapped_callback() -> None:
-            if not check_focus or is_window_foreground(self._win_spec):
+            if not self._shutting_down and (not check_focus or is_window_foreground(self._win_spec)):
                 callback()
 
         self._hotkey_handles.append(automation.add_hotkey(hotkey, wrapped_callback))
@@ -210,7 +200,7 @@ class ScriptHandler:
         config = self._config
         advanced_options = config.advanced_options
         self._register_hotkey(advanced_options.run_vision_mode, lambda: self.run_vision_mode())
-        self._register_hotkey(advanced_options.exit_key, lambda: self._graceful_exit(), check_focus=False)
+        self._register_hotkey(advanced_options.exit_key, safe_exit, check_focus=False)
         self._register_hotkey(advanced_options.toggle_paragon_overlay, lambda: self.toggle_paragon_overlay())
         self._register_hotkey(advanced_options.info_overlay, lambda: self.toggle_info_overlay())
         self._register_hotkey(config.char.inventory, lambda: InventoryExpTracker().on_inventory_open())
@@ -226,7 +216,7 @@ class ScriptHandler:
             self._register_hotkey(advanced_options.move_to_inv, lambda: self.move_items_to_inventory())
             self._register_hotkey(advanced_options.move_to_chest, lambda: self.move_items_to_stash())
 
-        self._current_hotkey_signature = self._hotkey_signature(config)
+        self._current_hotkey_signature = hotkey_signature(config)
 
     def filter_items(
         self, force_refresh: ItemRefreshType = ItemRefreshType.no_refresh, no_match_action: str = "junk"
@@ -250,6 +240,8 @@ class ScriptHandler:
     def _start_or_stop_loot_interaction_thread(
         self, loot_interaction_method: Callable[..., None], method_args: tuple[JsonValue, ...] = ()
     ) -> None:
+        if self._shutting_down:
+            return
         if LOCK.acquire(blocking=False):
             try:
                 if self.loot_interaction_thread is not None:
@@ -267,8 +259,6 @@ class ScriptHandler:
                     self.loot_interaction_thread.start()
             finally:
                 LOCK.release()
-        else:
-            return
 
     def _wrapper_run_loot_interaction_method(
         self, loot_interaction_method: Callable[..., None], method_args: tuple[JsonValue, ...] = ()
@@ -284,10 +274,14 @@ class ScriptHandler:
 
             if self.did_stop_scripts:
                 self.run_vision_mode()
+        except GameInputCancelledError:
+            LOGGER.debug("Automation stopped at an input boundary during shutdown")
         finally:
             self.loot_interaction_thread = None
 
     def run_vision_mode(self) -> None:
+        if self._shutting_down:
+            return
         if LOCK.acquire(blocking=False):
             try:
                 if self.vision_mode.running():
@@ -296,5 +290,3 @@ class ScriptHandler:
                     self.vision_mode.start()
             finally:
                 LOCK.release()
-        else:
-            return

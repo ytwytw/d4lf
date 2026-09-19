@@ -35,6 +35,7 @@ def test_item_trace_snapshot_is_isolated_from_global_state(monkeypatch) -> None:
 
 
 def test_listener_recovers_after_one_tts_line_fails(monkeypatch, caplog) -> None:
+    monkeypatch.setattr(listener, "_LAST_ITEM_SEQUENCE", 4)
     recorded = []
     published = []
     queued = iter(["bad raw tts", "good raw tts"])
@@ -64,4 +65,14 @@ def test_listener_recovers_after_one_tts_line_fails(monkeypatch, caplog) -> None
 
     assert recorded == ["bad raw tts", "good raw tts"]
     assert published == [["good raw tts"]]
+    assert listener.get_latest_item_snapshot() == (5, ["good raw tts"])
     assert "TTS line processing failed; continuing with the next line" in caplog.messages
+
+
+def test_latest_item_snapshot_is_a_copy(monkeypatch) -> None:
+    monkeypatch.setattr(listener, "LAST_ITEM", ["same item name"])
+    monkeypatch.setattr(listener, "_LAST_ITEM_SEQUENCE", 7)
+    sequence, lines = listener.get_latest_item_snapshot()
+    lines.clear()
+    assert sequence == 7
+    assert listener.LAST_ITEM == ["same item name"]

@@ -25,9 +25,11 @@ def find_item_start(data: list[str], *, grammar: LocaleGrammar, catalog: ItemTyp
         if grammar.contains("item_start_ignored", item):
             continue
 
-        if any(grammar.identifier_matches(identifier.name, item, mode="startswith") for identifier in ItemIdentifier):
+        if not grammar.rarity_name(item) and any(
+            grammar.identifier_matches(identifier.name, item, mode="startswith") for identifier in ItemIdentifier
+        ):
             return index
-        if any(
+        if not grammar.rarity_name(item) and any(
             grammar.identifier_matches(identifier.name, item, mode="endswith")
             for identifier in (ItemIdentifier.COMPASS, ItemIdentifier.TRIBUTE)
         ):
@@ -41,6 +43,8 @@ def find_item_start(data: list[str], *, grammar: LocaleGrammar, catalog: ItemTyp
             header = grammar.strip_terms(data[index + 1], "ancestral", "bloodied")
             rarity_name = grammar.rarity_name(header)
             item_type_text = grammar.strip_rarity(header, rarity_name) if rarity_name else header
+            if rarity_name and grammar.identifier_matches(ItemIdentifier.TRIBUTE.name, item_type_text):
+                return index
             has_item_power = any(grammar.contains("item_power", line) for line in data[index + 2 :])
             if catalog.resolve_item_type(item_type_text) and (rarity_name or has_item_power):
                 return index

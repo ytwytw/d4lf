@@ -35,6 +35,13 @@ class TestGeneralModel:
     def test_profiles_empty_entries_are_removed(self) -> None:
         assert GeneralModel(profiles="alpha, , beta,   ,").profiles == ["alpha", "beta"]
 
+    def test_unique_description_distinguishes_skip_keep_and_favorite(self) -> None:
+        description = GeneralModel.model_fields["handle_uniques"].description
+        assert description is not None
+        assert "Disabling a category skips all its items" in description
+        assert "always kept when their category is enabled" in description
+        assert "only favorited when mark_as_favorite is enabled" in description
+
     def test_check_chest_tabs_preserves_zero_based_integer_input(self) -> None:
         assert GeneralModel(check_chest_tabs=[0, 2]).check_chest_tabs == [0, 2]
         assert GeneralModel(check_chest_tabs=["1", "3"]).check_chest_tabs == [0, 2]

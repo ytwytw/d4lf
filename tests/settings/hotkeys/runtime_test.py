@@ -195,6 +195,22 @@ class TestGlobalHotkeyRegistry:
         assert self.registry._pressed_keys == set()
         assert self.registry._active_hotkeys == set()
 
+    def test_callback_failure_does_not_disable_other_hotkeys(self, caplog) -> None:
+        def failing_callback() -> None:
+            message = "Vision mode failed"
+            raise RuntimeError(message)
+
+        self.registry.add_hotkey("f11", failing_callback)
+        self.add_hotkey("f11")
+        self.add_hotkey("f10")
+
+        self.listener.press(self.f11_key())
+        self.listener.release(self.f11_key())
+        self.listener.press(keyboard.KeyCode.from_vk(keyboard.Key.f10.value.vk))
+
+        assert self.dispatched == ["f11", "f10"]
+        assert "Global hotkey callback failed" in caplog.text
+
 
 def test_controller_is_constructed_on_first_key_action(mocker: MockerFixture) -> None:
     controller = mocker.Mock()
@@ -205,3 +221,15 @@ def test_controller_is_constructed_on_first_key_action(mocker: MockerFixture) ->
 
     constructor.assert_called_once_with()
     controller.press.assert_called_once_with("a")
+
+
+def test_diagnostic_capture_blocks_press_but_allows_key_release(mocker: MockerFixture) -> None:
+    controller = mocker.Mock()
+    mocker.patch.object(hotkeys, "_CONTROLLER", controller)
+    mocker.patch.object(hotkeys, "allow_game_input", return_value=False)
+
+    hotkeys.press("shift")
+    hotkeys.release("shift")
+
+    controller.press.assert_not_called()
+    controller.release.assert_called_once_with(keyboard.Key.shift)

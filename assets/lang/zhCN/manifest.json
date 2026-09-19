@@ -3,7 +3,7 @@
     "files": [
         {
             "path": "affixes.json",
-            "sha256": "b047f37f4cc16e8b28822ef44a5106aaa30a75b7b5caa8ffcff8c6b85fa19406"
+            "sha256": "33545ebe9e6a988dd2b6698d812f7fc42dd08fab3df6ca428671b9432e25808b"
         },
         {
             "path": "aspects.json",
@@ -11,7 +11,7 @@
         },
         {
             "path": "charms_affixes.json",
-            "sha256": "6482baf2fc8dfc0146f3eb681d61fd160c2e480d716a1fba04894193c52efc14"
+            "sha256": "71329bd32e95f0f44098be3a560e669c2808cc6ae47932fabac5ee63031cf181"
         },
         {
             "path": "corrections.json",
@@ -19,11 +19,11 @@
         },
         {
             "path": "grammar.json",
-            "sha256": "872dd4e61a98f97f85ba4f2f479c9cba6bd11d3f66e2cb6c750503dcf15e8a04"
+            "sha256": "8da2c5d7cb1e4899e3aa229f4bb01b8f4e753dc14b501864e061780ac58d4bcf"
         },
         {
             "path": "item_types.json",
-            "sha256": "dd5e584112cd62e4099d410ccfa06cddbbcf9e6b1bee069056a579e1d5b4f702"
+            "sha256": "8aff3bb2f6cf6cb544e04fa49949d7e039b6d576d9e095c1a209e4212253858d"
         },
         {
             "path": "seals_affixes.json",
@@ -35,7 +35,7 @@
         },
         {
             "path": "sigils.json",
-            "sha256": "1926d6364e419a8096599b9480efa748eaf0cf055746d3fbecb38c4b0ec1578c"
+            "sha256": "b9673147d4497f72de39f60e0f60ea65f3a7b4ae953f1fcaf971f114adae8ca1"
         },
         {
             "path": "tooltips.json",
@@ -43,7 +43,7 @@
         },
         {
             "path": "tributes.json",
-            "sha256": "55ed89205369f719a20a62c4abfa058b4ae9f2ab2525656df3f475fad9e2c181"
+            "sha256": "7e9f6c0a706e9370185061150b03193f7c1ada4b357e774cd3bb0acb079df927"
         },
         {
             "path": "uniques.json",
@@ -51,7 +51,117 @@
         }
     ],
     "locale": "zhCN",
+    "readiness_blockers": [
+        "13 tribute records have no verified Simplified Chinese translation; see quality-report.json unresolved.",
+        "The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; runtime rejects it instead of guessing."
+    ],
     "records": [
+        {
+            "source_sha256": "f416911f6fba6cb206c51e74de1a697ad2951618a018a6775682e09fa6c27228",
+            "stable_id": "affixes:crafting_material_drop_rate",
+            "text": "制作材料掉率",
+            "translation_source": {
+                "capture_fixture": "tests/perception/data/zhcn_live_talisman.json",
+                "game_build": "3.2.1.73552",
+                "provider": "reviewed_override",
+                "source_id": "affixes:crafting_material_drop_rate",
+                "translation_sha256": "0a400d32b2d15d657d29ae4f874a80ec8cbf15575d4492856ad5209a7bed938b"
+            }
+        },
+        {
+            "source_sha256": "f416911f6fba6cb206c51e74de1a697ad2951618a018a6775682e09fa6c27228",
+            "stable_id": "charms_affixes:crafting_material_drop_rate",
+            "text": "制作材料掉率",
+            "translation_source": {
+                "capture_fixture": "tests/perception/data/zhcn_live_talisman.json",
+                "game_build": "3.2.1.73552",
+                "provider": "reviewed_override",
+                "source_id": "charms_affixes:crafting_material_drop_rate",
+                "translation_sha256": "0a400d32b2d15d657d29ae4f874a80ec8cbf15575d4492856ad5209a7bed938b"
+            }
+        },
+        {
+            "source_sha256": "39963a4fb82beaa6f0344af4e7fa41026f76be69c3658dcd7d0bb283e45be05d",
+            "stable_id": "sigils:positive:ruptures",
+            "text": "混沌裂隙",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_urls": [
+                    "https://d4.blizzard.cn/news/24268702/index.html",
+                    "https://news.blizzard.com/en-us/article/24268702/hunt-the-death-cult-in-season-of-death-awakening"
+                ],
+                "scope": "affix_label_only",
+                "source_id": "sigils:positive:ruptures",
+                "translation_sha256": "8e5b0f4603cd1dfbb22e449bd706f11e4b4df4d4029f38ae18994a72be9f957e"
+            }
+        },
+        {
+            "source_sha256": "b3a927cf63131517aecbd7b5934a4a84bdeb5116d56579d7e5917f5140201dce",
+            "stable_id": "item_types:Charm",
+            "text": "神符",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_urls": [
+                    "https://d4.blizzard.cn/news/24267729/"
+                ],
+                "source_id": "item_types:Charm",
+                "translation_sha256": "e0fd0662b1bcc3fd03b4d408cd3f616e7def29b9d968684dabf9eb5a483214f4"
+            }
+        },
+        {
+            "source_sha256": "a63dfe1720dc249693717365fcb49c8b7371586f32562166d41049ae135cb5b9",
+            "stable_id": "item_types:HoradricSeal",
+            "text": "赫拉迪姆封印",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_urls": [
+                    "https://d4.blizzard.cn/news/24287406/"
+                ],
+                "source_id": "item_types:HoradricSeal",
+                "translation_sha256": "9ffc2fbd9013cf358e62e64cf7f8958788299e333f6efc1b25425969f77762e5"
+            }
+        },
+        {
+            "source_sha256": "70edfd75bd0267f3653bbb18ae13a4b92e0f66120abb4419ecf7607189df5125",
+            "stable_id": "item_types:Tribute",
+            "text": "贡品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_urls": [
+                    "https://d4.blizzard.cn/news/24295394/"
+                ],
+                "source_id": "item_types:Tribute",
+                "translation_sha256": "1e69ae29abcf927d94815b93affe03c9ec4afbb10537457f4afd5612d8a05127"
+            }
+        },
+        {
+            "source_sha256": "d760edf38a9c6753fe1fb8bb22590e5f33a7c8a0435f0f853bf5e8e12078c5f6",
+            "stable_id": "tributes:greater_tribute_of_refinement",
+            "text": "强效精炼贡品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_urls": [
+                    "https://news.blizzard.com/en-us/article/24295394/",
+                    "https://d4.blizzard.cn/news/24295394/"
+                ],
+                "source_id": "tributes:greater_tribute_of_refinement",
+                "translation_sha256": "0715cd7a88312c9dfa32a72f78bd013f53f6b35478da65f1812961843aebca06"
+            }
+        },
+        {
+            "source_sha256": "22f59b1f1301942836289dfa6d6c19fd6a70f5846426909f0b5c8debe861b028",
+            "stable_id": "tributes:tribute_of_ingenuity",
+            "text": "巧思贡品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_urls": [
+                    "https://news.blizzard.com/en-us/article/24295394/",
+                    "https://d4.blizzard.cn/news/24295394/"
+                ],
+                "source_id": "tributes:tribute_of_ingenuity",
+                "translation_sha256": "0a72b31f1078d7f956e89a5b889e2a433f313ba26d6e386961c04cebfcac456d"
+            }
+        },
         {
             "source_sha256": "daeb93014a5b9a7599a948dbdda3374092f89ec8de568c162aa895d9ca35280d",
             "stable_id": "affixes:abyss_damage",
@@ -3108,12 +3218,12 @@
         {
             "source_sha256": "e2d8d28cf5b9e2083cc186e83af654afb47be4085014003a226f548f1e035234",
             "stable_id": "affixes:gold_drop_rate",
-            "text": "??????",
+            "text": "金币掉落几率",
             "translation_source": {
                 "provider": "d2core",
                 "source_id": "affix:Unique_GoldFind:2666102:x1",
                 "source_record_sha256": "38b506ddb38c2d7ab4e755b55ac291b0614753b8cf8466fa6850de2a77ef2089",
-                "translation_sha256": "2c0b4ee2a03c434e1856404d03d57b82c8ef500237be8ae118b1147a1051d5b6"
+                "translation_sha256": "b156deb625bf5989333bc7e08e5b74109b8cf39f7708ab2d88a6f0a3b77d35d4"
             }
         },
         {
@@ -24753,13 +24863,13 @@
         {
             "source_sha256": "22470376e025aacbbb257dabed459558adbba9a45aef9fb5d739c426cb18845b",
             "stable_id": "uniques:ariocs_needle",
-            "text": "??????",
+            "text": "艾里欧克之针",
             "translation_source": {
                 "official_reference": "https://d4.blizzard.cn/news/24295394/",
                 "provider": "d2core",
                 "source_id": "uniqueItem:2HPolearm_Unique_Generic_002:2647160:x1",
                 "source_record_sha256": "4589d6a75770931a1c310bb95d67b6312be49a011173ece4c8eda4846459bdd6",
-                "translation_sha256": "2c0b4ee2a03c434e1856404d03d57b82c8ef500237be8ae118b1147a1051d5b6"
+                "translation_sha256": "e38ed0bac144ac7e94879b3dae321395510d0384a41ec53bddc79218ed944c12"
             }
         },
         {
@@ -25858,13 +25968,13 @@
         {
             "source_sha256": "efe24625fe44bda22aa87bb1c12dc930933db4c367dbba9d4f2946cf31ba954b",
             "stable_id": "uniques:henris_perquisition",
-            "text": "???????",
+            "text": "亨利的永恒追捕",
             "translation_source": {
                 "official_reference": "https://d4.blizzard.cn/news/24295394/",
                 "provider": "d2core",
                 "source_id": "uniqueItem:1HFocus_Unique_Generic_001:2647162:x1",
                 "source_record_sha256": "0f519b44fe7f0585400194faefbd92db83a8705d04116c799fa56c8cf21bae05",
-                "translation_sha256": "4ef566502f45a57067510b893d72ae5395889757df3c17cb5a8d916283d24dd2"
+                "translation_sha256": "f9b2342e571a9e178a3bb68eb4a6e46dafa4e90cfbb1d39be441f636609d8088"
             }
         },
         {
@@ -25950,13 +26060,13 @@
         {
             "source_sha256": "96fb7d6e5901c8f58a81e34a1a898c4bdfc7fc20feaf8384ed1f3fad1752f12d",
             "stable_id": "uniques:in-geom",
-            "text": "??",
+            "text": "寅剑",
             "translation_source": {
                 "official_reference": "https://d4.blizzard.cn/news/24295394/",
                 "provider": "d2core",
                 "source_id": "uniqueItem:1HSword_Unique_Generic_103:2647158:x1",
                 "source_record_sha256": "a477946a160b67362105c376627e5a5a0cb1b0d04c5a014396df888e14549c88",
-                "translation_sha256": "e270aeb347f2165574c3a5c5bf11d038bcd3acd5abfdb5ae8a1b52d91cb842f0"
+                "translation_sha256": "d70111827bedc1899315290e3135d2eed75e41acf2968da1d343142fc3f3e3fc"
             }
         },
         {
@@ -26312,13 +26422,13 @@
         {
             "source_sha256": "11b365c2207da861dd6dce8c8d301d3028cfd254bfaf98ea7598e520b3ced4a4",
             "stable_id": "uniques:nemesis_bracers",
-            "text": "?????",
+            "text": "复仇者护腕",
             "translation_source": {
                 "official_reference": "https://d4.blizzard.cn/news/24295394/",
                 "provider": "d2core",
                 "source_id": "uniqueItem:Gloves_Unique_Generic_006:2647154:x1",
                 "source_record_sha256": "277509414ba87c6314d893d9abb098b80fec2478dd640bd6d5da93360049a3a6",
-                "translation_sha256": "e348d8d0564992652cc3e8e5ae7dbcbed9ecdea4db96c573d8b2087643ee2569"
+                "translation_sha256": "dcc298c908777f5a357b4e9b038d72f5c7d7d3deada255f35d5efa8f406a3c69"
             }
         },
         {
@@ -27046,13 +27156,13 @@
         {
             "source_sha256": "4830c01a5cbd501936761101d2b02825f0756525bb70a4795963e79889f0904c",
             "stable_id": "uniques:squirts_blouse",
-            "text": "??????",
+            "text": "斯奎特的罩衫",
             "translation_source": {
                 "official_reference": "https://d4.blizzard.cn/news/24295394/",
                 "provider": "d2core",
                 "source_id": "uniqueItem:Chest_Unique_Generic_104:2647150:x1",
                 "source_record_sha256": "389b46d6f986818d7caa9abdf2088125fadb75f630fabb710aa709eea35a2e8a",
-                "translation_sha256": "2c0b4ee2a03c434e1856404d03d57b82c8ef500237be8ae118b1147a1051d5b6"
+                "translation_sha256": "227a46d53a2055319c7ff39f53094822acde4c81d93f81f1855fcfa647f9e95f"
             }
         },
         {
@@ -27098,13 +27208,13 @@
         {
             "source_sha256": "03a5ed600af1d03c740eae28b4c8c2520cfb73eb84a3e84247406533f0e95373",
             "stable_id": "uniques:stone_of_jordan",
-            "text": "????",
+            "text": "乔丹之石",
             "translation_source": {
                 "official_reference": "https://d4.blizzard.cn/news/24295394/",
                 "provider": "d2core",
                 "source_id": "uniqueItem:Ring_Unique_Generic_108:2647166:x1",
                 "source_record_sha256": "d60b899a2f47f01c35a9f43cf4a4decbe01a3f72134ec5e58230a7d6c4445d61",
-                "translation_sha256": "5d04c6a96439100ad3cb4672ef2fdc219dae8aaa655c9a3095c9e7ad25f4d96c"
+                "translation_sha256": "6f68e50ab12375f785e3dc8c5c204e3fa79ece6bd04aa45704e6eb83e4bf1761"
             }
         },
         {
@@ -27281,13 +27391,13 @@
         {
             "source_sha256": "b9271c98a833e64890326ed4e50f7ce61c4d150de302a45a0abbe4767ac320c0",
             "stable_id": "uniques:the_furnace",
-            "text": "??",
+            "text": "焚炉",
             "translation_source": {
                 "official_reference": "https://d4.blizzard.cn/news/24295394/",
                 "provider": "d2core",
                 "source_id": "uniqueItem:2HMace_Unique_Generic_001:223465:x1",
                 "source_record_sha256": "a0a26586eedf1f937eea20d10fe928d9262f6c085c304e4823609c335fa6839e",
-                "translation_sha256": "e270aeb347f2165574c3a5c5bf11d038bcd3acd5abfdb5ae8a1b52d91cb842f0"
+                "translation_sha256": "fefc0f5841383b0bc13e8bba3afe355746c5c379b6590da1a91b155427804410"
             }
         },
         {
@@ -27724,11 +27834,11 @@
     ],
     "reviewed_overrides": {
         "path": "../../../src/tools/data/reviewed_zhCN.json",
-        "sha256": "13208be758752e187a25d1052f0e7fe14747da169ac388f29a0644b0558179c8"
+        "sha256": "67881e5820ff976acbc86118d394d9284c3da5864a757f3485b351589fdcd399"
     },
-    "runtime_ready": true,
+    "runtime_ready": false,
     "schema_version": 1,
     "source_lock_sha256": "149d5dee3252cf3c78b8c1758f4e2c507a541427f45388bab1fe8885e1a1fa45",
-    "source_quality_ok": true,
+    "source_quality_ok": false,
     "translation_conflicts": 0
 }
