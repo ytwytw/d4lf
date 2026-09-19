@@ -34,7 +34,7 @@ jobs:
         run: uv run --frozen python -m src.tools.release_check
       - name: Run release checks
         uses: j178/prek-action@v2
-      - name: Run offline regression suite
+      - name: Run regression suite (excluding Selenium)
         shell: powershell
         run: uv run --frozen pytest . -m "not selenium" -n logical
       - name: Build & Zip exe

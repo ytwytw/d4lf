@@ -191,7 +191,11 @@ def _resolve_visible_profile_index(profiles: Sequence[Mapping[str, JsonValue]], 
         if visible_index == visible_profile_index:
             return profile_index
         visible_index += 1
-    return visible_profile_index
+    message = (
+        f"Maxroll visible profile {visible_profile_index + 1} no longer exists. "
+        "Choose a current visible variant or a planner link with a valid profile selection."
+    )
+    raise MaxrollError(message)
 
 
 __all__ = [name for name in globals() if not name.startswith("__")]

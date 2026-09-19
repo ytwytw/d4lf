@@ -8,6 +8,18 @@ if TYPE_CHECKING:
 type PlannerObject = JsonObject
 
 
+def _has_explicit_affix_references(resolved_item: PlannerObject) -> bool:
+    """Distinguish an explicit empty affix list from an incomplete planner item."""
+    references = resolved_item.get("explicits")
+    return isinstance(references, list) and all(
+        isinstance(reference, dict)
+        and isinstance(reference.get("nid"), (int, str))
+        and not isinstance(reference.get("nid"), bool)
+        and reference.get("nid")
+        for reference in references
+    )
+
+
 def _find_item_name(
     *, resolved_item: PlannerObject, resolved_item_id: str, item_mapping: Mapping[str, PlannerObject]
 ) -> str | None:

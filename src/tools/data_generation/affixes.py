@@ -22,6 +22,7 @@ from src.tools.data_generation.common import (
     load_json_file,
     remove_content_in_braces,
     string_list_map,
+    write_json_file,
 )
 from src.tools.data_generation.constants import EXPECTED_MISSING_AFFIX_LOCALISATIONS
 
@@ -198,19 +199,13 @@ def generate_affixes(d4data_dir: Path, language: str, output_file: Path | None =
     merge_custom_data(charm_dict, "charms_affixes", language)
 
     output_path = output_file or D4LF_BASE_DIR / f"assets/lang/{language}/affixes.json"
-    with output_path.open("w", encoding="utf-8") as json_file:
-        json.dump(affix_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(output_path, affix_dict)
 
     seal_output_path = D4LF_BASE_DIR / f"assets/lang/{language}/seals_affixes.json"
-    with seal_output_path.open("w", encoding="utf-8") as json_file:
-        json.dump(seal_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(seal_output_path, seal_dict)
 
     charm_output_path = D4LF_BASE_DIR / f"assets/lang/{language}/charms_affixes.json"
-    with charm_output_path.open("w", encoding="utf-8") as json_file:
-        json.dump(charm_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(charm_output_path, charm_dict)
     return len(affix_files)
 
 

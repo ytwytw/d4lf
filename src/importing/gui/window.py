@@ -75,6 +75,7 @@ class ImporterWindow(ImporterWindowLocalization, ImporterOptionsMixin, QMainWind
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.settings = QSettings("d4lf", "ImporterWindow")
         self.is_generating = False
+        self._import_failed = False
         self._closing = False
         self._active_import_session: ImportSession | None = None
         self.setWindowTitle("Profile Importer - d2core / Maxroll / D4Builds / Mobalytics / InfinityBuilds")
@@ -164,6 +165,7 @@ class ImporterWindow(ImporterWindowLocalization, ImporterOptionsMixin, QMainWind
         if not self.generate_button.isEnabled():
             return
         self.log_output.clear()
+        self._import_failed = False
         custom_filename = self.filename_input_box.text().split(".", 1)[0].strip() or None
         request = ImportRequest(
             url=self.input_box.text().strip(),
@@ -192,6 +194,7 @@ class ImporterWindow(ImporterWindowLocalization, ImporterOptionsMixin, QMainWind
             worker = ImportWorker(
                 request=request, finished=self._on_worker_finished, session=self._active_import_session
             )
+        worker.signals.failed.connect(self._on_worker_failed)
         self.is_generating = True
         self.generate_button.setEnabled(False)
         self.generate_button.setText(translate("importer.generating"))
@@ -201,12 +204,18 @@ class ImporterWindow(ImporterWindowLocalization, ImporterOptionsMixin, QMainWind
         try:
             return open_session(url)
         except ImportSourceError as error:
-            SUPPORT_LOGGER.error("%s", error)
+            self._on_worker_failed(str(error))
         except UnsupportedImportSourceError:
+            self._import_failed = True
             kind = "Fetch variants" if multi_build else "Import"
             SUPPORT_LOGGER.exception("%s worker failed", kind)
         self._on_worker_finished()
         return None
+
+    def _on_worker_failed(self, message: str) -> None:
+        if not self._closing:
+            self._import_failed = True
+            SUPPORT_LOGGER.error("Import failed: %s", message)
 
     def _on_worker_finished(self) -> None:
         if self._closing:
@@ -218,7 +227,8 @@ class ImporterWindow(ImporterWindowLocalization, ImporterOptionsMixin, QMainWind
         self.generate_button.setText(translate("importer.generate"))
         self.filename_input_box.clear()
         self._update_generate_button_state()
-        self.import_completed.emit()
+        if not self._import_failed:
+            self.import_completed.emit()
 
     def _on_variants_extracted(self, variants: list[VariantMetadata]) -> None:
         if self._closing or self._active_import_session is None:
@@ -235,6 +245,7 @@ class ImporterWindow(ImporterWindowLocalization, ImporterOptionsMixin, QMainWind
         selection = VariantSelection.from_ids(tuple(selected_ids))
         request = self._current_request.with_variant_selection(selection)
         worker = ImportWorker(request, self._on_persist_finished, self._active_import_session)
+        worker.signals.failed.connect(self._on_worker_failed)
         THREADPOOL.start(worker)
 
     def _on_persist_finished(self) -> None:

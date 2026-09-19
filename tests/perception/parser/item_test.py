@@ -30,7 +30,7 @@ def _use_catalog(monkeypatch, language: str) -> None:
     "case",
     [
         case
-        for name in ("zhcn_live_smoke.json", "zhcn_live_talisman.json")
+        for name in ("zhcn_live_smoke.json", "zhcn_live_talisman.json", "zhcn_live_tributes.json")
         for case in json.loads((Path(__file__).parents[1] / "data" / name).read_text(encoding="utf-8"))
     ],
     ids=lambda case: case["input"][0],
@@ -45,6 +45,8 @@ def test_real_zhcn_equipment_and_backpack_capture(monkeypatch, case) -> None:
     assert item.item_type is ItemType[expected["type"]]
     assert item.rarity is ItemRarity[expected["rarity"]]
     assert item.power == expected["power"]
+    if "name" in expected:
+        assert item.name == expected["name"]
     assert [[affix.name, affix.value] for affix in item.affixes] == expected["affixes"]
     assert (item.aspect.name if item.aspect else None) == expected["aspect"]
     assert (item.aspect.value if item.aspect else None) == expected["aspect_value"]

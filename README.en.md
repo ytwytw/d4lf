@@ -28,6 +28,10 @@ of upstream [D4LF](https://github.com/d4lfteam/d4lf) V10.
 
 ## Installation
 
+These steps require a complete release package. The current `10.0.3+zhcn.1` test candidate has no
+published release asset yet. For development testing, use a local build or Build workflow artifact,
+not a source-code ZIP.
+
 1. Download and extract the latest ZIP from this repository's
    [Releases](https://github.com/ytwytw/d4lf/releases).
 1. Locate the Diablo IV installation directory.
@@ -48,7 +52,7 @@ invalid, exit D4LF, back up and rename `%USERPROFILE%\.d4lf\params.ini`, and con
 
 ## Season 15 release and upgrades
 
-The Chinese release version is `10.0.3+zhcn.1`, based on upstream `10.0.3`. Only source-backed Chinese
+The Chinese test candidate is `10.0.3+zhcn.1`, based on upstream `10.0.3`. Only source-backed Chinese
 names are included. Unverified translations are not invented.
 
 This is a pending, partially localized test version. The audit still lists missing translations and ambiguous
@@ -57,7 +61,12 @@ The Release workflow refuses publication when `manifest.json` or `quality-report
 readiness. Local builds and the Build workflow remain available for test artifacts. Keep Vision Mode Only enabled
 and manually verify recognition results.
 
-- Download the full `d4lf_v10.0.3+zhcn.1.zip` release asset, not GitHub's automatic Source code ZIP.
+September 19 update: the real client confirmed Lesser Tribute of Harmony as “次级和谐贡品”.
+After that narrowly scoped fix, **12 tribute names still lack verified Chinese translations**; the ambiguous
+“恶毒” aspect name also remains unresolved, so publication stays blocked. Upstream `v10.0.4` has been
+reviewed but has not been integrated. See the [September 19 verification report](docs/season15-zhcn-upstream-20260919.md).
+
+- Once published, download the full `d4lf_v10.0.3+zhcn.1.zip` release asset, not GitHub's automatic Source code ZIP. That official asset is not available yet.
 - Back up `%USERPROFILE%\.d4lf`, which holds settings and profiles. For V9 to V10, use a fresh extraction directory
   and reimport incompatible profiles.
 - Upgrade from older versions by manually extracting the full ZIP to a fresh directory: this release cannot change
@@ -109,7 +118,7 @@ The project uses Python 3.14, [uv](https://docs.astral.sh/uv/), and PyQt6, and t
 ```powershell
 uv sync
 uv run pytest . -m "not selenium" -n logical
-uv run prek run -a
+uvx prek run -a
 ```
 
 See [LICENSE](LICENSE) for licensing. Use

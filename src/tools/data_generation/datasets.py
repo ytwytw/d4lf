@@ -12,6 +12,7 @@ from src.tools.data_generation.common import (
     clean_item_name,
     is_placeholder_or_test_name,
     remove_content_in_braces,
+    write_json_file,
 )
 from src.tools.data_generation.constants import GEAR_TYPES, SIGIL_RARITY_COLOR_TAGS
 
@@ -71,9 +72,7 @@ def main(d4data_dir: Path) -> None:
                 tribute_dict[tribute_name.replace(" ", "_").replace("(", "").replace(")", "")] = tribute_name
 
         merge_custom_data(tribute_dict, "tributes", language)
-        with Path(D4LF_BASE_DIR / f"assets/lang/{language}/tributes.json").open("w", encoding="utf-8") as json_file:
-            json.dump(tribute_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-            json_file.write("\n")
+        write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/tributes.json", tribute_dict)
         print(f"FINISH tributes: {len(json_files)} files, elapsed={perf_counter() - started:.3f}s")
 
         print(f"START item_types for {language}")
@@ -96,9 +95,7 @@ def main(d4data_dir: Path) -> None:
                 if item_type in whitelist_types:
                     item_typ_dict[item_type] = name_str
         merge_custom_data(item_typ_dict, "item_types", language)
-        with Path(D4LF_BASE_DIR / f"assets/lang/{language}/item_types.json").open("w", encoding="utf-8") as json_file:
-            json.dump(item_typ_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-            json_file.write("\n")
+        write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/item_types.json", item_typ_dict)
         print(f"FINISH item_types: {len(json_files)} files, elapsed={perf_counter() - started:.3f}s")
 
         print(f"START tooltips for {language}")
@@ -112,9 +109,7 @@ def main(d4data_dir: Path) -> None:
                 if ar_string["szLabel"] == "ItemPower":
                     tooltip_dict["ItemPower"] = remove_content_in_braces(check_ms(ar_string["szText"].lower()))
         merge_custom_data(tooltip_dict, "tooltips", language)
-        with Path(D4LF_BASE_DIR / f"assets/lang/{language}/tooltips.json").open("w", encoding="utf-8") as json_file:
-            json.dump(tooltip_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-            json_file.write("\n")
+        write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/tooltips.json", tooltip_dict)
         print(f"FINISH tooltips: 1 files, elapsed={perf_counter() - started:.3f}s")
 
         _run_stage("affixes", generate_affixes, d4data_dir, language)
@@ -144,9 +139,7 @@ def generate_aspects(d4data_dir: Path, language: str) -> int:
 
     merge_custom_data(aspects_list, "aspects", language)
     aspects_list.sort()
-    with Path(D4LF_BASE_DIR / f"assets/lang/{language}/aspects.json").open("w", encoding="utf-8") as json_file:
-        json.dump(aspects_list, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/aspects.json", aspects_list)
     return len(aspect_files)
 
 
@@ -206,9 +199,7 @@ def generate_sigils(d4data_dir: Path, language: str) -> int:
 
     sigil_dict["rarities"] = sigil_rarity_dict
 
-    with Path(D4LF_BASE_DIR / f"assets/lang/{language}/sigils.json").open("w", encoding="utf-8") as json_file:
-        json.dump(sigil_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/sigils.json", sigil_dict)
     return source_file_count
 
 
@@ -261,9 +252,7 @@ def generate_uniques(d4data_dir: Path, language: str) -> int:
         unique_dict[name_clean] = {"num_inherents": num_inherents}
 
     merge_custom_data(unique_dict, "uniques", language)
-    with Path(D4LF_BASE_DIR / f"assets/lang/{language}/uniques.json").open("w", encoding="utf-8") as json_file:
-        json.dump(unique_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/uniques.json", unique_dict)
     return len(unique_files)
 
 
@@ -294,7 +283,5 @@ def generate_sets(d4data_dir: Path, language: str) -> int:
     sets_list = sorted(set(sets_list))
     merge_custom_data(sets_list, "sets", language)
     sets_list.sort()
-    with Path(D4LF_BASE_DIR / f"assets/lang/{language}/sets.json").open("w", encoding="utf-8") as json_file:
-        json.dump(sets_list, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/sets.json", sets_list)
     return len(charm_files)

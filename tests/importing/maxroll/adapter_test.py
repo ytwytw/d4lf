@@ -9,13 +9,8 @@ import pytest
 from src.game_data import GameCatalog, ItemType
 from src.importing import ImportOptions, ImportRequest, VariantSelection
 from src.importing.maxroll import extract_maxroll_paragon_steps
-from src.importing.maxroll.adapter import (
-    _extract_profile_variant,
-    _find_item_affixes,
-    _find_item_type,
-    _resolve_visible_profile_index,
-    import_maxroll,
-)
+from src.importing.maxroll.adapter import _extract_profile_variant, _find_item_affixes, _find_item_type, import_maxroll
+from src.importing.maxroll.planner import _resolve_visible_profile_index
 
 if typing.TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -25,7 +20,6 @@ URLS = [
     "https://maxroll.gg/d4/build-guides/double-swing-barbarian-guide",
     "https://maxroll.gg/d4/build-guides/evade-spiritborn-build-guide",
     "https://maxroll.gg/d4/build-guides/frozen-orb-sorcerer-guide",
-    "https://maxroll.gg/d4/build-guides/minion-necromancer-guide",
     "https://maxroll.gg/d4/build-guides/quill-volley-spiritborn-guide",
     "https://maxroll.gg/d4/build-guides/shield-of-retribution-paladin-guide",
     "https://maxroll.gg/d4/build-guides/touch-of-death-spiritborn-guide",

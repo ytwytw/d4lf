@@ -37,10 +37,11 @@ class ImportWorker(QRunnable):
         threading.current_thread().name = "import"
         try:
             run_import(request=self.request, session=self.session)
-        except ImportSourceError:
-            pass
-        except Exception:
+        except ImportSourceError as error:
+            self.signals.failed.emit(str(error))
+        except Exception as error:
             LOGGER.exception("Import worker failed")
+            self.signals.failed.emit(str(error))
         finally:
             self.signals.finished.emit()
 
@@ -61,14 +62,16 @@ class FetchVariantsWorker(QRunnable):
         try:
             variants = self.session.fetch_variants(self.request)
             self.signals.variants_extracted.emit(variants)
-        except ImportSourceError:
-            pass
-        except Exception:
+        except ImportSourceError as error:
+            self.signals.failed.emit(str(error))
+        except Exception as error:
             LOGGER.exception("Fetch variants worker failed")
+            self.signals.failed.emit(str(error))
         finally:
             self.signals.finished.emit()
 
 
 class WorkerSignals(QObject):
+    failed = pyqtSignal(str)
     finished = pyqtSignal()
     variants_extracted = pyqtSignal(object)

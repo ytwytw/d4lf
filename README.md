@@ -24,6 +24,9 @@ D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和
 
 ## 安装
 
+以下适用于已有完整发行包；当前 `10.0.3+zhcn.1` 候选测试版本尚未发布正式下载资产。
+开发测试请使用本地构建或 Build 工作流产物，不把源码 ZIP 当作可运行包。
+
 1. 从本仓库的 [Releases](https://github.com/ytwytw/d4lf/releases) 下载最新 ZIP 并解压。
 1. 找到《暗黑破坏神 IV》安装目录。
 1. 先退出游戏；安装脚本会替换游戏目录中的 `saapi64.dll` 并可能关闭仍在运行的游戏。
@@ -39,7 +42,7 @@ D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和
 
 ## 第 15 赛季版本与升级
 
-当前中文发行版本为 `10.0.3+zhcn.1`，基于上游 `10.0.3`。中文数据只纳入有来源的映射；
+当前中文候选测试版本为 `10.0.3+zhcn.1`，基于上游 `10.0.3`。中文数据只纳入有来源的映射；
 未知词条不会自动编造译名。发布说明应区分自动回归、已执行的实机样本和未覆盖功能。
 
 当前仍是部分中文支持的待发布测试版本：数据审计包含缺失翻译和有歧义的中文别名，
@@ -47,7 +50,12 @@ D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和
 中的就绪标记为否时，发布工作流会阻止公开发布；本地构建和 Build 工作流仍可产生测试包。
 建议保持“仅视觉模式”，逐项人工核对识别结果。
 
-- 请下载 `d4lf_v10.0.3+zhcn.1.zip` 这类完整发布包，而不是 GitHub 自动生成的 Source code ZIP。
+2026-09-19 增量：实机证实并补入“次级和谐贡品”，当前仍有 **12 个贡品缺少可靠译文**，
+“恶毒”威能仅凭名称仍有歧义，正式发布门禁保持关闭。
+上游已更新到 `v10.0.4`，但本分支尚未合入该版本；新增条目来源与本次限定修复见
+[9 月 19 日核验报告](docs/season15-zhcn-upstream-20260919.md)。
+
+- 正式发布后应下载 `d4lf_v10.0.3+zhcn.1.zip` 这类完整发布包，而不是 GitHub 自动生成的 Source code ZIP；当前尚无该正式资产。
 - 配置和 Profile 位于 `%USERPROFILE%\.d4lf`；升级前备份此目录。V9 升 V10 建议解压到新目录并重新导入不兼容的 Profile。
 - 从旧版本升级到此版本建议手动下载、解压到新目录；旧版 `autoupdater.bat` 的行为不会被本次修复追溯改变。
 - 本版本随附的 `autoupdater.bat` 仅检查本仓库更新，不降级，不删除安装目录中的额外文件。
@@ -217,7 +225,7 @@ has a name and can filter for any combination of the following:
   See [assets/lang/enUS/item_types.json](assets/lang/enUS/item_types.json)
 - `rarity`: A single rarity or a list of rarities the rule should match. An empty/absent value matches all rarities. Values
   are case-insensitive. See [Filtering on rarity](#filtering-on-rarity) for details and the list of rarities
-  in [rarity.py](src/item/data/rarity.py)
+  in [rarity.py](src/game_data/rarity.py)
 - `minPower`: Minimum item power
 - `minGreaterAffixCount`: Minimum number of greater affixes expected on the overall item. See [Greater Affix Filtering](#greater-affix-filtering) for more information on filtering GAs.
 - `affixPool`: A list of multiple different rulesets to filter for. Each ruleset must be fulfilled or the item is
@@ -351,7 +359,7 @@ Use `rarity` to restrict an affix rule to specific item rarities.
 - If `rarity` is omitted, the rule matches all rarities.
 - `rarity` accepts one value (`rarity: rare`) or a list (`rarity: [common, magic, rare]`).
 
-The valid rarities are listed in [rarity.py](src/item/data/rarity.py).
+The valid rarities are listed in [rarity.py](src/game_data/rarity.py).
 
 <details><summary>Config Examples</summary>
 
@@ -731,7 +739,7 @@ Tributes:
   name: [harmony, ascendance_resolute]
 ```
 
-You can also filter by rarity. The valid rarities are listed in [rarity.py](src/item/data/rarity.py).
+You can also filter by rarity. The valid rarities are listed in [rarity.py](src/game_data/rarity.py).
 
 ```yaml
 # Keeps only legendary and unique tributes
@@ -752,7 +760,7 @@ Tributes:
 
 Tribute names are lower case and spaces are replaced by underscore. Parentheses are removed. Note that United and
 Resolute identifiers are part of the names in [assets/lang/enUS/tributes.json](assets/lang/enUS/tributes.json). You can find the list of item rarities
-in [rarity.py](src/item/data/rarity.py)
+in [rarity.py](src/game_data/rarity.py)
 
 ### GlobalUniques
 
@@ -927,7 +935,7 @@ git clone https://github.com/ytwytw/d4lf
 cd d4lf
 uv sync
 uv run pytest . -m "not selenium" -n logical
-uv run prek run -a
+uvx prek run -a
 ```
 
 项目许可证见 [LICENSE](LICENSE)。问题与改进建议请使用

@@ -3,59 +3,87 @@
     "files": [
         {
             "path": "affixes.json",
-            "sha256": "33545ebe9e6a988dd2b6698d812f7fc42dd08fab3df6ca428671b9432e25808b"
+            "sha256": "6c8cf64184fca6e541ee0da0f85e74c83d37bc0085645f8cb5affd0410358354"
         },
         {
             "path": "aspects.json",
-            "sha256": "40c7c75c2fe6a3b5e500e7be2031cfce1a1ed87d363ad4ffcd07535155dae32f"
+            "sha256": "09c1c4e0efd9f00ee17d9b8379163f94b33ce150dc4c11cc8a0700714622588a"
         },
         {
             "path": "charms_affixes.json",
-            "sha256": "71329bd32e95f0f44098be3a560e669c2808cc6ae47932fabac5ee63031cf181"
+            "sha256": "8727694f7e0cb23406c1a85852a832166aeca642f82512b004f93ed493251ed7"
         },
         {
             "path": "corrections.json",
-            "sha256": "feab8dbb58050f692ae1394e050f48c939052a762347d133fe2051caa8144b71"
+            "sha256": "c167aba50f686207bae049e1a9d825c83bcf44e660cd10fc15963dee7b05dbf1"
         },
         {
             "path": "grammar.json",
-            "sha256": "8da2c5d7cb1e4899e3aa229f4bb01b8f4e753dc14b501864e061780ac58d4bcf"
+            "sha256": "cec64663df4986dfcf7a25445ea4c08efd6ea95fe8df6e903f683ba13cc9cb9e"
         },
         {
             "path": "item_types.json",
-            "sha256": "8aff3bb2f6cf6cb544e04fa49949d7e039b6d576d9e095c1a209e4212253858d"
+            "sha256": "2213ee24160de96056b8a675bd712c396102f3b3d1c963c7b54133a7c8a9adfb"
         },
         {
             "path": "seals_affixes.json",
-            "sha256": "95fdc66c04346c72f98eec24dac2e9d37cc8f737123365072f186493558e22cc"
+            "sha256": "f5fa128f0f7fdb8190ab4f2dba09d4e6671ac97d1bc253817d56da0a46e71817"
         },
         {
             "path": "sets.json",
-            "sha256": "199834c73550c741e74174509fd689ba7e4e553ac5b9f705bc7eeda742c6c8ce"
+            "sha256": "ee0d91a95873ee5c823ee1f9600f25dfc72c8ae48cd3d3e063e034dd5a7af484"
         },
         {
             "path": "sigils.json",
-            "sha256": "b9673147d4497f72de39f60e0f60ea65f3a7b4ae953f1fcaf971f114adae8ca1"
+            "sha256": "1bcb21a2d8aeaf6fcc9b39ff501256314b361a1650c70cb8ff51edf250eb7c39"
         },
         {
             "path": "tooltips.json",
-            "sha256": "e71e8f716c04bfbfe8647ed24084dba05daec123cd06457ea4f44568ca5a93c0"
+            "sha256": "109629d62706bb2dcb345d7ff109ec6b6991399f59a215b76b39c7e0a7b30718"
         },
         {
             "path": "tributes.json",
-            "sha256": "7e9f6c0a706e9370185061150b03193f7c1ada4b357e774cd3bb0acb079df927"
+            "sha256": "d54daa9774774c0ae37c223c1d675aa475ea32289a1db2ede2cf7e8f1b4d6ebe"
         },
         {
             "path": "uniques.json",
-            "sha256": "b5ac8057ec3f701581906f3a65fa10e3c705100877b6e3d8371d17919a0ccfae"
+            "sha256": "c2a25c57f8a5d36983322d41b031e3e5c9d24a5724f3d94e0a78d7276191a995"
         }
     ],
     "locale": "zhCN",
     "readiness_blockers": [
-        "13 tribute records have no verified Simplified Chinese translation; see quality-report.json unresolved.",
+        "12 tribute records have no verified Simplified Chinese translation; see quality-report.json unresolved.",
         "The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; runtime rejects it instead of guessing."
     ],
     "records": [
+        {
+            "source_sha256": "8723d2408c7583081eb2f657ff0a5ef839044d0917f36020fd446ffd3ca192eb",
+            "stable_id": "tributes:lesser_tribute_of_harmony",
+            "text": "次级和谐贡品",
+            "translation_source": {
+                "capture_fixture": "tests/perception/data/zhcn_live_tributes.json",
+                "capture_fixture_sha256": "83ee6c29b663ca85033f5d7153b64c19b2f0c151f2f25e43a365fb835125ed21",
+                "captured_at_utc": "2026-09-19T14:49:21.006Z",
+                "game_build": "3.2.1.73552",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "98de30de3c929748aded93b18b183a29c7c499ce9fee6a19386324137ac075d6",
+                        "sno_id": 2131527,
+                        "url": "https://raw.githubusercontent.com/DiabloTools/d4data/33e0bfbb5f717d3e560d14a7fb27d5a7f17fd2c0/json/enUS_Text/meta/StringList/Item_X1_Undercity_TributeKeySigil_Runes_MagicOnly.stl.json"
+                    },
+                    {
+                        "sha256": "488b809fd409ffccc143eda2a73b8f201565b6575dcca0effcc693e430637d09",
+                        "sno_id": 2131530,
+                        "url": "https://raw.githubusercontent.com/DiabloTools/d4data/33e0bfbb5f717d3e560d14a7fb27d5a7f17fd2c0/json/enUS_Text/meta/StringList/DungeonAffix_X1_Undercity_ClearBonus_Runes_MagicOnly.stl.json"
+                    }
+                ],
+                "source_id": "tributes:lesser_tribute_of_harmony",
+                "source_item_id": 2131528,
+                "source_item_key": "X1_Undercity_TributeKeySigil_Runes_MagicOnly",
+                "translation_sha256": "a4e541bfee9ef47de1d45d2388f4e2caef2163c540a953cf4fa131ba71f702b0"
+            }
+        },
         {
             "source_sha256": "f416911f6fba6cb206c51e74de1a697ad2951618a018a6775682e09fa6c27228",
             "stable_id": "affixes:crafting_material_drop_rate",
@@ -27834,11 +27862,11 @@
     ],
     "reviewed_overrides": {
         "path": "../../../src/tools/data/reviewed_zhCN.json",
-        "sha256": "67881e5820ff976acbc86118d394d9284c3da5864a757f3485b351589fdcd399"
+        "sha256": "8127f55f04045df8e635377c8160d7453114627b63e40e47d9ecc78f84d33aff"
     },
     "runtime_ready": false,
     "schema_version": 1,
-    "source_lock_sha256": "149d5dee3252cf3c78b8c1758f4e2c507a541427f45388bab1fe8885e1a1fa45",
+    "source_lock_sha256": "abdee2e5acb8ab94e1acdd663186b498dddb2299e6fd8538ccb2433fe8f6ee59",
     "source_quality_ok": false,
     "translation_conflicts": 0
 }

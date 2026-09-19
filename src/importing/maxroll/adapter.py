@@ -16,7 +16,7 @@ from src.importing.maxroll.constants import (
     PLANNER_API_NAMES_DATA_URL,
     PLANNER_BASE_URL,
 )
-from src.importing.maxroll.data import _find_item_name, _merge_localized_data
+from src.importing.maxroll.data import _find_item_name, _has_explicit_affix_references, _merge_localized_data
 from src.importing.maxroll.items import _find_item_affixes, _find_item_rarity
 from src.importing.maxroll.paragon import extract_maxroll_paragon_steps
 from src.importing.maxroll.planner import (
@@ -24,29 +24,27 @@ from src.importing.maxroll.planner import (
     _extract_planner_url_and_id_from_planner,
     _find_item_type,
     _find_legendary_aspect,
-    _resolve_visible_profile_index,
     _unique_name_special_handling,
 )
+from src.importing.maxroll.selection import select_profiles
 from src.importing.pipeline import ExtractedBuild, ImportPipeline, StaticBuildGuideAdapter, Variant
 from src.importing.web import get_with_retry, retry_importer
 from src.perception import correct_name
 from src.profiles import AspectUniqueFilterModel, CharmFilterModel, ItemFilterModel, SealFilterModel
-from src.type_aliases import JsonObject, JsonValue
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    from src.type_aliases import JsonObject, JsonValue
+
 LOGGER = logging.getLogger(__name__)
 LOGGER.propagate = True
-type PlannerObject = JsonObject
 
 
 def _planner_api_url(url: str) -> str:
     if BUILD_GUIDE_BASE_URL in url:
-        api_url, _, _ = _extract_planner_url_and_id_from_guide(url)
-    else:
-        api_url, _, _ = _extract_planner_url_and_id_from_planner(url)
-    return api_url
+        return _extract_planner_url_and_id_from_guide(url)[0]
+    return _extract_planner_url_and_id_from_planner(url)[0]
 
 
 def _load_planner_data(url: str) -> tuple[JsonObject, JsonObject]:
@@ -73,7 +71,7 @@ def fetch_variants_maxroll(request: ImportRequest) -> list[VariantMetadata]:
         LOGGER.error("Couldn't get planner")
         return []
     variants: list[VariantMetadata] = []
-    profiles = cast("list[PlannerObject]", build_data["profiles"])
+    profiles = cast("list[JsonObject]", build_data["profiles"])
     for profile_id, profile_data in enumerate(profiles):
         if profile_data.get("hidden"):
             continue
@@ -85,8 +83,8 @@ def fetch_variants_maxroll(request: ImportRequest) -> list[VariantMetadata]:
 
 def _extract_profile_variant(
     *,
-    profile_data: PlannerObject,
-    items: dict[str, PlannerObject],
+    profile_data: JsonObject,
+    items: dict[str, JsonObject],
     mapping_data: JsonObject,
     class_name: str,
     build_header: str,
@@ -109,6 +107,16 @@ def _extract_profile_variant(
     for item_id in profile_items.values():
         resolved_item = items[str(item_id)]
         resolved_item_id = str(resolved_item["id"])
+        if resolved_item_id.startswith("Runeword_"):
+            LOGGER.warning("Skipping unsupported Maxroll runeword %s; no loot rule was created.", resolved_item_id)
+            continue
+        if not _has_explicit_affix_references(resolved_item):
+            LOGGER.warning(
+                "Skipping incomplete Maxroll item %s in variant %r: missing or malformed explicits.",
+                resolved_item_id,
+                variant_name,
+            )
+            continue
         if (
             item_type := _find_item_type(
                 mapping_data=item_type_mapping, value=str(resolved_item["id"]), class_name=class_name
@@ -128,15 +136,23 @@ def _extract_profile_variant(
             continue
         rarity = _find_item_rarity(resolved_item_id, mapping_data)
         is_unique_like = is_unique_like_rarity(rarity)
+        unique_aspect = None
+        if is_unique_like:
+            try:
+                unique_aspect = AspectUniqueFilterModel(
+                    name=correct_name(_unique_name_special_handling(item_name)) or ""
+                )
+            except ValueError:
+                LOGGER.warning(
+                    "Skipping unsupported Maxroll unique %s (%s); no loot rule was created.",
+                    item_name,
+                    resolved_item_id,
+                )
+                continue
 
         item_filter = ItemFilterModel()
 
         if item_type in [ItemType.HoradricSeal, ItemType.Charm]:
-            if "explicits" not in resolved_item:
-                LOGGER.warning(
-                    f"Maxroll is providing unreliable data for Seals/Charms, skipping a {item_type.value} for this build."
-                )
-                continue
             seal_charm_affixes = _find_item_affixes(
                 mapping_data=mapping_data,
                 item_affixes=cast("list[JsonObject]", resolved_item["explicits"]),
@@ -145,8 +161,8 @@ def _extract_profile_variant(
             )
             charm_or_seal_unique_aspect = None
             charm_set_name = None
-            if is_unique_like:
-                charm_or_seal_unique_aspect = correct_name(_unique_name_special_handling(item_name))
+            if unique_aspect is not None:
+                charm_or_seal_unique_aspect = unique_aspect.name
             elif rarity == ItemRarity.Set:
                 set_key = str(item_mapping[resolved_item_id]["set"])
                 charm_set_name = correct_name(str(item_sets[set_key]["name"]))
@@ -195,13 +211,8 @@ def _extract_profile_variant(
                 else:
                     aspect_upgrade_filters.append(legendary_aspect)
 
-        if is_unique_like:
-            unique_name = item_name
-            try:
-                unique_name = _unique_name_special_handling(unique_name)
-                item_filter.unique_aspect = [AspectUniqueFilterModel(name=unique_name)]
-            except Exception:
-                LOGGER.exception(f"Unexpected error adding unique aspect for {unique_name}, please report a bug.")
+        if unique_aspect is not None:
+            item_filter.unique_aspect = [unique_aspect]
 
         affixes = _find_item_affixes(
             mapping_data=mapping_data,
@@ -245,8 +256,8 @@ def import_maxroll(request: ImportRequest) -> ImportResult | None:
         LOGGER.error("Couldn't get planner")
         return None
     guide_season = str(all_data.get("season", "") or "")
-    profiles = cast("list[PlannerObject]", build_data["profiles"])
-    items = cast("dict[str, PlannerObject]", build_data["items"])
+    profiles = cast("list[JsonObject]", build_data["profiles"])
+    items = cast("dict[str, JsonObject]", build_data["items"])
     try:
         mapping_data = cast("JsonObject", get_with_retry(url=PLANNER_API_DATA_URL).json())
         names_data = cast("JsonObject", get_with_retry(url=PLANNER_API_NAMES_DATA_URL).json())
@@ -259,19 +270,7 @@ def import_maxroll(request: ImportRequest) -> ImportResult | None:
     class_name = str(all_data.get("class", "") or "")
     build_header = str(all_data.get("name", "") or class_name)
     finished_variants: list[Variant] = []
-    selection = request.variant_selection
-
-    profiles_to_extract = []
-    if request.options.multi_build:
-        for profile_id, profile_data in enumerate(profiles):
-            if profile_data.get("hidden"):
-                continue
-            if selection is None or str(profile_id) in selection:
-                profiles_to_extract.append((profile_id, profile_data))
-    else:
-        if build_id_is_visible_position:
-            build_id = _resolve_visible_profile_index(profiles, build_id)
-        profiles_to_extract.append((build_id, profiles[build_id]))
+    profiles_to_extract = select_profiles(profiles, request, build_id, build_id_is_visible_position)
 
     for _profile_key, profile_data in profiles_to_extract:
         finished_variants.append(

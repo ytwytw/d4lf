@@ -1,7 +1,16 @@
 import json
 
+import pytest
+
 from src.tools.data_generation.affixes import generate_affixes
-from src.tools.data_generation.datasets import generate_uniques, main, string_list_value
+from src.tools.data_generation.datasets import (
+    generate_aspects,
+    generate_sets,
+    generate_sigils,
+    generate_uniques,
+    main,
+    string_list_value,
+)
 
 
 def test_get_string_list_name_returns_a_stable_name() -> None:
@@ -26,6 +35,10 @@ def test_main_reports_stage_start_finish_counts_and_elapsed_time(tmp_path, monke
     assert "FINISH item_types:" in output
     assert "FINISH tooltips:" in output
     assert "FINISH affixes: 7 files, elapsed=" in output
+    for name in ("tributes", "item_types", "tooltips"):
+        payload = (tmp_path / f"assets/lang/enUS/{name}.json").read_bytes()
+        assert payload.endswith(b"\n"), name
+        assert b"\r" not in payload, name
 
 
 def test_affix_generation_uses_core_toc_power_index_without_parsing_power_files(tmp_path, monkeypatch) -> None:
@@ -57,6 +70,25 @@ def test_affix_generation_uses_core_toc_power_index_without_parsing_power_files(
     generate_affixes(d4data, "enUS", sequential)
 
     assert sequential.exists()
+    for path in (sequential, output_dir / "seals_affixes.json", output_dir / "charms_affixes.json"):
+        payload = path.read_bytes()
+        assert payload.endswith(b"\n"), path.name
+        assert b"\r" not in payload, path.name
+
+
+@pytest.mark.parametrize("generate", [generate_aspects, generate_sets, generate_sigils, generate_uniques])
+def test_dataset_generators_write_lf_json(generate, tmp_path, monkeypatch) -> None:
+    output_dir = tmp_path / "assets/lang/zhCN"
+    output_dir.mkdir(parents=True)
+    monkeypatch.setattr("src.tools.data_generation.datasets.D4LF_BASE_DIR", tmp_path)
+    monkeypatch.setattr("src.tools.data_generation.affixes.D4LF_BASE_DIR", tmp_path)
+
+    generate(tmp_path / "d4data", "zhCN")
+
+    output_path = output_dir / f"{generate.__name__.removeprefix('generate_')}.json"
+    payload = output_path.read_bytes()
+    assert payload.endswith(b"\n")
+    assert b"\r" not in payload
 
 
 def test_generate_uniques_skips_placeholder_before_reading_incomplete_inherent_affix(tmp_path, monkeypatch) -> None:

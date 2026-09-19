@@ -114,7 +114,7 @@
     },
     "locale": "zhCN",
     "readiness_blockers": [
-        "13 tribute records have no verified Simplified Chinese translation; see unresolved.",
+        "12 tribute records have no verified Simplified Chinese translation; see unresolved.",
         "The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; runtime rejects it instead of guessing."
     ],
     "runtime_ready": false,
@@ -133,7 +133,7 @@
     },
     "season15_upstream_delta": {
         "d4data_commit": "33e0bfbb5f717d3e560d14a7fb27d5a7f17fd2c0",
-        "d4lf_upstream_commit": "3ecfe3b904b67d5119830668867626ec678fc7ad",
+        "d4lf_upstream_commit": "3ecfe3b506d553fe5981e95fd2256bbbb164e8a4",
         "diablo4_companion_commit": "a7efa39819ffec10f2dd1c06e874744d2605167f",
         "official_zhcn_reference": "https://d4.blizzard.cn/news/24295394/",
         "resolved_records": [
@@ -207,9 +207,9 @@
         "equipment_unresolved_records": 0,
         "excluded_historical_records": 0,
         "excluded_records": 5,
-        "extension_unresolved_records": 13,
-        "resolved_records": 2740,
-        "reviewed_overrides": 74,
+        "extension_unresolved_records": 12,
+        "resolved_records": 2741,
+        "reviewed_overrides": 75,
         "source_builds_match": true,
         "source_quality_ok": false,
         "source_records": 2753,
@@ -218,12 +218,12 @@
             "d2core": 342,
             "diablo4_companion": 2323,
             "locale_grammar": 1,
-            "reviewed_override": 74
+            "reviewed_override": 75
         },
         "unresolved_by_kind": {
-            "tributes": 13
+            "tributes": 12
         },
-        "unresolved_records": 13
+        "unresolved_records": 12
     },
     "translation_conflicts": [],
     "unresolved": [
@@ -251,11 +251,6 @@
             "reason": "missing_translation",
             "source_text": "lesser tribute",
             "stable_id": "tributes:lesser_tribute"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "lesser tribute of harmony",
-            "stable_id": "tributes:lesser_tribute_of_harmony"
         },
         {
             "reason": "missing_translation",

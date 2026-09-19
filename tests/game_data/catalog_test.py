@@ -77,6 +77,7 @@ def test_zhcn_catalog_contains_season_15_upstream_delta(monkeypatch) -> None:
     assert catalog.resolve_affix("金币掉落几率") == "gold_drop_rate"
     assert catalog.resolve_tribute("强效精炼贡品") == "greater_tribute_of_refinement"
     assert catalog.resolve_tribute("巧思贡品") == "tribute_of_ingenuity"
+    assert catalog.resolve_tribute("次级和谐贡品") == "lesser_tribute_of_harmony"
     expected_uniques = {
         "艾里欧克之针": "ariocs_needle",
         "亨利的永恒追捕": "henris_perquisition",
@@ -96,7 +97,9 @@ def test_zhcn_manifest_locks_runtime_files_and_review_sources() -> None:
 
     assert manifest["build_version"] == "3.2.1.73552"
     for entry in manifest["files"]:
-        assert hashlib.sha256((locale_dir / entry["path"]).read_bytes()).hexdigest() == entry["sha256"]
+        payload = (locale_dir / entry["path"]).read_bytes()
+        assert b"\r\n" not in payload, entry["path"]
+        assert hashlib.sha256(payload).hexdigest() == entry["sha256"]
     assert (
         hashlib.sha256((root / "assets/catalog/source-lock.json").read_bytes()).hexdigest()
         == manifest["source_lock_sha256"]
@@ -126,6 +129,12 @@ def test_zhcn_manifest_matches_runtime_text_and_reports_remaining_release_gaps()
             value = value["display_name"]
         assert value == record["text"], record["stable_id"]
         assert hashlib.sha256(value.encode("utf-8")).hexdigest() == record["translation_source"]["translation_sha256"]
+        source = record["translation_source"]
+        if fixture_hash := source.get("capture_fixture_sha256"):
+            fixture_path = locale_dir.parents[2] / source["capture_fixture"]
+            fixture_bytes = fixture_path.read_bytes()
+            assert b"\r\n" not in fixture_bytes
+            assert hashlib.sha256(fixture_bytes).hexdigest() == fixture_hash
     if quality["unresolved"] or quality["selected_quality"]["alias_collisions"]:
         assert manifest["runtime_ready"] is False
         assert quality["runtime_ready"] is False
