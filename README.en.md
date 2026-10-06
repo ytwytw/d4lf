@@ -1,132 +1,95 @@
-![Classic upstream D4LF logo](assets/logo.png)
+![D4LF](assets/logo.png)
 
 # D4LF Simplified Chinese Edition
 
-[简体中文](README.md)
+[简体中文](README.md) · [Installation](#installation) · [Profile reference](#how-to-filter--profiles)
 
-`main` contains the current user-facing version. Install the complete application package from [Releases](https://github.com/ytwytw/d4lf/releases).
+D4LF is a Windows equipment filter for Diablo IV. It checks items in your inventory and stash
+against your profiles, displays matches, and can mark non-matching items as junk.
 
-D4LF is a Windows desktop item-filtering assistant. It recognizes items from the screen and
-Diablo IV accessibility TTS text, then shows keep or junk results from local profiles. This branch
-adds Simplified Chinese game parsing, a bilingual interface, and cross-language build imports on top
-of upstream [D4LF](https://github.com/d4lfteam/d4lf) V10.
-
-> This is not an official Blizzard tool. No third-party assistant can guarantee zero account risk;
-> evaluate and accept that risk before use.
-
-See [actual screenshots of the Chinese edition](README.md#%E7%95%8C%E9%9D%A2%E4%B8%8E%E9%85%8D%E7%BD%AE), including the main window, settings,
-filter generator, inventory export, and equipment reference. Build names and some labels retain their source language.
+This edition is based on upstream [D4LF](https://github.com/d4lfteam/d4lf) V10 and supports
+Simplified Chinese and English game clients.
 
 ## Main features
 
-- Supports Simplified Chinese and English game clients. The language setting switches both the UI
-  and game-text parser.
-- Filters equipment by type, item power, rarity, affixes, unique powers, and value thresholds.
-- Supports inventory and stash filtering, fast vision mode, match highlighting, the information
-  panel, and the Paragon overlay.
-- Imports builds from [Maxroll](https://maxroll.gg/d4/),
-  [Mobalytics](https://mobalytics.gg/diablo-4/builds), [D4Builds](https://d4builds.gg/),
-  [InfinityBuilds](https://infinitybuilds.gg/), and
-  [D2Core](https://www.d2core.com/d4/planner).
-- Build-source language is independent of game language: English builds work with Chinese or
-  English clients, and Chinese D2Core builds work with Chinese or English clients.
-- Loot Tools provides a standalone or Profile-linked native game filter editor, full-scope inventory
-  export, and an offline equipment reference. See the [usage guide (Chinese)](docs/loot-tools.zh-CN.md).
+- **Equipment filtering:** filter by slot, item power, rarity, affixes, and values.
+- **Build imports:** turn a build from a supported website into an editable profile.
+- **Vision modes:** show matching results when you hover over an item, or highlight matching affixes on its tooltip.
+- **Game filters:** generate rules from a profile or create them independently, then export a code for the game.
+- **Inventory export:** save item descriptions, recognized attributes, locations, and read status as Markdown, TXT, or JSON.
+- **Equipment reference:** search equipment and view available drop sources, affixes, and value ranges.
+- **Overlays:** display Paragon layouts, event timers, gold, and experience information in the game.
+
+See the [Chinese interface screenshots](README.md#%E7%95%8C%E9%9D%A2%E4%B8%8E%E9%85%8D%E7%BD%AE) and [Loot Tools guide (Chinese)](docs/loot-tools.zh-CN.md)
+for the filter generator, inventory export, and equipment reference.
+
+Equipment data sources and credits are listed in the [data notice](assets/equipment_knowledge/NOTICE.md).
 
 ## Installation
 
-The current version is **`10.0.7+zhcn.2`**, a candidate with no published download yet.
-Once released, download the complete application package, including the EXE and assets, from
-[Releases](https://github.com/ytwytw/d4lf/releases). See the [release notes (Chinese)](docs/release-notes.zh-CN.md).
+This page describes **`10.0.7+zhcn.2`**. Its download package has not been published yet.
+Published versions are available on [Releases](https://github.com/ytwytw/d4lf/releases).
+See the [release notes (Chinese)](docs/release-notes.zh-CN.md) for changes in this version.
 
-1. Extract the complete, version-checked local candidate into a fresh directory. Download public packages
-   from this repository's [Releases](https://github.com/ytwytw/d4lf/releases) only after they are published.
-1. Locate the Diablo IV installation directory.
-1. Close the game first. The installer replaces `saapi64.dll` and may close a running game.
-1. Run `install_dll.cmd`, provide the game directory, and allow installation of the local signing
-   certificate when prompted.
-1. Start `d4lf.exe` and select the language used by the game client under
-   `Settings > System & Paths > Language`.
+To install a complete application package:
+
+1. Extract it into a new directory, keeping the EXE, assets, and other included files together.
+1. Close the game. Run `install_dll.cmd`, select the game directory, and install the local signing certificate
+   when prompted. This replaces `saapi64.dll` in the game directory.
+1. Start `d4lf.exe`. Under **Settings > System & Paths > Language**, select the language used by your game client.
 1. Enable Advanced Tooltip Information, Use Screen Reader, and 3rd Party Screen Reader in the game.
-   Use small or medium font scaling and disable HDR.
-1. Import a build or create a profile, then enable the profiles you want on the main screen.
-1. First enable Vision Mode Only and use fast vision mode to inspect equipped and inventory items without marking them.
-1. After reviewing the profile, disable Vision Mode Only to use automation. Default `F11` marks non-matching items;
-   it is not a read-only preview.
+   Set the font size to small or medium and disable HDR.
 
-If TTS never connects, try running the game and launcher as administrator. If the configuration is
-invalid, exit D4LF, back up and rename `%USERPROFILE%\.d4lf\params.ini`, and configure it again through Settings.
+> This is not an official Blizzard tool. Consider the account risks of third-party tools before using it.
 
-## Season 15 release and upgrades
+## Getting started
 
-This version is based on upstream `10.0.7`, with fixes for build imports, Chinese recognition, and in-app restarts.
-Some new items may not be recognized. Items with the same name but different effects need complete descriptions
-to identify them. Check recognition in Vision Mode Only before enabling automatic marking.
+1. Import a build with **Import Profile**, then enable it on the main screen. A profile holds your filtering rules.
+1. Enable **Vision Mode Only** under **Settings > Automation**, then select **Fast** under **UI & Theme**.
+   Press the default shortcut `F9` to start vision mode, then hover over items to check the results.
+1. Once you have checked the rules, disable Vision Mode Only to use automatic actions. By default, `F11` runs the filter
+   and marks non-matching items as junk.
 
-- Exit D4LF and back up all of `%USERPROFILE%\.d4lf` before upgrading. It contains `params.ini`,
-  `profiles`, `native_filters`, `exports\inventory`, and diagnostic captures. Back up files saved elsewhere separately.
-- Keep the old complete application directory, and extract the new EXE and assets together into a fresh directory.
-  The same Windows account continues to use its existing `.d4lf`; do not copy personal data into the application package.
-  Check the version, language, hotkeys, and enabled profiles, then verify recognition in Vision Mode Only.
-  For V9 to V10, reimport incompatible profiles.
-- Upgrade from older versions by manually extracting the full ZIP to a fresh directory: this release cannot change
-  the behavior of an old updater already running.
-- This release's `autoupdater.bat` checks this fork only, refuses downgrades, and preserves extra local files.
-  A failed copy retains `temp_update` for recovery; manually extract the full release if needed. Do not mix EXE and assets versions.
-- App updates do not replace the game's DLL. Rerun `install_dll.cmd` with the game closed only when release notes require a DLL update.
-- To roll back, exit the new version, separately back up its current `.d4lf`, and launch the preserved old application.
-  If the old version cannot read changed settings or documents, retain both backups and restore the pre-upgrade `.d4lf`.
-  Do not mix configuration or assets from different versions. The updater does not downgrade or restore the game DLL;
-  follow the older version's installation instructions if its DLL differs.
-- Disabling a loot category leaves all of its items untouched, including Mythics. In enabled categories Mythics are kept,
-  and favoriting still respects `mark_as_favorite`.
+Supported build websites:
 
-The [Loot Tools guide (Chinese)](docs/loot-tools.zh-CN.md) covers saved files, export statuses,
-and troubleshooting. Inventory export primarily preserves TTS text; it does not automatically fill missing fields
-from screenshots or read the game's internal state.
+[Maxroll](https://maxroll.gg/d4/) · [Mobalytics](https://mobalytics.gg/diablo-4/builds) ·
+[D4Builds](https://d4builds.gg/) · [InfinityBuilds](https://infinitybuilds.gg/) · [D2Core](https://www.d2core.com/d4/planner)
 
-## Cross-language build imports
+Chinese and English builds work with either game language. Use **Edit** next to a profile to adjust its rules.
+Website or season updates may prevent some entries from importing; check the imported profile and any log messages.
 
-The importer resolves website data to stable internal identifiers before displaying names in the
-selected UI and game language. As a result:
+## Upgrading and rolling back
 
-| Build source                                             | Chinese client | English client |
-| -------------------------------------------------------- | -------------- | -------------- |
-| English Maxroll, Mobalytics, D4Builds, or InfinityBuilds | Supported      | Supported      |
-| Chinese D2Core                                           | Supported      | Supported      |
+1. Exit D4LF. Back up `%USERPROFILE%\.d4lf` and any files saved elsewhere, and keep the old application directory.
+1. Extract the complete new version into a fresh directory. It will use the existing settings for the same Windows account.
+1. Check the language, hotkeys, and enabled profiles. When moving from V9 to V10, reimport profiles that cannot be loaded.
+1. Check recognition in Vision Mode Only before enabling automatic marking.
 
-Entries that cannot be matched exactly after a website or season update are skipped and logged
-instead of being guessed from a fuzzy translation. Review imported results in the profile editor.
+Use a complete application package when upgrading from an older version. Reinstall the game DLL with the game closed
+only when the release notes require it. If the updater fails while copying files, extract the complete package again;
+do not mix EXE and assets from different versions.
 
-## Data and acknowledgements
+To roll back, save a separate copy of the current settings, then start the old application. Restore the pre-upgrade backup
+if it cannot read the newer settings. Rolling back does not restore the game DLL; follow the relevant version's instructions.
 
-Thanks to [D4LF](https://github.com/d4lfteam/d4lf), [D2Core](https://www.d2core.com/d4/planner),
-and the community data projects. Equipment references are offline snapshots; missing names, drop locations,
-and probabilities remain unknown. See the [data notice](assets/equipment_knowledge/NOTICE.md) for sources,
-versions, and attribution.
+## Files and troubleshooting
 
-## Diagnostics and privacy
+Settings, profiles, saved game filters, and inventory exports are stored under `%USERPROFILE%\.d4lf` by default.
+Inventory exports are in `exports\inventory`, and editable game filters are in `native_filters`.
 
-- Automatic failure capture is off by default.
-- The standalone Diagnostics page is hidden by default and must be enabled explicitly in Advanced
-  Settings.
-- Captures and diagnostics stay on the local machine under `%USERPROFILE%\.d4lf\captures`.
-- These features do not upload data or record the microphone.
-- Automatic capture stores only the relevant screenshot, TTS text, and manifest after a recognition
-  failure. Manual diagnostic recording can be started and stopped independently.
+If TTS does not connect, check the game's screen-reader settings and DLL installation. If needed, try running the game
+and launcher as administrator. For invalid settings, exit D4LF, back up and rename `params.ini`, and configure the app again.
 
-Screenshots can contain character names, chat, or other screen content. Review and redact captures
-before attaching them to a public issue.
-Inventory exports also remain local. Share only the relevant, redacted information when reporting a problem;
-you do not need to share the entire `.d4lf` directory.
+Diagnostics can be enabled in Advanced Settings. They are off by default and save files locally in `captures`.
+Check logs, screenshots, and exports for personal information before sharing them in a public issue.
 
 ## Settings and profile rules
 
-Use **Settings** for automation, loot categories, stash and transfer, appearance, language, and hotkeys.
-Enable **Vision Mode Only** under **Automation** when first checking recognition. Under **UI & Theme**,
-choose **Highlight Matches** to frame matching affixes on the tooltip, or **Fast** to show the result directly.
+Use **Settings** to adjust loot categories, stash pages, language, hotkeys, and appearance.
+Disabling a loot category leaves its items untouched. Under **UI & Theme**, choose **Highlight Matches** to frame matching
+affixes on the tooltip, or **Fast** to show the result directly. Fast mode supports controllers.
 
-The [Chinese interface guide](README.md#%E7%95%8C%E9%9D%A2%E4%B8%8E%E9%85%8D%E7%BD%AE) uses current screenshots. The detailed YAML and overlay reference follows.
+The [Chinese interface guide](README.md#%E7%95%8C%E9%9D%A2%E4%B8%8E%E9%85%8D%E7%BD%AE) includes current screenshots. The YAML and overlay reference follows.
 
 ## How to filter / Profiles
 
