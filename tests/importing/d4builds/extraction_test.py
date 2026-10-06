@@ -27,7 +27,7 @@ def test_create_seal_filter_from_tooltip_html_matches_tooltip_values() -> None:
                     <span class="seal__tooltip__value__text">Attack Speed</span>
                 </li>
                 <li class="seal__tooltip__value">
-                    <span class="seal__tooltip__value__text">+1 Unique Charm Slot</span>
+                    <span class="seal__tooltip__value__text">+1 Charm Slot</span>
                 </li>
             </ul>
         </div>
@@ -42,6 +42,9 @@ def test_create_seal_filter_from_tooltip_html_matches_tooltip_values() -> None:
         "attack_speed",
         "charm_slot",
     ]
+    # Unique-charm capacity is a different affix from the generic charm slot, so it is not folded into it.
+    assert _d4builds_helpers._match_d4builds_tooltip_affix("+1 Unique Charm Slot", ItemType.HoradricSeal) is None
+    assert _d4builds_helpers._match_d4builds_tooltip_affix("+12% Total Armor", ItemType.Ring) == "total_armor"
 
 
 def test_create_charm_filter_from_tooltip_html_reads_set_name_and_affixes() -> None:
@@ -250,3 +253,21 @@ def test_match_d4builds_tooltip_affix_keeps_generic_seal_match_with_guessed_set(
     )
 
     assert affix_name == "cooldown_reduction"
+
+
+def test_unique_seal_unreadable_tooltip_or_unknown_charm_unique_is_unsafe() -> None:
+    unsafe: list[str] = []
+    seal = '<div class="seal__tooltip"><h2 class="seal__tooltip__name--unique">Seal of X</h2></div>'
+    unknown = '<div class="charm__tooltip"><h2 class="charm__tooltip__name--unique">Future Charm</h2></div>'
+    assert _d4builds_helpers._create_seal_filter_from_tooltip_html(seal, False, unsafe=unsafe) is None
+    assert _d4builds_helpers._create_charm_filter_from_tooltip_html("", False, unsafe=unsafe) == (None, None)
+    assert _d4builds_helpers._create_charm_filter_from_tooltip_html(unknown, False, unsafe=unsafe) == (None, None)
+    assert unsafe == ["seal (unreadable or unique tooltip)", "charm (unreadable tooltip)", "charm Future Charm"]
+
+
+def test_unreadable_charm_value_keeps_the_charm_broadly() -> None:
+    values = "".join(f'<li class="charm__tooltip__value">{text}</li>' for text in ("Maximum Resource", "z" * 150))
+    tooltip_html = f'<div class="charm__tooltip"><ul class="charm__tooltip__values">{values}</ul></div>'
+    charm_filter, _ = _d4builds_helpers._create_charm_filter_from_tooltip_html(tooltip_html, False, unsafe=[])
+    assert charm_filter is not None
+    assert charm_filter.affix_pool == []

@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import (
 
 from src.equipment_knowledge import load_catalog
 from src.native_filter.codec import encode_filter
-from src.native_filter.compiler import CompilePolicy, compile_profile
+from src.native_filter.compiler import CompilePolicy, compile_profile, profile_scope_warnings
 from src.native_filter.decoder import decode_filter
 from src.native_filter.document import SavedDocument, load_document, save_document
 from src.native_filter.export import copy_code, default_directory, export_code
@@ -66,7 +66,7 @@ class NativeFilterDialog(QDialog):
         layout.addLayout(source_row)
         self.drop_policy = QCheckBox("按 Build 筛选掉落装备：启用隐藏；不额外保留未解锁外观 / 圣化物品")
         self.drop_policy.setToolTip(
-            "仅改变本次生成的游戏过滤器。D4LF 原有全局保护设置保持不变；关闭此选项时保守显示全部。"
+            "仅改变本次生成的游戏过滤器；关闭时保守显示全部。若 D4LF 开启了先祖传奇保护，仍不会隐藏。"
         )
         layout.addWidget(self.drop_policy)
         self.name = QLineEdit()
@@ -202,7 +202,7 @@ class NativeFilterDialog(QDialog):
             if self.drop_policy.isChecked():
                 policy = replace(policy, handle_cosmetics="junk", preserve_sanctified=False)
             result = compile_profile(profile, self.catalog, policy)
-            warnings = result.warnings
+            warnings = result.warnings + profile_scope_warnings(Path(source).stem, get_settings().general.profiles)
             if self.drop_policy.isChecked():
                 warnings += (
                     "已选择掉落筛选策略：没有额外的未知外观 / 圣化保护；只改变此游戏过滤器，不改变 D4LF 设置。",

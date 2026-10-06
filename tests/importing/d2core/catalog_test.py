@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, cast, override
 import httpx
 import pytest
 
-from src.importing.d2core.catalog import CatalogStore, CatalogTransport, validate_catalog
+from src.game_data import ItemType
+from src.importing.d2core.catalog import CatalogStore, CatalogTransport, canonical_affix_name, validate_catalog
 from src.importing.d2core.errors import D2CoreCatalogError
 
 if TYPE_CHECKING:
@@ -73,3 +74,18 @@ def test_paragon_catalog_requires_board_node_and_glyph_collections() -> None:
         validate_catalog("paragon", {"Druid": {"board": {}}})
     catalog = validate_catalog("paragon", {"Druid": {"board": {}, "node": {}, "glyph": {}}})
     assert "Druid" in catalog
+
+
+@pytest.mark.parametrize(
+    ("desc", "item_type", "expected"),
+    [
+        ("+[1,226 - 1,450] Maximum Life", None, "maximum_life"),
+        ("+[8.0 - 12.0]% Total Armor", None, "total_armor"),
+        ("+[2 - 3] to Brand New Skills", None, None),  # unknown description: unresolved, never a near label
+        ("+[10.0 - 14.0]% Maximum Life", ItemType.HoradricSeal, "maximum_life"),
+        ("+[1 - 2] to All Skills", ItemType.HoradricSeal, None),  # equipment wording, no seal label
+    ],
+)
+def test_canonical_affix_name_requires_an_exact_english_label(desc, item_type, expected) -> None:
+    assert canonical_affix_name({"key": "k", "desc": desc}, item_type) == expected
+    assert canonical_affix_name({"key": "k"}, item_type) is None

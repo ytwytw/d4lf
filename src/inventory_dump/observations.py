@@ -12,6 +12,20 @@ _PLAYER_ANNOUNCEMENT = re.compile(r"^.+?\s+\|\s+\d{1,3}\s+\(\d+\)(?:\s+\(\d+\))?
 _SYSTEM_ANNOUNCEMENTS = frozenset({"电池充电中", "电池放电中"})
 _NAME_FLAG = re.compile(r"^\[(?:FAVORITED ITEM|MARKED AS JUNK|收藏物品|标记为垃圾)\]\.\s*", re.IGNORECASE)
 _FAVORITE_NAME = re.compile(r"^\[(?:FAVORITED ITEM|收藏物品)\]\.\s*", re.IGNORECASE)
+_JUNK_NAME = re.compile(r"^\[(?:MARKED AS JUNK|标记为垃圾)\]\.\s*", re.IGNORECASE)
+# Spoken before every equipped item in the zhCN live exports: the slot label, then "已装备" (equipped).
+# A label only keeps the slot's own announcement from counting as item text; it never proves emptiness.
+_SLOT_LABELS = {
+    "head": "头部",
+    "chest": "胸部",
+    "gloves": "手部",
+    "legs": "腿部",
+    "boots": "脚部",
+    "amulet": "颈部",
+    "ring_upper": "戒指",
+    "ring_lower": "戒指",
+    "seal": "封印",
+}
 _POWER = re.compile(r"^(\d[\d,]*)\s*(?:物品强度|Item Power)\b", re.IGNORECASE)
 _LEVEL = re.compile(r"(?:需要等级|Required Level|Requires Level)\s*[:：]?\s*(\d+)", re.IGNORECASE)
 _QUANTITY = re.compile(r"^(?:数量|堆叠数量|Quantity|Stack Size)\s*[:：]\s*(\d[\d,]*)", re.IGNORECASE)
@@ -28,14 +42,39 @@ def ambient_only(lines: list[str]) -> bool:
     )
 
 
-def observe_favorite(lines: list[str]) -> JsonObject | None:
-    """Only an explicit current-title marker confirms favorite; absence stays unknown."""
-    if not lines or not (marker := _FAVORITE_NAME.match(lines[0])):
+def _title_marker(pattern: re.Pattern[str], lines: list[str]) -> JsonObject | None:
+    if not lines or not (marker := pattern.match(lines[0])):
         return None
     name = lines[0][marker.end() :].strip()
     if not name or _NAME_FLAG.match(name):
         return None
     return {"source": "raw_tts_title", "verification": "explicit_marker", "value": True, "text": lines[0]}
+
+
+def observe_favorite(lines: list[str]) -> JsonObject | None:
+    """Only an explicit current-title marker confirms favorite; absence stays unknown."""
+    return _title_marker(_FAVORITE_NAME, lines)
+
+
+def observe_junk(lines: list[str]) -> JsonObject | None:
+    """Junk follows the favorite rule: an explicit current-title marker, never inferred from absence."""
+    return _title_marker(_JUNK_NAME, lines)
+
+
+def slot_labels(slot: str) -> frozenset[str]:
+    """Observed zhCN item preambles for an equipped location; weapons and charms share one label each."""
+    if slot.startswith("weapon_"):
+        return frozenset({"主手", "副手"})
+    if slot.startswith("charm_"):
+        return frozenset({"神符"})
+    label = _SLOT_LABELS.get(slot)
+    labels: set[str] = {label} if label else set()
+    return frozenset(labels)
+
+
+def item_lines(lines: list[str], *, labels: frozenset[str] = frozenset()) -> list[str]:
+    """Text that may belong to an item: not ambient, blank, or the hovered slot's own label."""
+    return [line for line in lines if line.strip() and line.strip() not in labels and not ambient_only([line])]
 
 
 def _number(pattern: re.Pattern[str], lines: list[str]) -> int | None:

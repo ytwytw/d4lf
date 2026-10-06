@@ -5,7 +5,8 @@ import lxml.html
 from lxml import etree
 from selenium.webdriver.common.by import By
 
-from src.game_data import ItemType
+from src.game_data import GameCatalog, ItemType
+from src.importing.affix_identity import resolve_affix, resolve_seal_affix
 from src.importing.d4builds.constants import (
     ACTIVE_CHARM_CSS,
     ACTIVE_SEAL_CSS,
@@ -21,11 +22,10 @@ from src.importing.d4builds.constants import (
     UNIQUE_TOOLTIP_CSS,
     UNIQUE_TOOLTIP_SLOT_XPATH,
 )
-from src.importing.filters import create_seal_charm_filter, fix_weapon_type, match_set_aware_seal_affix
-from src.importing.source_locale import source_affix_dict_for_item_type
+from src.importing.filters import create_seal_charm_filter, fix_weapon_type, resolve_unique_name
 from src.importing.web import hover_and_get_tooltip_html
 from src.item import Affix
-from src.perception import clean_str, closest_match, correct_name
+from src.perception import correct_name
 from src.profiles import CharmFilterModel, SealFilterModel
 
 if TYPE_CHECKING:
@@ -35,20 +35,17 @@ if TYPE_CHECKING:
     from src.importing.contracts import ImportRequest
 
 LOGGER = logging.getLogger(__name__)
-SOURCE_LOCALE = "enUS"
+UNIQUE_MARKER_XPATH = ".//*[contains(@class, '--unique') or contains(@class, '__unique')]"
 
 
 def _corrections(input_str: str) -> str:
+    # Only wording D4Builds abbreviates. "Total Armor" and "Unique Charm Slot" name different affixes than
+    # "Armor" and "Charm Slot", so they are matched as written.
     input_str = input_str.lower()
-    match input_str:
-        case "max life":
-            return "maximum life"
-        case "total armor":
-            return "armor"
+    if input_str == "max life":
+        return "maximum life"
     if "ranks to" in input_str or "ranks of" in input_str or "ranks" in input_str:
         return input_str.replace("ranks to", "to").replace("ranks of", "to").replace("ranks", "to")
-    if "charm slot" in input_str:
-        return "charm slot"
     return input_str
 
 
@@ -94,32 +91,25 @@ def _get_weapon_type_from_paperdoll_tooltip(driver: WebDriver, icon: WebElement)
 
 
 def _affixes_from_tooltip_values(
-    texts: list[str], item_type: ItemType, guessed_set_name: str | None = None
+    texts: list[str], item_type: ItemType, guessed_set_name: str | None = None, unresolved: list[str] | None = None
 ) -> list[Affix]:
     affixes = []
     for text in texts:
         affix_name = _match_d4builds_tooltip_affix(text=text, item_type=item_type, guessed_set_name=guessed_set_name)
         if affix_name is None:
             LOGGER.error(f"Couldn't match D4Builds seal/charm tooltip affix {text=}")
+            if unresolved is not None:
+                unresolved.append(text)
             continue
         affixes.append(Affix(name=affix_name))
     return affixes
 
 
 def _match_d4builds_tooltip_affix(text: str, item_type: ItemType, guessed_set_name: str | None = None) -> str | None:
-    stat_clean = clean_str(_corrections(input_str=text))
-    affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
-    if (
-        item_type == ItemType.HoradricSeal
-        and guessed_set_name
-        and (
-            matched_name := match_set_aware_seal_affix(
-                stat_clean=stat_clean, affix_dict=affix_dict, guessed_set_name=guessed_set_name
-            )
-        )
-    ):
-        return matched_name
-    return closest_match(stat_clean, affix_dict)
+    stat = _corrections(input_str=text)
+    if item_type == ItemType.HoradricSeal:
+        return resolve_seal_affix(stat, guessed_set_name)
+    return resolve_affix(stat, item_type)
 
 
 def _tooltip_texts(tooltip_html: str, value_xpath: str) -> list[str]:
@@ -155,7 +145,10 @@ __all__ = [name for name in globals() if not name.startswith("__")]
 
 
 def _extract_d4builds_seal_charm_filters(
-    driver: WebDriver, request: ImportRequest
+    driver: WebDriver,
+    request: ImportRequest,
+    unsafe_charms: list[str] | None = None,
+    unsafe_seals: list[str] | None = None,
 ) -> tuple[list[CharmFilterModel], list[SealFilterModel]]:
     charm_filters = []
     seal_filters = []
@@ -164,7 +157,7 @@ def _extract_d4builds_seal_charm_filters(
     for _, charm_element in enumerate(driver.find_elements(By.CSS_SELECTOR, ACTIVE_CHARM_CSS)):
         tooltip_html = hover_and_get_tooltip_html(driver=driver, element=charm_element, tooltip_css=CHARM_TOOLTIP_CSS)
         charm_filter, set_name = _create_charm_filter_from_tooltip_html(
-            tooltip_html=tooltip_html, require_gas=request.options.require_greater_affixes
+            tooltip_html=tooltip_html, require_gas=request.options.require_greater_affixes, unsafe=unsafe_charms
         )
         if charm_filter is not None:
             charm_filters.append(charm_filter)
@@ -185,6 +178,7 @@ def _extract_d4builds_seal_charm_filters(
             tooltip_html=tooltip_html,
             require_gas=request.options.require_greater_affixes,
             guessed_set_name=guessed_set_name,
+            unsafe=unsafe_seals,
         )
         if seal_filter is not None:
             seal_filters.append(seal_filter)
@@ -193,34 +187,52 @@ def _extract_d4builds_seal_charm_filters(
 
 
 def _create_seal_filter_from_tooltip_html(
-    tooltip_html: str, require_gas: bool, guessed_set_name: str | None = None
+    tooltip_html: str, require_gas: bool, guessed_set_name: str | None = None, unsafe: list[str] | None = None
 ) -> SealFilterModel | None:
+    tooltip = _tooltip_element(tooltip_html)
+    # D4Builds exposes no unique seal name; any unique marker is an identity no rule can represent.
+    if tooltip is None or _xpath_elements(tooltip, UNIQUE_MARKER_XPATH):
+        if unsafe is not None:
+            unsafe.append("seal (unreadable or unique tooltip)")
+        return None
+    unresolved: list[str] = []
     affixes = _affixes_from_tooltip_values(
         texts=_tooltip_texts(tooltip_html=tooltip_html, value_xpath=SEAL_TOOLTIP_VALUE_XPATH),
         item_type=ItemType.HoradricSeal,
         guessed_set_name=guessed_set_name,
+        unresolved=unresolved,
     )
-    if not affixes:
+    if not affixes and not unresolved:
         return None
-    return create_seal_charm_filter(affixes=affixes, require_gas=require_gas, model_type=SealFilterModel)
+    return create_seal_charm_filter(
+        affixes=affixes, require_gas=require_gas, model_type=SealFilterModel, unresolved_count=len(unresolved)
+    )
 
 
 def _create_charm_filter_from_tooltip_html(
-    tooltip_html: str, require_gas: bool
+    tooltip_html: str, require_gas: bool, unsafe: list[str] | None = None
 ) -> tuple[CharmFilterModel | None, str | None]:
     tooltip = _tooltip_element(tooltip_html)
-    if tooltip is None:
+    unique_label = _first_text(tooltip=tooltip, xpath=CHARM_TOOLTIP_UNIQUE_XPATH) if tooltip is not None else ""
+    unique_name = resolve_unique_name(unique_label) if unique_label else None
+    if tooltip is None or (unique_label and unique_name is None):
+        if unsafe is not None:
+            unsafe.append(f"charm {unique_label or '(unreadable tooltip)'}")
         return None, None
 
     set_name = correct_name(_first_text(tooltip=tooltip, xpath=CHARM_TOOLTIP_SET_NAME_XPATH))
-    unique_name = correct_name(_first_text(tooltip=tooltip, xpath=CHARM_TOOLTIP_UNIQUE_XPATH))
+    unresolved: list[str] = []
+    listed_set = bool(set_name)
+    if set_name and set_name not in GameCatalog().set_list:
+        LOGGER.warning("Unknown D4Builds charm set %r; keeping the charm without a set requirement.", set_name)
+        set_name = None
     affixes = _affixes_from_tooltip_values(
-        texts=_texts_from_nodes(_xpath_elements(tooltip, CHARM_TOOLTIP_VALUE_XPATH)), item_type=ItemType.Charm
+        texts=_texts_from_nodes(_xpath_elements(tooltip, CHARM_TOOLTIP_VALUE_XPATH)),
+        item_type=ItemType.Charm,
+        unresolved=unresolved,
     )
-
-    if not affixes and not unique_name and not set_name:
+    if not affixes and not unique_name and not listed_set and not unresolved:
         return None, None
-
     return (
         create_seal_charm_filter(
             affixes=affixes,
@@ -228,6 +240,7 @@ def _create_charm_filter_from_tooltip_html(
             model_type=CharmFilterModel,
             unique_name=unique_name,
             set_name=set_name,
+            unresolved_count=len(unresolved),
         ),
         set_name,
     )

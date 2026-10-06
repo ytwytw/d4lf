@@ -14,6 +14,7 @@ from src.importing.filters import (
     create_seal_charm_filter,
     is_unique_like_rarity,
     match_to_enum,
+    resolve_unique_name,
     update_mingreateraffixcount,
 )
 from src.importing.infinitybuilds._talisman import _charm_set_name
@@ -168,13 +169,16 @@ def _build_variant_for_gear(gear: Sequence[_GearPiece], resolved: _ResolvedGearD
     charm_filters: list[CharmFilterModel] = []
     seal_filters: list[SealFilterModel] = []
     aspect_upgrade_filters: list[str] = []
+    unsafe: list[str] = []
+    unsafe_by_type: dict[ItemType | None, list[str]] = {ItemType.Charm: [], ItemType.HoradricSeal: []}
     for raw_gear_piece in gear:
         gear_piece = raw_gear_piece
         item_id = _canonical_catalog_id(gear_piece.get("itemId"))
         item = resolved.items.get(item_id, {})
         item_name = item.get("label", "")
         if not item_name:
-            LOGGER.warning(f"Skipping {gear_piece.get('slot')} because no item name was resolved.")
+            LOGGER.warning(f"InfinityBuilds {gear_piece.get('slot')} item {item_id!r} has no catalog record.")
+            unsafe.append(f"{gear_piece.get('slot')} item {item_id or 'unknown'} (no catalog record)")
             continue
         rarity = item.get("rarity", "")
         is_unique_like = is_unique_like_rarity(rarity)
@@ -195,17 +199,26 @@ def _build_variant_for_gear(gear: Sequence[_GearPiece], resolved: _ResolvedGearD
                 LOGGER.warning(
                     f"Legendary aspect '{aspect_name}' that is not in our aspect data, unable to add to AspectUpgrades."
                 )
+        raw_affixes = gear_piece.get("affixes") or []
         affixes = _convert_raw_to_affixes(
-            gear_piece.get("affixes") or [],
-            resolved.affixes,
-            request.options.import_greater_affixes,
-            item_type=item_type,
+            raw_affixes, resolved.affixes, request.options.import_greater_affixes, item_type=item_type
         )
+        # Every listed non-tempered affix either resolves or is skipped as unresolved.
+        unresolved = sum(not raw.get("tempered") for raw in raw_affixes) - len(affixes)
+        unique_name = None
+        if is_unique_like or is_runeword:
+            # Runewords drop as named unique items, so they need the same identity as uniques.
+            unique_name = resolve_unique_name(item_name)
+            if unique_name is None:
+                LOGGER.warning("InfinityBuilds item %s (%s) is not in D4LF's item data.", item_name, item_id)
+                unsafe_by_type.get(item_type, unsafe).append(
+                    f"{gear_piece.get('slot')} {'runeword' if is_runeword else 'unique'} {item_name}"
+                )
+                continue
         if item_type == ItemType.Charm:
-            unique_name = item_name if is_unique_like else None
             set_name = _charm_set_name(item_name)
             charm_rarity = match_to_enum(ItemRarity, "common" if rarity == "normal" else rarity)
-            if not affixes and not unique_name and not set_name and charm_rarity is None:
+            if not affixes and not unique_name and not set_name and charm_rarity is None and not unresolved:
                 LOGGER.warning(
                     f"Skipping {item_name} because it had no supported affixes, unique aspect, set, or rarity."
                 )
@@ -216,14 +229,14 @@ def _build_variant_for_gear(gear: Sequence[_GearPiece], resolved: _ResolvedGearD
                 model_type=CharmFilterModel,
                 unique_name=unique_name,
                 set_name=set_name,
+                unresolved_count=unresolved,
             )
             charm_filter.rarities = [charm_rarity] if charm_rarity else []
             charm_filters.append(charm_filter)
             continue
         if item_type == ItemType.HoradricSeal:
-            unique_name = item_name if is_unique_like else None
             seal_rarity = match_to_enum(ItemRarity, rarity)
-            if not affixes and not unique_name and seal_rarity is None:
+            if not affixes and not unique_name and seal_rarity is None and not unresolved:
                 LOGGER.warning(f"Skipping {item_name} because it had no supported affixes, unique aspect, or rarity.")
                 continue
             seal_filter = create_seal_charm_filter(
@@ -231,25 +244,26 @@ def _build_variant_for_gear(gear: Sequence[_GearPiece], resolved: _ResolvedGearD
                 require_gas=request.options.require_greater_affixes,
                 model_type=SealFilterModel,
                 unique_name=unique_name,
+                unresolved_count=unresolved,
             )
             seal_filter.rarities = [seal_rarity] if seal_rarity else []
             seal_filters.append(seal_filter)
             continue
         item_filter = ItemFilterModel()
         item_filter.item_type = [item_type] if item_type else []
-        if is_unique_like and not is_runeword:
-            item_filter.unique_aspect = [AspectUniqueFilterModel(name=item_name)]
-        elif is_runeword and is_unique_like:
-            LOGGER.warning(
-                f"Skipping unsupported runeword unique aspect for catalog item {item_id!r} ({item_name!r}); "
-                "preserving supported affixes."
-            )
-        if not affixes and not item_filter.unique_aspect:
+        if unique_name is not None:
+            item_filter.unique_aspect = [AspectUniqueFilterModel(name=unique_name)]
+        if not affixes and not item_filter.unique_aspect and not unresolved:
             LOGGER.warning(f"Skipping {gear_piece.get('slot')} because it had no supported affixes.")
             continue
-        if affixes:
+        if affixes or unresolved:
             affixes = sorted(affixes, key=lambda affix: (affix.name, affix.type.value))
-            item_filter.affix_pool = create_item_affix_pool(affixes=affixes, unique_like=is_unique_like)
+            item_filter.affix_pool = create_item_affix_pool(
+                affixes=affixes,
+                unique_like=unique_name is not None,
+                unresolved_count=unresolved,
+                context=f"InfinityBuilds {gear_piece.get('slot')} {item_name}",
+            )
             update_mingreateraffixcount(item_filter, request.options.require_greater_affixes)
         item_filter.min_power = 100
         finished_filters.append(item_filter)
@@ -258,4 +272,7 @@ def _build_variant_for_gear(gear: Sequence[_GearPiece], resolved: _ResolvedGearD
         charm_filters=charm_filters,
         seal_filters=seal_filters,
         aspect_upgrade_filters=aspect_upgrade_filters,
+        unsafe_slots=unsafe,
+        unsafe_charms=unsafe_by_type[ItemType.Charm],
+        unsafe_seals=unsafe_by_type[ItemType.HoradricSeal],
     )

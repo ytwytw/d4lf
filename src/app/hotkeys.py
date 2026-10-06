@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 
 from src import automation
 from src.app.interaction import GAME_INTERACTION_LOCK
-from src.automation import is_window_foreground, safe_exit
+from src.app.shutdown import request_exit
+from src.automation import is_window_foreground
 from src.overlay import InventoryExpTracker
 from src.settings import ItemRefreshType
 
@@ -50,7 +51,8 @@ class RuntimeHotkeys:
         config = self._config
         advanced_options = config.advanced_options
         self._register_hotkey(advanced_options.run_vision_mode, self.run_vision_mode)
-        self._register_hotkey(advanced_options.exit_key, safe_exit, check_focus=False)
+        # Emergency stop must not wait for the interaction lock or block the keyboard hook.
+        self._hotkey_handles.append(automation.add_hotkey(advanced_options.exit_key, lambda: request_exit(self)))
         self._register_hotkey(advanced_options.toggle_paragon_overlay, self.toggle_paragon_overlay)
         self._register_hotkey(advanced_options.info_overlay, self.toggle_info_overlay)
         self._register_hotkey(config.char.inventory, lambda: InventoryExpTracker().on_inventory_open())

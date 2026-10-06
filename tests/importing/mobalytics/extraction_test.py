@@ -201,6 +201,21 @@ def test_convert_raw_to_affixes_uses_guessed_charm_set_for_seal_affixes() -> Non
     assert [affix.name for affix in affixes] == ["arms_of_arreat_maximum_resolve"]
 
 
+def test_convert_raw_to_affixes_leaves_unknown_and_shared_stats_unresolved() -> None:
+    unresolved: list[str] = []
+    stats = [{"id": stat} for stat in ("maximum-life", "brand-new-stat", "maximum-lif", "to-dual-wield-skills")]
+    affixes = _convert_raw_to_affixes(raw_stats=stats, item_type=ItemType.Ring, unresolved=unresolved)
+    assert [affix.name for affix in affixes] == ["maximum_life"]
+    seal = [{"id": "maximum-life"}]  # a generic seal affix and a Flesh of Abaddon affix share this text
+    assert (
+        _convert_raw_to_affixes(
+            seal, item_type=ItemType.HoradricSeal, guessed_set_name="flesh_of_abaddon", unresolved=unresolved
+        )
+        == []
+    )
+    assert unresolved == ["brand-new-stat", "maximum-lif", "to-dual-wield-skills", "maximum-life"]
+
+
 def test_convert_raw_to_affixes_keeps_generic_seal_match_with_guessed_set() -> None:
     affixes = _convert_raw_to_affixes(
         raw_stats=[{"id": "cooldown-reduction"}], item_type=ItemType.HoradricSeal, guessed_set_name="arms_of_arreat"

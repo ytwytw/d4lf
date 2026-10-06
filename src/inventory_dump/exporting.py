@@ -1,6 +1,7 @@
 """Atomic snapshots in three formats with identical source observations."""
 
 import json
+import re
 from dataclasses import asdict
 from time import sleep
 from typing import TYPE_CHECKING, cast
@@ -32,47 +33,70 @@ def render_document(document: ScanDocument, output_format: ExportFormat) -> str:
     payload = json.dumps(asdict(document), ensure_ascii=False, indent=2)
     if output_format is ExportFormat.JSON:
         return payload + "\n"
-    heading = "# " if output_format is ExportFormat.MARKDOWN else ""
+    markdown = output_format is ExportFormat.MARKDOWN
+    bullet = "- " if markdown else ""
     lines = [
-        f"{heading}D4LF 库存快照 / Inventory snapshot",
+        f"{'# ' if markdown else ''}D4LF 库存快照 / Inventory snapshot",
         "",
-        f"状态 / Status: {document.status}",
-        f"开始 / Started: {document.started_at}",
-        f"结束 / Finished: {document.finished_at or '-'}",
-        f"条目 / Items: {len(document.items)}; 未完成读取 / Incomplete captures: {document.failed_count}",
-        f"原文完整但未映射 / Captured without catalog parsing: {document.unparsed_count}",
+        f"{bullet}状态 / Status: {document.status}",
+        f"{bullet}开始 / Started: {document.started_at}",
+        f"{bullet}结束 / Finished: {document.finished_at or '-'}",
+        f"{bullet}条目 / Items: {len(document.items)}; 未完成读取 / Incomplete captures: {document.failed_count}",
+        f"{bullet}原文完整但未映射 / Captured without catalog parsing: {document.unparsed_count}",
+        f"{bullet}未确认是否为空的槽位 / Unverified slots: {document.unverified_count}",
+        "",
         "完整原始 TTS、位置、解析结果及失败原因见下方数据。未扫描范围不代表空库存。",
         "All raw TTS, locations, parsed fields and failures are retained below.",
         "",
     ]
     lines.extend(
-        f"- {scope.kind}/{scope.page}: {scope.status}; items={scope.observed_items}" for scope in document.scopes
+        f"- {scope.kind}/{scope.page}: {scope.status}; items={scope.observed_items}; "
+        f"empty={scope.empty_slots}; unverified={len(scope.unverified_slots)}"
+        for scope in document.scopes
     )
-    lines.extend(f"- {issue}" for issue in document.issues)
+    lines.extend(f"- {_one_line(issue)}" for issue in document.issues)
     for item in document.items:
         name = (
-            (item.parsed or {}).get("original_name")
+            (item.observed_fields or {}).get("name_text")
+            or (item.parsed or {}).get("original_name")
             or (item.parsed or {}).get("name")
-            or (item.observed_fields or {}).get("name_text")
             or "未解析 / Unparsed"
         )
-        prefix = "## " if output_format is ExportFormat.MARKDOWN else ""
-        lines.extend([
-            "",
-            f"{prefix}{item.location.label} — {name}",
-            f"状态 / Status: {item.status}; 收藏 / Favorite: {item.favorite}; 垃圾 / Junk: {item.junk}",
-        ])
+        state = [
+            f"{bullet}状态 / Status: {item.status}",
+            f"{bullet}收藏 / Favorite: {_tri(item.favorite)}",
+            f"{bullet}垃圾 / Junk: {_tri(item.junk)}",
+        ]
         if item.error:
-            lines.append(f"原因 / Reason: {item.error}")
-        lines.extend(["原始 TTS / Raw TTS:", *item.raw_tts])
+            state.append(f"{bullet}原因 / Reason: {_one_line(item.error)}")
+        lines.extend(["", f"{'## ' if markdown else ''}{item.location.label} — {_one_line(str(name))}", "", *state])
+        lines.extend(["", "原始 TTS / Raw TTS:"])
+        if markdown:
+            # Raw lines stay verbatim inside a fence longer than any backtick run they contain.
+            fence = _fence("\n".join(item.raw_tts))
+            lines.extend(["", fence + "text", *item.raw_tts, fence])
+        else:
+            lines.extend(item.raw_tts)
     lines.extend(["", "完整数据 / Complete data", ""])
-    if output_format is ExportFormat.MARKDOWN:
-        # A dynamic fence also preserves arbitrary backticks spoken by the game.
-        fence = "`" * (max((len(part) for part in payload.split("\n") if set(part) == {"`"}), default=2) + 1)
+    if markdown:
+        fence = _fence(payload)
         lines.extend([fence + "json", payload, fence])
     else:
         lines.append(payload)
     return "\n".join(lines) + "\n"
+
+
+def _tri(value: bool | None) -> str:
+    return "unknown" if value is None else str(value).lower()
+
+
+def _one_line(text: str) -> str:
+    return " ".join(text.splitlines())
+
+
+def _fence(text: str) -> str:
+    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
+    return "`" * max(3, longest + 1)
 
 
 class SnapshotWriter:

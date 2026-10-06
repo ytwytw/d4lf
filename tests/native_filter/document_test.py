@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from src.native_filter import (
@@ -58,3 +60,14 @@ def test_invalid_document_is_reported(tmp_path, text):
     path.write_text(text, encoding="utf-8")
     with pytest.raises(NativeFilterError):
         load_document(path)
+
+
+def test_ancestral_policy_roundtrips_and_older_documents_still_load(tmp_path) -> None:
+    path = tmp_path / "doc.json"
+    policy = CompilePolicy(protect_ancestral_legendaries=True)
+    save_document(path, SavedDocument(NativeFilter(), generation_policy=policy))
+    assert load_document(path).generation_policy == policy
+    data = json.loads(path.read_text(encoding="utf-8"))
+    del data["generation_policy"]["protect_ancestral_legendaries"]
+    path.write_text(json.dumps(data), encoding="utf-8")
+    assert load_document(path).generation_policy == CompilePolicy()

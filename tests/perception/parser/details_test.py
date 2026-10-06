@@ -120,3 +120,10 @@ def test_seal_slot_label_is_normal_not_a_greater_affix(monkeypatch, text) -> Non
     assert affix.name == "charm_slot"
     assert affix.value == (4 if "槽位" in text else 5)
     assert affix.type.name == "normal"
+
+
+def test_english_fallback_affix_cannot_resolve_chinese_text(monkeypatch) -> None:
+    catalog = _use_zhcn_catalog(monkeypatch)
+    assert catalog.affix_dict["resistance"] == "resistance"  # the unresolved record keeps its English text
+    with pytest.raises(ValueError, match="Could not resolve affix name"):
+        details._get_affix_from_text("+12% 未知抗性 [10 - 15]%", ItemType.Ring)

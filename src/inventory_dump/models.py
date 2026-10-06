@@ -38,6 +38,7 @@ class ScanResult:
     failed_count: int
     issues: tuple[str, ...] = ()
     unparsed_count: int = 0
+    unverified_count: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,6 +75,11 @@ class ItemRecord:
     raw_sequence_end: int | None = None
     truncated: bool = False
     favorite_evidence: list[JsonObject] = field(default_factory=list)
+    # Visual guesses stay unverified; only an explicit current-title TTS marker sets ``junk``.
+    junk_evidence: list[JsonObject] = field(default_factory=list)
+    occupancy_evidence: JsonObject | None = None
+    # Export-only text restored around a shared-framer trace; parser input stays unchanged.
+    raw_reconstruction: JsonObject | None = None
 
 
 @dataclass(slots=True)
@@ -85,6 +91,10 @@ class ScopeRecord:
     empty_slots: int = 0
     observed_items: int = 0
     errors: list[str] = field(default_factory=list)
+    occupancy_settled: bool | None = None
+    # Hovered locations without an item record: confirmed empty, or occupancy still unknown.
+    empty_slot_evidence: list[JsonObject] = field(default_factory=list)
+    unverified_slots: list[JsonObject] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -92,7 +102,7 @@ class ScanDocument:
     locale: str
     app_version: str
     started_at: str = field(default_factory=utc_now)
-    schema_version: int = 1
+    schema_version: int = 2
     game_build: str = "unknown"
     status: str = "running"
     finished_at: str | None = None
@@ -103,10 +113,14 @@ class ScanDocument:
     @property
     def failed_count(self) -> int:
         return sum(
-            item.status not in {"empty", "pending"} and (not item.capture_complete or item.truncated)
+            item.status not in {"empty", "pending", "unverified"} and (not item.capture_complete or item.truncated)
             for item in self.items
         )
 
     @property
     def unparsed_count(self) -> int:
         return sum(item.capture_complete and item.status in {"unparsed", "parse_error"} for item in self.items)
+
+    @property
+    def unverified_count(self) -> int:
+        return sum(len(scope.unverified_slots) for scope in self.scopes)

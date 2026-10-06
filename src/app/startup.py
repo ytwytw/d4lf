@@ -50,7 +50,7 @@ def _check_tts_dll_signature(tts_dll: Path) -> None:
     else:
         LOGGER.error(
             "As of season 12, the saapi64.dll must be locally signed. Follow all instructions in %s "
-            "to get the dll signed (specifically, run install_dll.bat). It currently has a status of %s",
+            "to get the dll signed (specifically, run install_dll.cmd). It currently has a status of %s",
             SETUP_INSTRUCTIONS_URL,
             status or "Unknown",
         )

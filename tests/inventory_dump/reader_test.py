@@ -281,7 +281,7 @@ def test_only_tts_confirms_favorite_independently_of_catalog_and_visual_result(
     lines = [title, "先祖暗金胸甲", "900 物品强度", "鼠标右键"]
     record = ItemRecord(
         Location("stash", "2", "r01c08", (5, 5)),
-        junk=True,
+        junk_evidence=[{"source": "slot_screenshot_template", "verification": "unverified", "value": True}],
         raw_tts=list(lines),
         normalized_tts=list(lines),
         capture_complete=True,
@@ -289,7 +289,9 @@ def test_only_tts_confirms_favorite_independently_of_catalog_and_visual_result(
     )
     ItemReader._parse(record)
     assert record.favorite is expected
-    assert record.junk is True
+    # A visual junk guess never becomes a confirmed state without the spoken title marker.
+    assert record.junk is None
+    assert record.junk_evidence == [{"source": "slot_screenshot_template", "verification": "unverified", "value": True}]
     assert record.status == parser_result
     assert record.raw_tts == lines
     assert record.favorite_evidence[0] == visual

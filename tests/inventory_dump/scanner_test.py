@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from src.inventory_dump.exporting import SnapshotWriter
 from src.inventory_dump.layout import INVENTORY_PAGES, REQUIRED_EQUIPMENT_SLOTS, TabTarget
 from src.inventory_dump.models import ExportFormat, Location, ScanDocument
@@ -43,13 +45,16 @@ def test_scan_covers_every_discovered_page_and_equipped_scopes_without_deduplica
     assert len({(item["location"]["scope"], item["location"]["page"]) for item in payload["items"]}) == 9
     for item in payload["items"]:
         assert item["favorite"] is None
+        assert item["junk"] is None
         if item["location"]["scope"] != "equipped":
-            assert item["junk"] is True
             assert item["favorite_evidence"] == [
                 {"source": "slot_screenshot_brightness", "verification": "unverified", "value": True}
             ]
+            assert item["junk_evidence"] == [
+                {"source": "slot_screenshot_template", "verification": "unverified", "value": True}
+            ]
         else:
-            assert item["favorite_evidence"] == []
+            assert item["favorite_evidence"] == item["junk_evidence"] == []
     reader.close.assert_called_once()
     navigator.restore.assert_called_once()
     navigator.click_pointer.assert_not_called()
@@ -96,20 +101,20 @@ def test_restore_failure_changes_complete_result_to_partial(mocker, tmp_path) ->
     assert "window capture failed" in result.issues[-1]
 
 
-def test_partial_snapshot_is_saved_before_the_next_slot(mocker, tmp_path) -> None:
+def test_each_completed_item_is_durable_before_the_next_hover(mocker, tmp_path) -> None:
     navigator, reader, writer = _dependencies(mocker, tmp_path)
     observed = []
 
     def read(record, *_args, **_kwargs):
         saved = json.loads(writer.path.read_text(encoding="utf-8"))
-        observed.append(saved["items"][-1]["location"])
-        assert saved["items"][-1]["favorite"] is None
+        observed.append([item["location"]["page"] for item in saved["items"]])
         record.status = "unparsed"
         record.raw_tts = ["unknown raw"]
 
     reader.read.side_effect = read
     result = Scanner(navigator, reader, writer, lambda _: None).run(ScanDocument("enUS", "test"))
-    assert len(observed) == 17
+    # Before hover N, the N-1 previously read items are already in the atomic snapshot.
+    assert [len(pages) for pages in observed] == list(range(17))
     assert result.status == "partial"
     assert result.failed_count == 17
 
@@ -192,3 +197,95 @@ def test_truncated_capture_still_reports_partial_even_if_a_parser_returned_an_it
     result = Scanner(navigator, reader, writer, lambda _: None).run(ScanDocument("enUS", "test"))
     assert result.status == "partial"
     assert result.failed_count == 17
+
+
+def _evidence_scan(mocker, tmp_path, outcomes: dict[str, str], grid=(True, False, False), settled=True):
+    """``outcomes`` maps a location label to the reader result; others read as items or settled-empty."""
+    navigator, reader, writer = _dependencies(mocker, tmp_path)
+    navigator.stash_tabs.return_value = [TabTarget("1", (10, 10), 1)]
+    navigator.grid_targets.side_effect = lambda page, *, stash=False: [
+        ScanTarget(
+            Location("stash" if stash else "inventory", page, f"r01c{i + 1:02d}", (i, 1), 1, i + 1),
+            value if settled or value else None,
+            occupancy={"verification": "unverified", "value": value, "icons_settled": settled},
+        )
+        for i, value in enumerate(grid)
+    ]
+    navigator.equipped_targets.side_effect = lambda *, talisman=False: [
+        ScanTarget(Location("equipped", "talisman" if talisman else "equipment", slot, (3, 3)), None)
+        for slot in (["charm_top", "seal"] if talisman else [*sorted(REQUIRED_EQUIPMENT_SLOTS), "weapon_left"])
+    ]
+
+    def read(record, *_args, expected_occupied=True):
+        record.attempts = 2
+        outcome = outcomes.get(record.location.label)
+        if outcome == "cancel":
+            raise ScanCancelledError
+        outcome = outcome or {
+            False: "empty",
+            None: "unverified" if record.location.scope != "equipped" else "parsed",
+        }.get(expected_occupied, "parsed")
+        record.status, record.capture_complete = outcome, outcome == "parsed"
+        text = "神符" if record.location.slot == "charm_top" else "电池充电中"  # charm: its own label only
+        record.raw_events = [{"sequence": 9, "text": text, "received_at": 1.0, "attempt": 1}]
+
+    reader.read.side_effect = read
+    saves = mocker.spy(writer, "save")
+    result = Scanner(navigator, reader, writer, lambda _: None).run(ScanDocument("zhCN", "test"))
+    payload = json.loads(writer.path.read_text(encoding="utf-8"))
+    return result, {(scope["kind"], scope["page"]): scope for scope in payload["scopes"]}, payload, saves
+
+
+def test_confirmed_empty_slots_keep_evidence_without_item_records(mocker, tmp_path) -> None:
+    result, scopes, payload, _ = _evidence_scan(mocker, tmp_path, {})
+    assert (result.status, result.unverified_count, result.item_count) == ("complete", 0, 6 + 9 + 2)
+    stash = scopes["stash", "1"]
+    assert (stash["status"], stash["observed_items"], stash["empty_slots"], stash["occupancy_settled"]) == (
+        "complete",
+        1,
+        2,
+        True,
+    )
+    entry = stash["empty_slot_evidence"][0]
+    assert (entry["slot"], entry["verification"], entry["attempts"]) == (
+        "r01c02",
+        "settled_visual_empty_and_no_item_tts",
+        2,
+    )
+    assert entry["visual_occupancy"]["value"] is False
+    assert entry["raw_events"][0]["text"] == "电池充电中"
+    assert not any(item["location"]["slot"] in {"r01c02", "r01c03"} for item in payload["items"])
+
+
+@pytest.mark.parametrize("settled", [True, False])
+def test_unknown_occupancy_is_listed_as_unverified_and_never_claims_complete(mocker, tmp_path, settled) -> None:
+    outcomes = {"equipped/talisman/seal": "unverified", "equipped/talisman/charm_top": "unverified"}
+    result, scopes, payload, _ = _evidence_scan(mocker, tmp_path, outcomes, settled=settled)
+    grid_unknown = 0 if settled else 2 * 6
+    assert (result.status, result.failed_count, result.unverified_count) == ("partial", 0, 2 + grid_unknown)
+    talisman = scopes["equipped", "talisman"]
+    assert (talisman["status"], talisman["empty_slots"], talisman["empty_slot_evidence"]) == ("unverified", 0, [])
+    # Label-only and silent equipped slots stay unknown, with their raw events kept for inspection.
+    unknown = [(entry["slot"], entry["raw_events"][0]["text"]) for entry in talisman["unverified_slots"]]
+    assert unknown == [("charm_top", "神符"), ("seal", "电池充电中")]
+    assert scopes["stash", "1"]["status"] == ("complete" if settled else "unverified")
+    assert scopes["stash", "1"]["occupancy_settled"] is settled
+    assert not any(item["status"] in {"empty", "unverified"} for item in payload["items"])
+    assert any("seal" in issue for issue in result.issues)
+
+
+def test_one_write_per_item_and_empty_evidence_rides_with_the_next_write(mocker, tmp_path) -> None:
+    result, _, _, saves = _evidence_scan(mocker, tmp_path, {}, grid=(False, False, True))
+    scanned_scopes = 1 + len(INVENTORY_PAGES) + 2
+    # start + stash discovery + (scanning + end) per scope + one per item (6 grid + 9 equipped + 2 talisman) + final.
+    assert saves.call_count == 1 + 1 + 2 * scanned_scopes + 17 + 1
+    assert result.item_count == 17
+
+
+def test_cancel_after_unsaved_empty_slots_still_persists_their_evidence(mocker, tmp_path) -> None:
+    result, scopes, payload, _ = _evidence_scan(
+        mocker, tmp_path, {"stash/1/r01c03": "cancel"}, grid=(False, False, True)
+    )
+    assert result.status == "cancelled"
+    assert [entry["slot"] for entry in scopes["stash", "1"]["empty_slot_evidence"]] == ["r01c01", "r01c02"]
+    assert [(item["location"]["slot"], item["status"]) for item in payload["items"]] == [("r01c03", "interrupted")]

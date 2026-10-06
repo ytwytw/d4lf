@@ -3,9 +3,15 @@ from threading import Event
 import numpy as np
 import pytest
 
-from src.automation import WindowSpec, character_inventory, stash_inventory
+from src.automation import ItemSlot, WindowSpec, character_inventory, stash_inventory
 from src.inventory_dump.layout import TabTarget, scale_point
-from src.inventory_dump.navigation import NavigationError, Navigator
+from src.inventory_dump.navigation import (
+    ICON_SETTLE_CAPTURES,
+    ICON_SETTLE_MIN,
+    ICON_SETTLE_POLL,
+    NavigationError,
+    Navigator,
+)
 from src.inventory_dump.reader import ScanCancelledError
 from src.settings import get_ui_coordinates
 
@@ -83,6 +89,7 @@ def test_grid_and_hover_use_physical_capture_pixels_without_second_scaling(mocke
         navigator.stash = stash_inventory()
         image = np.zeros((height, width, 3), dtype=np.uint8)
         mocker.patch.object(navigator, "check")
+        mocker.patch.object(navigator, "wait")
         mocker.patch("src.inventory_dump.navigation.capture", return_value=image)
         # Desktop/window origin is an offset in physical pixels, never a DPI scale.
         origin = np.array([150, 70])
@@ -129,3 +136,70 @@ def test_equipment_detection_dismisses_the_last_backpack_tooltip(mocker) -> None
     mocker.patch("src.inventory_dump.navigation.equipment_targets", return_value=[])
     assert navigator.equipped_targets() == []
     assert events == ["neutral", "wait", "capture"]
+
+
+BOXES = [(0, 0, 10, 10), (10, 0, 10, 10)]
+
+
+def _frame(first_slot_level: int) -> np.ndarray:
+    image = np.full((20, 20, 3), 5, dtype=np.uint8)
+    image[0:10, 0:10] = first_slot_level
+    return image
+
+
+def _settling_navigator(mocker, frames: list[np.ndarray]):
+    navigator = Navigator.__new__(Navigator)
+    navigator.cancel = Event()
+    waits: list[float] = []
+    mocker.patch.object(navigator, "check")
+    mocker.patch.object(navigator, "wait", side_effect=waits.append)
+    capture = mocker.patch("src.inventory_dump.navigation.capture", side_effect=frames)
+
+    def slots(image):
+        occupied, empty = [], []
+        for x, y, w, h in BOXES:
+            slot = ItemSlot((x, y, w, h), (x + w // 2, y + h // 2))
+            (occupied if image[y : y + h, x : x + w].mean() > 37 else empty).append(slot)
+        return occupied, empty
+
+    navigator.inventory = mocker.Mock()
+    navigator.inventory.get_item_slots.side_effect = slots
+    return navigator, waits, capture
+
+
+def test_occupancy_is_classified_after_fading_icons_stop_changing(mocker) -> None:
+    # The first capture after a tab switch shows a fading icon below the occupancy threshold.
+    navigator, waits, capture = _settling_navigator(mocker, [_frame(level) for level in (20, 45, 80, 81)])
+    targets = navigator.grid_targets("consumables")
+    assert capture.call_count == 4
+    assert waits == [ICON_SETTLE_MIN, ICON_SETTLE_POLL, ICON_SETTLE_POLL, ICON_SETTLE_POLL]
+    assert [target.occupied for target in targets] == [True, False]
+    assert targets[0].occupancy == {
+        "source": "slot_screenshot_brightness",
+        "verification": "unverified",
+        "value": True,
+        "icons_settled": True,
+    }
+
+
+def test_animated_grid_is_bounded_and_reported_as_unsettled(mocker) -> None:
+    frames = [_frame(20 if index % 2 else 80) for index in range(ICON_SETTLE_CAPTURES)]
+    navigator, waits, capture = _settling_navigator(mocker, frames)
+    targets = navigator.grid_targets("keys")
+    assert capture.call_count == ICON_SETTLE_CAPTURES
+    assert sum(waits) == pytest.approx(ICON_SETTLE_MIN + (ICON_SETTLE_CAPTURES - 1) * ICON_SETTLE_POLL)
+    assert all(target.occupancy is not None and target.occupancy["icons_settled"] is False for target in targets)
+    # Dark pixels of a page that never settled are not proof of emptiness: the reader treats them as unknown.
+    assert [target.occupied for target in targets] == [None, None]
+
+
+def test_cancel_during_icon_settling_sends_no_capture_or_input(mocker) -> None:
+    navigator = Navigator.__new__(Navigator)
+    navigator.cancel = Event()
+    navigator.cancel.set()
+    navigator.inventory = mocker.Mock()
+    mocker.patch.object(navigator, "check")
+    capture = mocker.patch("src.inventory_dump.navigation.capture")
+    with pytest.raises(ScanCancelledError):
+        navigator.grid_targets("equipment")
+    capture.assert_not_called()

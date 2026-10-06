@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from zipfile import ZipFile
 
 import pytest
 
@@ -11,9 +12,14 @@ from build import (
     clean_up,
     copy_additional_resources,
     create_batch_for_autoupdater,
+    create_batch_for_consoleonly,
+    exe_replace_preflight_command,
     generated_path,
     prepare_release_directory,
+    release_archive_path,
 )
+from src.release_payload import REQUIRED_FILES
+from src.tools.release_archive import create_release_archive
 
 
 def test_release_includes_bilingual_docs_license_and_locales_without_runtime_stamp(monkeypatch, tmp_path) -> None:
@@ -112,6 +118,62 @@ def test_update_script_preserves_local_files_and_stops_on_failure(tmp_path) -> N
     assert "if errorlevel 8 (" in script
     assert script.index("if errorlevel 8 (") < script.index("--autoupdatepost")
     assert 'if not "%UPDATE_RESULT%"=="0" exit /b %UPDATE_RESULT%' in script
+
+
+def test_update_script_checks_exe_lock_after_stopping_processes_and_before_copying(tmp_path) -> None:
+    create_batch_for_autoupdater(tmp_path, "d4lf.exe")
+    script = (tmp_path / "autoupdater.bat").read_text(encoding="utf-8")
+    preflight = script.index(exe_replace_preflight_command("d4lf.exe"))
+    assert script.index("Stop-Process") < preflight < script.index("robocopy")
+    failure = script[preflight : script.index("robocopy")]
+    assert "if errorlevel 1 (" in failure
+    assert "No installed files were changed." in failure
+    assert "exit /b 1" in failure
+
+
+def _run_preflight(directory: Path) -> int:
+    command = exe_replace_preflight_command("d4lf.exe", attempts=1)
+    return subprocess.run(
+        ["powershell", "-NoProfile", "-NonInteractive", "-Command", command], cwd=directory, check=False
+    ).returncode
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows file sharing semantics")
+def test_exe_preflight_refuses_a_locked_installation_and_accepts_a_free_one(tmp_path) -> None:
+    assert _run_preflight(tmp_path) == 0
+    exe = tmp_path / "d4lf.exe"
+    exe.write_bytes(b"installed")
+    assert _run_preflight(tmp_path) == 0
+    with exe.open("rb"):
+        assert _run_preflight(tmp_path) == 1
+    assert exe.read_bytes() == b"installed"
+
+
+def test_packaged_release_directory_is_accepted_by_updater_staging(monkeypatch, tmp_path) -> None:
+    monkeypatch.setattr("build.REPO_ROOT", tmp_path)
+    sources = ("README.md", "README.en.md", "LICENSE", "tts/saapi64.dll", "tts/install_dll.cmd")
+    docs = ("docs/loot-tools.zh-CN.md", "docs/release-notes.zh-CN.md")
+    for name in (*sources, *docs, *(required for required in REQUIRED_FILES if required.startswith("assets/"))):
+        (tmp_path / name).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / name).write_text(name, encoding="utf-8")
+    release = tmp_path / "d4lf"
+    release.mkdir()
+    (release / "d4lf.exe").write_bytes(b"exe")
+    copy_additional_resources(release)
+    create_batch_for_consoleonly(release, "d4lf.exe")
+    create_batch_for_autoupdater(release, "d4lf.exe")
+
+    archive = create_release_archive(release, release_archive_path("1.2.3+zhcn.4"))
+
+    assert archive == tmp_path / "d4lf_v1.2.3+zhcn.4.zip"
+    with ZipFile(archive) as release_zip:
+        names = {member.orig_filename for member in release_zip.infolist()}
+    assert {"d4lf/autoupdater.bat", "d4lf/d4lf-consoleonly.bat", "d4lf/docs/release-notes.zh-CN.md"} <= names
+    assert not any("\\" in name for name in names)
+    with pytest.raises(FileExistsError):
+        release_archive_path("1.2.3+zhcn.4")
+    with pytest.raises(ValueError, match="Unsafe release archive label"):
+        release_archive_path("../1.0")
 
 
 def test_cleanup_only_removes_generated_cache_and_spec(monkeypatch, tmp_path) -> None:

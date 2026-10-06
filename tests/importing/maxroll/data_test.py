@@ -50,9 +50,9 @@ def test_missing_explicit_references_are_rejected_but_explicit_empty_list_is_val
     assert _has_explicit_affix_references({"explicits": [{"nid": 123}, {"nid": "affix-id"}]})
 
 
-def test_live_incomplete_items_and_runeword_cannot_create_rules(mocker, caplog) -> None:
+def test_live_incomplete_items_stay_broad_and_runeword_keeps_its_unique_identity(mocker, caplog) -> None:
     capture = json.loads((Path(__file__).parent / "data/minion_necromancer_s15.json").read_text(encoding="utf-8"))
-    find_affixes = mocker.patch("src.importing.maxroll.adapter._find_item_affixes", return_value=[Affix(name="armor")])
+    find_affixes = mocker.patch("src.importing.maxroll.slots._find_item_affixes", return_value=[Affix(name="armor")])
     variant = _extract_profile_variant(
         profile_data={"name": "Captured incomplete items", "items": {key: int(key) for key in capture["items"]}},
         items=capture["items"],
@@ -62,18 +62,23 @@ def test_live_incomplete_items_and_runeword_cannot_create_rules(mocker, caplog) 
         request=ImportRequest(url=capture["source_url"]),
     )
 
-    assert (
-        variant.affix_filters == variant.charm_filters == variant.seal_filters == variant.aspect_upgrade_filters == []
-    )
-    find_affixes.assert_not_called()
-    assert "Skipping unsupported Maxroll runeword Runeword_Enigma" in caplog.text
+    enigma, boots, shield = variant.affix_filters
+    assert (enigma.item_type, [aspect.name for aspect in enigma.unique_aspect]) == ([ItemType.ChestArmor], ["enigma"])
+    # Incomplete explicits: the wanted slots stay as visibly broad rules instead of disappearing.
+    assert [(rule.item_type, rule.unique_aspect, rule.affix_pool) for rule in (boots, shield)] == [
+        ([ItemType.Boots], [], []),
+        ([ItemType.Shield], [], []),
+    ]
+    assert [charm.affix_pool for charm in variant.charm_filters] == [[]]
+    assert variant.unsafe_slots == []
+    find_affixes.assert_called_once()
     for item_id in ("Boots_Legendary_Generic_053", "1HShield_Legendary_Generic_001", "Talisman_Charm_Set_Necro_04_02"):
-        assert f"Skipping incomplete Maxroll item {item_id}" in caplog.text
+        assert f"Maxroll item {item_id} has missing or malformed explicits; keeping its slot broadly" in caplog.text
 
 
 @pytest.mark.parametrize("magic_type", [0, 1, 2, 4, None])
-def test_runeword_identity_is_rejected_even_if_rarity_mapping_drifts(magic_type, mocker) -> None:
-    find_affixes = mocker.patch("src.importing.maxroll.adapter._find_item_affixes", return_value=[Affix(name="armor")])
+def test_runeword_never_becomes_an_affix_only_filter_even_if_rarity_mapping_drifts(magic_type, mocker) -> None:
+    find_affixes = mocker.patch("src.importing.maxroll.slots._find_item_affixes", return_value=[Affix(name="armor")])
     variant = _extract_profile_variant(
         profile_data={"items": {"chest": 1}},
         items={"1": {"id": "Runeword_Enigma", "explicits": [{"nid": 1}]}},
@@ -82,8 +87,8 @@ def test_runeword_identity_is_rejected_even_if_rarity_mapping_drifts(magic_type,
         build_header="Test",
         request=ImportRequest(url="https://maxroll.gg/d4/planner/test#1"),
     )
-    assert variant.affix_filters == []
-    find_affixes.assert_not_called()
+    assert [[aspect.name for aspect in rule.unique_aspect] for rule in variant.affix_filters] == [["enigma"]]
+    find_affixes.assert_called_once()
 
 
 @pytest.mark.parametrize("item_type", ["ChestArmor", "Charm", "HoradricSeal"])
@@ -92,7 +97,7 @@ def test_unknown_unique_cannot_become_an_affix_only_filter(
     item_type, magic_type, mock_ini_loader, mocker, caplog
 ) -> None:
     GameCatalog()
-    find_affixes = mocker.patch("src.importing.maxroll.adapter._find_item_affixes", return_value=[Affix(name="armor")])
+    find_affixes = mocker.patch("src.importing.maxroll.slots._find_item_affixes", return_value=[Affix(name="armor")])
     variant = _extract_profile_variant(
         profile_data={"items": {"slot": 1}},
         items={"1": {"id": "unknown", "explicits": [{"nid": 1}]}},
@@ -104,8 +109,10 @@ def test_unknown_unique_cannot_become_an_affix_only_filter(
         request=ImportRequest(url="https://maxroll.gg/d4/planner/test#1"),
     )
     assert variant.affix_filters == variant.charm_filters == variant.seal_filters == []
+    unsafe = variant.unsafe_slots + variant.unsafe_charms + variant.unsafe_seals
+    assert unsafe == ["unique Unconfirmed Future Unique"]  # rejects the whole import
     find_affixes.assert_not_called()
-    assert "Skipping unsupported Maxroll unique Unconfirmed Future Unique" in caplog.text
+    assert "Maxroll unique Unconfirmed Future Unique (unknown) is not in D4LF's item data" in caplog.text
 
 
 @pytest.mark.parametrize("magic_type", [2, 4])
@@ -127,7 +134,8 @@ def test_known_unique_empty_affixes_survives_incomplete_neighbor(magic_type, moc
     assert kept.item_type == [ItemType.Helm]
     assert kept.unique_aspect[0].name == "harlequin_crest"
     assert kept.affix_pool == []
-    assert "Skipping incomplete Maxroll item Boots_Legendary_Generic_053" in caplog.text
+    # The boots have neither explicits nor mapping data, so their identity is unknown and the import is rejected.
+    assert variant.unsafe_slots == ["item Boots_Legendary_Generic_053 (unknown item type)"]
 
 
 @pytest.mark.parametrize("magic_type", [2, 4])

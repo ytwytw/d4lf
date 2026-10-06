@@ -142,3 +142,56 @@ def test_persistent_replace_denial_is_bounded_and_keeps_old_and_pending_snapshot
     assert json.loads(old)["status"] == "running"
     pending = path.with_suffix(".json.tmp").read_text(encoding="utf-8")
     assert pending == render_document(document, ExportFormat.JSON)
+
+
+ADVERSARIAL = [
+    "谜团",
+    "```",
+    "````json",
+    "# 不是标题",
+    "- 不是列表",
+    "+12% 攻击速度",
+    "<script>alert(1)</script>",
+    "带 ``````` 七个反引号的文字",
+    "鼠标右键",
+]
+
+
+def _adversarial_document() -> ScanDocument:
+    document = ScanDocument("zhCN", "test", status="complete")
+    document.items.append(
+        ItemRecord(
+            Location("stash", "1", "r01c01", (1, 1)),
+            status="unparsed",
+            raw_tts=list(ADVERSARIAL),
+            capture_complete=True,
+            observed_fields={"name_text": "谜团"},
+            error="first line\nsecond line",
+        )
+    )
+    return document
+
+
+def test_markdown_raw_tts_keeps_line_breaks_inside_an_unbreakable_fence() -> None:
+    markdown_it = pytest.importorskip("markdown_it")
+    document = _adversarial_document()
+    rendered = render_document(document, ExportFormat.MARKDOWN)
+    tokens = markdown_it.MarkdownIt("commonmark").parse(rendered)
+    fences = [token for token in tokens if token.type == "fence"]
+    assert [token.info for token in fences] == ["text", "json"]
+    assert fences[0].content == "\n".join(ADVERSARIAL) + "\n"
+    assert json.loads(fences[1].content) == json.loads(json.dumps(asdict(document)))
+    headings = [tokens[i + 1].content for i, token in enumerate(tokens) if token.type == "heading_open"]
+    assert headings == ["D4LF 库存快照 / Inventory snapshot", "stash/1/r01c01 — 谜团"]
+    # Item state renders as separate list items instead of one run-on paragraph.
+    items = [tokens[i + 2].content for i, token in enumerate(tokens) if token.type == "list_item_open"]
+    assert "收藏 / Favorite: unknown" in items
+    assert "垃圾 / Junk: unknown" in items
+    assert "原因 / Reason: first line second line" in items
+
+
+def test_plain_text_keeps_raw_lines_and_unknown_states() -> None:
+    rendered = render_document(_adversarial_document(), ExportFormat.TEXT)
+    assert "\n".join(ADVERSARIAL) in rendered
+    assert "收藏 / Favorite: unknown" in rendered
+    assert "未确认是否为空的槽位 / Unverified slots: 0" in rendered

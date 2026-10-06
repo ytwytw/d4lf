@@ -33,10 +33,13 @@ class InventoryDumpRuntime:
     def cancel_inventory_dump(self) -> None:
         self._dump_cancel.set()
 
-    def wait_for_inventory_dump(self) -> None:
+    def wait_for_inventory_dump(self, timeout: float | None = None) -> bool:
+        """Join the export worker; return whether it finished (a timeout leaves it running)."""
         thread = self._dump_thread
         if thread is not None:
-            thread.join()
+            thread.join(timeout)
+            return not thread.is_alive()
+        return True
 
     def start_inventory_dump(
         self: ScriptHandler,

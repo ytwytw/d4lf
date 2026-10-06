@@ -2,8 +2,11 @@ import dataclasses
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
+import pytest
+
 from src.game_data import GameCatalog, ItemType
 from src.importing import FilenamePart, ImportOptions, ImportRequest
+from src.importing.contracts import UnsafeImportError
 from src.importing.pipeline import ExtractedBuild, ImportPipeline, StaticBuildGuideAdapter, Variant
 from src.profiles import CharmFilterModel, ItemFilterModel, ProfileDocumentStore, SealFilterModel
 
@@ -274,3 +277,24 @@ def test_run_maps_import_categories_from_config_fallback(mock_ini_loader, mocker
 
     assert not saved["profile"].charms
     assert saved["profile"].seals
+
+
+@pytest.mark.parametrize(
+    ("unsafe", "import_charms", "rejected"),
+    [({"unsafe_slots": ["slot 5 unique Mystery"]}, True, True), ({"unsafe_charms": ["charm X"]}, True, True)]
+    + [({"unsafe_charms": ["charm X"]}, False, False)],
+)
+def test_unsafe_variant_rejects_the_whole_import_before_any_write(tmp_path, mocker, unsafe, import_charms, rejected):
+    mocker.patch("src.profiles.ProfileDocumentStore.default", return_value=ProfileDocumentStore(tmp_path, False))
+    add_to_profiles = mocker.patch("src.importing.pipeline.add_to_profiles")
+    safe = Variant(name="Safe", affix_filters=[_item_filter(ItemType.Ring)])
+    pit = Variant(name="Pit", affix_filters=[_item_filter(ItemType.Ring)], **unsafe)
+    adapter = StaticBuildGuideAdapter(url="https://example.invalid", build=_build(variants=[safe, pit]))
+    request = _config(import_charms=import_charms, add_to_profiles=True)
+    if not rejected:  # an excluded category is not a wanted slot
+        assert len(ImportPipeline.run_result(adapter, request).saved_file_names) == 2
+        return
+    with pytest.raises(UnsafeImportError, match="Pit: .*导入已停止"):
+        ImportPipeline.run_result(adapter, request)
+    assert list(tmp_path.iterdir()) == []  # nothing written
+    add_to_profiles.assert_not_called()

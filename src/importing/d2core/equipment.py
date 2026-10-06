@@ -72,6 +72,7 @@ def normalize_variant(
     filters: list[ItemFilterModel] = []
     hints: list[str | None] = []
     aspect_upgrades: list[str] = []
+    unsafe: list[str] = []
     gear = raw_variant.get("gear")
     if isinstance(gear, Mapping):
         for slot, raw_item in gear.items():
@@ -88,6 +89,7 @@ def normalize_variant(
                 require_greater_affixes=require_greater_affixes,
                 warn=warn,
                 variant_name=variant_name,
+                unsafe=unsafe,
             )
             if item_filter is None:
                 continue
@@ -111,6 +113,7 @@ def normalize_variant(
         affix_filter_name_hints=hints,
         aspect_upgrade_filters=aspect_upgrades,
         paragon_build_name=variant_name,
+        unsafe_slots=unsafe,
     )
 
 
@@ -125,6 +128,7 @@ def _normalize_item(
     require_greater_affixes: bool,
     warn: Warn,
     variant_name: str,
+    unsafe: list[str],
 ) -> tuple[ItemFilterModel | None, str | None]:
     payload_item_type = str(item.get("itemType", ""))
     unique_like = str(item.get("type", "")).casefold() == "uniqueitem"
@@ -132,12 +136,11 @@ def _normalize_item(
     unique_record: Mapping[str, JsonValue] | None = None
     if unique_like:
         unique_record = _catalog_record(uniques, item.get("key"))
-        if unique_record is None:
-            warn(EQUIPMENT_JOIN, variant_name, "equipment", str(item.get("key", "unknown")))
-            return None, None
-        unique_name = canonical_catalog_name(unique_record, GameCatalog().aspect_unique_dict)
+        unique_name = canonical_catalog_name(unique_record, GameCatalog().aspect_unique_dict) if unique_record else None
         if not unique_name:
+            # Affix rules never keep a unique without its identity, so omitting this slot would junk it.
             warn(EQUIPMENT_JOIN, variant_name, "equipment", str(item.get("key", "unknown")))
+            unsafe.append(f"slot {slot} unique {item.get('key', 'unknown')}")
             return None, None
     # Unique/Mythic types come from the joined catalog; non-Unique itemType is the stable base discriminator.
     item_type_text = _catalog_item_type(unique_record or {}) if unique_like else payload_item_type
@@ -145,18 +148,22 @@ def _normalize_item(
     item_type = _item_type(item_type_text, slot=slot, class_name=class_name)
     if item_type is None:
         warn(EQUIPMENT_JOIN, variant_name, "equipment", slot)
+        unsafe.append(f"slot {slot} item type {item_type_text or 'unknown'}")
         return None, None
     normalized_affixes: list[Affix] = []
+    unresolved_mods = 0
     mods = item.get("mods", [])
     if isinstance(mods, list):
         for mod in mods:
             if not isinstance(mod, Mapping):
+                unresolved_mods += 1
                 continue
             key = str(mod.get("name", ""))
             record = _catalog_record(affixes, mod.get("name"))
-            name = canonical_affix_name(record, GameCatalog().affix_dict)
+            name = canonical_affix_name(record, None)
             if not name:
                 warn(EQUIPMENT_JOIN, variant_name, "equipment", key or "unknown")
+                unresolved_mods += 1
                 continue
             normalized_affixes.append(
                 Affix(
@@ -170,8 +177,13 @@ def _normalize_item(
     item_filter = ItemFilterModel(item_type=item_types, min_power=100)
     if unique_name:
         item_filter.unique_aspect = [AspectUniqueFilterModel(name=unique_name)]
-    if normalized_affixes:
-        item_filter.affix_pool = create_item_affix_pool(normalized_affixes, unique_like=unique_like)
+    if normalized_affixes or unresolved_mods:
+        item_filter.affix_pool = create_item_affix_pool(
+            normalized_affixes,
+            unique_like=unique_like,
+            unresolved_count=unresolved_mods,
+            context=f"D2Core {variant_name} slot {slot}",
+        )
         update_mingreateraffixcount(item_filter, require_greater_affixes)
     hint = weapon_slot_name_hint(item_filter, slot)
     return item_filter, hint

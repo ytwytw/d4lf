@@ -10,11 +10,11 @@ from selenium.common.exceptions import NoSuchElementException, WebDriverExceptio
 from selenium.webdriver.common.by import By
 
 from src.game_data import GameCatalog, ItemType
-from src.importing.filters import fix_weapon_type, match_set_aware_seal_affix
-from src.importing.source_locale import source_affix_dict_for_item_type
+from src.importing.affix_identity import resolve_affix, resolve_seal_affix
+from src.importing.filters import fix_weapon_type
 from src.importing.web import hover_and_get_tooltip_html
 from src.item import Affix, AffixType
-from src.perception import clean_str, closest_match, correct_name
+from src.perception import correct_name
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -25,7 +25,6 @@ if TYPE_CHECKING:
     from src.type_aliases import JsonValue
 
 LOGGER = logging.getLogger(__name__)
-SOURCE_LOCALE = "enUS"
 CHARM_ICON_SET_SLUG_REGEX = re.compile(r"/charms/(?P<slug>[^/?#]+?)(?:\.[^/.?#]+)?(?:[?#]|$)")
 ITEM_TOOLTIP_CSS = "[data-tippy-root]"
 PAGE_DIAGNOSTIC_MARKERS = (
@@ -169,24 +168,25 @@ def _convert_raw_to_affixes(
     import_greater_affixes: bool = False,
     item_type: ItemType | None = None,
     guessed_set_name: str | None = None,
+    unresolved: list[str] | None = None,
 ) -> list[Affix]:
+    """Resolve listed stats; listed stats that cannot be resolved are appended to ``unresolved``."""
     result = []
-    affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
+    missing = unresolved if unresolved is not None else []
     for stat in raw_stats:
         if stat:
             stat_id = stat.get("id")
             if not isinstance(stat_id, str):
+                missing.append(str(stat_id))
                 continue
-            stat_clean = clean_str(_corrections(input_str=stat_id.replace("-", " ")))
-            matched_name = None
-            if item_type == ItemType.HoradricSeal and guessed_set_name:
-                matched_name = match_set_aware_seal_affix(
-                    stat_clean=stat_clean, affix_dict=affix_dict, guessed_set_name=guessed_set_name
-                )
-            if matched_name is None:
-                matched_name = closest_match(stat_clean, affix_dict)
+            stat_text = _corrections(input_str=stat_id.replace("-", " "))  # ids are slugs: "maximum-life"
+            if item_type == ItemType.HoradricSeal:
+                matched_name = resolve_seal_affix(stat_text, guessed_set_name)
+            else:
+                matched_name = resolve_affix(stat_text, item_type)
             if matched_name is None:
                 LOGGER.error(f"Couldn't match {stat=}")
+                missing.append(stat_id)
                 continue
             affix_obj = Affix(name=matched_name)
             if import_greater_affixes and stat.get("isGreater", False):

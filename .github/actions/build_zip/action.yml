@@ -24,15 +24,16 @@ runs:
         VERSION_OVERRIDE: ${{ inputs.version }}
       run: |
         $ErrorActionPreference = "Stop"
-        python build.py
-        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         $version = $env:VERSION_OVERRIDE
         if ([string]::IsNullOrWhiteSpace($version)) {
-          $version = python -c "from src import __version__; print(__version__)"
+          $version = python -m src.tools.release_metadata version
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         }
-        $folderName = "d4lf"
-        $zipName = "d4lf_v" + $version
-        Compress-Archive -Path $folderName -DestinationPath "$zipName.zip"
+        # build.py writes forward-slash ZIP entries and rejects any archive the updater's stage_release refuses.
+        python build.py --archive-version $version
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        $zipName = "d4lf_v" + $version + ".zip"
+        python -m src.tools.release_archive verify $zipName
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         echo "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-        echo "zip_path=$zipName.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+        echo "zip_path=$zipName" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append

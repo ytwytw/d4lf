@@ -1,13 +1,16 @@
+import pytest
+
 from src.game_data import WEAPON_TYPES, GameCatalog, ItemRarity, ItemType
 from src.importing import DEFAULT_FILENAME_PARTS, FilenamePart, ImportOptions, ImportRequest, assemble_profile_file_name
 from src.importing.filters import (
-    affix_dict_for_item_type,
     create_item_affix_pool,
+    create_seal_charm_filter,
     deduplicate_filters,
     fix_weapon_type,
     is_unique_like_rarity,
-    match_set_aware_seal_affix,
+    resolve_unique_name,
     unique_filter_name,
+    update_mingreateraffixcount,
 )
 from src.item import Affix, AffixType
 from src.profiles import CharmFilterModel, ItemFilterModel, ProfileModel, to_yaml_str
@@ -115,17 +118,6 @@ def test_unique_filter_name_adds_suffix_for_existing_filter_names() -> None:
     assert filter_name == "Charm3"
 
 
-def test_affix_dict_for_item_type_uses_context_specific_dict() -> None:
-    assert affix_dict_for_item_type(ItemType.Charm) is GameCatalog().charm_affix_dict
-    assert affix_dict_for_item_type(ItemType.HoradricSeal) is GameCatalog().seal_affix_dict
-    assert affix_dict_for_item_type(ItemType.Ring) is GameCatalog().affix_dict
-    assert affix_dict_for_item_type(None) is GameCatalog().affix_dict
-
-
-def test_match_set_aware_seal_affix_returns_none_for_unknown_set() -> None:
-    assert match_set_aware_seal_affix("maximum resolve", GameCatalog().seal_affix_dict, "unknown_set") is None
-
-
 def test_is_unique_like_rarity_handles_enum_and_string_values() -> None:
     assert is_unique_like_rarity(ItemRarity.Unique) is True
     assert is_unique_like_rarity(ItemRarity.Mythic) is True
@@ -143,7 +135,7 @@ def test_create_item_affix_pool_sets_expected_min_count_and_greater_flags() -> N
     non_unique_pool = create_item_affix_pool(affixes=affixes, unique_like=False)
 
     assert unique_like_pool[0].min_count == 1
-    assert non_unique_pool[0].min_count == 3
+    assert non_unique_pool[0].min_count == 2  # never more than the listed affixes
     assert [affix.name for affix in unique_like_pool[0].count] == ["armor", "maximum_life"]
     assert unique_like_pool[0].count[0].want_greater is True
     assert unique_like_pool[0].count[1].want_greater is False
@@ -220,3 +212,33 @@ def test_to_yaml_str_preserves_paragon_aliases(mock_ini_loader) -> None:
     assert "Paragon:" in yaml_str
     assert "ParagonBoardsList:" in yaml_str
     assert "Name: Build Name" in yaml_str
+
+
+@pytest.mark.parametrize(
+    ("resolved", "unresolved", "unique_like", "expected"),
+    [(2, 0, False, 2), (4, 0, False, 3), (2, 2, False, 1), (1, 3, False, None), (0, 2, False, None)]
+    + [(2, 0, True, 1), (2, 1, True, None)],
+)
+def test_item_pool_requires_only_what_imported_affixes_can_prove(resolved, unresolved, unique_like, expected):
+    names = ["willpower", "maximum_life", "resistance_to_all_elements", "resource_generation"][:resolved]
+    item_filter = ItemFilterModel(item_type=[ItemType.Helm])
+    pool = create_item_affix_pool([Affix(name=name) for name in names], unique_like, unresolved_count=unresolved)
+    item_filter.affix_pool = pool
+    update_mingreateraffixcount(item_filter, require_gas=True)  # a broadened rule has no pool to index
+    assert ([group.min_count for group in pool] or [None]) == [expected]
+
+
+@pytest.mark.parametrize(("unresolved", "pool_size"), [(0, 1), (1, 0)])
+def test_talisman_pool_is_dropped_once_any_listed_affix_is_unreadable(unresolved, pool_size) -> None:
+    affixes = [Affix(name=next(iter(GameCatalog().charm_affix_dict)), type=AffixType.greater)]
+    charm = create_seal_charm_filter(affixes, True, CharmFilterModel, unresolved_count=unresolved)
+    assert len(charm.affix_pool) == pool_size
+    assert charm.min_greater_affix_count == 1  # still implied by the readable greater affix
+
+
+@pytest.mark.parametrize(
+    ("label", "expected"),
+    [("Harlequin Crest", "harlequin_crest"), ("Tyrael's Might", "tyraels_might"), ("Future Unique", None), ("", None)],
+)
+def test_resolve_unique_name(label, expected) -> None:
+    assert resolve_unique_name(label) == expected

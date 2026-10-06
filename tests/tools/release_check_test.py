@@ -3,7 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from src.tools.release_check import check_release_readiness
+from src.tools.release_acceptance import ACCEPTANCE_PATH, load_ledger
+from src.tools.release_check import check_release_readiness, collect_readiness_failures, evaluate_release_readiness
 
 
 def _reports(root, **overrides):
@@ -106,7 +107,7 @@ def test_actual_audit_schema_matches_publication_gate() -> None:
     manifest = json.loads((root / "assets/lang/zhCN/manifest.json").read_text(encoding="utf-8"))
     quality = json.loads((root / "assets/lang/zhCN/quality-report.json").read_text(encoding="utf-8"))
     catalog = json.loads((root / "assets/equipment_knowledge/catalog-73552.json").read_text(encoding="utf-8"))
-    failures = check_release_readiness(root)
+    failures = collect_readiness_failures(root)
     expected_ready = (
         manifest["runtime_ready"] is True
         and manifest["source_quality_ok"] is True
@@ -121,3 +122,22 @@ def test_actual_audit_schema_matches_publication_gate() -> None:
         )
     )
     assert (not failures) == expected_ready
+    # The ledger never rewrites the generator's factual flags.
+    assert manifest["runtime_ready"] is quality["runtime_ready"] is False
+    assert manifest["source_quality_ok"] is quality["summary"]["source_quality_ok"] is False
+
+
+def test_repository_policy_accepts_exactly_the_current_locale_failures() -> None:
+    root = Path(__file__).resolve().parents[2]
+    failures = collect_readiness_failures(root)
+    entries, errors = load_ledger(root)
+    assert not errors
+    assert all(failure.waivable for failure in failures)
+    assert {key for entry in entries for key in entry.failures} == {failure.key for failure in failures}
+    assert check_release_readiness(root) == []
+    result = evaluate_release_readiness(root)
+    assert [entry.id for entry in result.accepted] == [entry.id for entry in entries]
+    raw = json.loads((root / ACCEPTANCE_PATH).read_text(encoding="utf-8"))
+    assert all(entry["live_validated"] is False for entry in raw["accepted"])
+    tribute = next(entry for entry in entries if "巨人贡品" in entry.limitation)
+    assert any(node.startswith("tests/profiles/editor/identity_test.py::") for node in tribute.runtime_guard)

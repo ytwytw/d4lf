@@ -1,14 +1,21 @@
 import json
 import typing
+from dataclasses import replace
 from types import SimpleNamespace
 
-from src.game_data import GameCatalog
+from src.game_data import GameCatalog, ItemRarity, ItemType
 from src.importing import FilenamePart, ImportOptions, ImportRequest
 from src.importing.infinitybuilds import (
     InfinityBuildsParagonCatalog,
     fetch_variants_infinitybuilds,
     import_infinitybuilds,
 )
+from src.importing.infinitybuilds.adapter import _build_variant_for_gear
+from src.importing.infinitybuilds.models import _CatalogAffix, _CatalogItem, _GearPiece, _ResolvedGearData
+from src.item import Affix, Item
+from src.item.filter.evaluator import FilterEvaluator
+from src.item.filter.rules import LoadedRules
+from src.profiles import DynamicItemFilterModel
 
 if typing.TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -153,7 +160,7 @@ def test_import_infinitybuilds_saves_one_profile_per_variant_and_resolves_gear_o
     assert profile_store.save_new.call_count == 2
 
 
-def test_import_infinitybuilds_keeps_runeword_affixes_without_unknown_unique_aspect(
+def test_import_infinitybuilds_runeword_keeps_its_unique_identity(
     mock_ini_loader, mocker: MockerFixture, caplog
 ) -> None:
     variants = [
@@ -193,10 +200,11 @@ def test_import_infinitybuilds_keeps_runeword_affixes_without_unknown_unique_asp
 
     assert result is not None
     filters = {next(iter(entry.root)): next(iter(entry.root.values())) for entry in result.profile.affixes}
-    assert filters["Dagger"].unique_aspect == []
-    assert filters["Dagger"].affix_pool[0].count[0].name == "damage"
+    # Runewords drop as named uniques; one of its two listed affixes is unreadable, so the rule stays broad.
+    assert filters["Dagger"].unique_aspect[0].name == "spirit"
+    assert filters["Dagger"].affix_pool == []
     assert filters["Sword"].unique_aspect[0].name == "doombringer"
-    assert "runeword" in caplog.text.lower()
+    assert "1 source affix(es) could not be imported" in caplog.text
 
 
 def test_import_infinitybuilds_imports_talisman_charms_and_seal(mock_ini_loader, mocker: MockerFixture) -> None:
@@ -276,3 +284,17 @@ def test_import_infinitybuilds_imports_talisman_charms_and_seal(mock_ini_loader,
     called_url = get_with_retry.call_args.args[0]
     assert "Talisman_Charm_Set_Barb_01_03" in called_url
     assert "item-talisman-seal-qst-skovos-atanos-mephisto-itm" in called_url
+
+
+def test_unreadable_affixes_broaden_the_slot_and_unknown_items_are_unsafe(mock_ini_loader) -> None:
+    helm = _GearPiece(slot="helm", itemId="item-helm", affixes=[{"affixId": a} for a in ("affix-life", "a", "b", "c")])
+    items = {"item-helm": _CatalogItem(id="item-helm", label="Helm", rarity="legendary", slot="Helm")}
+    affixes = {"affix-life": _CatalogAffix(id="affix-life", label="Maximum Life", greaterAffixEligible=False)}
+    gear = [helm, _GearPiece(slot="boots", itemId="item-gone", affixes=[])]
+    variant = _build_variant_for_gear(gear, _ResolvedGearData(items, {}, affixes), _request(url="x"))
+    assert variant.unsafe_slots == ["boots item item-gone (no catalog record)"]
+    (rule,) = variant.affix_filters
+    assert rule.affix_pool == []  # 3 of 4 listed affixes are unreadable and may meet the rule alone
+    rules = replace(LoadedRules.empty(), affix_filters={"p": [DynamicItemFilterModel(root={"h": rule})]})
+    item = Item(item_type=ItemType.Helm, rarity=ItemRarity.Legendary, power=800, affixes=[Affix(name="strength")])
+    assert FilterEvaluator(rules).should_keep(item).keep

@@ -1,0 +1,95 @@
+{
+    "accepted": [
+        {
+            "failures": [
+                "manifest.json:readiness_blocker:The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; full same-tooltip effect disambiguation still requires live-game acceptance.",
+                "quality-report.json:readiness_blocker:The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; full same-tooltip effect disambiguation still requires live-game acceptance.",
+                "quality-report.json:alias_collision:aspects:恶毒"
+            ],
+            "id": "shared-aspect-label-malicious-virulent",
+            "limitation": "The Chinese legendary label 恶毒 is shared by malicious and virulent. An item is identified only when its own tooltip shows exactly one complete effect description; otherwise it is skipped.",
+            "live_validated": false,
+            "runtime_guard": [
+                "tests/perception/parser/aspects_test.py::test_unknown_truncated_or_conflicting_effect_fails_closed",
+                "tests/perception/parser/aspects_test.py::test_parser_rejects_conflicting_effects_on_separate_current_tooltip_lines",
+                "tests/perception/parser/aspects_test.py::test_effect_does_not_resolve_a_different_name_candidate_set",
+                "tests/loot/filter_test.py::test_unresolved_shared_name_takes_no_inventory_action"
+            ]
+        },
+        {
+            "failures": [
+                "manifest.json:readiness_blocker:The Chinese tribute label 巨人贡品 is ambiguous between tribute_of_heritage and tribute_of_titans; full same-tooltip effect disambiguation still requires live-game acceptance.",
+                "quality-report.json:readiness_blocker:The Chinese tribute label 巨人贡品 is ambiguous between tribute_of_heritage and tribute_of_titans; full same-tooltip effect disambiguation still requires live-game acceptance.",
+                "quality-report.json:alias_collision:tributes:巨人贡品"
+            ],
+            "id": "shared-tribute-label-heritage-titans",
+            "limitation": "The Chinese tribute label 巨人贡品 is shared by tribute_of_heritage and tribute_of_titans. A tribute is identified only from its complete in-tooltip description, otherwise skipped, and the profile editor keeps the two identities apart. Availability in the current season is not guaranteed.",
+            "live_validated": false,
+            "runtime_guard": [
+                "tests/perception/parser/tributes_test.py::test_unknown_truncated_or_mixed_tribute_fails_closed",
+                "tests/perception/parser/tributes_test.py::test_unexpected_catalog_candidates_are_not_guessed",
+                "tests/loot/filter_test.py::test_unresolved_shared_name_takes_no_inventory_action",
+                "tests/profiles/editor/identity_test.py::test_create_tribute_reaches_every_identity_and_rejects_ambiguous_text",
+                "tests/profiles/editor/identity_test.py::test_tribute_tab_removes_exactly_the_selected_identity",
+                "tests/profiles/editor/identity_test.py::test_existing_profile_roundtrips_unchanged_through_editor_widgets"
+            ]
+        },
+        {
+            "failures": [
+                "quality-report.json:unresolved:affixes:resistance"
+            ],
+            "id": "english-fallback-affix-resistance",
+            "limitation": "affixes:resistance has no identity-matched Chinese label. Its English text never matches Chinese tooltip text, so an item carrying that affix is skipped rather than classified.",
+            "live_validated": false,
+            "runtime_guard": [
+                "tests/perception/parser/details_test.py::test_english_fallback_affix_cannot_resolve_chinese_text",
+                "tests/loot/filter_test.py::test_stale_or_invalid_item_is_bounded_and_never_mutated"
+            ]
+        },
+        {
+            "failures": [
+                "quality-report.json:source_builds_mismatch:d2core=73552,d4data=3.2.1.73552,wowhead=3.0.2"
+            ],
+            "id": "mixed-source-builds",
+            "limitation": "The Chinese text combines sources from different game builds (d2core/d4data 3.2.1.73552 and wowhead 3.0.2 tribute references). Text that no longer matches the game fails to resolve and the item is skipped.",
+            "live_validated": false,
+            "runtime_guard": [
+                "tests/perception/parser/tributes_test.py::test_unknown_name_cannot_borrow_a_matching_effect",
+                "tests/perception/parser/base_test.py::test_unrecognized_chinese_unique_is_rejected_not_guessed",
+                "tests/loot/filter_test.py::test_stale_or_invalid_item_is_bounded_and_never_mutated"
+            ]
+        },
+        {
+            "failures": [
+                "quality-report.json:companion_quality:ascii_placeholders=3,duplicate_identity_aliases=0,duplicate_locale_aliases=4,missing_locale_aliases=0,missing_locale_records=1"
+            ],
+            "id": "companion-source-quality",
+            "limitation": "The companion translation source has placeholder names, duplicate aliases and one missing unique record. Placeholders are not shipped, shared unique names need item-type evidence, and unrecognized names are rejected so the item is skipped.",
+            "live_validated": false,
+            "runtime_guard": [
+                "tests/game_data/catalog_test.py::test_runtime_unique_names_ship_no_ascii_placeholders",
+                "tests/game_data/catalog_test.py::test_shared_unique_label_resolves_only_with_item_type_evidence",
+                "tests/perception/parser/base_test.py::test_unrecognized_chinese_unique_is_rejected_not_guessed"
+            ]
+        },
+        {
+            "failures": [
+                "manifest.json:runtime_ready",
+                "manifest.json:source_quality_ok",
+                "quality-report.json:runtime_ready",
+                "quality-report.json:source_quality_ok"
+            ],
+            "id": "generator-readiness-flags",
+            "limitation": "The locale generator keeps runtime_ready and source_quality_ok false while the gaps above exist. The flags are left unchanged; only the listed, guarded gaps are accepted.",
+            "live_validated": false,
+            "runtime_guard": [
+                "tests/game_data/catalog_test.py::test_zhcn_manifest_matches_runtime_text_and_reports_remaining_release_gaps",
+                "tests/tools/release_check_test.py::test_repository_policy_accepts_exactly_the_current_locale_failures",
+                "tests/loot/filter_test.py::test_unresolved_shared_name_takes_no_inventory_action"
+            ]
+        }
+    ],
+    "basis": "Each limitation ships without live-game validation because its runtime handling is fail-closed: text that cannot be identified is skipped, never marked as junk or favorite and never dropped. The release owner permits shipping unavailable or out-of-season locale data as a documented limitation.",
+    "locale": "zhCN",
+    "schema_version": 1
+}

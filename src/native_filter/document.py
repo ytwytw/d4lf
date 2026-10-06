@@ -15,6 +15,8 @@ from src.native_filter.decoder import decode_filter
 from src.native_filter.models import NativeFilter, NativeFilterError
 from src.profiles import BuildSourceModel
 
+_BOOLEAN_POLICY_FIELDS = {"filter_equipment", "preserve_sanctified", "protect_ancestral_legendaries"}
+
 
 @dataclass
 class SavedDocument:
@@ -79,7 +81,7 @@ def load_document(path: Path) -> SavedDocument:
         policy = None
         if policy_data is not None:
             if not isinstance(policy_data, dict) or any(
-                not isinstance(value, bool if key in {"filter_equipment", "preserve_sanctified"} else str)
+                not isinstance(value, bool if key in _BOOLEAN_POLICY_FIELDS else str)
                 for key, value in policy_data.items()
             ):
                 msg = "保存的生成策略无效"

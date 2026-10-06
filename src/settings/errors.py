@@ -2,10 +2,13 @@
 
 import logging
 from collections.abc import Callable
-from pathlib import Path
 from typing import TYPE_CHECKING
 
+from src.settings.constants import BASE_DIR
+
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from src.type_aliases import JsonValue
 
 LOGGER = logging.getLogger("src.settings.loader")
@@ -16,7 +19,8 @@ class SettingsLoadError(RuntimeError):
 
     def __init__(self, config_path: Path, error: Exception, *, log_path: Path | None = None) -> None:
         self.config_path = config_path
-        self.log_path = log_path or Path(__file__).parents[2] / "logs"
+        # The frozen app logs beside the EXE (src.logger.LOG_DIR), not inside the unpacked bundle.
+        self.log_path = log_path or BASE_DIR / "logs"
         self.original = error
         super().__init__(f"Unable to load settings from {config_path}: {error}")
 

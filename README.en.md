@@ -28,9 +28,9 @@ Equipment data sources and credits are listed in the [data notice](assets/equipm
 
 ## Installation
 
-This page describes **`10.0.7+zhcn.2`**. Its download package has not been published yet.
-Published versions are available on [Releases](https://github.com/ytwytw/d4lf/releases).
-See the [release notes (Chinese)](docs/release-notes.zh-CN.md) for changes in this version.
+This page describes **`10.0.7+zhcn.3`**. Download the complete package `d4lf_v<version>.zip` from
+[Releases](https://github.com/ytwytw/d4lf/releases). See the [release notes (Chinese)](docs/release-notes.zh-CN.md)
+for changes in this version.
 
 To install a complete application package:
 
@@ -58,6 +58,21 @@ Supported build websites:
 
 Chinese and English builds work with either game language. Use **Edit** next to a profile to adjust its rules.
 Website or season updates may prevent some entries from importing; check the imported profile and any log messages.
+When you import a build again and its existing profile has been edited, the new import is saved as `<name>_2` (and so on)
+instead of overwriting it; an unedited profile is updated in place. With **Add to Profiles**, the new file is enabled
+and an already enabled older profile stays enabled until you change it on the main screen.
+
+Import safeguards:
+
+- An affix is imported only when the build site's text names exactly one D4LF affix; a similar-looking affix is never
+  guessed.
+- If some affixes of a slot cannot be read, that slot's rule only requires the affixes that were read. If the unreadable
+  affixes alone could satisfy the build, the slot keeps every item that matches its other conditions (more items are kept,
+  never fewer). The import window lists the affected slots.
+- If the build lists an item D4LF cannot identify (for example an unknown unique or runeword, an unknown item type, or an
+  unreadable charm or seal), the whole import stops before any profile is written or enabled, and the items are named.
+  Import another variant, or remove or replace those items in the build and import again. Charms and seals only stop the
+  import when you import that category.
 
 ## Upgrading and rolling back
 
@@ -67,8 +82,12 @@ Website or season updates may prevent some entries from importing; check the imp
 1. Check recognition in Vision Mode Only before enabling automatic marking.
 
 Use a complete application package when upgrading from an older version. Reinstall the game DLL with the game closed
-only when the release notes require it. If the updater fails while copying files, extract the complete package again;
-do not mix EXE and assets from different versions.
+only when the release notes require it. Automatic updates are disabled in `9.3.7+zhcn.beta.5` and `beta.6`, so upgrade
+from them manually as described above; this version ships the same DLL, so the upgrade alone does not require reinstalling it.
+
+If `autoupdater.bat` reports that `d4lf.exe` is still in use, close every D4LF window (including one started as
+administrator) and run it again; installed files are not changed in that case. If the updater fails while copying files,
+extract the complete package again; do not mix EXE and assets from different versions.
 
 To roll back, save a separate copy of the current settings, then start the old application. Restore the pre-upgrade backup
 if it cannot read the newer settings. Rolling back does not restore the game DLL; follow the relevant version's instructions.
@@ -78,8 +97,25 @@ if it cannot read the newer settings. Rolling back does not restore the game DLL
 Settings, profiles, saved game filters, and inventory exports are stored under `%USERPROFILE%\.d4lf` by default.
 Inventory exports are in `exports\inventory`, and editable game filters are in `native_filters`.
 
+The inventory export hovers a slot that looks empty a second time, so scans with many empty slots are slower. A location
+that gave no item description and could not be confirmed empty is listed separately in the file, and the scan is then
+reported as partial. Empty equipped, charm, or seal slots cannot currently be confirmed empty.
+
 If TTS does not connect, check the game's screen-reader settings and DLL installation. If needed, try running the game
 and launcher as administrator. For invalid settings, exit D4LF, back up and rename `params.ini`, and configure the app again.
+Error details are written to the `logs` folder in the application directory.
+
+If an enabled profile file is missing or cannot be read, D4LF does not mark unmatched items as junk or drop them, and
+refreshing with the filter keeps existing marks; matching items can still be marked as favorites. The tray and log name
+the affected profiles. Restoring or fixing the file returns to normal. An unreadable profile can be unchecked on the main
+screen. A deleted profile is not listed there; checking or unchecking any profile saves the enabled list without it.
+
+The Chinese names 恶毒 (aspect) and 巨人贡品 (tribute) each belong to two different entries. D4LF identifies them only when
+the effect text in the same item description confirms one entry; otherwise the entry stays unknown instead of guessing.
+This identification has not yet been tested in the current game, so such items may always stay unknown.
+Check rules that depend on them in Vision Mode Only first. In the profile editor, Chinese names shared by several entries
+show the English name and a short hint, for example `巨人贡品（tribute of heritage · 职业专属暗金物品）`; typing only the shared
+name selects nothing.
 
 Diagnostics can be enabled in Advanced Settings. They are off by default and save files locally in `captures`.
 Check logs, screenshots, and exports for personal information before sharing them in a public issue.
@@ -90,7 +126,7 @@ Use **Settings** to adjust loot categories, stash pages, language, hotkeys, and 
 Disabling a loot category leaves its items untouched. Under **UI & Theme**, choose **Highlight Matches** to frame matching
 affixes on the tooltip, or **Fast** to show the result directly. Fast mode supports controllers.
 
-The [Chinese interface guide](README.md#%E7%95%8C%E9%9D%A2%E4%B8%8E%E9%85%8D%E7%BD%AE) includes current screenshots. The YAML and overlay reference follows.
+The [Chinese interface guide](README.md#%E7%95%8C%E9%9D%A2%E4%B8%8E%E9%85%8D%E7%BD%AE) includes screenshots taken on `10.0.7+zhcn.2`. The YAML and overlay reference follows.
 
 ## How to filter / Profiles
 
