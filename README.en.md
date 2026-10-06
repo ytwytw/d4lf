@@ -2,6 +2,8 @@
 
 [简体中文](README.md)
 
+`main` contains the current user-facing version. Install the complete application package from [Releases](https://github.com/ytwytw/d4lf/releases).
+
 D4LF is a Windows desktop item-filtering assistant. It recognizes items from the screen and
 Diablo IV accessibility TTS text, then shows keep or junk results from local profiles. This branch
 adds Simplified Chinese game parsing, a bilingual interface, and cross-language build imports on top

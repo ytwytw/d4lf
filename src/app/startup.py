@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import QMessageBox, QWidget
 from src.settings import SettingsLoadError, VisionModeType, get_settings
 
 REPOSITORY_URL = "https://github.com/ytwytw/d4lf"
-SETUP_INSTRUCTIONS_URL = f"{REPOSITORY_URL}/blob/zhcn-v10/README.md#安装"
+SETUP_INSTRUCTIONS_URL = f"{REPOSITORY_URL}/blob/main/README.md#安装"
 LOGGER = logging.getLogger(__name__)
 
 

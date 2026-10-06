@@ -2,6 +2,8 @@
 
 [English](README.en.md)
 
+`main` 是面向用户的当前版本分支。安装程序请使用 [Releases](https://github.com/ytwytw/d4lf/releases) 中的完整程序包。
+
 D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和《暗黑破坏神 IV》的
 无障碍 TTS 文本识别物品，并按照本地 Profile 显示保留或丢弃结果。本分支在上游
 [D4LF](https://github.com/d4lfteam/d4lf) V10 基础上增加简体中文客户端解析、双语界面和

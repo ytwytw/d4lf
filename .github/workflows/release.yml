@@ -3,6 +3,7 @@ name: Release
 on:
   pull_request:
     types: [closed]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -14,9 +15,14 @@ permissions:
 jobs:
   release:
     if: |
-      github.event_name != 'pull_request' ||
+      (
+        github.event_name == 'workflow_dispatch' &&
+        github.ref == 'refs/heads/main'
+      ) ||
         (
+          github.event_name == 'pull_request' &&
           github.event.pull_request.merged == true &&
+          github.event.pull_request.base.ref == 'main' &&
           contains(github.event.pull_request.labels.*.name, 'release')
         )
     runs-on: windows-latest
@@ -24,6 +30,8 @@ jobs:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || github.sha }}
       - name: Setup env
         uses: ./.github/actions/setup_env
       - name: Scan release tree for private data
@@ -58,7 +66,7 @@ jobs:
           name: "v${{ steps.build_zip.outputs.version }}"
           prerelease: ${{ env.IS_BETA == 'true' }}
           tag_name: "v${{ steps.build_zip.outputs.version }}"
-          target_commitish: ${{ github.sha }}
+          target_commitish: ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || github.sha }}
           token: "${{ secrets.RELEASE_TOKEN || github.token }}"
           fail_on_unmatched_files: true
       - name: Fetch release meta data
