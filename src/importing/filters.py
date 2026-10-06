@@ -1,10 +1,11 @@
 import logging
 from enum import Enum
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, TypeVar, overload
 
 import rapidfuzz
 
-from src.item import WEAPON_TYPES, Affix, AffixType, Dataloader, ItemRarity, ItemType
+from src.game_data import WEAPON_TYPES, GameCatalog, ItemRarity, ItemType
+from src.item import Affix, AffixType
 from src.perception import closest_match
 from src.profiles import (
     AffixFilterCountModel,
@@ -17,6 +18,7 @@ from src.profiles import (
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
+
 
 E = TypeVar("E", bound=Enum)
 FilterModelT = TypeVar("FilterModelT", bound=ItemFilterModel | CharmFilterModel | SealFilterModel)
@@ -33,8 +35,8 @@ def fix_weapon_type(input_str: str) -> ItemType | None:
         "2h mace": ItemType.Mace2H,
         "2h scythe": ItemType.Scythe2H,
         "2h sword": ItemType.Sword2H,
-        "bow": ItemType.Bow,
         "crossbow": ItemType.Crossbow2H,
+        "bow": ItemType.Bow,
         "dagger": ItemType.Dagger,
         "flail": ItemType.Flail,
         "glaive": ItemType.Glaive,
@@ -77,7 +79,7 @@ def get_class_name(input_str: str) -> str:
     return "Unknown"
 
 
-def update_mingreateraffixcount(item_filter: ItemFilterModel, require_gas: bool):
+def update_mingreateraffixcount(item_filter: ItemFilterModel, require_gas: bool) -> None:
     item_filter.min_greater_affix_count = (
         sum(affix.want_greater for affix in item_filter.affix_pool[0].count) if require_gas else 0
     )
@@ -85,10 +87,10 @@ def update_mingreateraffixcount(item_filter: ItemFilterModel, require_gas: bool)
 
 def affix_dict_for_item_type(item_type: ItemType | None) -> dict[str, str]:
     if item_type == ItemType.HoradricSeal:
-        return Dataloader().seal_affix_dict
+        return GameCatalog().seal_affix_dict
     if item_type == ItemType.Charm:
-        return Dataloader().charm_affix_dict
-    return Dataloader().affix_dict
+        return GameCatalog().charm_affix_dict
+    return GameCatalog().affix_dict
 
 
 def match_set_aware_seal_affix(stat_clean: str, affix_dict: dict[str, str], guessed_set_name: str) -> str | None:
@@ -96,18 +98,18 @@ def match_set_aware_seal_affix(stat_clean: str, affix_dict: dict[str, str], gues
     if best_global_key and best_global_key != "damage":
         global_display = affix_dict[best_global_key]
         if rapidfuzz.distance.Levenshtein.distance(stat_clean, global_display) <= 2:
-            is_set_specific = any(best_global_key.startswith(f"{set_name}_") for set_name in Dataloader().set_list)
+            is_set_specific = any(best_global_key.startswith(f"{set_name}_") for set_name in GameCatalog().set_list)
             if not is_set_specific:
                 return best_global_key
     set_affixes = {
-        key: value for key, value in Dataloader().seal_affix_dict.items() if key.startswith(f"{guessed_set_name}_")
+        key: value for key, value in GameCatalog().seal_affix_dict.items() if key.startswith(f"{guessed_set_name}_")
     }
     if not set_affixes:
         return None
     potential_match = closest_match(stat_clean, set_affixes)
     if potential_match is None:
         return None
-    display_name = Dataloader().seal_affix_dict[potential_match]
+    display_name = GameCatalog().seal_affix_dict[potential_match]
     return potential_match if rapidfuzz.fuzz.token_set_ratio(stat_clean, display_name) >= 50 else None
 
 
@@ -128,7 +130,43 @@ def create_item_affix_pool(affixes: list[Affix], unique_like: bool) -> list[Affi
     ]
 
 
-def create_seal_charm_filter(affixes, require_gas, model_type=SealFilterModel, unique_name=None, set_name=None):
+@overload
+def create_seal_charm_filter(
+    affixes: list[Affix],
+    require_gas: bool,
+    model_type: type[SealFilterModel] = SealFilterModel,
+    unique_name: str | None = None,
+    set_name: str | None = None,
+) -> SealFilterModel: ...
+
+
+@overload
+def create_seal_charm_filter(
+    affixes: list[Affix],
+    require_gas: bool,
+    model_type: type[CharmFilterModel],
+    unique_name: str | None = None,
+    set_name: str | None = None,
+) -> CharmFilterModel: ...
+
+
+@overload
+def create_seal_charm_filter(
+    affixes: list[Affix],
+    require_gas: bool,
+    model_type: type[SealFilterModel | CharmFilterModel],
+    unique_name: str | None = None,
+    set_name: str | None = None,
+) -> SealFilterModel | CharmFilterModel: ...
+
+
+def create_seal_charm_filter(
+    affixes: list[Affix],
+    require_gas: bool,
+    model_type: type[SealFilterModel | CharmFilterModel] = SealFilterModel,
+    unique_name: str | None = None,
+    set_name: str | None = None,
+) -> SealFilterModel | CharmFilterModel:
     affix_pool = (
         [
             AffixFilterCountModel(
@@ -154,7 +192,7 @@ def weapon_slot_name_hint(item_filter: ItemFilterModel, slot: str) -> str | None
     return slot if item_filter.item_type == WEAPON_TYPES else None
 
 
-def unique_filter_name(filter_name_template: str, filters: Sequence[Mapping[str, object]]) -> str:
+def unique_filter_name[FilterT](filter_name_template: str, filters: Sequence[Mapping[str, FilterT]]) -> str:
     filter_name, i = filter_name_template, 2
     while any(filter_name == next(iter(existing_filter)) for existing_filter in filters):
         filter_name, i = f"{filter_name_template}{i}", i + 1
@@ -184,7 +222,8 @@ def deduplicate_filters(
             else:
                 base_name = "Charm" if isinstance(filter_spec, CharmFilterModel) else "HoradricSeal"
             groups.append((base_name, filter_spec, 1))
-    result, used_names = [], []
+    result: list[dict[str, FilterModelT]] = []
+    used_names: list[dict[str, FilterModelT]] = []
     for base_name, model, count in groups:
         key = f"{base_name}(x{count})" if count > 1 else unique_filter_name(base_name, used_names)
         suffix = 2

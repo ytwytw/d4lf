@@ -1,20 +1,23 @@
 import configparser
+import logging
 import re
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSettings
 
-from src.item import Filter
-from src.paragon import shared as _shared
-from src.paragon.shared import BUILD_SOURCES, LOGGER, PLAYER_CLASSES, BuildRow, OverlaySettings
+from src.item.filter import Filter
+from src.localization import translate
+from src.paragon.names import localized_paragon_name, paragon_class_slug
+from src.paragon.overlay.theme import BUILD_SOURCES, PLAYER_CLASSES
 from src.paragon.transform import parse_rotation
 from src.settings import get_settings
 
-globals().update({name: getattr(_shared, name) for name in _shared.__all__})
+LOGGER = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from src.paragon.overlay.contracts import BuildRow, OverlaySettings
     from src.profiles import ParagonBoardModel
 
 
@@ -113,7 +116,7 @@ def _import_settings_from_ini(qs: QSettings) -> bool:
             p.write(f)
 
         LOGGER.info("Successfully migrated and cleaned up Paragon Overlay settings from %s", ini)
-    except Exception:  # ruff:ignore[blind-except] - preserve migration fallback behavior
+    except Exception:
         LOGGER.debug("Failed to migrate legacy Paragon Overlay settings", exc_info=True)
         return False
     else:
@@ -128,15 +131,15 @@ def _clamp_int(v: int | None, lo: int, hi: int, default: int) -> int:
         return default
 
 
-def _format_build_display_name(raw_name: object) -> str:
+def _format_build_display_name(raw_name: str | None) -> str:
     """Convert stored build/profile names into a cleaner title-card label."""
     text = str(raw_name or "").strip()
     if not text:
         return ""
 
-    step_suffix = ""
-    if step_match := re.search(r"(\s+-\s+Step\s+\d+)\s*$", text, flags=re.IGNORECASE):
-        step_suffix = step_match.group(1)
+    step_number = ""
+    if step_match := re.search(r"\s+-\s+Step\s+(\d+)\s*$", text, flags=re.IGNORECASE):
+        step_number = step_match.group(1)
         text = text[: step_match.start()].rstrip()
 
     parts = [re.sub(r"\s+", " ", part).strip(" _-") for part in text.split("_")]
@@ -151,7 +154,9 @@ def _format_build_display_name(raw_name: object) -> str:
     if not display_name:
         display_name = re.sub(r"\s+", " ", text.replace("_", " ")).strip()
 
-    return f"{display_name}{step_suffix}" if step_suffix else display_name
+    if step_number:
+        return translate("paragon.build.step_suffix", "{name} - Step {step}", name=display_name, step=step_number)
+    return display_name
 
 
 def _resolve_build_index(
@@ -203,29 +208,30 @@ def format_board_display_text(board: ParagonBoardModel) -> str:
     """Build the readable label shown for a Paragon board card."""
     raw_name = str(board.name or "?")
     name_parts = raw_name.split("-", 1)
-    class_slug = (name_parts[0] if name_parts else raw_name).strip().lower()
-    board_slug = (name_parts[1] if len(name_parts) > 1 else raw_name).strip()
-    class_name = {class_name: class_name.title() for class_name in PLAYER_CLASSES}.get(
-        class_slug, class_slug.title() if class_slug else "?"
+    class_slug = paragon_class_slug(board.board_id, raw_name)
+    board_source = (name_parts[1] if len(name_parts) > 1 and class_slug else raw_name).strip()
+    fallback_class = (name_parts[0] if name_parts else raw_name).replace("-", " ").strip().title()
+    class_name = (
+        translate(f"paragon.class.{class_slug}", fallback_class)
+        if class_slug
+        else fallback_class or translate("paragon.unknown", "?")
     )
+    board_name = localized_paragon_name(
+        "boards", identifier=board.board_id, source_name=board_source, class_slug=class_slug
+    )
+    if not board_name:
+        board_name = translate("paragon.unknown", "?")
 
-    glyph_name = "No Glyph"
+    glyph_name = translate("paragon.glyph.none", "No Glyph")
     if board.glyph:
         glyph_parts = str(board.glyph).strip().split("-", 1)
-        glyph_slug = (
+        glyph_source = (
             glyph_parts[1]
             if len(glyph_parts) > 1 and glyph_parts[0].strip().lower() == class_slug
             else str(board.glyph).strip()
         )
-        glyph_name = re.sub(r"[-_]+", " ", glyph_slug).strip().title() if glyph_slug else "No Glyph"
+        glyph_name = localized_paragon_name("glyphs", identifier=board.glyph_id, source_name=glyph_source)
+        if glyph_name == glyph_source:
+            glyph_name = re.sub(r"[-_]+", " ", glyph_source).strip().title()
 
-    readable_board = board_slug.replace("-", " ").strip().title() if board_slug else "?"
-    return f"{class_name} - {readable_board} - {glyph_name} - {parse_rotation(board.rotation)}°"
-
-
-# =============================================================================
-# DATA CLASSES
-# =============================================================================
-
-
-__all__ = [name for name in globals() if not name.startswith("__")]
+    return f"{class_name} - {board_name} - {glyph_name} - {parse_rotation(board.rotation)}°"

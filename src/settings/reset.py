@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QCheckBox, QGroupBox, QLineEdit, QListWidget, QMessageBox, QPushButton, QSpinBox, QWidget
 
+from src.localization import translate
 from src.settings.widgets import (
     IgnoreScrollWheelComboBox,
     MultiSegmentedControl,
@@ -11,6 +13,8 @@ from src.settings.widgets import (
 )
 
 if TYPE_CHECKING:
+    from pydantic import BaseModel
+
     from src.settings.store import SettingsStore
 
 CONFIG_TABNAME = "config"
@@ -24,44 +28,47 @@ class ConfigResetMixin:
     nav_list: QListWidget
     search_input: QLineEdit
 
-    def show_tab(self):
+    def show_tab(self) -> None:
         self._reset_values_for_model(self._settings_store.model_for_section("general"), "general")
         self._reset_values_for_model(self._settings_store.model_for_section("char"), "char")
         self._reset_values_for_model(self._settings_store.model_for_section("advanced_options"), "advanced_options")
 
-    def reset_button_click(self):
+    def reset_button_click(self) -> None:
         """Handle the reset button by offering tab-specific or global reset."""
         current_item = self.nav_list.currentItem()
         if not current_item or self.search_input.text():
             self._perform_global_reset()
             return
         tab_name = current_item.text()
+        category = current_item.data(Qt.ItemDataRole.UserRole)
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Icon.Question)
-        msg.setWindowTitle("Reset Settings")
-        msg.setText(f"Would you like to reset only the '{tab_name}' settings or all settings to defaults?")
-        btn_tab = msg.addButton(f"Reset {tab_name}", QMessageBox.ButtonRole.ActionRole)
-        btn_all = msg.addButton("Reset All Tabs", QMessageBox.ButtonRole.ActionRole)
+        msg.setWindowTitle(translate("settings.reset.title"))
+        msg.setText(translate("settings.reset.body", category=tab_name))
+        btn_tab = msg.addButton(
+            translate("settings.reset.category", category=tab_name), QMessageBox.ButtonRole.ActionRole
+        )
+        btn_all = msg.addButton(translate("settings.reset.all"), QMessageBox.ButtonRole.ActionRole)
         msg.addButton(QMessageBox.StandardButton.Cancel)
         msg.exec()
         clicked = msg.clickedButton()
         if clicked == btn_all:
             self._perform_global_reset(confirm=True)
         elif clicked == btn_tab:
-            self._reset_current_category(tab_name)
+            self._reset_current_category(category)
 
-    def _perform_global_reset(self, confirm: bool = False):
+    def _perform_global_reset(self, confirm: bool = False) -> None:
         if confirm:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Icon.Warning)
-            msg.setText("This will reset ALL custom values in your params.ini. Are you sure?")
+            msg.setText(translate("settings.reset.confirm_all"))
             msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
             if msg.exec() != QMessageBox.StandardButton.Ok:
                 return
         self._settings_store.reset_all()
         self.show_tab()
 
-    def _reset_current_category(self, category_name: str):
+    def _reset_current_category(self, category_name: str) -> None:
         """Reset only the settings belonging to the active category."""
         target_gb = self._group_boxes.get(category_name)
         if not target_gb:
@@ -82,7 +89,7 @@ class ConfigResetMixin:
         for section in {section for section, _, _ in changes}:
             self._reset_values_for_model(self._settings_store.model_for_section(section), section)
 
-    def _reset_values_for_model(self, model, section_config_header):
+    def _reset_values_for_model(self, model: BaseModel, section_config_header: str) -> None:
         for parameter in model:
             config_key, config_value = parameter
             parameter_value_widget = self.model_to_parameter_value_map.get(section_config_header + "." + config_key)
@@ -99,13 +106,15 @@ class ConfigResetMixin:
                 else:
                     parameter_value_widget.reset_values(config_value)
             elif isinstance(parameter_value_widget, QCheckBox):
-                parameter_value_widget.setChecked(config_value)
+                if isinstance(config_value, bool):
+                    parameter_value_widget.setChecked(config_value)
             elif isinstance(parameter_value_widget, QSpinBox):
-                parameter_value_widget.setValue(config_value)
+                if isinstance(config_value, int) and not isinstance(config_value, bool):
+                    parameter_value_widget.setValue(config_value)
             elif isinstance(parameter_value_widget, QLineEdit):
                 parameter_value_widget.setText(str(config_value))
 
     def _setup_reset_button(self) -> QPushButton:
-        reset_button = QPushButton("Reset to defaults")
+        reset_button = QPushButton(translate("settings.reset.button"))
         reset_button.clicked.connect(self.reset_button_click)
         return reset_button

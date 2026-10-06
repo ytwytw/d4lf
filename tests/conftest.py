@@ -4,6 +4,7 @@ import typing
 
 import pytest
 
+from src.game_data import GameCatalog
 from src.settings import BrowserType, get_settings
 
 if typing.TYPE_CHECKING:
@@ -48,7 +49,7 @@ MOBALYTICS_IMPORT_URLS = (
 )
 
 
-def pytest_ignore_collect(collection_path, config):
+def pytest_ignore_collect(collection_path, config) -> bool:
     """Ignore Windows-only test files on non-Windows platforms during collection."""
     if sys.platform != "win32":
         # Check if the file is in our Windows-only list
@@ -57,7 +58,7 @@ def pytest_ignore_collect(collection_path, config):
     return False
 
 
-def pytest_collection_modifyitems(config, items):
+def pytest_collection_modifyitems(config, items) -> None:
     """Mark and skip external importer tests outside GitHub Actions."""
     skip_external_importer = pytest.mark.skip(reason="Importer tests are skipped if not run from Github Actions")
     for item in items:
@@ -76,4 +77,5 @@ def mock_ini_loader(mocker: MockerFixture):
     mocker.patch.object(settings.general, "language", "enUS")
     mocker.patch.object(settings.general, "browser", BrowserType.chrome)
     mocker.patch.object(settings.general, "full_dump", False)
+    GameCatalog().load_data()
     return settings

@@ -1,7 +1,13 @@
-import numpy as np
 import pytest
 
-from src.perception.matching.models import SearchArgs, TemplateMatch
+from src.perception.matching.models import ImageMatch, TemplateMatch
+
+
+def test_image_match_keeps_image_region_and_score() -> None:
+    match = ImageMatch(region=(1, 2, 3, 4), score=0.9)
+
+    assert match.region == (1, 2, 3, 4)
+    assert match.score == pytest.approx(0.9)
 
 
 def test_template_match_equality_uses_match_values() -> None:
@@ -12,9 +18,3 @@ def test_template_match_equality_uses_match_values() -> None:
     assert first == TemplateMatch(
         center=(1, 2), center_monitor=(1, 2), name="slot", region=[0, 0, 2, 2], region_monitor=[0, 0, 2, 2], score=0.9
     )
-
-
-def test_search_args_accepts_numpy_images() -> None:
-    query = SearchArgs(ref=np.zeros((2, 2, 3), dtype=np.uint8), threshold=0.8)
-
-    assert query.as_dict()["threshold"] == pytest.approx(0.8)

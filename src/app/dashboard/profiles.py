@@ -2,23 +2,26 @@
 
 import datetime
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QMenu, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from src.app.dashboard.drag import DragHandleButton
 from src.desktop.widgets import CheckmarkCheckBox
+from src.localization import translate
 from src.profiles import ProfileDocumentError, ProfileDocumentStore
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from src.app.dashboard.core import ActivityLogWidget
+
 LOGGER = logging.getLogger(__name__)
 
 
 class ActivityProfileRowsMixin:
-    def refresh_profiles(self: Any):
+    def refresh_profiles(self: ActivityLogWidget) -> None:
         """Scan the profiles folder and update the list."""
         for i in reversed(range(self.profile_layout.count())):
             child = self.profile_layout.takeAt(i)
@@ -68,14 +71,24 @@ class ActivityProfileRowsMixin:
                 header_hbox.addWidget(cb)
                 header_hbox.addStretch()
 
-                edit_btn = self._create_row_btn("Edit")
-                edit_btn.setToolTip("Edit Profile")
+                edit_btn = self._create_row_btn(translate("dashboard.edit"))
+                edit_btn.setToolTip(translate("dashboard.edit_profile"))
                 edit_btn.clicked.connect(lambda _, n=name: self._edit_profile(n))
                 header_hbox.addWidget(edit_btn)
 
-                delete_btn = self._create_row_btn("Delete")
+                tools_btn = self._create_row_btn("工具")
+                tools_menu = QMenu(tools_btn)
+                if window := self._main_window:
+                    tools_menu.addAction("生成游戏过滤器", lambda _=False, n=name, w=window: w.open_native_filter(n))
+                    tools_menu.addAction(
+                        "装备来源与词条", lambda _=False, n=name, w=window: w.open_equipment_knowledge(n)
+                    )
+                tools_btn.setMenu(tools_menu)
+                header_hbox.addWidget(tools_btn)
+
+                delete_btn = self._create_row_btn(translate("dashboard.delete"))
                 delete_btn.setObjectName("delete-profile-btn")
-                delete_btn.setToolTip("Delete Profile")
+                delete_btn.setToolTip(translate("dashboard.delete_profile"))
                 delete_btn.clicked.connect(lambda _, n=name: self._delete_profile(n))
                 header_hbox.addWidget(delete_btn)
 
@@ -93,7 +106,7 @@ class ActivityProfileRowsMixin:
                 self._rows[name] = row_widget
 
         if not self._rows:
-            empty_lbl = QLabel("No Profiles found. Please import a profile below.")
+            empty_lbl = QLabel(translate("dashboard.no_profiles"))
             empty_lbl.setStyleSheet("color: #888; font-style: italic; padding: 20px;")
             empty_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.profile_layout.addWidget(empty_lbl)
@@ -103,7 +116,7 @@ class ActivityProfileRowsMixin:
         else:
             self._update_zebra_striping()
 
-    def _create_row_btn(self: Any, text: str) -> QPushButton:
+    def _create_row_btn(self: ActivityLogWidget, text: str) -> QPushButton:
         btn = QPushButton(text)
         btn.setObjectName("row-action-btn")
         btn.setFlat(True)
@@ -111,20 +124,20 @@ class ActivityProfileRowsMixin:
         # Styling is handled by the shared theme.
         return btn
 
-    def _toggle_row(self: Any, label: QLabel, button: QPushButton):
+    def _toggle_row(self: ActivityLogWidget, label: QLabel, button: QPushButton) -> None:
         is_visible = not label.isVisible()
         label.setVisible(is_visible)
         button.setText("▼" if is_visible else "▶")
 
-    def _edit_profile(self: Any, name: str):
+    def _edit_profile(self: ActivityLogWidget, name: str) -> None:
         if self._main_window:
             self._main_window.open_profile_editor(profile_name=name)
 
-    def _delete_profile(self: Any, name: str):
+    def _delete_profile(self: ActivityLogWidget, name: str) -> None:
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Icon.Warning)
-        msg.setWindowTitle("Delete Profile")
-        msg.setText(f"Are you sure you want to permanently delete the profile '{name}'?")
+        msg.setWindowTitle(translate("dashboard.delete_profile"))
+        msg.setText(translate("dashboard.delete_confirmation", name=name))
         msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
 
         if msg.exec() == QMessageBox.StandardButton.Yes:
@@ -142,13 +155,13 @@ class ActivityProfileRowsMixin:
                     except Exception:
                         LOGGER.exception("Failed to delete profile %s", name)
 
-    def _get_profile_summary(self: Any, path: Path) -> str:
+    def _get_profile_summary(self: ActivityLogWidget, path: Path) -> str:
         """Build a summary tooltip from the profile document."""
         try:
             stat = path.stat()
             mtime = datetime.datetime.fromtimestamp(stat.st_mtime, tz=datetime.UTC).strftime("%Y-%m-%d %H:%M")
             model = ProfileDocumentStore.default().load(path).profile
-            summary = [f"Last Modified: {mtime}"]
+            summary = [translate("dashboard.last_modified", time=mtime)]
 
             if model.affixes:
                 types = set()
@@ -160,20 +173,20 @@ class ActivityProfileRowsMixin:
                             else:
                                 types.add(str(it))
                 if types:
-                    summary.append(f"📦 Items: {', '.join(sorted(types))}")
-                summary.append(f"🔍 Affix Filters: {len(model.affixes)}")
+                    summary.append(translate("dashboard.items", items=", ".join(sorted(types))))
+                summary.append(translate("dashboard.affix_filters", count=len(model.affixes)))
 
             if model.aspect_upgrades:
-                summary.append(f"✨ Aspect Upgrades: {len(model.aspect_upgrades)}")
+                summary.append(translate("dashboard.aspect_upgrades", count=len(model.aspect_upgrades)))
             if model.global_uniques:
-                summary.append(f"💎 Global Uniques: {len(model.global_uniques)}")
+                summary.append(translate("dashboard.global_uniques", count=len(model.global_uniques)))
             if model.sigils:
-                summary.append("📜 Sigils: Included")
+                summary.append(translate("dashboard.sigils_included"))
             if model.tributes:
-                summary.append("🏆 Tributes: Included")
+                summary.append(translate("dashboard.tributes_included"))
             if model.paragon:
-                summary.append("🔱 Paragon Overlay: Data Found")
+                summary.append(translate("dashboard.paragon_included"))
 
             return "\n".join(summary)
         except OSError, ProfileDocumentError:
-            return f"Path: {path}\n(Could not parse profile details)"
+            return translate("dashboard.profile_parse_failed", path=path)

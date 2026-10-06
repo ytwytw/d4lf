@@ -2,8 +2,10 @@ import logging
 from typing import TYPE_CHECKING
 
 import lxml.html
+from lxml import etree
 from selenium.webdriver.common.by import By
 
+from src.game_data import ItemType
 from src.importing.d4builds.constants import (
     ACTIVE_CHARM_CSS,
     ACTIVE_SEAL_CSS,
@@ -19,14 +21,10 @@ from src.importing.d4builds.constants import (
     UNIQUE_TOOLTIP_CSS,
     UNIQUE_TOOLTIP_SLOT_XPATH,
 )
-from src.importing.filters import (
-    affix_dict_for_item_type,
-    create_seal_charm_filter,
-    fix_weapon_type,
-    match_set_aware_seal_affix,
-)
+from src.importing.filters import create_seal_charm_filter, fix_weapon_type, match_set_aware_seal_affix
+from src.importing.source_locale import source_affix_dict_for_item_type
 from src.importing.web import hover_and_get_tooltip_html
-from src.item import Affix, ItemType
+from src.item import Affix
 from src.perception import clean_str, closest_match, correct_name
 from src.profiles import CharmFilterModel, SealFilterModel
 
@@ -37,6 +35,7 @@ if TYPE_CHECKING:
     from src.importing.contracts import ImportRequest
 
 LOGGER = logging.getLogger(__name__)
+SOURCE_LOCALE = "enUS"
 
 
 def _corrections(input_str: str) -> str:
@@ -109,7 +108,7 @@ def _affixes_from_tooltip_values(
 
 def _match_d4builds_tooltip_affix(text: str, item_type: ItemType, guessed_set_name: str | None = None) -> str | None:
     stat_clean = clean_str(_corrections(input_str=text))
-    affix_dict = affix_dict_for_item_type(item_type=item_type)
+    affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
     if (
         item_type == ItemType.HoradricSeal
         and guessed_set_name
@@ -125,21 +124,31 @@ def _match_d4builds_tooltip_affix(text: str, item_type: ItemType, guessed_set_na
 
 def _tooltip_texts(tooltip_html: str, value_xpath: str) -> list[str]:
     tooltip = _tooltip_element(tooltip_html)
-    return [] if tooltip is None else _texts_from_nodes(tooltip.xpath(value_xpath))
+    return [] if tooltip is None else _texts_from_nodes(_xpath_elements(tooltip, value_xpath))
 
 
-def _tooltip_element(tooltip_html: str) -> lxml.html.HtmlElement | None:
+def _tooltip_element(tooltip_html: str) -> etree._Element | None:
     if not tooltip_html:
         return None
-    return lxml.html.fromstring(tooltip_html)
+    return lxml.html.fromstring(tooltip_html, parser=lxml.html.HTMLParser())
 
 
-def _texts_from_nodes(nodes: list[lxml.html.HtmlElement]) -> list[str]:
-    return [text for node in nodes if (text := " ".join(node.text_content().split()))]
+def _xpath_elements(element: etree._Element, xpath: str) -> list[etree._Element]:
+    nodes = element.xpath(xpath)
+    if not isinstance(nodes, list):
+        return []
+    return [node for node in nodes if isinstance(node, etree._Element)]
 
 
-def _first_text(tooltip: lxml.html.HtmlElement, xpath: str) -> str:
-    return _texts_from_nodes(tooltip.xpath(xpath))[0] if tooltip.xpath(xpath) else ""
+def _texts_from_nodes(nodes: list[etree._Element]) -> list[str]:
+    return [
+        text for node in nodes if (text := " ".join(etree.tostring(node, method="text", encoding="unicode").split()))
+    ]
+
+
+def _first_text(tooltip: etree._Element, xpath: str) -> str:
+    nodes = _xpath_elements(tooltip, xpath)
+    return _texts_from_nodes(nodes)[0] if nodes else ""
 
 
 __all__ = [name for name in globals() if not name.startswith("__")]
@@ -206,7 +215,7 @@ def _create_charm_filter_from_tooltip_html(
     set_name = correct_name(_first_text(tooltip=tooltip, xpath=CHARM_TOOLTIP_SET_NAME_XPATH))
     unique_name = correct_name(_first_text(tooltip=tooltip, xpath=CHARM_TOOLTIP_UNIQUE_XPATH))
     affixes = _affixes_from_tooltip_values(
-        texts=_texts_from_nodes(tooltip.xpath(CHARM_TOOLTIP_VALUE_XPATH)), item_type=ItemType.Charm
+        texts=_texts_from_nodes(_xpath_elements(tooltip, CHARM_TOOLTIP_VALUE_XPATH)), item_type=ItemType.Charm
     )
 
     if not affixes and not unique_name and not set_name:

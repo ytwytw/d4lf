@@ -3,9 +3,10 @@
 import json
 import re
 from pathlib import Path
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar, cast
 
 from src.tools.data_generation.affix_helpers import (
+    power_index,
     replace_numeric_value_placeholders,
     replace_parameter_placeholder,
     update_affix_localisation_id,
@@ -21,22 +22,14 @@ from src.tools.data_generation.common import (
     load_json_file,
     remove_content_in_braces,
     string_list_map,
+    write_json_file,
 )
 from src.tools.data_generation.constants import EXPECTED_MISSING_AFFIX_LOCALISATIONS
 
+if TYPE_CHECKING:
+    from src.type_aliases import JsonValue
+
 DataT = TypeVar("DataT")
-
-
-def _power_index(core_toc: dict[str, dict[str, str]], d4data_dir: Path) -> dict[int, str]:
-    indexed_powers = core_toc.get("29")
-    if indexed_powers:
-        return {int(sno): power_name for sno, power_name in indexed_powers.items()}
-    return {
-        int(power_data["__snoID__"]): power_data["__fileName__"]
-        for power_data in (
-            load_json_file(power_file) for power_file in sorted((d4data_dir / "json/base/meta/Power").glob("*.json"))
-        )
-    }
 
 
 def companion_style_affix_description(
@@ -116,13 +109,22 @@ def affix_string_description(
     return description
 
 
+def _is_internal_test_seal(affix_name: str, source_path: str) -> bool:
+    folded_name = affix_name.casefold()
+    folded_path = source_path.casefold()
+    return "_gurtest" in folded_name or "talisman_seal_gurtest" in folded_path
+
+
 def _generate_affix(
     affix_file: Path, context: AffixGenerationContext, d4data_dir: Path, language: str
 ) -> tuple[str, str, str] | None:
-    affix_data = load_json_file(affix_file)
-    affix_name = Path(affix_data["__fileName__"]).stem
+    affix_data = cast("AffixData", load_json_file(affix_file))
+    source_path = affix_data["__fileName__"]
+    affix_name = Path(source_path).stem
     is_seal_affix = affix_name.startswith("Talisman_SealAffix_")
     is_charm_affix = affix_name.startswith("Talisman_Charm_")
+    if is_seal_affix and _is_internal_test_seal(affix_name, source_path):
+        return None
     if affix_data.get("eMagicType") != 0 and not is_seal_affix:
         return None
     if affix_name.startswith("zz"):
@@ -153,10 +155,12 @@ def _generate_affix(
     return category, key, value
 
 
-def generate_affixes(d4data_dir: Path, language: str, output_file: Path | None = None):
+def generate_affixes(d4data_dir: Path, language: str, output_file: Path | None = None) -> int:
     print(f"Gen Affixes for {language}")
-    core_toc = load_json_file(d4data_dir / "json/base/CoreTOC.dat.json")
-    gbid = load_json_file(d4data_dir / "json/GBID.json")
+    core_toc = cast(
+        "dict[str, dict[str, str] | dict[str, list[str]]]", load_json_file(d4data_dir / "json/base/CoreTOC.dat.json")
+    )
+    gbid = cast("dict[str, dict[str, list[str]]]", load_json_file(d4data_dir / "json/GBID.json"))
     string_list_dir = d4data_dir / f"json/{language}_Text/meta/StringList"
     attribute_descriptions = string_list_map(string_list_dir / "AttributeDescriptions.stl.json")
     context: AffixGenerationContext = {
@@ -166,9 +170,13 @@ def generate_affixes(d4data_dir: Path, language: str, output_file: Path | None =
         "necromancer_army": string_list_map(string_list_dir / "NecromancerArmy.stl.json"),
         "skill_tags": string_list_map(string_list_dir / "SkillTags.stl.json"),
         "ui_tooltips": string_list_map(string_list_dir / "UIToolTips.stl.json"),
-        "power_by_sno": _power_index(core_toc, d4data_dir),
-        "skill_tags_by_sno": {int(key) % (2**32): value for key, value in core_toc.get("56", {}).items()},
-        "weapon_types_by_sno": {int(key) % (2**32): value for key, value in core_toc.get("116", {}).items()},
+        "power_by_sno": power_index(core_toc, d4data_dir),
+        "skill_tags_by_sno": {
+            int(key) % (2**32): value for key, value in cast("dict[str, list[str]]", core_toc.get("56", {})).items()
+        },
+        "weapon_types_by_sno": {
+            int(key) % (2**32): value for key, value in cast("dict[str, str]", core_toc.get("116", {})).items()
+        },
         "power_names_by_id": {},
     }
     if not context["skill_tags_by_sno"]:
@@ -191,19 +199,13 @@ def generate_affixes(d4data_dir: Path, language: str, output_file: Path | None =
     merge_custom_data(charm_dict, "charms_affixes", language)
 
     output_path = output_file or D4LF_BASE_DIR / f"assets/lang/{language}/affixes.json"
-    with output_path.open("w", encoding="utf-8") as json_file:
-        json.dump(affix_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(output_path, affix_dict)
 
     seal_output_path = D4LF_BASE_DIR / f"assets/lang/{language}/seals_affixes.json"
-    with seal_output_path.open("w", encoding="utf-8") as json_file:
-        json.dump(seal_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(seal_output_path, seal_dict)
 
     charm_output_path = D4LF_BASE_DIR / f"assets/lang/{language}/charms_affixes.json"
-    with charm_output_path.open("w", encoding="utf-8") as json_file:
-        json.dump(charm_dict, json_file, indent=4, ensure_ascii=False, sort_keys=True)
-        json_file.write("\n")
+    write_json_file(charm_output_path, charm_dict)
     return len(affix_files)
 
 
@@ -233,9 +235,9 @@ def merge_custom_data(data: list[DataT] | dict[str, DataT], name: str, language:
 
     if isinstance(data, list):
         _merge_list(data, custom, name)
-    elif _is_nested_data(data) and _is_nested_data(custom) and custom:
-        _merge_nested_dict(data, custom, name)
-    elif isinstance(data, dict):
+    elif _is_nested_data(cast("JsonValue", data)) and _is_nested_data(cast("JsonValue", custom)) and custom:
+        _merge_nested_dict(cast("dict[str, dict[str, DataT]]", data), cast("dict[str, dict[str, DataT]]", custom), name)
+    else:
         _merge_flat_dict(data, custom, name)
 
 

@@ -1,0 +1,157 @@
+{
+    "active_profile": 4,
+    "captured_on_utc": "2026-09-19",
+    "guide_visible_position": 4,
+    "items": {
+        "226": {
+            "explicits": [
+                {
+                    "nid": 2676293,
+                    "values": [
+                        2
+                    ]
+                },
+                {
+                    "nid": 2676294,
+                    "values": [
+                        0.5625
+                    ]
+                },
+                {
+                    "nid": 2686419,
+                    "values": [
+                        0.15
+                    ]
+                },
+                {
+                    "nid": 2676297,
+                    "values": [
+                        0.5
+                    ]
+                },
+                {
+                    "nid": 1829554,
+                    "values": [
+                        1531
+                    ]
+                },
+                {
+                    "nid": 2676305,
+                    "values": []
+                }
+            ],
+            "id": "Runeword_Enigma",
+            "power": 900,
+            "sockets": [
+                null,
+                null
+            ],
+            "upgrade": 25
+        },
+        "229": {
+            "id": "Boots_Legendary_Generic_053",
+            "name": "Armageddon Method",
+            "power": 900,
+            "upgrade": 25
+        },
+        "234": {
+            "id": "1HShield_Legendary_Generic_001",
+            "implicits": [
+                {
+                    "nid": 577278,
+                    "values": [
+                        0.2
+                    ]
+                },
+                {
+                    "nid": 1036913,
+                    "values": [
+                        1
+                    ]
+                }
+            ],
+            "name": "Grim Vow",
+            "power": 900,
+            "sockets": [
+                null
+            ],
+            "upgrade": 25
+        },
+        "238": {
+            "id": "Talisman_Charm_Set_Necro_04_02",
+            "name": "Imp Bounty",
+            "power": 900
+        }
+    },
+    "mapping_data": {
+        "affixes": {},
+        "attributeDescriptions": {},
+        "items": {
+            "1HShield_Legendary_Generic_001": {
+                "id": 592122,
+                "magicType": 1,
+                "name": "Bone Shield",
+                "type": "Shield"
+            },
+            "Boots_Legendary_Generic_053": {
+                "id": 444433,
+                "magicType": 1,
+                "name": "Runic Cleats",
+                "type": "Boots"
+            },
+            "Runeword_Enigma": {
+                "baseItem": "Chest_Normal_Generic_001",
+                "desc": "{c_important}JahIthBer{/c}",
+                "id": 2676290,
+                "magicType": 2,
+                "name": "Enigma",
+                "type": "ChestArmor"
+            },
+            "Talisman_Charm_Set_Necro_04_02": {
+                "id": 2426825,
+                "magicType": 3,
+                "name": "Fer of the Black Shroud",
+                "set": "Talisman_Necro_04",
+                "type": "Charm"
+            }
+        },
+        "skills": {}
+    },
+    "mapping_version": "3.2.1.73552",
+    "planner_api_url": "https://planners.maxroll.gg/profiles/d4/iz19bx0q",
+    "planner_url": "https://maxroll.gg/d4/planner/iz19bx0q#5",
+    "profiles": [
+        {
+            "hidden": true,
+            "name": "Leveling"
+        },
+        {
+            "name": "Starter"
+        },
+        {
+            "name": "Mid Game"
+        },
+        {
+            "hidden": false,
+            "name": "Mages"
+        },
+        {
+            "hidden": true,
+            "name": "Singularity"
+        },
+        {
+            "hidden": true,
+            "name": "Zookeeper"
+        },
+        {
+            "hidden": true,
+            "name": "Singularity Bone Mages"
+        },
+        {
+            "hidden": true,
+            "name": "Warrior"
+        }
+    ],
+    "scope": "Exact selected planner item records and profile identity fields; unrelated mapping fields and account metadata omitted.",
+    "source_url": "https://maxroll.gg/d4/build-guides/minion-necromancer-guide"
+}

@@ -4,9 +4,12 @@ from typing import TYPE_CHECKING
 
 import src.perception
 from src import automation
-from src.item import ASPECT_UPGRADES_LABEL, AffixType, Filter, ItemRarity, ItemType, is_sigil
+from src.diagnostics import capture_latest_failure
+from src.game_data import ItemRarity, ItemType, is_sigil
+from src.item import ASPECT_UPGRADES_LABEL, AffixType
+from src.item.filter import Filter
 from src.loot.colors import drop_item_from_inventory, is_ignored_item, mark_as_favorite, mark_as_junk, reset_item_status
-from src.perception import capture, screenshot
+from src.perception import capture
 from src.settings import ItemRefreshType, UnfilteredUniquesType, get_settings
 
 if TYPE_CHECKING:
@@ -17,7 +20,7 @@ LOGGER = logging.getLogger(__name__)
 
 def check_items(
     inv: Inventory, force_refresh: ItemRefreshType, stash_is_open: bool = False, no_match_action: str = "junk"
-):
+) -> None:
     occupied, _ = inv.get_item_slots()
 
     def _handle_no_match() -> None:
@@ -43,22 +46,25 @@ def check_items(
     for item in occupied:
         if item.is_junk or item.is_fav:
             continue
+        sequence_before_hover = src.perception.latest_item_sequence()
         inv.hover_item_with_delay(item)
         time.sleep(0.1)
         img = capture()
         item_descr = None
-        retry_count = 0
-
-        while item_descr is None and retry_count != 2:
+        for retry_count in range(10):
             try:
-                item_descr = src.perception.read_latest_item()
+                item_descr = src.perception.read_latest_item(after_sequence=sequence_before_hover)
                 LOGGER.debug(f"Attempt {retry_count} to parse item based on TTS: {item_descr}")
-                retry_count += 1
-            except Exception:
-                screenshot("tts_error", img=img)
+            except Exception as error:
+                capture_latest_failure(reason="loot-filter-item-parse", image=img, error=error)
                 LOGGER.exception(f"Error in TTS read_descr. {src.perception.latest_item_lines()=}")
+                break
+            if item_descr is not None:
+                break
+            time.sleep(0.1)
 
         if item_descr is None:
+            LOGGER.warning("Skipping inventory slot: no fresh, valid item text after hovering.")
             continue
 
         # Hardcoded filters
@@ -75,8 +81,10 @@ def check_items(
         if item_descr.affixes and all(affix.type == AffixType.greater for affix in item_descr.affixes):
             num_of_items_with_all_ga += 1
 
-        # Check if we want to keep the item
         res = Filter().should_keep(item_descr)
+        if res.skipped:
+            continue
+
         matched_any_affixes = len(res.matched) > 0 and len(res.matched[0].matched_affixes) > 0
         matched_profile_legendary_aspect = any(
             match.profile.endswith(f".{ASPECT_UPGRADES_LABEL}") for match in res.matched
@@ -86,30 +94,25 @@ def check_items(
         if item_descr.rarity == ItemRarity.Unique and item_descr.item_type != ItemType.Tribute:
             if not res.keep:
                 _handle_no_match()
-            elif res.keep:
-                if len(res.matched) == 1 and res.matched[0].profile.lower() == "cosmetics":
-                    LOGGER.info("Ignoring unique because it matches no filters and is a cosmetic upgrade.")
-                elif any(match.aspect_match for match in res.matched) and get_settings().general.mark_as_favorite:
-                    # This means it was a legitimate match, not an ignore
-                    mark_as_favorite()
-                elif get_settings().general.handle_uniques == UnfilteredUniquesType.favorite:
-                    mark_as_favorite()
+            elif len(res.matched) == 1 and res.matched[0].profile.lower() == "cosmetics":
+                LOGGER.info("Ignoring unique because it matches no filters and is a cosmetic upgrade.")
+            elif any(match.aspect_match for match in res.matched) and get_settings().general.mark_as_favorite:
+                # This means it was a legitimate match, not an ignore
+                mark_as_favorite()
+            elif get_settings().general.handle_uniques == UnfilteredUniquesType.favorite:
+                mark_as_favorite()
         elif not res.keep:
             if get_settings().general.do_not_junk_ancestral_legendaries and item_descr.is_ancestral:
                 LOGGER.info("Skipping marking as junk because it is an ancestral legendary.")
             else:
                 _handle_no_match()
         elif (
-            res.keep
-            and (
-                matched_any_affixes
-                or matched_profile_legendary_aspect
-                or item_descr.rarity == ItemRarity.Mythic
-                or is_sigil(item_descr.item_type)
-                or item_descr.item_type == ItemType.Tribute
-            )
-            and get_settings().general.mark_as_favorite
-        ):
+            matched_any_affixes
+            or matched_profile_legendary_aspect
+            or item_descr.rarity == ItemRarity.Mythic
+            or is_sigil(item_descr.item_type)
+            or item_descr.item_type == ItemType.Tribute
+        ) and get_settings().general.mark_as_favorite:
             mark_as_favorite()
 
     LOGGER.debug(f"Time to filter all items in stash/inventory tab: {time.time() - start_checking_items:.2f}s")

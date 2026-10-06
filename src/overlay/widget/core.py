@@ -2,9 +2,11 @@ import datetime
 import time
 import tkinter as tk
 from contextlib import suppress
-from typing import override
+from typing import TYPE_CHECKING, Protocol, cast, override
 
 from src.automation import WindowSpec
+from src.localization import translate
+from src.overlay import state as _state
 from src.overlay.settings import InfoSettingValue
 from src.overlay.settings import load_settings as load_info_settings
 from src.overlay.settings import save_settings as save_info_settings
@@ -13,15 +15,22 @@ from src.overlay.settings import setting_datetime as _setting_datetime
 from src.overlay.settings import setting_int as _setting_int
 from src.overlay.settings import setting_str as _setting_str
 from src.overlay.statistics import SessionStats
-from src.overlay.widget import shared as _widget_shared
 from src.overlay.widget.shared import TRANSPARENT_KEY, OverlayContract
 from src.perception import game_window_roi
 from src.settings import get_settings
 
+if TYPE_CHECKING:
+    from src.overlay.widget.widget import BossTimerOverlay
+
+
+class _OverlayClosed(Protocol):
+    def __call__(self, overlay: BossTimerOverlay | None) -> None: ...
+
 
 class _OverlayCore(OverlayContract):
-    def __init__(self, parent):
+    def __init__(self, parent: tk.Misc, on_closed: _OverlayClosed | None = None) -> None:
         super().__init__(parent)
+        self._on_closed = on_closed
         self._after_ids: list[str] = []
         self._closing: bool = False
         self._gold_initialized: bool = False
@@ -59,7 +68,7 @@ class _OverlayCore(OverlayContract):
         self.synced_helltide: datetime.datetime | None
         self.labels_to_resize: list[tk.Label] = []
 
-        self.title("D4LF Boss Timer")
+        self.title(translate("info.title"))
         self.attributes("-topmost", 1)
         self.overrideredirect(boolean=True)
         self.wm_attributes("-transparentcolor", TRANSPARENT_KEY)
@@ -72,6 +81,7 @@ class _OverlayCore(OverlayContract):
 
         self._flash_toggle = False
         self._setup_ui()
+        self._setup_localization()
         self._bind_events()
         self._update_timers()  # Initial update for timers
 
@@ -96,17 +106,19 @@ class _OverlayCore(OverlayContract):
         self._close_all_submenus()
 
         self._session_stats.unsubscribe()
+        self._stop_localization()
         self._menu_vars.clear()
 
         # The root is the shared UI thread's root, not ours to tear down —
         # only destroy this Toplevel.
         super().destroy()
 
-        with _widget_shared._OVERLAY_LOCK:
-            if _widget_shared._OVERLAY_INSTANCE is self:
-                _widget_shared._OVERLAY_INSTANCE = None
+        if self._on_closed is not None:
+            self._on_closed(cast("BossTimerOverlay", self))
+        else:
+            _state.clear_overlay(cast("BossTimerOverlay", self))
 
-    def _apply_loaded_settings(self):
+    def _apply_loaded_settings(self) -> None:
         # Transition to relative coordinates: Add the current game window offset to the saved position.
         roi = game_window_roi()
         offset_x = roi.get("left", 0) if roi else 0
@@ -144,7 +156,7 @@ class _OverlayCore(OverlayContract):
         self._gold_initialized = self.capture_gold_stats and stats.last_gold is not None
         self._exp_initialized = self.capture_exp_stats and stats.last_exp is not None
 
-    def _save_settings(self):
+    def _save_settings(self) -> None:
         roi = game_window_roi()
         offset_x = roi.get("left", 0) if roi else 0
         offset_y = roi.get("top", 0) if roi else 0
@@ -178,9 +190,10 @@ class _OverlayCore(OverlayContract):
             if w is parent:
                 return True
             try:
-                w = getattr(w, "master", None)
-                if not isinstance(w, tk.Misc):
+                master = getattr(w, "master", None)
+                if not isinstance(master, tk.Misc):
                     break
+                w = master
             except AttributeError, RuntimeError, tk.TclError:
                 break
         return False

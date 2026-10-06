@@ -1,121 +1,109 @@
-# ![logo](assets/logo.png)
+# D4LF 简体中文增强版
 
-Filter items and sigils in your inventory based on affixes, aspects and thresholds of their values. For questions,
-feature request or issue reports join the [discord](https://discord.gg/YyzaPhAN6T) or use github issues.
+[English](README.en.md)
 
-![sample](assets/thumbnail.jpg)
+`main` 是面向用户的当前版本分支。安装程序请使用 [Releases](https://github.com/ytwytw/d4lf/releases) 中的完整程序包。
 
-## Features
+D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和《暗黑破坏神 IV》的
+无障碍 TTS 文本识别物品，并按照本地 Profile 显示保留或丢弃结果。本分支在上游
+[D4LF](https://github.com/d4lfteam/d4lf) V10 基础上增加简体中文客户端解析、双语界面和
+跨语言 Build 导入。
 
-- Filter items in inventory and stash
-- Filter by item type, item power and greater affix count
-- Filter by affix and their values, with per-affix greater affix requirements
-- Filter affixes and sigils by item rarity (e.g. keep only rare craft bases, not the equivalent legendary)
-- Filter uniques by their affix and aspect values
-- Filter seals and charms by affixes, rarity, charm set, or unique aspect
-- Filter sigils by blacklisting and whitelisting locations and affixes
-- Filter tributes by name or rarity
-- Quickly move items from your stash or inventory
-- Supported resolutions are all aspect ratios between 16:10 and 21:9
-- Info Panel Overlay for tracking world events and session statistics
-- Paragon Overlay with import from supported build planners (Mobalytics, Maxroll, D4Builds)
+> 本项目不是暴雪官方工具。使用任何第三方辅助工具都无法保证账号零风险，请自行判断并承担风险。
 
-## Donations
+![D4LF 界面预览](assets/thumbnail.jpg)
 
-If D4LF is useful to you and you want to support the project, consider supporting the project on [Ko-fi](https://ko-fi.com/d4lfteam).
-The money goes directly to help funding expenses related to the project.
-Also share D4LF with your friends and in your communities.
+## 主要功能
 
-## How to Setup
+- 支持简体中文与英文游戏客户端；设置中的语言会同时切换界面和游戏文本解析。
+- 按装备类型、物品强度、稀有度、词缀、暗金特效和数值阈值过滤装备。
+- 支持物品栏、储物箱、快速视觉模式、匹配高亮、信息面板和巅峰盘悬浮层。
+- 从 [Maxroll](https://maxroll.gg/d4/)、[Mobalytics](https://mobalytics.gg/diablo-4/builds)、
+  [D4Builds](https://d4builds.gg/)、[InfinityBuilds](https://infinitybuilds.gg/) 和
+  [暗黑核 D2Core](https://www.d2core.com/d4/planner) 导入 Build。
+- Build 来源语言与游戏语言相互独立：英文 Build 可用于中文或英文客户端，中文 D2Core
+  Build 也可用于中文或英文客户端。
+- 战利品工具提供游戏过滤器生成／独立编辑、完整物品导出、装备来源与词条资料库。
+  使用方法及资料覆盖边界见[战利品工具说明](docs/loot-tools.zh-CN.md)。
 
-### Installation and quick start guide (New instructions for season 12 that must be followed!)
+## 安装
 
-- Download and extract the latest version (.zip) from the releases: https://github.com/d4lfteam/d4lf/releases
-- Find your "Diablo IV" directory. Copy the path and have it in your clipboard:
-  - In Battle.net, click the gear icon next to the Play button and select "Open in Explorer"
-  - In Steam, right click the game, select Manage > Browse local files
-- D4LF gets item information by reading the screen and using TTS information sent for accessibility. TTS setup takes additional steps, detailed below. For more information on the install_dll.cmd script, see [the TTS section](https://github.com/d4lfteam/d4lf/blob/main/README.md#tts)
-  - Navigate to your downloaded d4lf directory
-  - Double-click `install_dll.cmd`
-    - If asked for administrator permissions, provide them.
-    - When asked for your Diablo 4 path, provide it
-    - When asked to install a certificate, allow it.
-    - If everything is successful, proceed with the guide. Otherwise join the [discord](https://discord.gg/YyzaPhAN6T) or post an issue in github.
-- Generate a profile of what Diablo 4 items you want to filter for. To do so you have a few options:
-  - Run d4lf.exe and import a profile using the import window by pasting a build page from popular planner websites
-  - Create one yourself by looking at the [examples](#how-to-filter--profiles) below and using the profile editor to recreate
-- If created manually (not recommended), place the profile in the `C:/Users/<WINDOWS_USER>/.d4lf/profiles` folder. The D4LF
-  Settings window has a button to open this folder directly. If imported they are placed there automatically.
-- Run d4lf.exe and use the Settings button to configure the profiles in the Profile section. Check the box next to the profiles you would like to use.
-- Ensure all [game settings](#game-settings) are configured properly.
-- If you made changes, restart d4lf.exe and launch Diablo 4.
-- Use the hotkeys listed in d4lf.exe to run filtering. By default, F11 will run the loot filter and filter your items.
-- For most common issues, if something is wrong, you will see an error or warning when you start d4lf.exe. Join our [discord](https://discord.gg/YyzaPhAN6T) for more help.
+当前版本为 **`10.0.7+zhcn.2` 候选版**，尚未发布下载包。正式发行包发布后可从
+[Releases](https://github.com/ytwytw/d4lf/releases) 下载；请使用包含 EXE 和资源的完整程序包。
+新功能和已知限制见[版本说明](docs/release-notes.zh-CN.md)。
 
-### Game Settings
+1. 将已核对版本的完整本地候选包解压到新目录；正式发行包仅在本仓库 [Releases](https://github.com/ytwytw/d4lf/releases) 实际发布后下载。
+1. 找到《暗黑破坏神 IV》安装目录。
+1. 先退出游戏；安装脚本会替换游戏目录中的 `saapi64.dll` 并可能关闭仍在运行的游戏。
+1. 双击 `install_dll.cmd`，按提示提供游戏目录并允许安装本地签名证书。
+1. 启动 `d4lf.exe`，在 `设置 > 系统 > 语言` 中选择游戏客户端实际使用的语言。
+1. 在游戏中启用高级说明信息、屏幕阅读器和第三方屏幕阅读器；字体大小使用小或中，关闭 HDR。
+1. 导入 Build 或创建 Profile，在设置中启用需要使用的 Profile。
+1. 首次使用先启用“仅视觉模式”，用快速视觉模式悬停已装备物品和背包装备，确认解析和保留提示正确。
+1. 核对 Profile 后再关闭“仅视觉模式”并使用主界面热键；默认 `F11` 会自动标记未匹配装备，不是只读预览。
 
-- Game Language must be English
-- IMPORTANT: Advanced Tooltip Information must be enabled in Options > Gameplay > Gameplay. If you don't do this then item parsing will be very inconsistent and you will receive no warning something is wrong.
-- Font scale in Graphics settings must be small or medium
-- HDR makes the screen too bright and D4LF is unable to read the state of some items on screen. It must be disabled.
-- Use Screen Reader must be enabled in Options > Accessibility
-- 3rd Party Screen Reader must be enabled in Options > Accessibility (The voice will go away when DLL is installed, see quick start guide above)
+如果 TTS 一直无法连接，可尝试以管理员身份运行游戏和启动器。配置损坏时，退出 D4LF 后备份并重命名
+`%USERPROFILE%\.d4lf\params.ini`，再通过设置界面重新配置。
 
-### Common problems
+## 第 15 赛季版本与升级
 
-- The tool shows a warning saying "TTS connection has not been made yet." but I've set everything up correctly.
-  - If you're seeing this error, it means D4LF has found the DLL is in the correct location but the TTS connection is
-    still not being made. This is most likely due to an issue with your windows user not allowing Diablo to connect to
-    the third party screen reader. The following steps should resolve it:
-    - Set Diablo 4 to run as administrator. First, navigate to your Diablo 4 directory.
-      - Steam User: Right click on the game and choose Properties. In that menu, go to Installed Files and hit Browse.
-      - Battle.net User: On the game page, click the gear icon and choose Show in Explorer
-    - Right-click on Diablo IV.exe and go to Properties. In the Compatibility tab, check the box that says "Run this program as an administrator"
-    - Run Diablo 4 again through Steam/Battle.net and see if that resolved the issue.
-    - If it did not, set Steam/Battle.net to run as administrator as well and make sure you are running Diablo through Steam. This should resolve the issue.
-- The GUI crashes immediately upon opening, with no error message given
-  - This almost always means there is an issue in your params.ini, the backing file for our Settings. Delete the file in `C:/Users/<WINDOWS_USER>/.d4lf/` and then open the GUI and configure
-    your params.ini through the Settings window in D4LF. Using the GUI for configuration will ensure the file is always accurate.
-- Mouse control isn't possible
-  - Due to your local windows settings, the tool might not be able to control the mouse. Just run the tool as admin
-    and it should work. If you don't want to run it as admin, you can disable the mouse control entirely by enabling Settings > Automation > Vision Mode Only
+当前版本基于上游 `10.0.7`，包含 Build 导入、中文识别与应用内重启修复。
+部分新物品可能尚未收录，名称相同但效果不同的物品需要完整说明才能识别。
+建议先用“仅视觉模式”核对结果，再启用自动标记。
 
-### TTS
+- 升级前退出 D4LF，备份整个 `%USERPROFILE%\.d4lf`，保留旧完整程序目录。
+  此目录含 `params.ini`、`profiles`、`native_filters`、`exports\inventory` 及诊断留样；自行另存的文件需另备份。
+- 将同一版本的 EXE 和 assets 一起解压到新目录；同一 Windows 账户仍读取原来的 `.d4lf`，无需将个人数据复制进程序目录。
+  首次启动核对版本、语言、热键和已启用 Profile，再用“仅视觉模式”检查识别结果。V9 升 V10 应重新导入不兼容的 Profile。
+- 从旧版本升级到此版本建议手动下载、解压到新目录；旧版 `autoupdater.bat` 的行为不会被本次修复追溯改变。
+- 本版本随附的 `autoupdater.bat` 仅检查本仓库更新，不降级，不删除安装目录中的额外文件。
+  复制失败会保留 `temp_update` 供恢复；需要时从发布 ZIP 手动解压修复，不要混用不同版本的 EXE 和 assets。
+- 应用升级不会替换游戏目录中的 DLL；只有发布说明要求更新 DLL 时，才在关闭游戏后重新运行 `install_dll.cmd`。
+- 回退时先退出新版，并另备份新版运行后的 `.d4lf`，再启动保留的旧完整程序目录。
+  若旧版不能读取更新后的配置或文档，在保存两份备份后恢复升级前的 `.d4lf`；不要把新旧配置或资源混成一份。
+  自动更新器不执行降级；回退也不自动恢复游戏 DLL，应遵循所回退版本的安装说明。
 
-D4 uses a third-party TTS engine called Tolk. Tolk has a feature that allows custom third-party TTS DLLs to be loaded.
-D4 automatically loads the DLL, which actually just sends the text to another application rather than reading it aloud.
-This is similar to having a Braille TTS application for D4.
+战利品工具的保存位置、导出状态和故障排查集中在[使用说明](docs/loot-tools.zh-CN.md)。
+物品导出以 TTS 原文为主，不会自动用截图补齐缺失字段，也不读取游戏内部状态。
 
-The TTS dll (`saapi64.dll`) must be signed for Diablo 4 to pick it up. The `install_dll.cmd` script handles all of this for you. It will:
+## 跨语言 Build 导入
 
-- Copy the dll file to the Diablo 4 directory
-- Download the signtool needed to add a local signature to the dll
-- Runs the signtool and signs the dll
+导入器先把网站数据解析成稳定的内部标识，再根据当前界面和游戏语言显示名称。因此：
 
-## GUI Overview
+| Build 来源                                         | 中文客户端 | 英文客户端 |
+| -------------------------------------------------- | ---------- | ---------- |
+| 英文 Maxroll、Mobalytics、D4Builds、InfinityBuilds | 支持       | 支持       |
+| 中文 D2Core                                        | 支持       | 支持       |
 
-d4lf.exe is the one-stop shop for all operations, including running the D4LF process and any configuration changes.
+网站内容变化、赛季更新或无法精确匹配的词条会被跳过并记录日志，不会用模糊翻译强行猜测。
+导入后请在 Profile 编辑器中检查结果。
 
-If you prefer a standalone console-only experience, you can run d4lf-consoleonly.bat instead which will not open a GUI
-as well. It is still recommended you open the GUI for any configurations management.
+## 数据与致谢
 
-Current functionality:
+感谢 [D4LF](https://github.com/d4lfteam/d4lf)、[暗黑核 D2Core](https://www.d2core.com/d4/planner)
+及其他社区资料项目。装备资料为离线快照，缺少译名、掉落地点或概率时显示未知。
+数据来源、版本和归属见[资料来源说明](assets/equipment_knowledge/NOTICE.md)。
 
-- Import builds from maxroll/d4builds/mobalytics/infinitybuilds
-- Complete management of your settings through the Settings window
-- A beta version of a manual profile editor/creator
+## 诊断与隐私
+
+- 自动失败留样默认关闭。
+- 独立诊断页默认隐藏，需在高级设置中明确启用。
+- 留样和诊断数据只保存在本机的 `%USERPROFILE%\.d4lf\captures`。
+- 功能不会上传数据，也不会录制麦克风。
+- 自动留样仅在识别失败时保存必要的屏幕截图、TTS 文本和清单；手动诊断录制可独立启停。
+
+截图可能包含游戏角色名、聊天或其他屏幕内容。公开报告问题前请先检查并脱敏。
+库存导出也只保存在本机。反馈问题时只提供必要且已脱敏的信息，无需分享整个 `.d4lf` 目录。
+
+## 界面与配置
 
 ### Main Screen
-
-(Documentation in progress)
 
 The main screen contains the log of what D4LF is doing when it is filtering items. Any errors are posted here.
 
 It contains navigation buttons to get to the Profile Importer, Settings, and Profile Editor.
 
 ### Profile Importer
-
-(Documentation in progress)
 
 Import profiles from the following popular build sites: Maxroll, Mobalytics, D4Builds, InfinityBuilds.
 
@@ -135,11 +123,23 @@ Some commonly modified setting sections:
 
 This is where you activate/deactivate your profiles. You can change the order of the profiles as well by dragging on the
 6 dot icon. The top listed profile is what Vision Mode With Highlighting will show squares for when hovering over an
-item so the order can matter. However, if an item matches any profile at all it will be kept.
+item so the order can matter. However, a matching rule produces a keep only when the item's filterable item category is
+enabled. Disabling a category leaves every item in that category untouched, including Mythics.
 
 #### Loot Behavior
 
-Here you can change how we handle items that don't match a filter at all, for example uniques or codex upgrades.
+Here you can change how we handle items that don't match a filter at all, for example uniques or codex upgrades. The
+following loot filter overrides independently control whether D4LF applies profile rules to each filterable item
+category:
+
+- Filter Equipment
+- Filter Sigils
+- Filter Tributes
+- Filter Seals
+- Filter Charms
+
+When an override is disabled, all items in that category are left untouched while the active profile rules are
+preserved. The Mythic always-keep rule applies only when that category is enabled.
 
 #### Stash & Transfer
 
@@ -165,13 +165,12 @@ If you would like for the fast vision mode box to appear somewhere else, you can
 
 ### Profile Editor
 
-(Documentation still in progress)
-
 The Profile Editor allows you to edit your profiles. It is still in beta. The Sigils tab supports global affix rules (blacklist an affix on every sigil without picking a dungeon) and the sigil rarity gate, alongside an affix rarity picker on the Affixes tab.
 
 ## How to filter / Profiles
 
-All profiles define whitelist filters. If no filter included in your profiles matches the item, it will be discarded.
+All profiles define whitelist filters. If no filter included in your profiles matches an item in an enabled filterable
+item category, it will be marked as junk (or dropped in drop mode). Disabled categories are left untouched, including Mythics.
 
 Your config files will be validated on startup and will prevent the program from starting if the structure or syntax is
 incorrect. The error message will provide hints about the specific problem.
@@ -179,9 +178,9 @@ incorrect. The error message will provide hints about the specific problem.
 The following sections will explain each type of filter that you can specify in your profiles. How you define them in
 your YAML files is up to you; you can put all of these into just one file or have a dedicated file for each type of
 filter, or even split the same type of filter over multiple files. Ultimately, all profiles specified in
-the Profiles section of Settings will be used to determine if an item should be kept. If one of the profiles wants to keep the item, it
-will be kept regardless of the other profiles. Similarly, if a filter is missing in all profiles (e.g., there is
-no `Sigils` section in any profile), all corresponding items (in this case, sigils) will be kept.
+the Profiles section of Settings will be used to determine if an item should be kept when its category is enabled. If one
+of the profiles wants to keep the item, it will be kept regardless of the other profiles. Similarly, if a filter is missing in all profiles (e.g., there is
+no `Sigils` section in any profile), all corresponding items (in this case, sigils) will be kept when Sigils filtering is enabled.
 
 ### Affix / Unique Aspect Filter Syntax
 
@@ -216,7 +215,7 @@ has a name and can filter for any combination of the following:
   See [assets/lang/enUS/item_types.json](assets/lang/enUS/item_types.json)
 - `rarity`: A single rarity or a list of rarities the rule should match. An empty/absent value matches all rarities. Values
   are case-insensitive. See [Filtering on rarity](#filtering-on-rarity) for details and the list of rarities
-  in [rarity.py](src/item/data/rarity.py)
+  in [rarity.py](https://github.com/d4lfteam/d4lf/blob/v10.0.3/src/game_data/rarity.py)
 - `minPower`: Minimum item power
 - `minGreaterAffixCount`: Minimum number of greater affixes expected on the overall item. See [Greater Affix Filtering](#greater-affix-filtering) for more information on filtering GAs.
 - `affixPool`: A list of multiple different rulesets to filter for. Each ruleset must be fulfilled or the item is
@@ -350,7 +349,7 @@ Use `rarity` to restrict an affix rule to specific item rarities.
 - If `rarity` is omitted, the rule matches all rarities.
 - `rarity` accepts one value (`rarity: rare`) or a list (`rarity: [common, magic, rare]`).
 
-The valid rarities are listed in [rarity.py](src/item/data/rarity.py).
+The valid rarities are listed in [rarity.py](https://github.com/d4lfteam/d4lf/blob/v10.0.3/src/game_data/rarity.py).
 
 <details><summary>Config Examples</summary>
 
@@ -594,7 +593,7 @@ Charms:
 
 </details>
 
-Mythic seals and charms will always be kept, even if they don't match a profile.
+Mythic seals and charms are kept without matching a profile when their category is enabled; disabled categories are untouched.
 
 ### AspectUpgrades
 
@@ -712,7 +711,7 @@ Tributes are defined by the top-level key `Tributes`. Use an object with `name` 
 A tribute is kept if its name is in the `name` list **or** its rarity is in the `rarity` list.
 Omitting a key means that dimension is not checked at all. If no `Tributes` filter is provided, all tributes are kept.
 
-Mythic tributes are always kept no matter what.
+Mythic tributes are kept without matching a profile when tribute filtering is enabled; otherwise they are untouched.
 
 <details><summary>Config Examples</summary>
 
@@ -730,7 +729,7 @@ Tributes:
   name: [harmony, ascendance_resolute]
 ```
 
-You can also filter by rarity. The valid rarities are listed in [rarity.py](src/item/data/rarity.py).
+You can also filter by rarity. The valid rarities are listed in [rarity.py](https://github.com/d4lfteam/d4lf/blob/v10.0.3/src/game_data/rarity.py).
 
 ```yaml
 # Keeps only legendary and unique tributes
@@ -751,7 +750,7 @@ Tributes:
 
 Tribute names are lower case and spaces are replaced by underscore. Parentheses are removed. Note that United and
 Resolute identifiers are part of the names in [assets/lang/enUS/tributes.json](assets/lang/enUS/tributes.json). You can find the list of item rarities
-in [rarity.py](src/item/data/rarity.py)
+in [rarity.py](https://github.com/d4lfteam/d4lf/blob/v10.0.3/src/game_data/rarity.py)
 
 ### GlobalUniques
 
@@ -760,8 +759,8 @@ additionally want to keep other uniques that have particular stats, use the `Glo
 
 Global unique filters are defined by the top-level key `GlobalUniques`. It contains a list of parameters that you want
 to filter for. If no global unique filter is provided or if the item does not match any unique filter (affix or otherwise),
-uniques will be handled according to the handle_uniques configuration. All mythics are marked as favorite regardless of
-any filter or configuration.
+uniques will be handled according to the handle_uniques configuration. Mythics in enabled categories are kept regardless of
+profile matching; marking kept items as favorites still depends on `mark_as_favorite`. Disabled categories are untouched.
 
 The following global filters are available:
 
@@ -892,15 +891,7 @@ Configure exp bar position as shown here. This position seems to work the best f
   - **Automatic Scanning**: If "Inv Open (Capture EXP)" is enabled in settings, the overlay will automatically move your mouse over the experience bar to scan for updates whenever you open your inventory.
   - **Cooldown**: The "EXP Capture Time" setting controls how frequently these automatic scans occur, preventing excessive mouse movements.
 
-## Future Plans
-
-- A video explaining the initial setup
-- Finish GUI documentation
-- Want something done that's not mentioned here? Leave a suggestion in the [discord](https://discord.gg/YyzaPhAN6T) or use github issues. Or, make the changes yourself and open up a PR!
-
-## Advanced User Information
-
-This information is not really relevant to anyone, but preserved here for people who want to get into the weeds of how D4LF operates.
+## 本地配置文件
 
 ### Configs
 
@@ -913,73 +904,7 @@ The config folder in `C:/Users/<WINDOWS_USER>/.d4lf` contains:
 
 It is not expected you will modify these files manually, but the location could be useful to know in case of strange errors.
 
-## Develop
+## 反馈问题
 
-### Setup using uv
-
-If you intend to submit PRs, create your own fork of d4lf and clone that in the steps below.
-
-Before beginning, [install uv](https://docs.astral.sh/uv/getting-started/installation/#winget).
-
-```bash
-git clone https://github.com/d4lfteam/d4lf
-cd d4lf
-uv sync
-uv run python -m src.main
-```
-
-#### Non-Windows development mode (macOS/Linux)
-
-You can run the GUI on macOS/Linux for development:
-
-```bash
-uv run python -m src.main
-```
-
-On non-Windows platforms, D4LF now starts in **GUI-only mode** automatically. This allows you to use the GUI and edit settings/profiles, but Windows runtime features are disabled (TTS pipe connection, Diablo window detection, overlays/hotkeys/automation that require Windows APIs).
-
-If you receive an error about missing Visual Studio code, follow the link it provides. Install Visual Studio Build Tools 2022 with the defaults selected and also select "MSVC VS 2022 C++ ..." and "Windows 11 SDK ...". Restart your terminal and try again.
-
-This StackOverflow provides a good outline on the proper process for keeping your main branch up to date and submitting PRs: https://stackoverflow.com/questions/20956154/whats-the-workflow-to-contribute-to-an-open-source-project-using-git-pull-reque
-
-### Formatting & Linting
-
-Just use [prek](https://prek.j178.dev/).
-
-Then run:
-
-```bash
-uv run prek run -a
-uv run pytest . -m "not selenium" -v -n logical
-```
-
-To automatically run prek before every push, you can install it as a git hook with:
-
-```bash
-uv run pip install pre-commit
-uv run pre-commit install --hook-type pre-push
-```
-
-Now every push will automatically run our pre-commit checks.
-
-### A note on use of AI for PRs
-
-AI usage is not banned for D4LF, but some things need to be kept in mind:
-
-- You are responsible for any PR you submit.
-  - It is expected you have tested your code
-  - It is expected you will fix any bugs resulting from your work
-  - You need to have an understanding of the changes you're making and why you're making them
-- PRs should change as little code as possible, only what needs to be changed for the new feature you are implementing.
-- Unless something is being deleted, existing code comments should be maintained
-- There should be 1 PR per feature. Try to keep PRs small. The release notes are generated from the PR titles so if you put a lot of items into one PR we can't properly describe it in the release notes.
-- Be prepared for a lot of comments on your PR. Everything that's being done needs to be understandable by the maintainer because he has to fix it 3 months later if something goes wrong.
-
-Ultimately, please understand there is only 1 full-time maintainer of D4LF and that maintainer does not use AI. The code needs to remain human readable, and humans are who initially wrote it. If an AI and a human disagree, the human always wins. AIs can be helpful but also very stupid.
-
-## Credits
-
-- Icon based of: [CarbotAnimations](https://www.youtube.com/carbotanimations/about)
-- Some of the OCR code is originally from [@gleed](https://github.com/aliig). Good guy
-- Names and textures for matching from [Blizzard](https://www.blizzard.com)
-- Thanks to NekrosStratia for the initial idea and help with TTS mode
+项目许可证见 [LICENSE](LICENSE)。问题与改进建议请使用
+[GitHub Issues](https://github.com/ytwytw/d4lf/issues)。

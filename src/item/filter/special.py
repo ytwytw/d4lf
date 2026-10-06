@@ -1,11 +1,10 @@
 import logging
 from typing import TYPE_CHECKING
 
-from src.item.data.rarity import ItemRarity
+from src.game_data import ItemRarity, SigilRules
 from src.item.models import FilterResult, MatchedFilter
-from src.item.sigil_rules import SigilRules
 from src.profiles import CharmFilterModel, SigilPriority
-from src.settings import CosmeticFilterType, get_settings
+from src.settings import CosmeticFilterType
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -17,13 +16,15 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
+def _selected_cosmetic_filter(value: CosmeticFilterType | str) -> CosmeticFilterType:
+    return CosmeticFilterType(value)
+
+
 class FilterSpecialMixin:
-    @staticmethod
-    def _check_cosmetic(item: Item) -> FilterResult:
+    def _check_cosmetic(self: FilterContext, item: Item) -> FilterResult:
         res = FilterResult(keep=False, matched=[])
-        if get_settings().general.handle_cosmetics == CosmeticFilterType.junk or (
-            get_settings().general.handle_cosmetics == CosmeticFilterType.ignore and not item.cosmetic_upgrade
-        ):
+        handle_cosmetics = _selected_cosmetic_filter(self.evaluation_settings.handle_cosmetics)
+        if handle_cosmetics == CosmeticFilterType.junk:
             return res
         if not item.cosmetic_upgrade:
             return res

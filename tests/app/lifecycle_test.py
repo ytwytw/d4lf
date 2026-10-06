@@ -1,14 +1,20 @@
 import logging
 import os
 from collections import UserList
+from threading import Event
+from types import SimpleNamespace
 from typing import override
+
+from src.type_aliases import JsonValue
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
+from PyQt6.QtCore import QThread
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
+from src.app import lifecycle as lifecycle_module
 from src.app.lifecycle import UnifiedWindowLifecycle
 from src.app.shell import UnifiedMainWindow
 from src.desktop.activity import QtLogHandler
@@ -25,7 +31,7 @@ def test_lifecycle_is_a_qt_main_window_subclass() -> None:
 
 
 def test_close_event_preserves_existing_handler_registration(qapp: QApplication, monkeypatch) -> None:
-    class TrackingHandlerList(UserList[object]):
+    class TrackingHandlerList(UserList[JsonValue]):
         was_cleared = False
 
         @override
@@ -51,3 +57,49 @@ def test_close_event_preserves_existing_handler_registration(qapp: QApplication,
         assert not handler_list.was_cleared
     finally:
         root_logger.removeHandler(handler)
+
+
+def test_close_event_finalizes_an_active_manual_capture(qapp: QApplication, monkeypatch) -> None:
+    stopped = []
+    capture = type("Capture", (), {"is_active": True, "stop": lambda _self: stopped.append(True)})()
+    monkeypatch.setattr(lifecycle_module, "APP_TTS_CAPTURE", capture)
+    monkeypatch.setattr(UnifiedMainWindow, "__init__", QMainWindow.__init__)
+    monkeypatch.setattr(UnifiedMainWindow, "save_geometry", lambda _self: None)
+    window = UnifiedMainWindow()
+    window._child_windows = {}
+    window.console_handler = QtLogHandler()
+
+    window.closeEvent(QCloseEvent())
+
+    assert stopped == [True]
+
+
+def test_normal_close_waits_for_backend_without_blocking_qt(qapp: QApplication, monkeypatch) -> None:
+    stop = Event()
+
+    class WaitingThread(QThread):
+        @override
+        def run(self) -> None:
+            stop.wait(2)
+
+    monkeypatch.setattr(UnifiedMainWindow, "__init__", QMainWindow.__init__)
+    monkeypatch.setattr(UnifiedMainWindow, "save_geometry", lambda _: None)
+    window = UnifiedMainWindow()
+    window._child_windows = {}
+    window.console_handler = QtLogHandler()
+    thread = WaitingThread()
+    window._backend_thread = thread
+    monkeypatch.setattr(window, "worker", SimpleNamespace(request_stop=stop.set))
+    thread.start()
+    close = QCloseEvent()
+
+    window.closeEvent(close)
+
+    assert not close.isAccepted()
+    assert stop.is_set()
+    assert thread.wait(1000)
+    qapp.processEvents()
+    final_close = QCloseEvent()
+    window.closeEvent(final_close)
+    assert final_close.isAccepted()
+    window.deleteLater()

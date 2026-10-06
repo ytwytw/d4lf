@@ -2,48 +2,58 @@
 
 import logging
 from contextlib import suppress
-from typing import Any, override
+from typing import TYPE_CHECKING, override
 
-from PyQt6.QtCore import QEvent, QPoint, QSettings, QSize
+from PyQt6.QtCore import QEvent, QPoint, QSettings, QSize, QThread
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon
-from PyQt6.QtWidgets import QMainWindow, QMenu, QSystemTrayIcon, QTabWidget
+from PyQt6.QtWidgets import QMainWindow, QMenu, QSystemTrayIcon, QTabWidget, QWidget
 
 from src.app.assets import ICON_PATH
+from src.diagnostics.tts_capture import APP_TTS_CAPTURE
+from src.localization import translate
+
+if TYPE_CHECKING:
+    from src.app.backend import BackendWorker
+    from src.app.dashboard import ActivityLogWidget
+    from src.desktop.activity import QtLogHandler
 
 
 class UnifiedWindowLifecycle(QMainWindow):
-    _child_windows: dict[str, QMainWindow]
-    activity_tab: Any
-    console_handler: Any
+    _backend_thread: QThread | None = None
+    worker: BackendWorker | None = None
+    _shutdown_pending = False
+    _child_windows: dict[str, QWidget]
+    activity_tab: ActivityLogWidget
+    console_handler: QtLogHandler
     tabs: QTabWidget
 
-    def _setup_tray(self):
+    def _setup_tray(self) -> None:
         """Initialize the system tray icon and its context menu."""
         self.tray_icon = QSystemTrayIcon(self)
         if ICON_PATH.exists():
             self.tray_icon.setIcon(QIcon(str(ICON_PATH)))
         tray_menu = QMenu()
-        restore_action = QAction("Restore", tray_menu)
-        tray_menu.addAction(restore_action)
-        restore_action.triggered.connect(self._restore_from_tray)
+        self.restore_action = QAction(translate("tray.restore"), tray_menu)
+        tray_menu.addAction(self.restore_action)
+        self.restore_action.triggered.connect(self._restore_from_tray)
         tray_menu.addSeparator()
-        exit_action = QAction("Exit", tray_menu)
-        tray_menu.addAction(exit_action)
-        exit_action.triggered.connect(self.close)
+        self.exit_action = QAction(translate("tray.exit"), tray_menu)
+        tray_menu.addAction(self.exit_action)
+        self.exit_action.triggered.connect(self.close)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.activated.connect(self._on_tray_icon_activated)
-        self.tray_icon.setToolTip("D4 Loot Filter")
+        self.tray_icon.setToolTip(translate("app.tray_title"))
         self.tray_icon.show()
 
-    def _on_tray_icon_activated(self, reason):
+    def _on_tray_icon_activated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
             self._restore_from_tray()
 
-    def _restore_from_tray(self):
+    def _restore_from_tray(self) -> None:
         self.showNormal()
         self.activateWindow()
 
-    def restore_geometry(self):
+    def restore_geometry(self) -> None:
         settings = QSettings("d4lf", "mainwindow")
         size = settings.value("size", QSize(1000, 800))
         pos = settings.value("pos", QPoint(100, 100))
@@ -57,7 +67,7 @@ class UnifiedWindowLifecycle(QMainWindow):
             settings.value("minimize_to_tray", False, type=bool)  # ruff:ignore[boolean-positional-value-in-call]
         )
 
-    def save_geometry(self):
+    def save_geometry(self) -> None:
         settings = QSettings("d4lf", "mainwindow")
         if not self.isMaximized():
             settings.setValue("size", self.size())
@@ -67,7 +77,7 @@ class UnifiedWindowLifecycle(QMainWindow):
         settings.setValue("minimize_to_tray", self.activity_tab.minimize_to_tray_cb.isChecked())
 
     @override
-    def changeEvent(self, a0: QEvent | None):
+    def changeEvent(self, a0: QEvent | None) -> None:
         event = a0
         if (
             event is not None
@@ -79,8 +89,22 @@ class UnifiedWindowLifecycle(QMainWindow):
         super().changeEvent(event)
 
     @override
-    def closeEvent(self, a0: QCloseEvent | None):
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
         event = a0
+        thread = self._backend_thread
+        if thread is not None and thread.isRunning():
+            if not self._shutdown_pending:
+                self._shutdown_pending = True
+                thread.finished.connect(self.close)
+                if self.worker is not None:
+                    self.worker.request_stop()
+            if thread.isRunning():
+                if event is not None:
+                    event.ignore()
+                return
+        if APP_TTS_CAPTURE.is_active:
+            with suppress(Exception):
+                APP_TTS_CAPTURE.stop()
         for win in list(self._child_windows.values()):
             with suppress(Exception):
                 win.close()

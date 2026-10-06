@@ -3,6 +3,7 @@ import time
 from typing import TYPE_CHECKING
 
 from src.automation import move_pointer
+from src.overlay import state as _state
 from src.overlay.settings import InfoSettingValue, load_settings, setting_position
 from src.overlay.singleton import singleton
 from src.overlay.statistics import SessionStats
@@ -39,16 +40,14 @@ def _hover_experience_balance(config: dict[str, InfoSettingValue]) -> None:
 
 @singleton
 class InventoryExpTracker:
-    def __init__(self):
+    def __init__(self) -> None:
         self.last_hover_time = 0.0
         self.hover_active = False
 
     def on_inventory_open(self) -> None:
         if self.hover_active or _busy_checker():
             return
-        from src.overlay.lifecycle import is_open  # ruff:ignore[import-outside-top-level] - lifecycle imports tracker
-
-        if not is_open():
+        if not _state.is_open():
             return
         config = load_settings()
         if not config.get("capture_exp_stats") or not config.get("check_exp_on_inventory_open", True):

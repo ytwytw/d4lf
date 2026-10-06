@@ -1,26 +1,56 @@
 import typing
+from queue import Queue
+from typing import cast
+from unittest.mock import Mock
 
 if typing.TYPE_CHECKING:
     from pytest_mock import MockerFixture
 
-from src.item import FilterResult, MatchedFilter
+    from src.loot.highlighting import _VisionModeWithHighlighting
+
+from src.item import FilterResult, Item, MatchedFilter
+from src.loot.highlighting import _VisionModeWithHighlighting
 from src.loot.highlighting_render import HighlightingRenderer
 from src.perception import LocatedMarker, LocatorResult
 
 
-def test_highlighting_renderer_places_reliable_affix_markers(mocker: MockerFixture):
-    renderer = object.__new__(HighlightingRenderer)
+class _RendererHarness(HighlightingRenderer):
+    root: Mock
+    canvas: Mock
+    thick: int
+    screen_off_x: int
+    screen_off_y: int
+
+
+def test_highlighting_renderer_places_reliable_affix_markers(monkeypatch, mocker: MockerFixture) -> None:
+    renderer = _RendererHarness()
     renderer.root = mocker.Mock()
     renderer.canvas = mocker.Mock()
     renderer.thick = 4
     renderer.screen_off_x = 0
     renderer.screen_off_y = 0
-    renderer.create_signal_rect = mocker.Mock()
-    renderer.draw_text = mocker.Mock(side_effect=lambda *_args: 1)
-    renderer.draw_rect = mocker.Mock()
-    renderer.draw_match_outline(
+    monkeypatch.setattr(renderer, "create_signal_rect", mocker.Mock())
+    monkeypatch.setattr(renderer, "draw_text", mocker.Mock(side_effect=lambda *_args: 1))
+    draw_rect = Mock()
+    monkeypatch.setattr(renderer, "draw_rect", draw_rect)
+    cast("_VisionModeWithHighlighting", renderer).draw_match_outline(
         (10, 20, 100, 200),
         FilterResult(keep=True, matched=[MatchedFilter("Build")]),
         LocatorResult([LocatedMarker("affix", 0, (30, 40), 0.99)], reliable=True),
     )
-    renderer.draw_rect.assert_called_once_with(renderer.canvas, 12, (30, 40), 10, "#23fc5d")
+    draw_rect.assert_called_once_with(renderer.canvas, 12, (30, 40), 10, "#23fc5d")
+
+
+def test_invalidated_item_cannot_redraw_queued_keep_marks_at_the_same_position(monkeypatch, mocker) -> None:
+    renderer = object.__new__(_VisionModeWithHighlighting)
+    renderer.current_item = None
+    renderer.queue = Queue()
+    renderer.canvas = mocker.Mock()
+    item = Item(name="previously_kept_item")
+    renderer.queue.put(("match", item, (10, 20, 100, 200), FilterResult(keep=True, matched=[]), None))
+    draw = mocker.Mock()
+    monkeypatch.setattr(renderer, "draw_match_outline", draw)
+
+    renderer.draw_from_queue()
+
+    draw.assert_not_called()

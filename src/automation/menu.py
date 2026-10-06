@@ -4,22 +4,22 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from src.perception import run_until_condition
-from src.settings import send
+from src.settings.hotkeys import send
 
 if TYPE_CHECKING:
     import numpy as np
 
-    from src.perception import SearchResult, TemplateQuery
+    from src.perception import SearchArgs, SearchResult
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self) -> None:
         self.menu_name: str = ""
         self.parent_menu: Menu | None = None
-        self.is_open_search_args: TemplateQuery | None = None
+        self.is_open_search_args: SearchArgs | None = None
         self.open_hotkey: str = ""
         self.delay = 0
 
@@ -53,13 +53,7 @@ class Menu:
                 return False
             match_name = res.matches[0].name
             ref = search_args.ref
-            if (
-                not isinstance(match_name, str)
-                or isinstance(ref, str)
-                or not isinstance(ref, Sequence)
-                or not ref
-                or not isinstance(ref[0], str)
-            ):
+            if isinstance(ref, str) or not isinstance(ref, Sequence) or not ref or not isinstance(ref[0], str):
                 return False
             return match_name.lower() == ref[0].lower()
         return True

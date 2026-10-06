@@ -1,5 +1,5 @@
 import typing
-from typing import override
+from typing import cast, override
 
 import pytest
 from selenium.webdriver.common.by import By
@@ -11,6 +11,8 @@ from src.importing.paragon import build_paragon_profile_payload
 
 if typing.TYPE_CHECKING:
     from selenium.webdriver.support.relative_locator import RelativeBy
+
+    from src.type_aliases import JsonValue
 
 
 def test_parse_d4builds_paragon_boards_produces_valid_typed_payload_input() -> None:
@@ -35,7 +37,7 @@ def test_parse_d4builds_paragon_boards_produces_valid_typed_payload_input() -> N
             self._attrs = {"data-board-id": "Paragon_Barb_00"}
 
         @override
-        def find_element(self, by: str = By.ID, value: str | None = None) -> WebElement:
+        def find_element(self, by: str | By = By.ID, value: str | None = None) -> WebElement:
             if value is None:
                 value = str(by)
             if value == "paragon__board__name":
@@ -44,7 +46,7 @@ def test_parse_d4builds_paragon_boards_produces_valid_typed_payload_input() -> N
             raise AssertionError(msg)
 
         @override
-        def find_elements(self, by: str = By.ID, value: str | None = None) -> list[WebElement]:
+        def find_elements(self, by: str | By = By.ID, value: str | None = None) -> list[WebElement]:
             if value is None:
                 value = str(by)
             if value == "paragon__board__name__glyph":
@@ -63,11 +65,11 @@ def test_parse_d4builds_paragon_boards_produces_valid_typed_payload_input() -> N
             pass
 
         @override
-        def execute_script(self, script: str, *args: object) -> object:
+        def execute_script(self, script: str, *args: JsonValue) -> JsonValue:
             return {"data-board-id": "Paragon_Barb_00"}
 
         @override
-        def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
+        def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
             if value is None:
                 value = str(by)
             if value == "paragon__board":
@@ -109,18 +111,18 @@ def test_parse_d4builds_paragon_boards_keeps_supported_rotation_transform_behavi
             self._attrs = {"data-board-id": "Paragon_Barb_00"}
 
         @override
-        def find_element(self, by: str = By.ID, value: str | None = None) -> WebElement:
+        def find_element(self, by: str | By = By.ID, value: str | None = None) -> WebElement:
             if value is None:
-                value = by
+                value = str(by)
             if value == "paragon__board__name":
                 return _FakeTextNode("Starting Board")
             msg = f"unexpected selector: {value}"
             raise AssertionError(msg)
 
         @override
-        def find_elements(self, by: str = By.ID, value: str | None = None) -> list[WebElement]:
+        def find_elements(self, by: str | By = By.ID, value: str | None = None) -> list[WebElement]:
             if value is None:
-                value = by
+                value = str(by)
             if value == "paragon__board__name__glyph":
                 return []
             if value == "paragon__board__tile":
@@ -139,11 +141,11 @@ def test_parse_d4builds_paragon_boards_keeps_supported_rotation_transform_behavi
             pass
 
         @override
-        def execute_script(self, script: str, *args: object) -> object:
+        def execute_script(self, script: str, *args: JsonValue) -> JsonValue:
             return {"data-board-id": "Paragon_Barb_00"}
 
         @override
-        def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
+        def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
             if value is None:
                 value = str(by)
             if value == "paragon__board":
@@ -153,10 +155,11 @@ def test_parse_d4builds_paragon_boards_keeps_supported_rotation_transform_behavi
 
     boards = paragon_module._parse_d4builds_paragon_boards(_FakeDriver(), class_slug="barbarian")
     board = boards[0][0]
+    nodes = cast("list[bool]", board["Nodes"])
 
     assert board["Rotation"] == f"{rotation_deg}°"
-    assert board["Nodes"].count(True) == 1
-    assert board["Nodes"][expected_index] is True
+    assert nodes.count(True) == 1
+    assert nodes[expected_index] is True
 
 
 def test_parse_d4builds_paragon_boards_uses_question_mark_fallback_for_unsupported_rotation() -> None:
@@ -181,7 +184,7 @@ def test_parse_d4builds_paragon_boards_uses_question_mark_fallback_for_unsupport
             self._attrs = {"data-board-id": "Paragon_Barb_00"}
 
         @override
-        def find_element(self, by: str = By.ID, value: str | None = None) -> WebElement:
+        def find_element(self, by: str | By = By.ID, value: str | None = None) -> WebElement:
             if value is None:
                 value = str(by)
             if value == "paragon__board__name":
@@ -190,7 +193,7 @@ def test_parse_d4builds_paragon_boards_uses_question_mark_fallback_for_unsupport
             raise AssertionError(msg)
 
         @override
-        def find_elements(self, by: str = By.ID, value: str | None = None) -> list[WebElement]:
+        def find_elements(self, by: str | By = By.ID, value: str | None = None) -> list[WebElement]:
             if value is None:
                 value = str(by)
             if value == "paragon__board__name__glyph":
@@ -209,11 +212,11 @@ def test_parse_d4builds_paragon_boards_uses_question_mark_fallback_for_unsupport
             pass
 
         @override
-        def execute_script(self, script: str, *args: object) -> object:
+        def execute_script(self, script: str, *args: JsonValue) -> JsonValue:
             return {"data-board-id": "Paragon_Barb_00"}
 
         @override
-        def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
+        def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
             if value is None:
                 value = str(by)
             if value == "paragon__board":

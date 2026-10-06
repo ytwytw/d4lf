@@ -1,6 +1,9 @@
 {
     "affixes": {},
     "charms_affixes": {},
+    "item_types": {
+        "Tribute": "tribute"
+    },
     "seals_affixes": {},
     "sigils": {
         "dungeons": {},

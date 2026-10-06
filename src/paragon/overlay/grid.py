@@ -1,18 +1,18 @@
+import logging
 import sys
 import tkinter as tk
 from contextlib import suppress
 
 from src.desktop import is_alive
+from src.localization import translate
 from src.paragon.data import _clamp_int, _format_build_display_name, format_board_display_text
-
-# fmt: off
-from src.paragon.shared import CARD_BG, FS_BOARD_CARD, FS_GRID_COLOR, GOLD, LOGGER, SELECT_BG, TEXT, TRANSPARENT_KEY, OverlayContract, _tk_lbl  # isort: skip
-# fmt: on
-from src.paragon import data as _data
+from src.paragon.overlay.contracts import OverlayContract
+from src.paragon.overlay.helpers import tk_lbl
+from src.paragon.overlay.theme import CARD_BG, FS_BOARD_CARD, FS_GRID_COLOR, GOLD, SELECT_BG, TEXT, TRANSPARENT_KEY
 from src.paragon.transform import GRID, NODES_LEN, nodes_to_grid
 from src.perception import game_window_roi
 
-globals().update({name: getattr(_data, name) for name in _data.__all__})
+LOGGER = logging.getLogger(__name__)
 
 if sys.platform == "win32":
     import win32con
@@ -42,7 +42,8 @@ class OverlayGridMixin(OverlayContract):
         """Switch between the full and compact grid layouts."""
         self._cfg.is_collapsed = not self._cfg.is_collapsed
         with suppress(Exception):
-            self.lbl_mode.config(text="Compact View" if self._cfg.is_collapsed else "Full View")
+            mode_id = "paragon.view.compact" if self._cfg.is_collapsed else "paragon.view.full"
+            self.lbl_mode.config(text=translate(mode_id))
         if is_alive(getattr(self, "btn_view_switch", None)):
             self.btn_view_switch.config(text="⤢" if self._cfg.is_collapsed else "⤡")
         self.redraw()
@@ -52,14 +53,13 @@ class OverlayGridMixin(OverlayContract):
         """Rebuild the board list and refresh the title for the active build."""
         for w in self.board_container.winfo_children():
             w.destroy()
-
-        t = "Paragon"
+        t = translate("paragon.fallback_title")
         if self.builds:
             b = self.builds[self.current_build_idx]
             t = _format_build_display_name(b.get("name"))
             if not t:
                 t = _format_build_display_name(b.get("profile"))
-        self.lbl_title.config(text=t or "Paragon")
+        self.lbl_title.config(text=t or translate("paragon.fallback_title"))
 
         if not self.boards:
             return
@@ -78,7 +78,7 @@ class OverlayGridMixin(OverlayContract):
                 highlightcolor=acc,
             )
             c.pack(fill="x", pady=8)
-            lbl = _tk_lbl(
+            lbl = tk_lbl(
                 c,
                 text=txt,
                 fg=fg,
@@ -136,10 +136,11 @@ class OverlayGridMixin(OverlayContract):
     def _on_grid_drag_start(self, e: tk.Event) -> None:
         """Start dragging only when the cursor grabs the outer grid border."""
         self.focus_set()
-        if self._cfg.grid_locked or not self._border_rect:
+        border_rect: tuple[int, int, int, int] | None = self._border_rect
+        if self._cfg.grid_locked or border_rect is None:
             self._dragging_grid = False
             return
-        x1, y1, x2, y2, g, x, y = (*self._border_rect, int(self._border_grab), int(e.x), int(e.y))
+        x1, y1, x2, y2, g, x, y = (*border_rect, int(self._border_grab), int(e.x), int(e.y))
         if (
             not (x1 - g <= x <= x2 + g and y1 - g <= y <= y2 + g)
             or min(abs(x - x1), abs(x - x2), abs(y - y1), abs(y - y2)) > g

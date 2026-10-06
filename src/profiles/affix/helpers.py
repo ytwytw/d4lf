@@ -1,10 +1,16 @@
-from src.item import Dataloader, ItemType
+from typing import TYPE_CHECKING
+
+from src.game_data import GameCatalog, ItemType
+
+if TYPE_CHECKING:
+    from PyQt6.QtWidgets import QWidget
 
 
 def _item_type_summary(item_types: list[ItemType]) -> str:
     if not item_types:
         return "All item types"
-    return ", ".join(item_type.value for item_type in item_types)
+    catalog = GameCatalog()
+    return ", ".join(catalog.item_type_label(item_type) for item_type in item_types)
 
 
 def get_set_and_base_for_key(key: str, set_list: list[str]) -> tuple[str | None, str]:
@@ -28,13 +34,13 @@ def get_affixes_for_set(affix_dict: dict[str, str], set_list: list[str], target_
     return result
 
 
-def affix_dict_for_widget(widget) -> dict[str, str]:
+def affix_dict_for_widget(widget: QWidget) -> dict[str, str]:
     current = widget
     while current:
         config = getattr(current, "config", None)
         if config.__class__.__name__ == "SealFilterModel":
-            return Dataloader().seal_affix_dict
+            return GameCatalog().seal_affix_dict
         if config.__class__.__name__ == "CharmFilterModel":
-            return Dataloader().charm_affix_dict
+            return GameCatalog().charm_affix_dict
         current = current.parent()
-    return Dataloader().affix_dict
+    return GameCatalog().affix_dict

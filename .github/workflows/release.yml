@@ -3,24 +3,48 @@ name: Release
 on:
   pull_request:
     types: [closed]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
   group: release
 
+permissions:
+  contents: write
+
 jobs:
   release:
     if: |
-      github.event_name != 'pull_request' ||
+      (
+        github.event_name == 'workflow_dispatch' &&
+        github.ref == 'refs/heads/main'
+      ) ||
         (
+          github.event_name == 'pull_request' &&
           github.event.pull_request.merged == true &&
+          github.event.pull_request.base.ref == 'main' &&
           contains(github.event.pull_request.labels.*.name, 'release')
         )
     runs-on: windows-latest
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || github.sha }}
       - name: Setup env
         uses: ./.github/actions/setup_env
+      - name: Scan release tree for private data
+        shell: powershell
+        run: uv run --frozen python -m src.tools.public_safety --tree HEAD
+      - name: Require locale and bundled-source publication readiness
+        shell: powershell
+        run: uv run --frozen python -m src.tools.release_check
+      - name: Run release checks
+        uses: j178/prek-action@v2
+      - name: Run regression suite (excluding Selenium)
+        shell: powershell
+        run: uv run --frozen pytest . -m "not selenium" -n logical
       - name: Build & Zip exe
         id: build_zip
         uses: ./.github/actions/build_zip
@@ -29,12 +53,12 @@ jobs:
         shell: powershell
         run: |
           $version = "${{ steps.build_zip.outputs.version }}"
-          if ($version -like "*beta*" -or $version -like "*alpha*") {
+          if ($version -like "*beta*" -or $version -like "*alpha*" -or $version -like "*rc*") {
             echo "IS_BETA=true" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
           } else {
             echo "IS_BETA=false" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
           }
-      - uses: softprops/action-gh-release@v3
+      - uses: softprops/action-gh-release@v3.0.3
         id: create_release
         with:
           files: ${{ steps.build_zip.outputs.zip_path }}
@@ -42,12 +66,14 @@ jobs:
           name: "v${{ steps.build_zip.outputs.version }}"
           prerelease: ${{ env.IS_BETA == 'true' }}
           tag_name: "v${{ steps.build_zip.outputs.version }}"
-          token: "${{ secrets.RELEASE_TOKEN }}"
+          target_commitish: ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || github.sha }}
+          token: "${{ secrets.RELEASE_TOKEN || github.token }}"
+          fail_on_unmatched_files: true
       - name: Fetch release meta data
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9.0.0
         id: release_metadata
         with:
-          github-token: ${{ secrets.RELEASE_TOKEN }}
+          github-token: ${{ secrets.RELEASE_TOKEN || github.token }}
           script: |
             const { data } = await github.rest.repos.getReleaseByTag({
               owner: context.repo.owner,
@@ -55,7 +81,8 @@ jobs:
               tag: 'v${{ steps.build_zip.outputs.version }}',
             });
             core.setOutput('body', data.body ?? '');
-      - uses: SethCohen/github-releases-to-discord@v1.20
+      - uses: SethCohen/github-releases-to-discord@v1.20.0
+        if: env.DISCORD_WEBHOOK != ''
         with:
           color: "2105893"
           release_body: ${{ steps.release_metadata.outputs.body }}

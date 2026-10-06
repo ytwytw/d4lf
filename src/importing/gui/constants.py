@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.importing import FilenamePart
+from src.importing.contracts import FilenamePart
 
 
 @dataclass(frozen=True, slots=True)
@@ -61,9 +61,9 @@ _CHECKBOX_CONFIGS = (
     ),
     _CheckboxConfig(
         name="export_paragon_checkbox",
-        label="Export Paragon",
+        label="Import Paragon",
         setting="export_paragon",
-        tooltip="Export paragon boards for the paragon overlay?",
+        tooltip="Import paragon boards for the paragon overlay?",
         default="false",
     ),
     _CheckboxConfig(
@@ -95,6 +95,7 @@ FILENAME_PART_LABELS = {
 }
 GENERATE_DISABLED_FILENAME_PARTS_TOOLTIP = "Select at least one filename part or enter a custom file name."
 IMPORTER_WINDOW_LOGGERS = (
+    "src.importing.d2core",
     "src.importing.mobalytics",
     "src.importing.maxroll",
     "src.importing.d4builds",

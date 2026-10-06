@@ -7,14 +7,14 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PyQt6.QtWidgets import QApplication, QDialog, QPushButton
 
-from src.item import ItemRarity
+from src.game_data import ItemRarity
 from src.profiles import TributeFilterModel
-from src.profiles.editor import _to_editor_tribute_filter
+from src.profiles.editor.profile import _to_editor_tribute_filter
 from src.profiles.tribute import CreateTribute, TributesTab
 
 
 class _AcceptedDialog(QDialog):
-    def __init__(self, value: TributeFilterModel):
+    def __init__(self, value: TributeFilterModel) -> None:
         super().__init__()
         self._value = value
 
@@ -27,7 +27,7 @@ class _AcceptedDialog(QDialog):
 
 
 class _AcceptedRarityPicker(QDialog):
-    def __init__(self, selected_rarities: list[ItemRarity]):
+    def __init__(self, selected_rarities: list[ItemRarity]) -> None:
         super().__init__()
         self._selected_rarities = selected_rarities
 
@@ -52,8 +52,8 @@ def _button(tab: TributesTab, text: str) -> QPushButton:
     return next(btn for btn in tab.findChildren(QPushButton) if btn.text() == text)
 
 
-def test_add_tribute_adds_name_rule_with_expected_display_text(qapp, monkeypatch):
-    monkeypatch.setattr("src.profiles.tribute.tab.Dataloader", _FakeLoader)
+def test_add_tribute_adds_name_rule_with_expected_display_text(qapp, monkeypatch) -> None:
+    monkeypatch.setattr("src.profiles.tribute.tab.GameCatalog", _FakeLoader)
     monkeypatch.setattr(
         "src.profiles.tribute.tab.CreateTribute",
         lambda *_args, **_kwargs: _AcceptedDialog(
@@ -73,8 +73,8 @@ def test_add_tribute_adds_name_rule_with_expected_display_text(qapp, monkeypatch
     assert item.text() == "Tribute: Tribute Of Test"
 
 
-def test_edit_rarities_updates_summary_and_model(qapp, monkeypatch):
-    monkeypatch.setattr("src.profiles.tribute.tab.Dataloader", _FakeLoader)
+def test_edit_rarities_updates_summary_and_model(qapp, monkeypatch) -> None:
+    monkeypatch.setattr("src.profiles.tribute.tab.GameCatalog", _FakeLoader)
     monkeypatch.setattr(
         "src.profiles.tribute.tab.RarityPicker", lambda *_args, **_kwargs: _AcceptedRarityPicker([ItemRarity.Rare])
     )
@@ -89,16 +89,16 @@ def test_edit_rarities_updates_summary_and_model(qapp, monkeypatch):
     assert tab.rarity_line_edit.text() == "rare"
 
 
-def test_to_editor_tribute_filter_returns_empty_model_for_none():
+def test_to_editor_tribute_filter_returns_empty_model_for_none() -> None:
     assert _to_editor_tribute_filter(None) == TributeFilterModel()
 
 
-def test_to_editor_tribute_filter_returns_model_unchanged():
+def test_to_editor_tribute_filter_returns_model_unchanged() -> None:
     model = TributeFilterModel.model_construct(name=["tribute_of_harmony"], rarities=[ItemRarity.Rare])
     assert _to_editor_tribute_filter(model) is model
 
 
-def test_create_tribute_rejects_unknown_display_name(qapp):
+def test_create_tribute_rejects_unknown_display_name(qapp) -> None:
     dialog = CreateTribute([])
     dialog.name_input.setCurrentText("Unknown Tribute")
 

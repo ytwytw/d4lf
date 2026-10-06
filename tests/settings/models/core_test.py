@@ -17,3 +17,10 @@ def test_advanced_options_reject_duplicate_hotkeys() -> None:
 def test_advanced_options_accept_fast_vision_coordinates() -> None:
     model = AdvancedOptionsModel(fast_vision_mode_coordinates="12,34")
     assert model.fast_vision_mode_coordinates == (12, 34)
+
+
+def test_diagnostic_capture_features_are_opt_in() -> None:
+    model = AdvancedOptionsModel()
+
+    assert model.automatic_failure_capture is False
+    assert model.show_diagnostics_page is False

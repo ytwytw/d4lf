@@ -1,0 +1,33 @@
+{
+    "authorization_scope": "Public redistribution with D4LF of the four source payloads identified below by provider, build, URL, filename and SHA-256; unknown or changed payloads do not inherit this confirmation.",
+    "confirmation_date": "2026-10-05",
+    "confirmation_type": "project_user_statement",
+    "files": {
+        "affix_enUS.json": {
+            "build": "73552",
+            "sha256": "107c20bbd24e937da67290aea9e726fe7440cd3cdc6f52a2ed91cd4177155c00",
+            "url": "https://cloudstorage.d2core.com/data/d4/73552/affix_enUS.json?env=prod&v=8"
+        },
+        "affix_zhCN.json": {
+            "build": "73552",
+            "sha256": "ddf27408c14031e04c160610036b6621bb3b8ceec1c7a7325069964937f48b6a",
+            "url": "https://cloudstorage.d2core.com/data/d4/73552/affix_zhCN.json?env=prod&v=8"
+        },
+        "uniqueItem_enUS.json": {
+            "build": "73552",
+            "sha256": "5e9bdc8584b2065e85af427d724efa353edd966a3ae86b72eb779e2ab26e25bf",
+            "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+        },
+        "uniqueItem_zhCN.json": {
+            "build": "73552",
+            "sha256": "eb4c01374f9e3b4c5805bd75a007c99c270542f34b3d148d9dc15ea0f91d11bd",
+            "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+        }
+    },
+    "independent_contract_review": false,
+    "is_d2core_public_license": false,
+    "provider": "D2Core",
+    "public_redistribution": "verified",
+    "rights_notice": "D2Core 文本与暴雪游戏资产权利仍属于各自权利人；项目软件许可证不取代本次许可依据。",
+    "schema_version": 1
+}

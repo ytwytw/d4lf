@@ -1,10 +1,11 @@
 import enum
+import os
 import subprocess
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
-from PyQt6.QtCore import QCoreApplication, QSignalBlocker
+from PyQt6.QtCore import QCoreApplication, QSignalBlocker, Qt
 from PyQt6.QtWidgets import (
     QGridLayout,
     QGroupBox,
@@ -19,7 +20,9 @@ from PyQt6.QtWidgets import (
 )
 
 from src.desktop.widgets import CheckmarkCheckBox
+from src.localization import translate
 from src.settings import GeneralModel, MoveItemsType
+from src.settings.localization import option_labels
 from src.settings.widgets import (
     IgnoreScrollWheelComboBox,
     MultiSegmentedControl,
@@ -34,6 +37,7 @@ if TYPE_CHECKING:
     from pydantic import BaseModel
 
     from src.settings.store import SettingsStore
+    from src.settings.types import SettingValue
 CONFIG_TABNAME = "config"
 
 
@@ -51,9 +55,11 @@ class ConfigTabMixin:
 
     if TYPE_CHECKING:
 
-        def _add_setting_row(self, grid, row, model, section, key, val) -> None: ...
+        def _add_setting_row(
+            self, grid: QGridLayout, row: int, model: BaseModel, section: str, key: str, val: SettingValue
+        ) -> None: ...
 
-    def _filter_settings(self, text):
+    def _filter_settings(self, text: str) -> None:
         query = text.lower().strip()
         if query:
             # Condensed View: Move all groupboxes into the search layout
@@ -88,7 +94,7 @@ class ConfigTabMixin:
                         continue
                     nav_item = self.nav_list.item(i)
                     page_widget = page_scroll.widget()
-                    if nav_item is None or page_widget is None or nav_item.text() != name:
+                    if nav_item is None or page_widget is None or nav_item.data(Qt.ItemDataRole.UserRole) != name:
                         continue
                     page_layout = page_widget.layout()
                     if page_layout is not None:
@@ -101,26 +107,29 @@ class ConfigTabMixin:
     def _prompt_restart_for_vision_mode_change(self) -> None:
         msg = QMessageBox(cast("QWidget", self))
         msg.setIcon(QMessageBox.Icon.Question)
-        msg.setWindowTitle("Restart required")
-        msg.setText("Vision mode changes require restarting d4lf. Restart now?")
-        restart_button = msg.addButton("Restart now", QMessageBox.ButtonRole.AcceptRole)
-        msg.addButton("Later", QMessageBox.ButtonRole.RejectRole)
+        msg.setWindowTitle(translate("settings.restart_required.title"))
+        msg.setText(translate("settings.restart_required.body"))
+        restart_button = msg.addButton(translate("settings.restart_required.now"), QMessageBox.ButtonRole.AcceptRole)
+        msg.addButton(translate("settings.restart_required.later"), QMessageBox.ButtonRole.RejectRole)
         msg.exec()
         if msg.clickedButton() is restart_button:
             self._restart_application()
 
     def _restart_application(self) -> None:
-        command = [sys.executable, *sys.argv[1:]] if getattr(sys, "frozen", False) else [sys.executable, *sys.argv]
+        frozen = getattr(sys, "frozen", False)
+        command = [sys.executable, *sys.argv[1:]] if frozen else [sys.executable, *sys.argv]
+        # A onefile restart must unpack independently before the old parent cleans its resources.
+        environment = {**os.environ, "PYINSTALLER_RESET_ENVIRONMENT": "1"} if frozen else None
         creationflags = 0
         if sys.platform == "win32":
             creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
         try:
-            subprocess.Popen(command, cwd=Path.cwd(), creationflags=creationflags)
+            subprocess.Popen(command, cwd=Path.cwd(), creationflags=creationflags, env=environment)
         except OSError:
             msg = QMessageBox(cast("QWidget", self))
             msg.setIcon(QMessageBox.Icon.Critical)
-            msg.setWindowTitle("Restart failed")
-            msg.setText("d4lf could not be restarted automatically. Please restart it manually.")
+            msg.setWindowTitle(translate("settings.restart_failed.title"))
+            msg.setText(translate("settings.restart_failed.body"))
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
             return
@@ -129,25 +138,25 @@ class ConfigTabMixin:
 
     def _save_setting_value(
         self,
-        model,
-        section_header,
-        key,
-        value,
-        method_to_reset_value: Callable[[object], None] | None = None,
+        model: BaseModel,
+        section_header: str,
+        key: str,
+        value: SettingValue,
+        method_to_reset_value: Callable[[SettingValue], None] | None = None,
         post_save_callback: Callable[[], None] | None = None,
     ) -> bool:
         result = self._settings_store.set_value(model, section_header, key, value)
         if not result.success:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Icon.Critical)
-            message = f"There was an error setting {key} to {value}. See error below.\n\n"
+            message = translate("settings.validation_error.body", key=key, value=value)
             # Only reset the widget if the field is NOT an enum
             if method_to_reset_value and key != "theme":
-                message = message + "Your value has been reset to its previous version.\n\n"
+                message += translate("settings.validation_error.reset")
                 method_to_reset_value(result.previous_value)
             message = message + str(result.validation_error)
             msg.setText(message)
-            msg.setWindowTitle("Error validating value")
+            msg.setWindowTitle(translate("settings.validation_error.title"))
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
             return False
@@ -155,7 +164,9 @@ class ConfigTabMixin:
             post_save_callback()
         return True
 
-    def _generate_params_section(self, model: BaseModel, section_readable_header: str, section_config_header: str):
+    def _generate_params_section(
+        self, model: BaseModel, section_readable_header: str, section_config_header: str
+    ) -> QGroupBox:
         group_box = QGroupBox(section_readable_header.replace("&", "&&"))
         grid = QGridLayout(group_box)
         grid.setSpacing(10)
@@ -166,14 +177,14 @@ class ConfigTabMixin:
         return group_box
 
     def _generate_parameter_value_widget(
-        self, model: BaseModel, section_config_header, config_key, config_value, is_hotkey
-    ):
+        self, model: BaseModel, section_config_header: str, config_key: str, config_value: SettingValue, is_hotkey: bool
+    ) -> QWidget:
         if config_key == "check_chest_tabs":
             if not isinstance(model, GeneralModel):
                 msg = "check_chest_tabs is only available in GeneralModel"
                 raise TypeError(msg)
             parameter_value_widget = QChestTabWidget(
-                model, section_config_header, config_key, config_value, self._save_setting_value
+                model, section_config_header, config_key, cast("list[int]", config_value), self._save_setting_value
             )
         elif config_key == "max_stash_tabs":
             if not isinstance(model, GeneralModel):
@@ -181,7 +192,7 @@ class ConfigTabMixin:
                 raise TypeError(msg)
             settings_model = model
 
-            def on_tabs_changed(val):
+            def on_tabs_changed(val: str) -> None:
                 if self._save_setting_value(settings_model, section_config_header, config_key, val):
                     # Refresh the stash tabs widget to show the correct number of checkboxes
                     tabs_widget = self.model_to_parameter_value_map.get(f"{section_config_header}.check_chest_tabs")
@@ -191,24 +202,28 @@ class ConfigTabMixin:
             parameter_value_widget = SegmentedControl(["6", "7"], str(config_value), on_tabs_changed)
         elif config_key in {"move_to_inv_item_type", "move_to_stash_item_type"}:
             items_map = {
-                "Favorites": MoveItemsType.favorites,
-                "Junk": MoveItemsType.junk,
-                "Unmarked": MoveItemsType.unmarked,
+                translate("settings.option.MoveItemsType.favorites"): MoveItemsType.favorites,
+                translate("settings.option.MoveItemsType.junk"): MoveItemsType.junk,
+                translate("settings.option.MoveItemsType.unmarked"): MoveItemsType.unmarked,
             }
 
-            def on_move_changed(val_str):
+            def on_move_changed(val_str: str) -> None:
                 self._save_setting_value(model, section_config_header, config_key, val_str)
 
-            parameter_value_widget = MultiSegmentedControl(items_map, config_value, on_move_changed)
+            parameter_value_widget = MultiSegmentedControl(
+                items_map, cast("list[MoveItemsType]", config_value), on_move_changed
+            )
         elif is_hotkey:
             parameter_value_widget = QHotkeyWidget(
                 model, section_config_header, config_key, str(config_value), self._save_setting_value
             )
         elif isinstance(config_value, enum.StrEnum):
             enum_type = type(config_value)
-            options = list(enum_type)
+            enum_options = list(enum_type)
+            options: list[SettingValue] = []
+            options.extend(str(option) for option in enum_options)
 
-            def on_changed(new_text):
+            def on_changed(new_text: str) -> None:
                 self._save_setting_value(
                     model,
                     section_config_header,
@@ -224,19 +239,24 @@ class ConfigTabMixin:
                     self.theme_changed_callback()
 
             if len(options) <= 3:
-                parameter_value_widget = SegmentedControl(options, config_value, on_changed)
+                parameter_value_widget = SegmentedControl(
+                    options, config_value, on_changed, option_labels(enum_options)
+                )
             else:
                 parameter_value_widget = IgnoreScrollWheelComboBox()
                 with QSignalBlocker(parameter_value_widget):
-                    parameter_value_widget.addItems(options)
+                    parameter_value_widget.addItems([str(option) for option in options])
                     parameter_value_widget.setCurrentText(config_value)
                 parameter_value_widget.currentTextChanged.connect(on_changed)
         elif isinstance(config_value, bool):
             checkbox = CheckmarkCheckBox()
             checkbox.setObjectName("switch")
             checkbox.setChecked(config_value)
+            if config_key in {"filter_equipment", "filter_sigils", "filter_tributes", "filter_seals", "filter_charms"}:
+                description = type(model).model_json_schema()["properties"].get(config_key, {}).get("description", "")
+                checkbox.setToolTip(description)
 
-            def on_bool_changed():
+            def on_bool_changed() -> None:
                 self._save_setting_value(
                     model,
                     section_config_header,

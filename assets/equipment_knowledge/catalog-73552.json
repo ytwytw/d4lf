@@ -1,0 +1,3690 @@
+{
+    "affixes": [],
+    "game_version": "3.2.1.73552",
+    "item_types": [
+        {
+            "canonical_name": "amulet",
+            "key": "Amulet",
+            "name_en": "amulet",
+            "name_zh": "护符",
+            "sno_id": 446837
+        },
+        {
+            "canonical_name": "axe",
+            "key": "Axe",
+            "name_en": "axe",
+            "name_zh": "斧",
+            "sno_id": 446801
+        },
+        {
+            "canonical_name": "two-handed axe",
+            "key": "Axe2H",
+            "name_en": "two-handed axe",
+            "name_zh": "双手斧",
+            "sno_id": 446802
+        },
+        {
+            "canonical_name": "boots",
+            "key": "Boots",
+            "name_en": "boots",
+            "name_zh": "靴子",
+            "sno_id": 446832
+        },
+        {
+            "canonical_name": "bow",
+            "key": "Bow",
+            "name_en": "bow",
+            "name_zh": "弓",
+            "sno_id": 446823
+        },
+        {
+            "canonical_name": "charm",
+            "key": "Charm",
+            "name_en": "charm",
+            "name_zh": "神符",
+            "sno_id": 2288901
+        },
+        {
+            "canonical_name": "chest armor",
+            "key": "ChestArmor",
+            "name_en": "chest armor",
+            "name_zh": "胸甲",
+            "sno_id": 446829
+        },
+        {
+            "canonical_name": "crossbow",
+            "key": "Crossbow2H",
+            "name_en": "crossbow",
+            "name_zh": "弩",
+            "sno_id": 446825
+        },
+        {
+            "canonical_name": "dagger",
+            "key": "Dagger",
+            "name_en": "dagger",
+            "name_zh": "匕首",
+            "sno_id": 446809
+        },
+        {
+            "canonical_name": "elixir",
+            "key": "Elixir",
+            "name_en": "elixir",
+            "name_zh": null,
+            "sno_id": 446860
+        },
+        {
+            "canonical_name": "flail",
+            "key": "Flail",
+            "name_en": "flail",
+            "name_zh": "连枷",
+            "sno_id": 2312856
+        },
+        {
+            "canonical_name": "focus",
+            "key": "Focus",
+            "name_en": "focus",
+            "name_zh": "聚能器",
+            "sno_id": 446826
+        },
+        {
+            "canonical_name": "glaive",
+            "key": "Glaive",
+            "name_en": "glaive",
+            "name_zh": "剑刃戟",
+            "sno_id": 1462897
+        },
+        {
+            "canonical_name": "gloves",
+            "key": "Gloves",
+            "name_en": "gloves",
+            "name_zh": "手套",
+            "sno_id": 446833
+        },
+        {
+            "canonical_name": "helm",
+            "key": "Helm",
+            "name_en": "helm",
+            "name_zh": "头盔",
+            "sno_id": 446830
+        },
+        {
+            "canonical_name": "horadric seal",
+            "key": "HoradricSeal",
+            "name_en": "horadric seal",
+            "name_zh": "赫拉迪姆封印",
+            "sno_id": 2326144
+        },
+        {
+            "canonical_name": "pants",
+            "key": "Legs",
+            "name_en": "pants",
+            "name_zh": "裤子",
+            "sno_id": 446831
+        },
+        {
+            "canonical_name": "mace",
+            "key": "Mace",
+            "name_en": "mace",
+            "name_zh": "钉锤",
+            "sno_id": 446778
+        },
+        {
+            "canonical_name": "two-handed mace",
+            "key": "Mace2H",
+            "name_en": "two-handed mace",
+            "name_zh": "双手钉锤",
+            "sno_id": 446788
+        },
+        {
+            "canonical_name": "totem",
+            "key": "OffHandTotem",
+            "name_en": "totem",
+            "name_zh": "图腾",
+            "sno_id": 446827
+        },
+        {
+            "canonical_name": "polearm",
+            "key": "Polearm",
+            "name_en": "polearm",
+            "name_zh": "长柄武器",
+            "sno_id": 446813
+        },
+        {
+            "canonical_name": "quarterstaff",
+            "key": "Quarterstaff",
+            "name_en": "quarterstaff",
+            "name_zh": "长杖",
+            "sno_id": 1495597
+        },
+        {
+            "canonical_name": "ring",
+            "key": "Ring",
+            "name_en": "ring",
+            "name_zh": "戒指",
+            "sno_id": 446836
+        },
+        {
+            "canonical_name": "scythe",
+            "key": "Scythe",
+            "name_en": "scythe",
+            "name_zh": "镰刀",
+            "sno_id": 446804
+        },
+        {
+            "canonical_name": "two-handed scythe",
+            "key": "Scythe2H",
+            "name_en": "two-handed scythe",
+            "name_zh": "双手镰刀",
+            "sno_id": 446805
+        },
+        {
+            "canonical_name": "shield",
+            "key": "Shield",
+            "name_en": "shield",
+            "name_zh": "盾",
+            "sno_id": 446834
+        },
+        {
+            "canonical_name": "staff",
+            "key": "Staff",
+            "name_en": "staff",
+            "name_zh": "杖",
+            "sno_id": 446803
+        },
+        {
+            "canonical_name": "sword",
+            "key": "Sword",
+            "name_en": "sword",
+            "name_zh": "剑",
+            "sno_id": 446796
+        },
+        {
+            "canonical_name": "two-handed sword",
+            "key": "Sword2H",
+            "name_en": "two-handed sword",
+            "name_zh": "双手剑",
+            "sno_id": 446799
+        },
+        {
+            "canonical_name": "temper manual",
+            "key": "TemperManual",
+            "name_en": "temper manual",
+            "name_zh": null,
+            "sno_id": 1871482
+        },
+        {
+            "canonical_name": "tome",
+            "key": "Tome",
+            "name_en": "tome",
+            "name_zh": null,
+            "sno_id": 446853
+        },
+        {
+            "canonical_name": "wand",
+            "key": "Wand",
+            "name_en": "wand",
+            "name_zh": "魔杖",
+            "sno_id": 446819
+        },
+        {
+            "canonical_name": "berserker axe",
+            "key": "Axe_Berserker_Axe",
+            "name_en": "Berserker Axe",
+            "name_zh": "狂暴者战斧",
+            "sno_id": 2686551
+        },
+        {
+            "canonical_name": "phase blade",
+            "key": "Sword_Phase_Blade",
+            "name_en": "Phase Blade",
+            "name_zh": "相位之刃",
+            "sno_id": 2676430
+        }
+    ],
+    "items": [],
+    "limitations": [
+        "此包是离线版本快照，不能代表当前游戏或保证全部装备均已收录。",
+        "掉落来源缺项为未知；没有掉率或保底概率数据。",
+        "英文新增元数据可能尚无中文对应；不以英文冒充中文。",
+        "D2Core 公共再分发许可仅适用于用户已确认的来源哈希范围；依据见 sources，与软件许可证分开记录。",
+        "原生词缀索引源自 3.1.0.72592；本包校验 73552 的 ID/key，不声称游戏规则兼容性已经实测。"
+    ],
+    "native_affix_ids": {
+        "abyss_skills": [
+            2534854
+        ],
+        "advance": [
+            2439595
+        ],
+        "aegis": [
+            2497230
+        ],
+        "agility_skills": [
+            1928769
+        ],
+        "all_damage": [
+            1829588
+        ],
+        "all_damage_multiplier": [
+            1829588
+        ],
+        "all_resistance": [
+            1834296
+        ],
+        "all_skills": [
+            2571274
+        ],
+        "ancients_skills": [
+            2589349
+        ],
+        "arbiter_of_justice": [
+            2497228
+        ],
+        "arc_lash": [
+            1926994
+        ],
+        "armor": [
+            1829554
+        ],
+        "armored_hide": [
+            2015672
+        ],
+        "arrow_storm": [
+            2589365
+        ],
+        "attack_speed": [
+            1829556
+        ],
+        "attacks_reduce_evade_cooldown": [
+            2540908
+        ],
+        "aura_skills": [
+            2497218
+        ],
+        "ball_lightning": [
+            1926996
+        ],
+        "barrage": [
+            1873215
+        ],
+        "barrier_generation": [
+            2517794
+        ],
+        "bash": [
+            1859772
+        ],
+        "basic_skill_damage": [
+            1834212
+        ],
+        "basic_skills": [
+            1928751
+        ],
+        "blade_shift": [
+            1873207
+        ],
+        "blazing_scream": [
+            2534726
+        ],
+        "blessed_hammer": [
+            2420823
+        ],
+        "blessed_shield": [
+            2420817
+        ],
+        "blight": [
+            1867418
+        ],
+        "blizzard": [
+            1926998
+        ],
+        "blood_howl": [
+            1884269
+        ],
+        "blood_lance": [
+            1867440
+        ],
+        "blood_mist": [
+            1867442
+        ],
+        "blood_skills": [
+            2624405
+        ],
+        "blood_surge": [
+            1867432
+        ],
+        "bludgeoning_skills": [
+            2624387
+        ],
+        "bombardment": [
+            2534861
+        ],
+        "bone_prison": [
+            1867446
+        ],
+        "bone_skills": [
+            2624407
+        ],
+        "bone_spear": [
+            1867408
+        ],
+        "bone_spirit": [
+            1867448
+        ],
+        "bone_splinters": [
+            1867374
+        ],
+        "boulder": [
+            1884271
+        ],
+        "brandish": [
+            2439788
+        ],
+        "brawling_skills": [
+            1928741
+        ],
+        "caltrops": [
+            1873223
+        ],
+        "centipede_skills": [
+            2624431
+        ],
+        "chain_lightning": [
+            1926979
+        ],
+        "challenging_shout": [
+            1861930
+        ],
+        "charge": [
+            1861932
+        ],
+        "charged_bolts": [
+            1926981
+        ],
+        "clash": [
+            2497191
+        ],
+        "claw": [
+            1884244
+        ],
+        "cold_damage": [
+            2558709
+        ],
+        "cold_damage_multiplier": [
+            2558709
+        ],
+        "cold_imbuement": [
+            1873225
+        ],
+        "cold_resistance": [
+            1829678
+        ],
+        "command_fallen": [
+            2534733
+        ],
+        "companion_skills": [
+            1928749
+        ],
+        "concealment": [
+            1873227
+        ],
+        "concussivestormp_skills": [
+            2019418
+        ],
+        "condemn": [
+            2497256
+        ],
+        "conjuration_skills": [
+            1928765
+        ],
+        "consecration": [
+            2497252
+        ],
+        "cooldown_reduction": [
+            1829560
+        ],
+        "core_skills": [
+            1928753
+        ],
+        "core_spender_skill_damage": [
+            1834266
+        ],
+        "corpse_explosion": [
+            1867450
+        ],
+        "corpse_skills": [
+            1928779
+        ],
+        "corpse_tendrils": [
+            1867452
+        ],
+        "counterattack": [
+            2019531
+        ],
+        "crit_chance": [
+            1829582
+        ],
+        "crit_damage": [
+            1829586
+        ],
+        "critical_strike_chance": [
+            1829582
+        ],
+        "critical_strike_damage": [
+            1829586
+        ],
+        "critical_strike_damage_multiplier": [
+            1829586
+        ],
+        "crushing_hand": [
+            2014518
+        ],
+        "curse_skills": [
+            1928777
+        ],
+        "cutthroat_skills": [
+            2624417
+        ],
+        "cyclone_armor": [
+            1884273
+        ],
+        "damage_over_time": [
+            1829590
+        ],
+        "damage_over_time_multiplier": [
+            1829590
+        ],
+        "damage_reduction": [
+            1928803
+        ],
+        "damage_while_fortified": [
+            2517790
+        ],
+        "dance_of_knives": [
+            1997105
+        ],
+        "dark_prison": [
+            2534778
+        ],
+        "dark_shroud": [
+            1873229
+        ],
+        "darkness_skills": [
+            2624409
+        ],
+        "dash": [
+            1873231
+        ],
+        "death_blow": [
+            1861934
+        ],
+        "debilitating_roar": [
+            1884275
+        ],
+        "decompose": [
+            1867389
+        ],
+        "decrepify": [
+            1867454
+        ],
+        "defensive_skills": [
+            1928747
+        ],
+        "defiance_aura": [
+            2497215
+        ],
+        "demonology_skills": [
+            2534856
+        ],
+        "dexterity": [
+            1829562
+        ],
+        "disciple_skills": [
+            2624413
+        ],
+        "divine_lance": [
+            2470114
+        ],
+        "dodge_chance": [
+            1834117
+        ],
+        "doom": [
+            2534762
+        ],
+        "double_swing": [
+            1861896
+        ],
+        "dread_claws": [
+            2534728
+        ],
+        "dualwield_skills": [
+            2624389
+        ],
+        "dust_devil": [
+            2589353
+        ],
+        "eagle_skills": [
+            2624433
+        ],
+        "earth_skills": [
+            2624393
+        ],
+        "earth_spike": [
+            1884242
+        ],
+        "earthen_bulwark": [
+            1884277
+        ],
+        "earthquake": [
+            2589355
+        ],
+        "energy_on_kill": [
+            1924645
+        ],
+        "energy_regeneration": [
+            1924656
+        ],
+        "essence_on_kill": [
+            1924647
+        ],
+        "essence_regeneration": [
+            1924666
+        ],
+        "evade_grants_movement_speed": [
+            2540912
+        ],
+        "faith_on_kill": [
+            2520251
+        ],
+        "faith_regeneration": [
+            2520249
+        ],
+        "falling_star": [
+            2497245
+        ],
+        "familiar": [
+            1997224
+        ],
+        "fanaticism_aura": [
+            2497211
+        ],
+        "fire_bolt": [
+            1926989
+        ],
+        "fire_damage": [
+            2558711
+        ],
+        "fire_damage_multiplier": [
+            2558711
+        ],
+        "fire_resistance": [
+            1829614
+        ],
+        "fireball": [
+            1926975
+        ],
+        "firewall": [
+            1927000
+        ],
+        "flame_shield": [
+            1927002
+        ],
+        "flay": [
+            1859776
+        ],
+        "flurry": [
+            1873213
+        ],
+        "focus_skills": [
+            2014717
+        ],
+        "forceful_arrow": [
+            1873205
+        ],
+        "frenzy": [
+            1859778
+        ],
+        "frost_bolt": [
+            1926992
+        ],
+        "frost_nova": [
+            1927004
+        ],
+        "frost_skills": [
+            2624425
+        ],
+        "frozen_orb": [
+            1926985
+        ],
+        "fury_on_kill": [
+            1924649
+        ],
+        "fury_regeneration": [
+            1924664
+        ],
+        "generation": [
+            1829664
+        ],
+        "golem": [
+            1928787
+        ],
+        "gorilla_skills": [
+            2624435
+        ],
+        "grenade_skills": [
+            2589361
+        ],
+        "ground_stomp": [
+            1861941
+        ],
+        "hammer_of_the_ancients": [
+            1861835
+        ],
+        "healing_received": [
+            1834175
+        ],
+        "heartseeker": [
+            1873199
+        ],
+        "hell_fracture": [
+            2534722
+        ],
+        "hellfire_skills": [
+            2534852
+        ],
+        "hellion_sting": [
+            2534764
+        ],
+        "hemorrhage": [
+            1867396
+        ],
+        "holy_bolt": [
+            2497189
+        ],
+        "holy_damage": [
+            2558719
+        ],
+        "holy_damage_multiplier": [
+            2558719
+        ],
+        "holy_light_aura": [
+            2497213
+        ],
+        "human_skills": [
+            2589367
+        ],
+        "hurricane": [
+            1884279
+        ],
+        "hydra": [
+            1927006
+        ],
+        "ice_armor": [
+            1927008
+        ],
+        "ice_blades": [
+            1927010
+        ],
+        "ice_shards": [
+            1926977
+        ],
+        "imbuements_skills": [
+            1928773
+        ],
+        "impairment_reduction": [
+            1829558
+        ],
+        "incinerate": [
+            1926983
+        ],
+        "infernal_breath": [
+            2534784
+        ],
+        "intelligence": [
+            1829566
+        ],
+        "invigorating_strike": [
+            1873203
+        ],
+        "iron_maiden": [
+            1867456
+        ],
+        "iron_shrapnel": [
+            2589359
+        ],
+        "iron_skin": [
+            1861944
+        ],
+        "jaguar_skills": [
+            2624437
+        ],
+        "juggernaut_skills": [
+            2624415
+        ],
+        "kick": [
+            1861946
+        ],
+        "landslide": [
+            1884258
+        ],
+        "leap": [
+            1861953
+        ],
+        "life": [
+            1829592
+        ],
+        "life_on_hit": [
+            1924627
+        ],
+        "life_on_kill": [
+            2480780
+        ],
+        "life_regeneration": [
+            1829594
+        ],
+        "lightning_damage": [
+            2558717
+        ],
+        "lightning_damage_multiplier": [
+            2558717
+        ],
+        "lightning_resistance": [
+            1829618
+        ],
+        "lightning_spear": [
+            1927012
+        ],
+        "lightning_storm": [
+            1884264
+        ],
+        "lucky_hit_chance": [
+            1829596
+        ],
+        "lucky_hit_restore_primary_resource": [
+            1925873,
+            2380415
+        ],
+        "lucky_hit_vulnerable_chance": [
+            1925700
+        ],
+        "lunging_strike": [
+            1859780
+        ],
+        "macabre_skills": [
+            1928775
+        ],
+        "mana_on_kill": [
+            1924651
+        ],
+        "mana_regeneration": [
+            1924662
+        ],
+        "marksman_skills": [
+            2624421
+        ],
+        "mastery_skills": [
+            1928767
+        ],
+        "maul": [
+            1884256
+        ],
+        "max_life": [
+            1829592
+        ],
+        "max_resource": [
+            1834105
+        ],
+        "maximum_evade_charge": [
+            2540910
+        ],
+        "maximum_life": [
+            577173,
+            1829592
+        ],
+        "maximum_resource": [
+            1834105
+        ],
+        "meteor": [
+            1927014
+        ],
+        "mighty_throw": [
+            1997217
+        ],
+        "minion_skills": [
+            2624411
+        ],
+        "molten_bomb": [
+            2534760
+        ],
+        "movement_speed": [
+            1829598
+        ],
+        "naturemagic_skills": [
+            2624395
+        ],
+        "nether_step": [
+            2534780
+        ],
+        "occult_skills": [
+            2534850
+        ],
+        "overpower_damage": [
+            1829600
+        ],
+        "payback": [
+            2020073
+        ],
+        "penetrating_shot": [
+            1873219
+        ],
+        "physical_damage": [
+            2558672
+        ],
+        "physical_damage_multiplier": [
+            2558672
+        ],
+        "physical_resistance": [
+            2447332
+        ],
+        "poison_creeper": [
+            1884554
+        ],
+        "poison_damage": [
+            2558715
+        ],
+        "poison_damage_multiplier": [
+            2558715
+        ],
+        "poison_imbuement": [
+            1873221
+        ],
+        "poison_resistance": [
+            1829620
+        ],
+        "poison_trap": [
+            1873233
+        ],
+        "potency_skills": [
+            2020040
+        ],
+        "potion_capacity": [
+            1829602
+        ],
+        "profane_sentinel": [
+            2534789
+        ],
+        "projectile_skill_damage": [
+            1928805
+        ],
+        "pulverize": [
+            1884260
+        ],
+        "puncture": [
+            1873201
+        ],
+        "purify": [
+            2497254
+        ],
+        "pyromancy_skills": [
+            2624427
+        ],
+        "quill_volley": [
+            2014537
+        ],
+        "rabies": [
+            1884547
+        ],
+        "rake": [
+            2014560
+        ],
+        "rally": [
+            2497250
+        ],
+        "rallying_cry": [
+            1861955
+        ],
+        "rampage": [
+            2534782
+        ],
+        "ranks_to_abyss_skills": [
+            2534854
+        ],
+        "ranks_to_advance": [
+            2439595
+        ],
+        "ranks_to_aegis": [
+            2497230
+        ],
+        "ranks_to_agility_skills": [
+            1928769
+        ],
+        "ranks_to_all_skills": [
+            2571274
+        ],
+        "ranks_to_ancients_skills": [
+            2589349
+        ],
+        "ranks_to_arbiter_of_justice": [
+            2497228
+        ],
+        "ranks_to_arc_lash": [
+            1926994
+        ],
+        "ranks_to_armored_hide": [
+            2015672
+        ],
+        "ranks_to_arrow_storm": [
+            2589365
+        ],
+        "ranks_to_aura_skills": [
+            2497218
+        ],
+        "ranks_to_ball_lightning": [
+            1926996
+        ],
+        "ranks_to_barrage": [
+            1873215
+        ],
+        "ranks_to_bash": [
+            1859772
+        ],
+        "ranks_to_basic_skills": [
+            1928751
+        ],
+        "ranks_to_blade_shift": [
+            1873207
+        ],
+        "ranks_to_blazing_scream": [
+            2534726
+        ],
+        "ranks_to_blessed_hammer": [
+            2420823
+        ],
+        "ranks_to_blessed_shield": [
+            2420817
+        ],
+        "ranks_to_blight": [
+            1867418
+        ],
+        "ranks_to_blizzard": [
+            1926998
+        ],
+        "ranks_to_blood_howl": [
+            1884269
+        ],
+        "ranks_to_blood_lance": [
+            1867440
+        ],
+        "ranks_to_blood_mist": [
+            1867442
+        ],
+        "ranks_to_blood_skills": [
+            2624405
+        ],
+        "ranks_to_blood_surge": [
+            1867432
+        ],
+        "ranks_to_bludgeoning_skills": [
+            2624387
+        ],
+        "ranks_to_bombardment": [
+            2534861
+        ],
+        "ranks_to_bone_prison": [
+            1867446
+        ],
+        "ranks_to_bone_skills": [
+            2624407
+        ],
+        "ranks_to_bone_spear": [
+            1867408
+        ],
+        "ranks_to_bone_spirit": [
+            1867448
+        ],
+        "ranks_to_bone_splinters": [
+            1867374
+        ],
+        "ranks_to_boulder": [
+            1884271
+        ],
+        "ranks_to_brandish": [
+            2439788
+        ],
+        "ranks_to_brawling_skills": [
+            1928741
+        ],
+        "ranks_to_caltrops": [
+            1873223
+        ],
+        "ranks_to_centipede_skills": [
+            2624431
+        ],
+        "ranks_to_chain_lightning": [
+            1926979
+        ],
+        "ranks_to_challenging_shout": [
+            1861930
+        ],
+        "ranks_to_charge": [
+            1861932
+        ],
+        "ranks_to_charged_bolts": [
+            1926981
+        ],
+        "ranks_to_clash": [
+            2497191
+        ],
+        "ranks_to_claw": [
+            1884244
+        ],
+        "ranks_to_cold_imbuement": [
+            1873225
+        ],
+        "ranks_to_command_fallen": [
+            2534733
+        ],
+        "ranks_to_companion_skills": [
+            1928749
+        ],
+        "ranks_to_concealment": [
+            1873227
+        ],
+        "ranks_to_concussivestormp_skills": [
+            2019418
+        ],
+        "ranks_to_condemn": [
+            2497256
+        ],
+        "ranks_to_conjuration_skills": [
+            1928765
+        ],
+        "ranks_to_consecration": [
+            2497252
+        ],
+        "ranks_to_core_skills": [
+            1928753
+        ],
+        "ranks_to_corpse_explosion": [
+            1867450
+        ],
+        "ranks_to_corpse_skills": [
+            1928779
+        ],
+        "ranks_to_corpse_tendrils": [
+            1867452
+        ],
+        "ranks_to_counterattack": [
+            2019531
+        ],
+        "ranks_to_crushing_hand": [
+            2014518
+        ],
+        "ranks_to_curse_skills": [
+            1928777
+        ],
+        "ranks_to_cutthroat_skills": [
+            2624417
+        ],
+        "ranks_to_cyclone_armor": [
+            1884273
+        ],
+        "ranks_to_dance_of_knives": [
+            1997105
+        ],
+        "ranks_to_dark_prison": [
+            2534778
+        ],
+        "ranks_to_dark_shroud": [
+            1873229
+        ],
+        "ranks_to_darkness_skills": [
+            2624409
+        ],
+        "ranks_to_dash": [
+            1873231
+        ],
+        "ranks_to_death_blow": [
+            1861934
+        ],
+        "ranks_to_debilitating_roar": [
+            1884275
+        ],
+        "ranks_to_decompose": [
+            1867389
+        ],
+        "ranks_to_decrepify": [
+            1867454
+        ],
+        "ranks_to_defensive_skills": [
+            1928747
+        ],
+        "ranks_to_defiance_aura": [
+            2497215
+        ],
+        "ranks_to_demonology_skills": [
+            2534856
+        ],
+        "ranks_to_disciple_skills": [
+            2624413
+        ],
+        "ranks_to_divine_lance": [
+            2470114
+        ],
+        "ranks_to_doom": [
+            2534762
+        ],
+        "ranks_to_double_swing": [
+            1861896
+        ],
+        "ranks_to_dread_claws": [
+            2534728
+        ],
+        "ranks_to_dualwield_skills": [
+            2624389
+        ],
+        "ranks_to_dust_devil": [
+            2589353
+        ],
+        "ranks_to_eagle_skills": [
+            2624433
+        ],
+        "ranks_to_earth_skills": [
+            2624393
+        ],
+        "ranks_to_earth_spike": [
+            1884242
+        ],
+        "ranks_to_earthen_bulwark": [
+            1884277
+        ],
+        "ranks_to_earthquake": [
+            2589355
+        ],
+        "ranks_to_falling_star": [
+            2497245
+        ],
+        "ranks_to_familiar": [
+            1997224
+        ],
+        "ranks_to_fanaticism_aura": [
+            2497211
+        ],
+        "ranks_to_fire_bolt": [
+            1926989
+        ],
+        "ranks_to_fireball": [
+            1926975
+        ],
+        "ranks_to_firewall": [
+            1927000
+        ],
+        "ranks_to_flame_shield": [
+            1927002
+        ],
+        "ranks_to_flay": [
+            1859776
+        ],
+        "ranks_to_flurry": [
+            1873213
+        ],
+        "ranks_to_focus_skills": [
+            2014717
+        ],
+        "ranks_to_forceful_arrow": [
+            1873205
+        ],
+        "ranks_to_frenzy": [
+            1859778
+        ],
+        "ranks_to_frost_bolt": [
+            1926992
+        ],
+        "ranks_to_frost_nova": [
+            1927004
+        ],
+        "ranks_to_frost_skills": [
+            2624425
+        ],
+        "ranks_to_frozen_orb": [
+            1926985
+        ],
+        "ranks_to_golem": [
+            1928787
+        ],
+        "ranks_to_gorilla_skills": [
+            2624435
+        ],
+        "ranks_to_grenade_skills": [
+            2589361
+        ],
+        "ranks_to_ground_stomp": [
+            1861941
+        ],
+        "ranks_to_hammer_of_the_ancients": [
+            1861835
+        ],
+        "ranks_to_heartseeker": [
+            1873199
+        ],
+        "ranks_to_hell_fracture": [
+            2534722
+        ],
+        "ranks_to_hellfire_skills": [
+            2534852
+        ],
+        "ranks_to_hellion_sting": [
+            2534764
+        ],
+        "ranks_to_hemorrhage": [
+            1867396
+        ],
+        "ranks_to_holy_bolt": [
+            2497189
+        ],
+        "ranks_to_holy_light_aura": [
+            2497213
+        ],
+        "ranks_to_human_skills": [
+            2589367
+        ],
+        "ranks_to_hurricane": [
+            1884279
+        ],
+        "ranks_to_hydra": [
+            1927006
+        ],
+        "ranks_to_ice_armor": [
+            1927008
+        ],
+        "ranks_to_ice_blades": [
+            1927010
+        ],
+        "ranks_to_ice_shards": [
+            1926977
+        ],
+        "ranks_to_imbuements_skills": [
+            1928773
+        ],
+        "ranks_to_incinerate": [
+            1926983
+        ],
+        "ranks_to_infernal_breath": [
+            2534784
+        ],
+        "ranks_to_invigorating_strike": [
+            1873203
+        ],
+        "ranks_to_iron_maiden": [
+            1867456
+        ],
+        "ranks_to_iron_shrapnel": [
+            2589359
+        ],
+        "ranks_to_iron_skin": [
+            1861944
+        ],
+        "ranks_to_jaguar_skills": [
+            2624437
+        ],
+        "ranks_to_juggernaut_skills": [
+            2624415
+        ],
+        "ranks_to_kick": [
+            1861946
+        ],
+        "ranks_to_landslide": [
+            1884258
+        ],
+        "ranks_to_leap": [
+            1861953
+        ],
+        "ranks_to_lightning_spear": [
+            1927012
+        ],
+        "ranks_to_lightning_storm": [
+            1884264
+        ],
+        "ranks_to_lunging_strike": [
+            1859780
+        ],
+        "ranks_to_macabre_skills": [
+            1928775
+        ],
+        "ranks_to_marksman_skills": [
+            2624421
+        ],
+        "ranks_to_mastery_skills": [
+            1928767
+        ],
+        "ranks_to_maul": [
+            1884256
+        ],
+        "ranks_to_meteor": [
+            1927014
+        ],
+        "ranks_to_mighty_throw": [
+            1997217
+        ],
+        "ranks_to_minion_skills": [
+            2624411
+        ],
+        "ranks_to_molten_bomb": [
+            2534760
+        ],
+        "ranks_to_naturemagic_skills": [
+            2624395
+        ],
+        "ranks_to_nether_step": [
+            2534780
+        ],
+        "ranks_to_occult_skills": [
+            2534850
+        ],
+        "ranks_to_payback": [
+            2020073
+        ],
+        "ranks_to_penetrating_shot": [
+            1873219
+        ],
+        "ranks_to_poison_creeper": [
+            1884554
+        ],
+        "ranks_to_poison_imbuement": [
+            1873221
+        ],
+        "ranks_to_poison_trap": [
+            1873233
+        ],
+        "ranks_to_potency_skills": [
+            2020040
+        ],
+        "ranks_to_profane_sentinel": [
+            2534789
+        ],
+        "ranks_to_pulverize": [
+            1884260
+        ],
+        "ranks_to_puncture": [
+            1873201
+        ],
+        "ranks_to_purify": [
+            2497254
+        ],
+        "ranks_to_pyromancy_skills": [
+            2624427
+        ],
+        "ranks_to_quill_volley": [
+            2014537
+        ],
+        "ranks_to_rabies": [
+            1884547
+        ],
+        "ranks_to_rake": [
+            2014560
+        ],
+        "ranks_to_rally": [
+            2497250
+        ],
+        "ranks_to_rallying_cry": [
+            1861955
+        ],
+        "ranks_to_rampage": [
+            2534782
+        ],
+        "ranks_to_rapid_fire": [
+            1873211
+        ],
+        "ranks_to_ravager": [
+            2015513
+        ],
+        "ranks_to_ravens": [
+            1884549
+        ],
+        "ranks_to_razor_wings": [
+            2020081
+        ],
+        "ranks_to_reap": [
+            1867400
+        ],
+        "ranks_to_rend": [
+            1861878
+        ],
+        "ranks_to_rock_splitter": [
+            2013348
+        ],
+        "ranks_to_rupture": [
+            1861957
+        ],
+        "ranks_to_rushing_claw": [
+            2020152
+        ],
+        "ranks_to_scourge": [
+            2019796
+        ],
+        "ranks_to_sever": [
+            1867425
+        ],
+        "ranks_to_shade_skills": [
+            2589363
+        ],
+        "ranks_to_shadow_imbuement": [
+            1873235
+        ],
+        "ranks_to_shadow_step": [
+            1873237
+        ],
+        "ranks_to_shapeshifting_skills": [
+            2624397
+        ],
+        "ranks_to_shield_bash": [
+            2429486
+        ],
+        "ranks_to_shield_charge": [
+            2497240
+        ],
+        "ranks_to_shock_skills": [
+            2624429
+        ],
+        "ranks_to_shred": [
+            1884266
+        ],
+        "ranks_to_sigil_of_chaos": [
+            2534795
+        ],
+        "ranks_to_sigil_of_subversion": [
+            2534791
+        ],
+        "ranks_to_sigil_of_summons": [
+            2534793
+        ],
+        "ranks_to_skeleton_mage": [
+            1928785
+        ],
+        "ranks_to_skeleton_warrior": [
+            1928783
+        ],
+        "ranks_to_slashing_skills": [
+            2624391
+        ],
+        "ranks_to_smoke_grenade": [
+            1873239
+        ],
+        "ranks_to_soar": [
+            2015486
+        ],
+        "ranks_to_spark": [
+            1926987
+        ],
+        "ranks_to_spear_of_the_heavens": [
+            2497258
+        ],
+        "ranks_to_steel_grasp": [
+            1861959
+        ],
+        "ranks_to_stinger": [
+            2014649
+        ],
+        "ranks_to_stone_burst": [
+            1997086
+        ],
+        "ranks_to_storm_skills": [
+            2624399
+        ],
+        "ranks_to_storm_strike": [
+            1884246
+        ],
+        "ranks_to_subterfuge_skills": [
+            1928771
+        ],
+        "ranks_to_teleport": [
+            1927016
+        ],
+        "ranks_to_thrash": [
+            2014135
+        ],
+        "ranks_to_thunderspike": [
+            2014125
+        ],
+        "ranks_to_tornado": [
+            1884262
+        ],
+        "ranks_to_tortured_wretch": [
+            2534776
+        ],
+        "ranks_to_touch_of_death": [
+            2020173
+        ],
+        "ranks_to_toxic_skin": [
+            2015641
+        ],
+        "ranks_to_trample": [
+            1884552
+        ],
+        "ranks_to_trap_skills": [
+            2624423
+        ],
+        "ranks_to_twisting_blades": [
+            1873217
+        ],
+        "ranks_to_tyrants_grasp": [
+            2534787
+        ],
+        "ranks_to_umbral_chains": [
+            2534724
+        ],
+        "ranks_to_upheaval": [
+            1861902
+        ],
+        "ranks_to_valor_skills": [
+            2497223
+        ],
+        "ranks_to_versatile_skills": [
+            2589369
+        ],
+        "ranks_to_vortex": [
+            2014953
+        ],
+        "ranks_to_wall_of_agony": [
+            2534769
+        ],
+        "ranks_to_war_cry": [
+            1861961
+        ],
+        "ranks_to_weaponmastery_skills": [
+            1928743
+        ],
+        "ranks_to_werebear_skills": [
+            2624401
+        ],
+        "ranks_to_werewolf_skills": [
+            2624403
+        ],
+        "ranks_to_whirlwind": [
+            1861920
+        ],
+        "ranks_to_wind_shear": [
+            1884248
+        ],
+        "ranks_to_withering_fist": [
+            2014491
+        ],
+        "ranks_to_wolves": [
+            1884557
+        ],
+        "ranks_to_wrath_skills": [
+            1928755
+        ],
+        "ranks_to_zealot_skills": [
+            2420842
+        ],
+        "rapid_fire": [
+            1873211
+        ],
+        "ravager": [
+            2015513
+        ],
+        "ravens": [
+            1884549
+        ],
+        "razor_wings": [
+            2020081
+        ],
+        "reap": [
+            1867400
+        ],
+        "rend": [
+            1861878
+        ],
+        "resistance_to_all_elements": [
+            1834296
+        ],
+        "resource_cost_reduction": [
+            1915409
+        ],
+        "rock_splitter": [
+            2013348
+        ],
+        "rupture": [
+            1861957
+        ],
+        "rushing_claw": [
+            2020152
+        ],
+        "scourge": [
+            2019796
+        ],
+        "sever": [
+            1867425
+        ],
+        "shade_skills": [
+            2589363
+        ],
+        "shadow_damage": [
+            2558713
+        ],
+        "shadow_damage_multiplier": [
+            2558713
+        ],
+        "shadow_imbuement": [
+            1873235
+        ],
+        "shadow_resistance": [
+            1829622
+        ],
+        "shadow_step": [
+            1873237
+        ],
+        "shapeshifting_skills": [
+            2624397
+        ],
+        "shield_bash": [
+            2429486
+        ],
+        "shield_charge": [
+            2497240
+        ],
+        "shock_skills": [
+            2624429
+        ],
+        "shred": [
+            1884266
+        ],
+        "sigil_of_chaos": [
+            2534795
+        ],
+        "sigil_of_subversion": [
+            2534791
+        ],
+        "sigil_of_summons": [
+            2534793
+        ],
+        "skeleton_mage": [
+            1928785
+        ],
+        "skeleton_warrior": [
+            1928783
+        ],
+        "slashing_skills": [
+            2624391
+        ],
+        "smoke_grenade": [
+            1873239
+        ],
+        "soar": [
+            2015486
+        ],
+        "spark": [
+            1926987
+        ],
+        "spear_of_the_heavens": [
+            2497258
+        ],
+        "spirit_on_kill": [
+            1924653
+        ],
+        "spirit_regeneration": [
+            1924659
+        ],
+        "steel_grasp": [
+            1861959
+        ],
+        "stinger": [
+            2014649
+        ],
+        "stone_burst": [
+            1997086
+        ],
+        "storm_skills": [
+            2624399
+        ],
+        "storm_strike": [
+            1884246
+        ],
+        "strength": [
+            1829570
+        ],
+        "subterfuge_skills": [
+            1928771
+        ],
+        "teleport": [
+            1927016
+        ],
+        "thorns": [
+            1829666
+        ],
+        "thrash": [
+            2014135
+        ],
+        "thunderspike": [
+            2014125
+        ],
+        "to_hellfire_skills": [
+            2534852
+        ],
+        "tornado": [
+            1884262
+        ],
+        "tortured_wretch": [
+            2534776
+        ],
+        "touch_of_death": [
+            2020173
+        ],
+        "toxic_skin": [
+            2015641
+        ],
+        "trample": [
+            1884552
+        ],
+        "trap_skills": [
+            2624423
+        ],
+        "twisting_blades": [
+            1873217
+        ],
+        "tyrants_grasp": [
+            2534787
+        ],
+        "umbral_chains": [
+            2534724
+        ],
+        "upheaval": [
+            1861902
+        ],
+        "valor_skills": [
+            2497223
+        ],
+        "versatile_skills": [
+            2589369
+        ],
+        "vigor_on_kill": [
+            2012289
+        ],
+        "vigor_regeneration": [
+            2012489
+        ],
+        "vortex": [
+            2014953
+        ],
+        "vulnerable_damage": [
+            1834112
+        ],
+        "vulnerable_damage_multiplier": [
+            1834112
+        ],
+        "wall_of_agony": [
+            2534769
+        ],
+        "war_cry": [
+            1861961
+        ],
+        "weapon_damage": [
+            2620563
+        ],
+        "weaponmastery_skills": [
+            1928743
+        ],
+        "werebear_skills": [
+            2624401
+        ],
+        "werewolf_skills": [
+            2624403
+        ],
+        "whirlwind": [
+            1861920
+        ],
+        "willpower": [
+            583654,
+            1829574
+        ],
+        "wind_shear": [
+            1884248
+        ],
+        "withering_fist": [
+            2014491
+        ],
+        "wolves": [
+            1884557
+        ],
+        "wrath_on_kill": [
+            2532212
+        ],
+        "wrath_regeneration": [
+            2532220
+        ],
+        "wrath_skills": [
+            1928755
+        ],
+        "zealot_skills": [
+            2420842
+        ]
+    },
+    "parts": [
+        {
+            "field": "items",
+            "path": "catalog-73552-items-01.json",
+            "records": 115,
+            "sha256": "83995a4834515970af927871437a9bd162e236a9c20966b52c56aac8d5538b96"
+        },
+        {
+            "field": "items",
+            "path": "catalog-73552-items-02.json",
+            "records": 114,
+            "sha256": "3616b76934e056dc7231fe1ff2e71d530c7c4c8bff629758256450c261649618"
+        },
+        {
+            "field": "items",
+            "path": "catalog-73552-items-03.json",
+            "records": 108,
+            "sha256": "d379918ea445e1de0c81f7f0e9253d88c74f40f4cf2b0a0b0215d9d2daf1addf"
+        },
+        {
+            "field": "items",
+            "path": "catalog-73552-items-04.json",
+            "records": 43,
+            "sha256": "e2dba49bff52053d6d04fc14fc0041c05116b923cce02cac4446db6ac3e5aa73"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-01.json",
+            "records": 88,
+            "sha256": "eefb30dd667baea6277a08e5dc8515c3d16e0bb7c2bc56c6b83f589c26a84c67"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-02.json",
+            "records": 99,
+            "sha256": "67a6acd86438817eb78ece508923c5f402c8beb0d4ed783ba3dadc5a8cf21302"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-03.json",
+            "records": 97,
+            "sha256": "ff670c31434af4cb0b20704e9f9f9eb6a194f7b6b64a1050eff81cf7e57638be"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-04.json",
+            "records": 79,
+            "sha256": "9e27ccdb16f8ec6a570d1f09e06599ad10163abdc7128625bb72ca11feac088c"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-05.json",
+            "records": 144,
+            "sha256": "ed623854a2469e440aaf03b846bc4d51ef882cedd08b7fb076440dd6080b4d73"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-06.json",
+            "records": 94,
+            "sha256": "01fadada405735bd7242a0fb3796ea5440cc958451256e4d32a3dddb3340bf08"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-07.json",
+            "records": 96,
+            "sha256": "e1232a6c8212c52ae166cf3ee80d71d204ed23a069a55cd1e34cb25b2104d0c0"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-08.json",
+            "records": 92,
+            "sha256": "410dc6e214762c64537dee8710cf0d33ea04a144e5df852db488790298d61593"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-09.json",
+            "records": 130,
+            "sha256": "dea8023f485060d6f957d3b6e134e330849ffd8036ee08a5dc85341fb8a94efa"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-10.json",
+            "records": 135,
+            "sha256": "1240bac271fcd9ce871913551d8eeb16373772ed8ec5a2ec7db814a4fc8854bb"
+        },
+        {
+            "field": "affixes",
+            "path": "catalog-73552-affixes-11.json",
+            "records": 16,
+            "sha256": "a43a76bd10967f1d317b2faaa15ce0d1125afc65953c05d8b8e74d06f86f75b4"
+        }
+    ],
+    "schema_version": 1,
+    "snapshot_date": "2026-10-05",
+    "source": "D2Core 73552 paired enUS/zhCN + DiabloTools/d4data + verified community native-affix index",
+    "sources": [
+        {
+            "build": "73552",
+            "file": "uniqueItem_enUS.json",
+            "provider": "D2Core",
+            "public_redistribution": "verified",
+            "public_redistribution_basis": "project_user_statement",
+            "public_redistribution_evidence": "assets/equipment_knowledge/sources/d2core-redistribution-permission-20261005.json#/files/uniqueItem_enUS.json",
+            "scope": "public redistribution of this exact source payload with D4LF",
+            "sha256": "5e9bdc8584b2065e85af427d724efa353edd966a3ae86b72eb779e2ab26e25bf",
+            "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+        },
+        {
+            "build": "73552",
+            "file": "uniqueItem_zhCN.json",
+            "provider": "D2Core",
+            "public_redistribution": "verified",
+            "public_redistribution_basis": "project_user_statement",
+            "public_redistribution_evidence": "assets/equipment_knowledge/sources/d2core-redistribution-permission-20261005.json#/files/uniqueItem_zhCN.json",
+            "scope": "public redistribution of this exact source payload with D4LF",
+            "sha256": "eb4c01374f9e3b4c5805bd75a007c99c270542f34b3d148d9dc15ea0f91d11bd",
+            "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+        },
+        {
+            "build": "73552",
+            "file": "affix_enUS.json",
+            "provider": "D2Core",
+            "public_redistribution": "verified",
+            "public_redistribution_basis": "project_user_statement",
+            "public_redistribution_evidence": "assets/equipment_knowledge/sources/d2core-redistribution-permission-20261005.json#/files/affix_enUS.json",
+            "scope": "public redistribution of this exact source payload with D4LF",
+            "sha256": "107c20bbd24e937da67290aea9e726fe7440cd3cdc6f52a2ed91cd4177155c00",
+            "url": "https://cloudstorage.d2core.com/data/d4/73552/affix_enUS.json?env=prod&v=8"
+        },
+        {
+            "build": "73552",
+            "file": "affix_zhCN.json",
+            "provider": "D2Core",
+            "public_redistribution": "verified",
+            "public_redistribution_basis": "project_user_statement",
+            "public_redistribution_evidence": "assets/equipment_knowledge/sources/d2core-redistribution-permission-20261005.json#/files/affix_zhCN.json",
+            "scope": "public redistribution of this exact source payload with D4LF",
+            "sha256": "ddf27408c14031e04c160610036b6621bb3b8ceec1c7a7325069964937f48b6a",
+            "url": "https://cloudstorage.d2core.com/data/d4/73552/affix_zhCN.json?env=prod&v=8"
+        },
+        {
+            "build": "3.1.0.72592",
+            "bundled_file": "sources/native-affixes.json",
+            "bundled_sha256": "42afbb3d3085ad25bafcbf75db84a6efc32e26e6e27c1d2decd96071ecff8e2c",
+            "license": "MIT for the community data compilation; game rights separate",
+            "provider": "Freitag47/diablo4-lootfilter-generator + ThunderEagle/D4LootBench",
+            "rejected_keys": [],
+            "revision": "a83d518545bfdb9ff3bafa6edf0051d290ced6eb",
+            "sha256": "4d4d8c27888d28d956dcd07cf212ea3b579fc0e0474b64d7d8e64790b93cc54a",
+            "sha256_scope": "original downloaded source bytes",
+            "upstream_metadata": {
+                "d4lootbench_build": "LootBenchDataExtract build 3.1.0.72592",
+                "description": "Diablo 4 affix SNO IDs for native loot-filter import codes.",
+                "source": "Derived from ThunderEagle/D4LootBench d4-data.json (MIT), cross-checked vs fnuecke/diablo4-loot-filter-viewer names.json."
+            },
+            "url": "https://raw.githubusercontent.com/Freitag47/diablo4-lootfilter-generator/a83d518545bfdb9ff3bafa6edf0051d290ced6eb/data/affixes.json",
+            "verification": "individual key/SNO pairs checked against local d4data 3.2.1.73552",
+            "verified_definitions": [
+                {
+                    "key": "S04_Armor",
+                    "sha256": "a4480838da568a95802e759a1e74458dd2bfc510633be623efd80d843c104a3d",
+                    "sno_id": 1829554
+                },
+                {
+                    "key": "S04_AttackSpeed",
+                    "sha256": "cc44d5ddedf50c2c41c5b6cc7e64d84ec4d764c91c7f633df4e997ff40eb32c5",
+                    "sno_id": 1829556
+                },
+                {
+                    "key": "S04_CC_Duration_Reduction",
+                    "sha256": "2987f983f3185d8c16cc5656013f26708e71509f4566b6be7358ff1213987b31",
+                    "sno_id": 1829558
+                },
+                {
+                    "key": "S04_CooldownReductionCDR",
+                    "sha256": "a0ecefca0457e6f8b9778e987f7fbaba25c3aa34d065b323d00ac0b4f377033b",
+                    "sno_id": 1829560
+                },
+                {
+                    "key": "S04_CoreStat_Dexterity",
+                    "sha256": "9cc7d4207156fc1ecea4793b18e92cbe1fa1bb9d01339f26d4a7973637fa0125",
+                    "sno_id": 1829562
+                },
+                {
+                    "key": "S04_CoreStat_Intelligence",
+                    "sha256": "1b0941493d735bc641f0ccfacab684800ce04cb8df73a8fc3660f2ba2b688c78",
+                    "sno_id": 1829566
+                },
+                {
+                    "key": "S04_CoreStat_Strength",
+                    "sha256": "ec53e879df8ebb4fdd989d9e381273deb6f3de5e52faf1e9299410f6a9b500b5",
+                    "sno_id": 1829570
+                },
+                {
+                    "key": "S04_CoreStat_Willpower",
+                    "sha256": "3936dd3001b4d4d3342c97be55a2d9b15725b833291cde63630a182fc8a4a5d7",
+                    "sno_id": 1829574
+                },
+                {
+                    "key": "S04_CritChance",
+                    "sha256": "daf70bf8a9c156a7e9a75bae70c6a49c7e70c6f3014801cff5355f8e73993572",
+                    "sno_id": 1829582
+                },
+                {
+                    "key": "S04_CritDamage",
+                    "sha256": "026da0813f68231c77f281d1a8f46ace9a3dc3d9fb4e3aeeb4203b3f03ab57c2",
+                    "sno_id": 1829586
+                },
+                {
+                    "key": "S04_Damage_All",
+                    "sha256": "294d5975b70f92de21ae4cd77c60790af62073a7ef71034287d45d28becbbbbc",
+                    "sno_id": 1829588
+                },
+                {
+                    "key": "S04_Damage_DoT",
+                    "sha256": "bef7aa7ca9f057bb7c4844368f30ba7c3c3d53a0df04629567b76c989244fae4",
+                    "sno_id": 1829590
+                },
+                {
+                    "key": "S04_Life",
+                    "sha256": "4f33628c852656a2a9b3b6072f9d136680865225c46a3f259742809af6fe466b",
+                    "sno_id": 1829592
+                },
+                {
+                    "key": "S04_LifeRegen",
+                    "sha256": "9058e90b7144b9c113bd128fe8c25ac779b25434711f1e51517e3a44cf99be12",
+                    "sno_id": 1829594
+                },
+                {
+                    "key": "S04_Luck",
+                    "sha256": "a3525c50ad8ad884c4e6ec0bfe036b095823ef2410814eac9fd10143257f4dd0",
+                    "sno_id": 1829596
+                },
+                {
+                    "key": "S04_Movement_Speed",
+                    "sha256": "1f2c20f8e0eb27dde113a0fd36559f2acb8340ddf223872ff0e3602859160950",
+                    "sno_id": 1829598
+                },
+                {
+                    "key": "S04_OverpowerDamage",
+                    "sha256": "56a3ca394a39b0102036f14ebae2b880f9a448bb606772881aed16388fa2bf7c",
+                    "sno_id": 1829600
+                },
+                {
+                    "key": "S04_PotionCharges",
+                    "sha256": "ac2f750bd1716822f691b08311c8c802399cfd8e3c1571f1e6fa310d8841324a",
+                    "sno_id": 1829602
+                },
+                {
+                    "key": "S04_Resistance_Single_Fire",
+                    "sha256": "7fce0644fbbe698e30ede58aaad8aeb80b6f2699aa9b7d6106ebd4e119836b6a",
+                    "sno_id": 1829614
+                },
+                {
+                    "key": "S04_Resistance_Single_Lightning",
+                    "sha256": "dbbe4dc86fd2e51b0f0cc395016cd6f2cdd2623828068b7c288a50332a4db423",
+                    "sno_id": 1829618
+                },
+                {
+                    "key": "S04_Resistance_Single_Poison",
+                    "sha256": "f02a6e32b80e4494383e24e8dbd2a0598a6cae27ddafbcd18662cd0c8974a1ff",
+                    "sno_id": 1829620
+                },
+                {
+                    "key": "S04_Resistance_Single_Shadow",
+                    "sha256": "42abb020828d07c8d98250414c3c32c79af44acfbf809e028452772310703665",
+                    "sno_id": 1829622
+                },
+                {
+                    "key": "S04_ResourceGain",
+                    "sha256": "be7516f2e1ee992b974079765acc280e100417cfc80357cd5266d80ffbcaa1fb",
+                    "sno_id": 1829664
+                },
+                {
+                    "key": "S04_Thorns",
+                    "sha256": "f0d1d8e772232cac757a5dbd2d08a464cf542083233986830b5e7050d1be41bf",
+                    "sno_id": 1829666
+                },
+                {
+                    "key": "S04_Resistance_Single_Cold",
+                    "sha256": "aa5f6209ff2a67e74f294e35c6e10464e1c627b952d2e9c9b33f7d24f3f08fc1",
+                    "sno_id": 1829678
+                },
+                {
+                    "key": "S04_Resource_Max_AllClasses",
+                    "sha256": "011131dfa99bfd3581752ebce9457bb04274b50827cf9092393497c3617b4113",
+                    "sno_id": 1834105
+                },
+                {
+                    "key": "S04_Damage_to_Vulnerable",
+                    "sha256": "a784653347971a1a8c18037b171da6ec08ea9e02bfe8d08a191e8ee0adab8df6",
+                    "sno_id": 1834112
+                },
+                {
+                    "key": "S04_Dodge",
+                    "sha256": "e120fe89fc3aee98b0082ed5c50d478b6d085c0973188a967b5ba4ee210db80e",
+                    "sno_id": 1834117
+                },
+                {
+                    "key": "S04_HealingPercent",
+                    "sha256": "be1225ccc6d5308ebe5f58b53551f1bb9b8175282f938ab0bb4d7a11beb567eb",
+                    "sno_id": 1834175
+                },
+                {
+                    "key": "S04_Damage_Category_Basics",
+                    "sha256": "e1a098fe1d2c20a64fe3d5fa3225780beb106c81c995a88da077057a057ecb32",
+                    "sno_id": 1834212
+                },
+                {
+                    "key": "S04_Damage_Category_CoreSpenders",
+                    "sha256": "38d8a7e197836fd5d4a90c50917cbf2fae69f5f5e38df00ff56a485c6f2aa1cb",
+                    "sno_id": 1834266
+                },
+                {
+                    "key": "S04_Resistance_All",
+                    "sha256": "4007026175fd1254df5d5f7041101a69d0476a643d20e410383d201a3d2cfece",
+                    "sno_id": 1834296
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Basic_Bash",
+                    "sha256": "c05ad40bfb38144165d938046b9ac59f54422c715a05d72c41834548c03ac39c",
+                    "sno_id": 1859772
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Basic_Flay",
+                    "sha256": "eff9c03eaa9c4541f2c9c58544cfec9115c0c742e68d0a6d234ba2ed72c6c004",
+                    "sno_id": 1859776
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Basic_Frenzy",
+                    "sha256": "e52ef96e417d5c0a744733d20f5fd21f3155f3a23ee1ef3e28ce5dd9f1698b23",
+                    "sno_id": 1859778
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Basic_LungingStrike",
+                    "sha256": "17bb051b55e443f9e75b12c7b817d9719f17dd6fe69a34683a9e9daa7b81547c",
+                    "sno_id": 1859780
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Core_HammeroftheAncients",
+                    "sha256": "7e299ef3cbef5c73713f1f126c12c8e1a025170cbc04841b3d9a648ec909470c",
+                    "sno_id": 1861835
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Core_Rend",
+                    "sha256": "fd33c99b57e7d8d9141186516b23a38a78b4da85f488cf977c82c7807e95b39d",
+                    "sno_id": 1861878
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Core_DoubleSwing",
+                    "sha256": "3fd07e28a10b62fe336cca82f54beb7d1423d900d11f4c2ba353758286a812ef",
+                    "sno_id": 1861896
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Core_Upheaval",
+                    "sha256": "6445d7100281b8af94004210757d3c1c2105611532bb7227948fce7b7ddf5624",
+                    "sno_id": 1861902
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Core_Whirlwind",
+                    "sha256": "8527f67134a6aded85ebf1acdd55ca9899e72ecae09bcad4eddd11a70390bedf",
+                    "sno_id": 1861920
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_ChallengingShout",
+                    "sha256": "b604e517c557bbece4abfd5cec855e7cc8544d0c98ee72e862618e517efd8896",
+                    "sno_id": 1861930
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_Charge",
+                    "sha256": "2662cbcbf9a38efa409da45ec7261fcf5d3c8978007dfd45f1a00474ab492881",
+                    "sno_id": 1861932
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_DeathBlow",
+                    "sha256": "2e4506997f13cd3e1af96db755a7f301275b093d1f839adcb92071f0eeb509fc",
+                    "sno_id": 1861934
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_GroundStomp",
+                    "sha256": "7eb6f5287baeb22a0116b49671f6b880ec79f17b4c762390f608b1f85a61a7c1",
+                    "sno_id": 1861941
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_IronSkin",
+                    "sha256": "320d64cdadc850adfa073f449de55ccb461c893a0f0bdb26ddfce229e7e2c90c",
+                    "sno_id": 1861944
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_Kick",
+                    "sha256": "875c045ab0695e68d72d724c090485f726d2ac9644d803072aa10d3ac18f995f",
+                    "sno_id": 1861946
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_Leap",
+                    "sha256": "7cf872df5b4d1d5ab36f9e4b8f087c3dc57855ba48e1831580a76f6a875fb94f",
+                    "sno_id": 1861953
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_RallyingCry",
+                    "sha256": "b0a025e91c55a15fdb5a0c82e5b4598cc911028cf7da28a95d745dd5c3caa17e",
+                    "sno_id": 1861955
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_Rupture",
+                    "sha256": "db2d9d0debcd5d25c13887839a3abe0629f4490eded99f42429574de25d1c5c9",
+                    "sno_id": 1861957
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_SteelGrasp",
+                    "sha256": "6077641d39f8c43bc7f4a7882ce6c256006a411b93a4e9f22c2d6a2045b5e4bb",
+                    "sno_id": 1861959
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Special_WarCry",
+                    "sha256": "ea9c8db4f0c57759f3d38dbbc9fa45b52e856db7522ea02531b66c39517af860",
+                    "sno_id": 1861961
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Basic_BoneSplinters",
+                    "sha256": "9e13d48d85edebb0f16eaa0834601998ff9074a1e4373bfe63d0ff7b720b2997",
+                    "sno_id": 1867374
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Basic_Decompose",
+                    "sha256": "7564b8f4ba450f2385f17eab22a6a2afd7a542ede1fba2efe821605ed380844b",
+                    "sno_id": 1867389
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Basic_Hemorrhage",
+                    "sha256": "bfd48e8d70b3a676484090b8a96066b8f8093b2a721c4ecb715f61a591cfce3d",
+                    "sno_id": 1867396
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Basic_Reap",
+                    "sha256": "ebd6e190b5bd64629f79bcde89ced2430c72062a5392d56f2390b2304f36d885",
+                    "sno_id": 1867400
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Core_BoneSpear",
+                    "sha256": "c1df249f54316915774bb87f534d66de7c8566bc490000d22d417d1357411ace",
+                    "sno_id": 1867408
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Core_Blight",
+                    "sha256": "31c5cc46dd6c5429598448e1b8f7a945b90f4b1921dbbb0f8d2dd3f65e6f6bce",
+                    "sno_id": 1867418
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Core_Sever",
+                    "sha256": "cef8385e1590950a624a8d5fe19e849b71ee6d370b40396e55eefc264a7986f2",
+                    "sno_id": 1867425
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Core_BloodSurge",
+                    "sha256": "40c2109a01188273a6565317862a604c121f8a447df14a531701eae06a7d406c",
+                    "sno_id": 1867432
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Core_BloodLance",
+                    "sha256": "1815eeaf41275da4fe55dde09148697f5f68bffe87b8f7e5369bbee99476dcc8",
+                    "sno_id": 1867440
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Special_BloodMist",
+                    "sha256": "dad59f2e796de2ff1cc5bf9dfc521fda83d73fe807b96093f57822382e3f2ffd",
+                    "sno_id": 1867442
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Special_BonePrison",
+                    "sha256": "c05319acc3686efb0e39108720ed9af8c45f9ef26829dddab612db1815705877",
+                    "sno_id": 1867446
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Special_BoneSpirit",
+                    "sha256": "88d8c846823b1b3fed5ab1e7eb6f346e95ca02f9a8ec5bd2671396b9d89816b7",
+                    "sno_id": 1867448
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Special_CorpseExplosion",
+                    "sha256": "9eff64c840618329e309eb1b98eb27ee0d783c95fcf60dae7e66fc540651230e",
+                    "sno_id": 1867450
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Special_CorpseTendrils",
+                    "sha256": "5309b63acd311c8e4ba820ea7283563f07e06e919481db9c50b562f468ecd9f9",
+                    "sno_id": 1867452
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Special_Decrepify",
+                    "sha256": "9bc100d7d3144d6dcfb879caa94d77ffaa0e54015f41f73d7095cbd33d9d37e0",
+                    "sno_id": 1867454
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Special_IronMaiden",
+                    "sha256": "e64d110cf779e6db41c319e55d0d69ba15b62af3cabcb8469f427f2726bbef47",
+                    "sno_id": 1867456
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Basic_Heartseeker",
+                    "sha256": "db0a72d4d426646a51b441d2c251db67e55773fcd868cc2742273472079d9fca",
+                    "sno_id": 1873199
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Basic_Puncture",
+                    "sha256": "2c3f662fdca35602480b69ef92e39f9486a9db9d075b666e43c3e35b4d8ad12b",
+                    "sno_id": 1873201
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Basic_InvigoratingStrike",
+                    "sha256": "7ef6f1c87580c81413b949e4239e3155381a692bef00cbc917971b18db2a5064",
+                    "sno_id": 1873203
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Basic_ForcefulArrow",
+                    "sha256": "a1a4e058b7f20e0c5f3488e17ed318d7ef5d3d1b404ca8638368a09ead552283",
+                    "sno_id": 1873205
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Basic_BladeShift",
+                    "sha256": "661de1041cf9aef75b26c632e2909254a1b93fc8fc85feb49dc4dbccebf530dd",
+                    "sno_id": 1873207
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Core_RapidFire",
+                    "sha256": "a27dc263d09dac42dac8d580721d6b21ed74749aa3045c67dfc2d08eb4954469",
+                    "sno_id": 1873211
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Core_Flurry",
+                    "sha256": "4870fadd7c146246767c27d45af42366b9b58a7c295309593475048ddaae530a",
+                    "sno_id": 1873213
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Core_Barrage",
+                    "sha256": "d1c6d181cc51ce899ad525808dc86adb23f565d4f360127fc243a6f30eb15b9e",
+                    "sno_id": 1873215
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Core_TwistingBlades",
+                    "sha256": "63e36f117d4e47d1792e9eb0549cd8fa2dc0f372c79b2864ed3b398a913ee8d7",
+                    "sno_id": 1873217
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Core_PenetratingShot",
+                    "sha256": "a5e43637b50a8b625c6e4d230a9074fa028fac3f31c3dc0541aefd0f34ee27fb",
+                    "sno_id": 1873219
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_PoisonImbue",
+                    "sha256": "929a80f449a8bb7dca703dba6b6bb353421931e9a255545f5075303dbaf49eb5",
+                    "sno_id": 1873221
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_Caltrops",
+                    "sha256": "e168f817aba6c1dce5eebf3b968143405d6451c78b7daa04e7b93c426c597ce1",
+                    "sno_id": 1873223
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_ColdImbue",
+                    "sha256": "dea8f3aa658cc0f36a44d7fb6f2bc2d1852bb71fa1cae079e55679bdc48e3d88",
+                    "sno_id": 1873225
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_Concealment",
+                    "sha256": "aae89757acd33eb02adc7bf5bbb232b7d3c57c4fdba380b962118896216af2b8",
+                    "sno_id": 1873227
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_DarkShroud",
+                    "sha256": "ceeed32fb8670d18fcf17e0479ead1c4b1ff3677fbfa81192c85a7b0b37ae58f",
+                    "sno_id": 1873229
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_Dash",
+                    "sha256": "b70ba92c6a03b4c8714709fd49d9232bfd3e2b9e5cf81a9f7931c2b888daf4a9",
+                    "sno_id": 1873231
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_PoisonTrap",
+                    "sha256": "94a253c4eb590e43d6a53e69474e0cccc617ee42f8c3dadce81e9571c02c13ac",
+                    "sno_id": 1873233
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_ShadowImbue",
+                    "sha256": "3ac04ab04c35597bda0940210f62489727ce814b24910782817d24291b977ea1",
+                    "sno_id": 1873235
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_ShadowStep",
+                    "sha256": "57067ddb0c43adbfa794290766822a754f058db9c7a6f1451bda6d478ea3fc2c",
+                    "sno_id": 1873237
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Special_SmokeBomb",
+                    "sha256": "88183d70ef7ea4fd925359632794c9ede9c6b8cdf6c1d5b5df0999676db0c366",
+                    "sno_id": 1873239
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Basic_Earthspike",
+                    "sha256": "a20d1e1c0f7208819a7d2f265de327efc4d623789f78596e3347d24af90c0acf",
+                    "sno_id": 1884242
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Basic_Claw",
+                    "sha256": "e4a3bf28f7a8375822dead0b3b130615cbdec5a422adb294d048eb870a663e08",
+                    "sno_id": 1884244
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Basic_StormStrike",
+                    "sha256": "10f56f90699e424f5e4ec899b3a635db5ea97fdc4ec1124d217f9e7af85a1dce",
+                    "sno_id": 1884246
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Basic_WindShear",
+                    "sha256": "8112e290565f187432a17a57a8478fe8b25b34bde8fa8d0d2af5622490c00995",
+                    "sno_id": 1884248
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Basic_Maul",
+                    "sha256": "fe595290e2813b94f94c443846129e312a7689151e35279a5bf2d831f75b8996",
+                    "sno_id": 1884256
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Core_Landslide",
+                    "sha256": "a0f917dcd75e9f28d3be2593061c7f542043134744e425777e92fe640b8c2ddc",
+                    "sno_id": 1884258
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Core_Pulverize",
+                    "sha256": "a61ba5f8d1427b09d9ef6c5ee14c7a5442d8d3ad6c9a57cbd6440a9b44ee5fc6",
+                    "sno_id": 1884260
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Core_Tornado",
+                    "sha256": "3f50bf720760fa2d9bb9fcb35022a0f2336a6f980be23b8dedb953f2db4a5d9a",
+                    "sno_id": 1884262
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Core_LightningStorm",
+                    "sha256": "f364a26e17bda41af1ea4fa2c618f3637b0b2805010cf4e1a4e45597c400b02d",
+                    "sno_id": 1884264
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Core_Shred",
+                    "sha256": "4ed74b7967c33193276b0c25207b0c8be9e4fc7c9d46d91384cc8695dacf7ee7",
+                    "sno_id": 1884266
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_BloodHowl",
+                    "sha256": "00e77bbb8e66879ea383b9e6eb1e3d4e4fafad6821789a3be52189dfce677f42",
+                    "sno_id": 1884269
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_Boulder",
+                    "sha256": "d9399654f8a48d0f18d58a19457e4027bd807983319e740e678e5c401990105d",
+                    "sno_id": 1884271
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_CycloneArmor",
+                    "sha256": "cfe7fded1206c0b74c6c0d488fb06d0861eafd9114bfdb730e8d7e4140b1b0af",
+                    "sno_id": 1884273
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_DebilitatingRoar",
+                    "sha256": "d8ce5401e6f98247541486a22b9c0c5e04a4e0225731dd0cc781c9ff835deab4",
+                    "sno_id": 1884275
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_EarthenBulwark",
+                    "sha256": "d926d288fa77ff464a5f9d4e9971e38f075f85f54e4c138d05ae06826b32b7ce",
+                    "sno_id": 1884277
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_Hurricane",
+                    "sha256": "d768812aae04f5cdaeb079c842943fd9078699734fd7032e00c5c60aae1ac5c0",
+                    "sno_id": 1884279
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_Rabies",
+                    "sha256": "c0a1d83261d4cd01872f3f5912134be14b4b70a2b20b98539811c7f9d1434719",
+                    "sno_id": 1884547
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_Ravens",
+                    "sha256": "1cc08a454fe9b24c21ac0b8efe8623ed875016594a2c5e77021d548cba3fc995",
+                    "sno_id": 1884549
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_Trample",
+                    "sha256": "539a989b6dc29cefe9e2772f2bf455b327235dfc22dab0d1dca3e1a478c03045",
+                    "sno_id": 1884552
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_VineCreeper",
+                    "sha256": "b718bdd93978a856342a9cd9cbf65e01083589aebcdb6b877f481057e58eba3b",
+                    "sno_id": 1884554
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Special_Wolves",
+                    "sha256": "08e6f65f751147f99810ad5bc93843d0b5167079a1f6d3144a247841ca7c66da",
+                    "sno_id": 1884557
+                },
+                {
+                    "key": "S04_Resource_Cost_Reduction_AllClasses_Lesser",
+                    "sha256": "956f00f68aedb158c606b52b578b932667a4d3bbc50e7a815830613cd114ef28",
+                    "sno_id": 1915409
+                },
+                {
+                    "key": "S04_LifePerHit",
+                    "sha256": "95edf11b94451355cf4d595928600fc1bdf96628ed18c4219912e935712db709",
+                    "sno_id": 1924627
+                },
+                {
+                    "key": "S04_Resource_On_Kill_Energy",
+                    "sha256": "a7ec614eee3916b186e6addb4fac07fd1631d8f3ac5392b0b8c00a2c1d83f19a",
+                    "sno_id": 1924645
+                },
+                {
+                    "key": "S04_Resource_On_Kill_Essence",
+                    "sha256": "97c9f68acb738fd0ee3721127c8db965cd6d319962a56fd450df3ea431ec7d1e",
+                    "sno_id": 1924647
+                },
+                {
+                    "key": "S04_Resource_On_Kill_Fury",
+                    "sha256": "b91260803484cd275efc741e8a5941661c241e17dbce09cd163d41273bf74bad",
+                    "sno_id": 1924649
+                },
+                {
+                    "key": "S04_Resource_On_Kill_Mana",
+                    "sha256": "ff4690ebeb9032a8367ac8e0aef8f4bec9f23bc6818269b97cf7a8cd809426f5",
+                    "sno_id": 1924651
+                },
+                {
+                    "key": "S04_Resource_On_Kill_Spirit",
+                    "sha256": "6f8b5019067b3f10fecb5f9306486e56f92e688410fed0241f587d08e34edac2",
+                    "sno_id": 1924653
+                },
+                {
+                    "key": "S04_Resource_Per_Second_Energy",
+                    "sha256": "81ddb393cfd3391baa638ef771161f33542c06d67e5c55cd5331d7dd41bc8f9b",
+                    "sno_id": 1924656
+                },
+                {
+                    "key": "S04_Resource_Per_Second_Spirit",
+                    "sha256": "18dff6545f57566d9fc44ef341fe97110ee3ee4c16d978a61e46bb337438d254",
+                    "sno_id": 1924659
+                },
+                {
+                    "key": "S04_Resource_Per_Second_Mana",
+                    "sha256": "8158ffa6812a9f283d31345a929bfc5b3a0000c2438e451b78c8c3b33291222f",
+                    "sno_id": 1924662
+                },
+                {
+                    "key": "S04_Resource_Per_Second_Fury",
+                    "sha256": "88af38183a45432c9b45a390f647887ccdbc25858d8b1253a8fc7adff5d11cc1",
+                    "sno_id": 1924664
+                },
+                {
+                    "key": "S04_Resource_Per_Second_Essence",
+                    "sha256": "1a5feb1afe1dfaf27446d2a879f638d32d392408ebd66774d2b9e1edf63a2875",
+                    "sno_id": 1924666
+                },
+                {
+                    "key": "S04_Lucky_Hit_Vulnerable",
+                    "sha256": "5d2307aa39fd5417fa5998de7b46b5d80ff116811c5d5bc66588faf4c4529784",
+                    "sno_id": 1925700
+                },
+                {
+                    "key": "S04_Lucky_Hit_Resource_Percent",
+                    "sha256": "c742e16ae1b5ecd9e3a0b5f593d00772df84f7eb0386ffaef2b7ade6b1450b5a",
+                    "sno_id": 1925873
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Core_1_Fireball",
+                    "sha256": "09da8ef8418116d563a01f8c9771578b66ac6568090e5b0551f59b6a41e35d64",
+                    "sno_id": 1926975
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Core_2_IceShards",
+                    "sha256": "46dc125598fc58403028193021f9c79bb2d373f63f47a458f919a1f52bfaf793",
+                    "sno_id": 1926977
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Core_3_ChainLightning",
+                    "sha256": "3a8ab1d41a60d35043bfd759617fae760ea58a35ea6316522e0b68dc2be5579d",
+                    "sno_id": 1926979
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Core_4_ChargedBolts",
+                    "sha256": "3b60737f3760fc2d8989d023a1c72c4ceebd360823086193554b315586ba9e03",
+                    "sno_id": 1926981
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Core_5_Incinerate",
+                    "sha256": "363dc50950f5a8ed5039e783896ea1f5fb9ac76c606cdcd4a71702d34b93a2cc",
+                    "sno_id": 1926983
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Core_6_FrozenOrb",
+                    "sha256": "661edd1e12f1a8de07260ba061befdca9cef9b9cbbeb1e9fbb522e80cbcda087",
+                    "sno_id": 1926985
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Basic_1",
+                    "sha256": "8f3f0668e60ef73d4e03ee1c1988fe89c86d314d6c7a450241d13a866131d98d",
+                    "sno_id": 1926987
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Basic_2",
+                    "sha256": "ea891a6d611d4a521e4603701bfd9f7a6e80bb89f17f1443dcec563a72f887bf",
+                    "sno_id": 1926989
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Basic_3",
+                    "sha256": "5ec55e72b1157f3cb632b05092ac5ffd5a4c904cf067c15a670c8c8feecc1f7a",
+                    "sno_id": 1926992
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Basic_4",
+                    "sha256": "25fc0dacf18cbf0e86e3298eaf8857a24c3b68935fb1873d902ab010aed110cd",
+                    "sno_id": 1926994
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_BallLightning",
+                    "sha256": "8c94981752aab57d75301cbac09d9a98947647df4be15713de4f1ae765d5e907",
+                    "sno_id": 1926996
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_Blizzard",
+                    "sha256": "bf97fd183009ed1a2a4d872d6a78e411b9f7ba96330eea4f093bc1af50832947",
+                    "sno_id": 1926998
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_Firewall",
+                    "sha256": "4c43506fa49552909eb9be9605a04c0e38e6c5ecb7eefd651659c9c1cb344a89",
+                    "sno_id": 1927000
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_FlameShield",
+                    "sha256": "aa82ef5cfd35f3f95ebd5ce41f113f56caf5447848e91369dc67267fc48f25ca",
+                    "sno_id": 1927002
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_FrostNova",
+                    "sha256": "2cdb12e5450a9c74a101fab55a95d9fca6bb769894f790bbb27fb7c29b50d1e7",
+                    "sno_id": 1927004
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_Hydra",
+                    "sha256": "cc9fe4704fa704a3f5a0d347a196551a022e2b7a3d9928b5bef49b0de4a3bcdc",
+                    "sno_id": 1927006
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_IceArmor",
+                    "sha256": "1e1ea4651a168aa921fc61dd7698a5d4a5b0476dd5ca336d73a58fb54f695a2a",
+                    "sno_id": 1927008
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_IceBlades",
+                    "sha256": "39db98c055792c3ece112049def0b6b417109200e28c081087466397554278aa",
+                    "sno_id": 1927010
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_LightningSpear",
+                    "sha256": "bf2850d2a9d0a340139ea5d4478d6e4fc290c09177af31c1668ba8af8d3241f8",
+                    "sno_id": 1927012
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_Meteor",
+                    "sha256": "b1c3542415e4ac1ef575a82da5274139c41134c4a68059e44c0ab287565fef99",
+                    "sno_id": 1927014
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Special_Teleport",
+                    "sha256": "fad50010d70d69771b847e1c1538cdf17ec9544982d8e9e12a6b854eda1457d2",
+                    "sno_id": 1927016
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Category_Brawling",
+                    "sha256": "5d861505a85cddfb879d2e4e151e32e36a2d5557d35178674a7e49568002c3a6",
+                    "sno_id": 1928741
+                },
+                {
+                    "key": "S04_SkillRankBonus_Barb_Category_WeaponMastery",
+                    "sha256": "8372a06b2ebaf7c99abf8734e940ada79e49a39214e2a975ee32cf31d8d8e55f",
+                    "sno_id": 1928743
+                },
+                {
+                    "key": "S04_SkillRankBonus_Generic_Category_Defensive",
+                    "sha256": "ce5d719b8c971a9bbde6bb4aee28598bbfa11b3bf787fbf3abccb039d351666a",
+                    "sno_id": 1928747
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Category_Companion",
+                    "sha256": "6abf75ed74f1dc486d12524f488f644f3c3e39a752e0d0850dbdf7339eb445fb",
+                    "sno_id": 1928749
+                },
+                {
+                    "key": "S04_SkillRankBonus_Generic_Category_Basic",
+                    "sha256": "039fdde94571ff6f54d4ae4a5c86c4f807267c8f099eb82c0221c43e8958175f",
+                    "sno_id": 1928751
+                },
+                {
+                    "key": "S04_SkillRankBonus_Generic_Category_Core",
+                    "sha256": "b97ff3dccadec3a21910cbfa29e44d73978c87265918e58bf2e3c45ed95ffd30",
+                    "sno_id": 1928753
+                },
+                {
+                    "key": "S04_SkillRankBonus_Druid_Category_Wrath",
+                    "sha256": "c76bc2a1e6c2dc68e3ac6195b87220450cc44b5532767d33e3ceec7920dfbad7",
+                    "sno_id": 1928755
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Category_Conjuration",
+                    "sha256": "d03774c84a5616ca1a7850097e56b82a90700be4e923202ac9475fce20c3e245",
+                    "sno_id": 1928765
+                },
+                {
+                    "key": "S04_SkillRankBonus_Sorc_Category_Mastery",
+                    "sha256": "8077116fd09ba746d72091a20c1fabfdcdc197806038058d143a6a3613e9ebdc",
+                    "sno_id": 1928767
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Category_Agility",
+                    "sha256": "d5d010c67f33a2734e02e467f34fd5d624dc32f3e67daa49353dcaef27e1bf60",
+                    "sno_id": 1928769
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Category_Subterfuge",
+                    "sha256": "e5cdfe56a9a207af09e1660412b21df49248ec9c74e5547ef117e15ccc876445",
+                    "sno_id": 1928771
+                },
+                {
+                    "key": "S04_SkillRankBonus_Rogue_Category_Imbuements",
+                    "sha256": "95133b122a2db4a9c73a1a432d34440c36932a136ecd5d232c07a50bcba1a4d9",
+                    "sno_id": 1928773
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Category_Macabre",
+                    "sha256": "a14b5fbb70f6d07a4ecdc6f9d7122aae84d1cae5224d33b711007b02acb75c4e",
+                    "sno_id": 1928775
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Category_Curse",
+                    "sha256": "116366723bd0e049fa3979d12c9a3e935a76e607ff3e715b782a3deeabf2f219",
+                    "sno_id": 1928777
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Category_Corpse",
+                    "sha256": "7d4658ea744e763fd339c76a946736c732a7555c025e1de4ee66deb6cc954008",
+                    "sno_id": 1928779
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Talent_SkeletonWarrior",
+                    "sha256": "89b2aff38812437a5d3ad80b5b2f87e7ce16bf9cafe567af493ab3fc98c68c33",
+                    "sno_id": 1928783
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Talent_SkeletonMage",
+                    "sha256": "ad8810dcd18d823df33b26a0628db546c982c5a28603aa645f08a1b2876ad0a4",
+                    "sno_id": 1928785
+                },
+                {
+                    "key": "S04_SkillRankBonus_Necro_Talent_Golem",
+                    "sha256": "6013fa2e9136e96564de22b248147976f1366a891191180f264776b178f3e6b9",
+                    "sno_id": 1928787
+                },
+                {
+                    "key": "S04_DamageReduction",
+                    "sha256": "0bc7e480355af75cafe6606c8f4c0c0d3f0112a3eaae6ab1ce9f8f49e59016a0",
+                    "sno_id": 1928803
+                },
+                {
+                    "key": "S04_Projectiles_Skill_Generic",
+                    "sha256": "8d0fa89fb3bfe20167b0d4ac3c6e1598a349ed5f1409263db7989652a826ff72",
+                    "sno_id": 1928805
+                },
+                {
+                    "key": "X1_SkillRankBonus_Druid_Core_StoneBurst",
+                    "sha256": "056e9f77a2986a881f73f66dec319356f2ce5186d65748273f9b19bdd25bf108",
+                    "sno_id": 1997086
+                },
+                {
+                    "key": "X1_SkillRankBonus_Rogue_Special_DanceOfKnives",
+                    "sha256": "9f1e71cfb841434105e6ee278a57488c205b58bc4ec4f46a7d8f171e92bb98a7",
+                    "sno_id": 1997105
+                },
+                {
+                    "key": "X1_SkillRankBonus_Barb_Special_WeaponThrow",
+                    "sha256": "44815b532384ae61cb8ccaedf6c0904e7e75a7735dd82a21f22763f7cf369ddc",
+                    "sno_id": 1997217
+                },
+                {
+                    "key": "X1_SkillRankBonus_Sorc_Special_Familiar",
+                    "sha256": "ab46f3698ed389df27af3724f35875beb432d29dd30e128e615492746ebd9683",
+                    "sno_id": 1997224
+                },
+                {
+                    "key": "S04_Resource_On_Kill_Vigor",
+                    "sha256": "daa34e81ea364fe487d69e4bcfb9ae97bacf7f39b17ed37dc5c549563ef0ceb6",
+                    "sno_id": 2012289
+                },
+                {
+                    "key": "S04_Resource_Per_Second_Vigor",
+                    "sha256": "01f9140b40e99a6b175d4c271b171f84283094eb7fe5a5e74e3f5c2f1cc4bf58",
+                    "sno_id": 2012489
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Basic_RockSplitter",
+                    "sha256": "e35263081b77b76bd4ba390487ac6b618bed5ad5d085169f76036dda9cb87558",
+                    "sno_id": 2013348
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Basic_Thunderspike",
+                    "sha256": "a290bf334aa60a1f35b6c4008836ae60d95589f09cc9e5d8b19b9b802995ac76",
+                    "sno_id": 2014125
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Basic_Thrash",
+                    "sha256": "7e650da9a48ddf0478fae1f2c59711bf0b9ced0ded4238988b53fb962dcadf86",
+                    "sno_id": 2014135
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Basic_WitheringFist",
+                    "sha256": "31f2eb7e21bbf265bde40759be38a75122932b9fd2a2474117df6394df822e47",
+                    "sno_id": 2014491
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Core_CrushingHand",
+                    "sha256": "fb00b768dd5a495ec9a3eb28616d95f69b289932b6ae27eda082173bfb8aadc3",
+                    "sno_id": 2014518
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Core_QuillVolley",
+                    "sha256": "13e6ba0332711db993f6181b66cc944f34ebd462eaa034d1cd34917e28259a14",
+                    "sno_id": 2014537
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Core_Rake",
+                    "sha256": "c49d6ea972980e738c5d586bb454845d633f96e31b3252b047a355f97678249c",
+                    "sno_id": 2014560
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Core_Stinger",
+                    "sha256": "8bd7ee7c77c066886622f18c6a09f7857aa476d75903a0ca3f463d1e16561754",
+                    "sno_id": 2014649
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Category_Focus",
+                    "sha256": "94b27222d12e76f510bcfd2be776a5999804b84d7300b76cf67037c43ad36649",
+                    "sno_id": 2014717
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_Vortex",
+                    "sha256": "0d92b48a33bf334bf355571f078c0086963411f9b9c682cb175a8eb1859af83b",
+                    "sno_id": 2014953
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_Soar",
+                    "sha256": "4ac950a782b668b79de6ab3bdd4fbdeec7a6235825c91aa5ecf2fae13e477ab2",
+                    "sno_id": 2015486
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_Ravager",
+                    "sha256": "70191518a6dbac44c70c9d3103f08845e2f95d497a904fe4583e1cae09577df5",
+                    "sno_id": 2015513
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_ToxicSkin",
+                    "sha256": "02d47f46fcd2f9fe44a99f14f0e696faab933320804373ce9c032ed10de7620b",
+                    "sno_id": 2015641
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_ArmoredHide",
+                    "sha256": "3cee67ac483d627b478a8ce82cffbdb8b913e71dea11f79a338e3e2b6794c65b",
+                    "sno_id": 2015672
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_ConcussiveStormp",
+                    "sha256": "5ea0e49ddd366a7a6f9faad3b40200e4f113ac65b4d9f9a306b9403745e760e7",
+                    "sno_id": 2019418
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_Counterattack",
+                    "sha256": "36771eaf866d1ddf31de5d09ec20a1ce2a4ae3c3977b0ebc57653487157494b1",
+                    "sno_id": 2019531
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_Scourge",
+                    "sha256": "7bf6ae04979fd663332b93f7ed2da2b6db96ecf56cbc937fe42f59b734637df4",
+                    "sno_id": 2019796
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Category_Potency",
+                    "sha256": "30e228805f44a0c46ed56c37a9f88e5a5a11da062b0774a29de41825352dd071",
+                    "sno_id": 2020040
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_Payback",
+                    "sha256": "c50758d16d8a12ff931bd6c31dcbc103325c9f9a2edd27e829cc53214ae0967c",
+                    "sno_id": 2020073
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_RazorWings",
+                    "sha256": "ef2e2c3ab440f961d3be04db745f7ddab62b6ebf26175d0933fef989cfbd20e1",
+                    "sno_id": 2020081
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_RushingClaw",
+                    "sha256": "f644c2262b3b28a8d6666091a314c098bedb0b4102e5d8f7b9436a9b1368e3e1",
+                    "sno_id": 2020152
+                },
+                {
+                    "key": "X1_SkillRankBonus_Spiritborn_Special_TouchOfDeath",
+                    "sha256": "1583e151003971ac9138e0dc104c5494ea4101be287cdfecd6d394b714ea3fdc",
+                    "sno_id": 2020173
+                },
+                {
+                    "key": "S10_Lucky_Hit_Resource_Flat",
+                    "sha256": "d9fa50516a6b6c7ff3cacccee83de00f4e053e79c35a30ddf74a118f3c5e3dad",
+                    "sno_id": 2380415
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Core_BlessedShield",
+                    "sha256": "ea0c106798899dc409c99c41c74eee889fbac60ddc8d81e9545bf0060fa99c3a",
+                    "sno_id": 2420817
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Core_BlessedHammer",
+                    "sha256": "64a78db003e27908967783cbdea4250fcd0d916dc900f8f7af63ff55638cab0e",
+                    "sno_id": 2420823
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Category_Zealot",
+                    "sha256": "ae0901245ebdd2ecc38b85a99b480455c7bfe448bd5eefaa232ddea6c301e614",
+                    "sno_id": 2420842
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Core_ShieldBash",
+                    "sha256": "1a3a16a7f760e7d6938c0b1da8bf5913996a3378e9254fa4f390d0f425294fff",
+                    "sno_id": 2429486
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Basic_Advance",
+                    "sha256": "e85082b7fd6c1037a4ffe6fafba217828955c48615839b5dbde8a80e12c39a9a",
+                    "sno_id": 2439595
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Basic_Brandish",
+                    "sha256": "d83b5a67bae0798302276cfbfd459584cbfb1453982b33c2bd83b418dbadc14f",
+                    "sno_id": 2439788
+                },
+                {
+                    "key": "S04_Resistance_Single_Physical",
+                    "sha256": "54f6b1d9c1946048c439565f13b604018d2c8396057f31b11d7280ee5f4662e4",
+                    "sno_id": 2447332
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Core_DivineLance",
+                    "sha256": "ef6f4b7826196170670cf5c9dfa72348a4ac2c199f24a48d9778cc9570a49340",
+                    "sno_id": 2470114
+                },
+                {
+                    "key": "S11_LifeOnKill",
+                    "sha256": "0519992922f61746bd685e006f594c8622ada7494b1640ea4a362c5afa9a8301",
+                    "sno_id": 2480780
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Basic_HolyBolt",
+                    "sha256": "b00234f0ea799cd5bcf63facd1f03b14b4d155206171b6dada43a8be779e2af3",
+                    "sno_id": 2497189
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Basic_Clash",
+                    "sha256": "cb1a623dda1d9ea71c25aa7a029e240f5cb4f49bd7a22b37526a5ae407572ddd",
+                    "sno_id": 2497191
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Aura_FanaticismAura",
+                    "sha256": "03ed6462c1c3875885ef14b7b4e0995e9af38696bb28bcf793a03d6741d923b4",
+                    "sno_id": 2497211
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Aura_HolyLightAura",
+                    "sha256": "d0cb24d95d78e687f842582c13c7579ef0fb6d66a79152f90c4f1841dd8c5cb1",
+                    "sno_id": 2497213
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Aura_DefianceAura",
+                    "sha256": "b1e52a9d72044dd03299414459fe43aa56efc18582a3bfb9c7c75a02f7f0205c",
+                    "sno_id": 2497215
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Category_Aura",
+                    "sha256": "68df49fe36534e3228031f5ca7a3cd82dc44d2d710ea98d6a312af99bfce8111",
+                    "sno_id": 2497218
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Category_Valor",
+                    "sha256": "6a9325f16a9d9398b34197c1e2b2aacb33560aad8254a49a8beaf5a5e6fa610d",
+                    "sno_id": 2497223
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Category_Justice",
+                    "sha256": "25b5b93282fbb504c6f19bf83cb26489092abcc358b7af1c4f121ad519638be1",
+                    "sno_id": 2497228
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Valor_Aegis",
+                    "sha256": "2483f9b28d3827171002d83ac6bb43eab83a9e0be3c621e78197ca03955b8839",
+                    "sno_id": 2497230
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Valor_ShieldCharge",
+                    "sha256": "e07082bb66f6cec6f1ce3c9dd71deb4d2ed0e6fb6a9d6bd96aa4079d516c6be8",
+                    "sno_id": 2497240
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Valor_FallingStar",
+                    "sha256": "6914a6d616dd15fb45bb18d1b58e43edb7570939bdf45be880a758442e848750",
+                    "sno_id": 2497245
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Valor_Rally",
+                    "sha256": "543aae811a6323cb441631c50aebdb812f9f60ccaedd4071f7bcce7ae9712d6f",
+                    "sno_id": 2497250
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Justice_Consecration",
+                    "sha256": "2bee1ced2efd0516029af15e9d3b7dc6be3a506d72e283f21f701010d19e4e12",
+                    "sno_id": 2497252
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Justice_Purify",
+                    "sha256": "96868712c8627ccafde1e6fea8ed2cbe7b6fbf5f05e1a0c2c092b3af35f24893",
+                    "sno_id": 2497254
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Justice_Condemn",
+                    "sha256": "457ff3f761b44bfdb38bbfe8b13a8efc25df91b2b1b2f7e2a53120127feaf435",
+                    "sno_id": 2497256
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Justice_SpearOfTheHeavens",
+                    "sha256": "f61c575ffe96c15617fa65b2f9478bf722b3b32d43cf8e0f496b92a14b28987f",
+                    "sno_id": 2497258
+                },
+                {
+                    "key": "S11_FortifyGeneration",
+                    "sha256": "77cbf06a60e1cf3c593d298a359d7f8990aa550cc29b89b7bd1524f7e3c81749",
+                    "sno_id": 2517790
+                },
+                {
+                    "key": "S11_BarrierGeneration",
+                    "sha256": "f5153739f35f33a530bb7a19112489ef9842b378c8c6909e2e32c3546f758084",
+                    "sno_id": 2517794
+                },
+                {
+                    "key": "S04_Resource_Per_Second_Faith",
+                    "sha256": "0de5624d5290717e5113604c5e1a5c0115c1e47402d8479cffc1f662282c0c71",
+                    "sno_id": 2520249
+                },
+                {
+                    "key": "S04_Resource_On_Kill_Faith",
+                    "sha256": "7810b09e26249b93d713b1cf8c790324f9ffb62c276fa019c5e8bbc08f4ee400",
+                    "sno_id": 2520251
+                },
+                {
+                    "key": "S04_Resource_On_Kill_Wrath",
+                    "sha256": "e00e7785938c0d59a0393742e38cf965944ea6c4bf926f3a3a3c81421989316c",
+                    "sno_id": 2532212
+                },
+                {
+                    "key": "S04_Resource_Per_Second_Wrath",
+                    "sha256": "bdfc30d5eb680d841c066575f8ba5842c597caefe5d3368fd3600cea0b2d95d6",
+                    "sno_id": 2532220
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Core_HellFracture",
+                    "sha256": "87df05aafb0b472d00c9dbafdd28733c5abab843b6e80b6c97be8ecf162f98c1",
+                    "sno_id": 2534722
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Core_UmbralChains",
+                    "sha256": "e745011578317f2f7c8e8d6db8c7c03ebcce5553390343662c61d2ed19bbaa22",
+                    "sno_id": 2534724
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Core_BlazingScream",
+                    "sha256": "b5dcfb910950b353b70a77fdbc88088e0440174a835dc56bf5a3594d5cc54f8b",
+                    "sno_id": 2534726
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Core_DreadClaws",
+                    "sha256": "4fb8e9cb60179e1e4e475cffbe9a2ed429cb1fdfe676b490d17ae68f296190f8",
+                    "sno_id": 2534728
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Basic_CommandFallen",
+                    "sha256": "fb79ba6bd84bb31782d23361d3955f351ec6542b25f0f83d3a900e68534e9d49",
+                    "sno_id": 2534733
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Basic_MoltenBomb",
+                    "sha256": "6def807e5c4e6912f4e70414efda7ffd25259a469ecde9f30d8dcfbabbc186e1",
+                    "sno_id": 2534760
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Basic_Doom",
+                    "sha256": "30b11ca5f55902053857d580f3d0bc83399a188e9b1216f41634c706c41fdde1",
+                    "sno_id": 2534762
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Basic_HellionSting",
+                    "sha256": "ce989440256143ed4ee1fd635200c9ca038dd7290f505c83cc12e2d6d8606edc",
+                    "sno_id": 2534764
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_WallofAgony",
+                    "sha256": "4d9173dd6ed12a76fdc14cb4168abff5249bbdcd3aec1753759f1a05771cef35",
+                    "sno_id": 2534769
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_TorturedWretch",
+                    "sha256": "6f5e103e0f987924e5a5591be7ca7e19f05c689b4f67148da4b3d70dc4b4c1aa",
+                    "sno_id": 2534776
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_DarkPrison",
+                    "sha256": "76f761c157ff43287f08c08a5f983bcf7b2ce3d67d93c7113403f666a6030508",
+                    "sno_id": 2534778
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_NetherStep",
+                    "sha256": "c87d8b3aa1a630c938f8164443b5260d3d345811343104d45b75a1012f3cdcaa",
+                    "sno_id": 2534780
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_Rampage",
+                    "sha256": "9bd66764d80253482b3a03b32c6dcf7f21b35e6bddf79b4c61eb82b68d6f4cf4",
+                    "sno_id": 2534782
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_InfernalBreath",
+                    "sha256": "18f77fc91b7e04a9d62bd13ea1ce2436ba203ee14d8db750215273a3c4de1e8b",
+                    "sno_id": 2534784
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_TyrantsGrasp",
+                    "sha256": "34dc445e36c13e23593eb9593798e61aad6778f29981f121e606701927cc4bca",
+                    "sno_id": 2534787
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_ProfaneSentinel",
+                    "sha256": "17ed196d1bb732582d2b3b2375fbff302ac684c5d42ec20d531ddb54fe9e4474",
+                    "sno_id": 2534789
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_SigilofSubversion",
+                    "sha256": "627f17a36b5e193c119d753c3301d5b5ca4f6d8a448aedd8c57b2ce652ce4da5",
+                    "sno_id": 2534791
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_SigilofSummons",
+                    "sha256": "523ca231ab81b0b43bf8d387e0b4fb8f017e303c7a31e0f613a2d497725a39d0",
+                    "sno_id": 2534793
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Special_SigilofChaos",
+                    "sha256": "c56c491e88019a68053014edf9321a4e80fd034d2c45e69e36799416fe3695f6",
+                    "sno_id": 2534795
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Category_Occult",
+                    "sha256": "75a860fbff388873c2e6e28e61a5470525beaeb4fa7da0757c2babdde01f6e1f",
+                    "sno_id": 2534850
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Category_Hellfire",
+                    "sha256": "456be22f6a25f3876a260f607d751d0c6441482853747e0ff56004b698ec3a6b",
+                    "sno_id": 2534852
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Category_Abyss",
+                    "sha256": "2fb84b0ac938384790df041ba9b2f56a59cb8e2a5934f9817491ed5527337140",
+                    "sno_id": 2534854
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Category_Demonology",
+                    "sha256": "a9f572c7377a85dbd7408b9f081489f660f8995fac53686dcf0093a44f296d1f",
+                    "sno_id": 2534856
+                },
+                {
+                    "key": "X2_SkillRankBonus_Warlock_Core_Bombardment",
+                    "sha256": "596e7bc7044e307c18feac73dbf0517d95ff4685e575cc280fa41fe0c7b49fa8",
+                    "sno_id": 2534861
+                },
+                {
+                    "key": "X2_Evade_Attack_Reset",
+                    "sha256": "05554c83984ad2e9a09c537c6ac09e1f0d4601a51880a595dfc529c6538c2693",
+                    "sno_id": 2540908
+                },
+                {
+                    "key": "X2_Evade_Charges",
+                    "sha256": "edb9cecf0e432ae09f9f4e81d328f9e1787b6dc26e4fb5594da3ff4af5e268ad",
+                    "sno_id": 2540910
+                },
+                {
+                    "key": "X2_Evade_MovementSpeed",
+                    "sha256": "a32b09ecba5d792d119f61e682317c2d083347a147562bdf4c3e254850fc80f8",
+                    "sno_id": 2540912
+                },
+                {
+                    "key": "X2_DamageType_Physical",
+                    "sha256": "124f3724254c41159f99a1f93258355777ab4d1e8a4f31cf3b395ebde133aa39",
+                    "sno_id": 2558672
+                },
+                {
+                    "key": "X2_DamageType_Cold",
+                    "sha256": "787b035856d6006f83a758c8c5156e2518f765a74dd7cacee5e0747dd19774ed",
+                    "sno_id": 2558709
+                },
+                {
+                    "key": "X2_DamageType_Fire",
+                    "sha256": "42efa880de051e307881835adc47b3412701810257fad39706ef29a43f58668e",
+                    "sno_id": 2558711
+                },
+                {
+                    "key": "X2_DamageType_Shadow",
+                    "sha256": "3f896275e83942ad95c4c1e165acba3a89adfcff8d4b05611f3e483f7f3753f1",
+                    "sno_id": 2558713
+                },
+                {
+                    "key": "X2_DamageType_Poison",
+                    "sha256": "423dcf5ad642cb0fe453773ebdd076f3b740610590895299bce4fd4bc56be0dc",
+                    "sno_id": 2558715
+                },
+                {
+                    "key": "X2_DamageType_Lightning",
+                    "sha256": "fcdaa4b606731104ad46eda57ffd9cf81bf0e0cb0eaed3d071c0b9105b7ecb47",
+                    "sno_id": 2558717
+                },
+                {
+                    "key": "X2_DamageType_Holy",
+                    "sha256": "1d60f66fe23695c7da7e6c11d29ba88e890d6a264b1b47545a3e5686f28c2cc9",
+                    "sno_id": 2558719
+                },
+                {
+                    "key": "X2_SkillRankBonus_AllSkills",
+                    "sha256": "27424f69f6b28399395fe8c3915f5311d115cd7b0ba0703417a2adf617265d92",
+                    "sno_id": 2571274
+                },
+                {
+                    "key": "X2_SkillRankBonus_Barb_Special_Ancients",
+                    "sha256": "a7b53292c7e24009f235477e5b0f1251edeec11450823606376c1566485d381d",
+                    "sno_id": 2589349
+                },
+                {
+                    "key": "X2_SkillRankBonus_Barb_Special_DustDevils",
+                    "sha256": "6a22c71b09861d184fcca4ff0ed444887e3e997bf9180a872406a36afd615874",
+                    "sno_id": 2589353
+                },
+                {
+                    "key": "X2_SkillRankBonus_Barb_Special_Earthquake",
+                    "sha256": "0d00832032aa672748dfae26f2edad4d6bd8bfc530fead071bbdac056f945444",
+                    "sno_id": 2589355
+                },
+                {
+                    "key": "X2_SkillRankBonus_Barb_Special_IronShrapnel",
+                    "sha256": "82aabd7ba524a648d96690c7578b48a467a59729a5b17f5b3bdced8828dfe95d",
+                    "sno_id": 2589359
+                },
+                {
+                    "key": "X2_SkillRankBonus_Rogue_Special_Grenade",
+                    "sha256": "7fc18464c120dc54821dc7fdc0de4bd061b12a46c0298ba8d5d586f13b78a45f",
+                    "sno_id": 2589361
+                },
+                {
+                    "key": "X2_SkillRankBonus_Rogue_Special_Shade",
+                    "sha256": "51323348615c0ce4c84b7291bafb89900ea4689316b9c8072fd94e203548c509",
+                    "sno_id": 2589363
+                },
+                {
+                    "key": "X2_SkillRankBonus_Rogue_Special_ArrowStorm",
+                    "sha256": "c69d5de66c3d268df0259eb3a5ef5bf0be81f9a59f291a1d221b586c1777efd0",
+                    "sno_id": 2589365
+                },
+                {
+                    "key": "X2_SkillRankBonus_Druid_Special_Human",
+                    "sha256": "8e3ed30ebe61204e489191ec6db8c5e1696e11374d21f98bc282b981a827cdd2",
+                    "sno_id": 2589367
+                },
+                {
+                    "key": "X2_SkillRankBonus_Druid_Special_Versatile",
+                    "sha256": "cdc41dbb1bef5da0bf8451e76f344b7a53fc3a717039271dc54d77f31bd8628d",
+                    "sno_id": 2589369
+                },
+                {
+                    "key": "X2_Fast_Weapon_Damage_1HAxe",
+                    "sha256": "6ce0a020311f3aba1b9d88b1538d47919af08b0a9be36560a85568251655dace",
+                    "sno_id": 2620563
+                },
+                {
+                    "key": "X2_SkillRankBonus_Barb_Category_Bludgeoning",
+                    "sha256": "3d559bb9fd4daa26cb1e96c9c19a495b1bbd9d8cfdb5290343840b9eff81bd48",
+                    "sno_id": 2624387
+                },
+                {
+                    "key": "X2_SkillRankBonus_Barb_Category_DualWield",
+                    "sha256": "bb4104268b127becbc7852a840260dc3b917bde852c2462703e6cd75ee0cc5e8",
+                    "sno_id": 2624389
+                },
+                {
+                    "key": "X2_SkillRankBonus_Barb_Category_Slashing",
+                    "sha256": "f5e4b798765f9770ee84c9a50c2ec63f526905fb3f8483c58742f78557f102e3",
+                    "sno_id": 2624391
+                },
+                {
+                    "key": "X2_SkillRankBonus_Druid_Category_Earth",
+                    "sha256": "abcec026bd6dabc20f667911987ce793c43080204b30db77bbe3a41e23c06d34",
+                    "sno_id": 2624393
+                },
+                {
+                    "key": "X2_SkillRankBonus_Druid_Category_NatureMagic",
+                    "sha256": "37d1e61fcfb0de602965a5e21ccba3ecb929894c6f246f19110559642456c08a",
+                    "sno_id": 2624395
+                },
+                {
+                    "key": "X2_SkillRankBonus_Druid_Category_Shapeshifting",
+                    "sha256": "0b90cfc99e90f6e125b3805ce0e86b3f59eab241af5c58695254a41103793b50",
+                    "sno_id": 2624397
+                },
+                {
+                    "key": "X2_SkillRankBonus_Druid_Category_Storm",
+                    "sha256": "741bc365b31badb13b4441442638b566f5fd593d599b437e160e4be1b3a9a0e5",
+                    "sno_id": 2624399
+                },
+                {
+                    "key": "X2_SkillRankBonus_Druid_Category_Werebear",
+                    "sha256": "e1fd37f1c2cd75c06170b4fab27e64f4038e58996b5d003a7c11fca2607634bb",
+                    "sno_id": 2624401
+                },
+                {
+                    "key": "X2_SkillRankBonus_Druid_Category_Werewolf",
+                    "sha256": "d963787f435271ffbd51b443ba567ae6819466f03fa115a4c5eb46c31fe5e188",
+                    "sno_id": 2624403
+                },
+                {
+                    "key": "X2_SkillRankBonus_Necro_Category_Blood",
+                    "sha256": "77815cf96a9bee0c08243f54f99aaba9905a43f2ffd5e1f35203733f98cd39d2",
+                    "sno_id": 2624405
+                },
+                {
+                    "key": "X2_SkillRankBonus_Necro_Category_Bone",
+                    "sha256": "bc3a5a7548f977407a7f3d1af42309f576e003ecd241dc5ffdebc3f8e3e75014",
+                    "sno_id": 2624407
+                },
+                {
+                    "key": "X2_SkillRankBonus_Necro_Category_Darkness",
+                    "sha256": "b6bbf625c782667b0d80425811c7c3fd0528125c4bec6923f4d754fe5411a7d4",
+                    "sno_id": 2624409
+                },
+                {
+                    "key": "X2_SkillRankBonus_Necro_Category_Minion",
+                    "sha256": "fb2e8bd00d48e5221700fd24cc3165466eb80bc5225d0caedf5448a43b3aa384",
+                    "sno_id": 2624411
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Category_Disciple",
+                    "sha256": "ed18245853be7569c9f11d144eba28a700226b45b3eef17c4fa5a78debbf96cf",
+                    "sno_id": 2624413
+                },
+                {
+                    "key": "X2_SkillRankBonus_Paladin_Category_Juggernaut",
+                    "sha256": "ae6328995585e058f9fd9b2f9c56512d71fb48734002e6fa57d6daa7865459d1",
+                    "sno_id": 2624415
+                },
+                {
+                    "key": "X2_SkillRankBonus_Rogue_Category_Cutthroat",
+                    "sha256": "bfec6ecbc503bd03b4c249a2d9bea592f13fb581201abd45192564f121af6400",
+                    "sno_id": 2624417
+                },
+                {
+                    "key": "X2_SkillRankBonus_Rogue_Category_Marksman",
+                    "sha256": "1899d463845de588fc6451fad6a9678de68f51a6fe121674e469fe21febe6a34",
+                    "sno_id": 2624421
+                },
+                {
+                    "key": "X2_SkillRankBonus_Rogue_Category_Trap",
+                    "sha256": "3f0272effd60d55f0a52cf2979336c1d6e3f2f57ebae03d0e077560bd693aae1",
+                    "sno_id": 2624423
+                },
+                {
+                    "key": "X2_SkillRankBonus_Sorc_Category_Frost",
+                    "sha256": "5470f2fdb1677b45f50e99581c123a3ff555da766ca9da2305e65c5857404813",
+                    "sno_id": 2624425
+                },
+                {
+                    "key": "X2_SkillRankBonus_Sorc_Category_Pyromancy",
+                    "sha256": "fc328f186ce0e30f0cb90999292ec97969eb7677e0bfb1416d7f716b9a86fc7b",
+                    "sno_id": 2624427
+                },
+                {
+                    "key": "X2_SkillRankBonus_Sorc_Category_Shock",
+                    "sha256": "d1cfe7b5ad3e3ab11fddaa2296d6b133efcd84678ffb9d00a98e716925a75e1b",
+                    "sno_id": 2624429
+                },
+                {
+                    "key": "X2_SkillRankBonus_Spiritborn_Category_Centipede",
+                    "sha256": "e5b0cd7a152142575e6995eb4f3f90a03f7fcc91789c2c34643e3c1e432c93ac",
+                    "sno_id": 2624431
+                },
+                {
+                    "key": "X2_SkillRankBonus_Spiritborn_Category_Eagle",
+                    "sha256": "0952cd5e6c5fb35e9dad47b3cc53fe3cd24eb87e5c73111c703a81718816edbf",
+                    "sno_id": 2624433
+                },
+                {
+                    "key": "X2_SkillRankBonus_Spiritborn_Category_Gorilla",
+                    "sha256": "0472fd660678c43560b0e1877e4a7dae7df0646345a15436734823c586dd881c",
+                    "sno_id": 2624435
+                },
+                {
+                    "key": "X2_SkillRankBonus_Spiritborn_Category_Jaguar",
+                    "sha256": "e02dfcc2644dd033e8a224a04c4abaa28a48059496526ae089b6688ea7a7a148",
+                    "sno_id": 2624437
+                },
+                {
+                    "evidence": "User's 2026-10-01 InfinityBuilds round-trip fixture + local d4data",
+                    "key": "CoreStat_Willpower",
+                    "sha256": "1abab288b3e4f42051d37ec128a50100eadcaea4593262caff27318b664af3b1",
+                    "sno_id": 583654
+                },
+                {
+                    "evidence": "User's 2026-10-01 InfinityBuilds round-trip fixture + local d4data",
+                    "key": "Life",
+                    "sha256": "4c8f662453f6204db4a9a91d53ad249d18ee02945851425fe6bba1efbd3cc706",
+                    "sno_id": 577173
+                },
+                {
+                    "evidence": "User's 2026-10-01 InfinityBuilds round-trip fixture + local d4data",
+                    "key": "X2_SkillRankBonus_Warlock_Category_Hellfire",
+                    "sha256": "456be22f6a25f3876a260f607d751d0c6441482853747e0ff56004b698ec3a6b",
+                    "sno_id": 2534852
+                }
+            ]
+        },
+        {
+            "build": "3.2.1.73552",
+            "commit": "33e0bfbb5f717d3e560d14a7fb27d5a7f17fd2c0",
+            "item_type_definitions": [
+                {
+                    "key": "Amulet",
+                    "sha256": "2e64828ec2a93e8ebb3880e924ce75804bf413cc71c0a6c36aa8f4ee129bce35",
+                    "sno_id": 446837
+                },
+                {
+                    "key": "Axe",
+                    "sha256": "3562311e9c155178e1613a95d481fdda44e7f92ecc985d9d13566281776486eb",
+                    "sno_id": 446801
+                },
+                {
+                    "key": "Axe2H",
+                    "sha256": "01e889a20963e38d193bcd0bf3a6fdab4b5d92f3d8fab1392880e73ea8e13ac7",
+                    "sno_id": 446802
+                },
+                {
+                    "key": "Boots",
+                    "sha256": "bb0e0d117d1c39e19e87974cfa814653d4937eb364ec29969d98c33f6bfe12cb",
+                    "sno_id": 446832
+                },
+                {
+                    "key": "Bow",
+                    "sha256": "b310eef2a9ee8ccd549b2978163141151ca4ec197f2f572e51640a011c6701f1",
+                    "sno_id": 446823
+                },
+                {
+                    "key": "Charm",
+                    "sha256": "edbe4cf396ed31a947bf8bc81abd2929e006e3826ab20970057fff53764b14f4",
+                    "sno_id": 2288901
+                },
+                {
+                    "key": "ChestArmor",
+                    "sha256": "54721588c3b2af77f75db9384bd2f7bbb530482a577d3f120379ea63cc30465e",
+                    "sno_id": 446829
+                },
+                {
+                    "key": "Crossbow2H",
+                    "sha256": "53f74230225a268db986535333a11a52c41f3a43a108d1ed896863f1d0d44e35",
+                    "sno_id": 446825
+                },
+                {
+                    "key": "Dagger",
+                    "sha256": "2ce49d240b6511c622456a0dd04e2a75f8347c9ec3d0bab1954679aa2d01de68",
+                    "sno_id": 446809
+                },
+                {
+                    "key": "Elixir",
+                    "sha256": "2085cb07a7e6f57d4cabcf489ed7484612ab2fa10e35a64a1c2bd7e69743687c",
+                    "sno_id": 446860
+                },
+                {
+                    "key": "Flail",
+                    "sha256": "a4f4a535e8bb7365584f4a600255d69886731a8292e63a190c0f6ee927998734",
+                    "sno_id": 2312856
+                },
+                {
+                    "key": "Focus",
+                    "sha256": "1358a88ccbfde9b8946b89f536d278364fcd6b59533e112175121b779c6d0fd5",
+                    "sno_id": 446826
+                },
+                {
+                    "key": "Glaive",
+                    "sha256": "7a2ac114a2b741a958ed1b771b3adaa0e0b6af31d2c0bbce05d079da8c32bdcc",
+                    "sno_id": 1462897
+                },
+                {
+                    "key": "Gloves",
+                    "sha256": "c8c5bd125dc7db61badbbdd4a5490fd95f89d2403adb6275777b10e62a1ff2a7",
+                    "sno_id": 446833
+                },
+                {
+                    "key": "Helm",
+                    "sha256": "3d249b3db9aa5d2216bbe1094d72ede40b617ef07e10fcc2305474986e0729c2",
+                    "sno_id": 446830
+                },
+                {
+                    "key": "HoradricSeal",
+                    "sha256": "33ec15e99682e2cb585912d153c3170fb91f3dd09be6248022ab330373811e32",
+                    "sno_id": 2326144
+                },
+                {
+                    "key": "Legs",
+                    "sha256": "58c531c271ec9ad8dd2890230115299fe24415cd198c7c44a25bf7439a386914",
+                    "sno_id": 446831
+                },
+                {
+                    "key": "Mace",
+                    "sha256": "119fefd866d875cfe838298a74cfa8b16462dbb1ab2eddb8e48d499d5141e9d6",
+                    "sno_id": 446778
+                },
+                {
+                    "key": "Mace2H",
+                    "sha256": "2ab8559b06924352e07c0420518900e8bf6428ab762cb897e6b494a1a88b35d0",
+                    "sno_id": 446788
+                },
+                {
+                    "key": "OffHandTotem",
+                    "sha256": "21a3d2adafa79cc631dfdf7fa7bf7b94c4a1f89b86ab307913ecd2de00306136",
+                    "sno_id": 446827
+                },
+                {
+                    "key": "Polearm",
+                    "sha256": "5413e822330dae46246baf21da47e37445520029983d972580707ddb96044941",
+                    "sno_id": 446813
+                },
+                {
+                    "key": "Quarterstaff",
+                    "sha256": "d8e4824515d0292de106d953482eec1527d89d794f1c67622f10a9d4457b8f44",
+                    "sno_id": 1495597
+                },
+                {
+                    "key": "Ring",
+                    "sha256": "e0c3c3ca6d38c86a8c9ac796bda402ae2181ddab4a15322841d2903830f92ae7",
+                    "sno_id": 446836
+                },
+                {
+                    "key": "Scythe",
+                    "sha256": "97632e3d3f521824d0fbb6833b91e60324b269ba647d35af5a74450102eaa180",
+                    "sno_id": 446804
+                },
+                {
+                    "key": "Scythe2H",
+                    "sha256": "fe16b82b04d033c072a681b9d1723a8945e757ab4a4247d4826f8b23daaa8c43",
+                    "sno_id": 446805
+                },
+                {
+                    "key": "Shield",
+                    "sha256": "012f90bd77a4b495cd0166e305e2ba826963ed0b4515efc87c968007047d10d4",
+                    "sno_id": 446834
+                },
+                {
+                    "key": "Staff",
+                    "sha256": "0530ceae92e869afcbca29633a22ffd7bc077243456d9d08070d8a59c29aef78",
+                    "sno_id": 446803
+                },
+                {
+                    "key": "Sword",
+                    "sha256": "986312de5101cc0748e81e0008af59af0a8d9a5f0f47d75c7faaef03395ca22e",
+                    "sno_id": 446796
+                },
+                {
+                    "key": "Sword2H",
+                    "sha256": "d7298612ff65c24a00e726fee5412952ff81a204a461eb9302a6838b63b4358f",
+                    "sno_id": 446799
+                },
+                {
+                    "key": "TemperManual",
+                    "sha256": "2ee54e6f7adfef7b67bbe2c83b381bdebc5712f4c7eeb6fec6e45896b52989dc",
+                    "sno_id": 1871482
+                },
+                {
+                    "key": "Tome",
+                    "sha256": "eab0ef5a53fe9d737cfd1b7c691501fa7cb186e614b4232e8bdd6d3f6e723f6e",
+                    "sno_id": 446853
+                },
+                {
+                    "key": "Wand",
+                    "sha256": "5efc4a70c2a47a607c8129d346e2cc87df3c1e0316e8e0cb43cf3873b603a03a",
+                    "sno_id": 446819
+                },
+                {
+                    "key": "Axe_Berserker_Axe",
+                    "sha256": "709c99254e83688e2718977c4bac04b610e234399244bf50b1acd7f408a2f713",
+                    "sno_id": 2686551
+                },
+                {
+                    "key": "Sword_Phase_Blade",
+                    "sha256": "d5b8f6d30f614fd354325fc914c5705f9658ef44957078e34d39bb4a8efe812e",
+                    "sno_id": 2676430
+                }
+            ],
+            "provider": "DiabloTools/d4data",
+            "rights": "Game data rights remain separate from software",
+            "url": "https://github.com/DiabloTools/d4data/tree/33e0bfbb5f717d3e560d14a7fb27d5a7f17fd2c0"
+        }
+    ]
+}

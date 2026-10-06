@@ -5,10 +5,7 @@ import tkinter as tk
 from PIL import Image, ImageDraw, ImageFont
 
 from src.desktop import is_alive
-from src.paragon import data as _data
-from src.paragon.shared import OverlayContract
-
-globals().update({name: getattr(_data, name) for name in _data.__all__})
+from src.paragon.overlay.contracts import OverlayContract
 
 
 class OverlayGridMixin(OverlayContract):
@@ -22,10 +19,6 @@ class OverlayGridMixin(OverlayContract):
             return
 
         sz = max(12, int(14 * self._cfg.ui_scale))
-        if not Image or not ImageFont or not ImageDraw:
-            self._lock_img_cache = {True: None, False: None}
-            return
-
         try:
             # Segoe UI Emoji gives reliable lock/unlock glyphs on Windows and lets
             # the popup use small crisp icons instead of text symbols.

@@ -1,14 +1,11 @@
 import logging
-import threading
 import tkinter as tk
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, NoReturn
 
 if TYPE_CHECKING:
-    from src.overlay.widget.widget import BossTimerOverlay
+    import datetime
 
 LOGGER = logging.getLogger(__name__)
-_OVERLAY_INSTANCE: BossTimerOverlay | None = None
-_OVERLAY_LOCK = threading.RLock()
 
 TRANSPARENT_KEY = "#ff00ff"
 CARD_BG = "#151515"
@@ -24,8 +21,12 @@ class OverlayContract(tk.Toplevel):
 
     _gold_initialized: bool
     _exp_initialized: bool
+    capture_gold_stats: bool
+    capture_exp_stats: bool
+    locked: bool
+    synced_wb: tuple[datetime.datetime, str] | None
 
-    def __getattr__(self, name: str) -> Any:  # ruff:ignore[any-type] - dynamic Tk widget attributes
+    def __getattr__(self, name: str) -> NoReturn:
         raise AttributeError(name)
 
 

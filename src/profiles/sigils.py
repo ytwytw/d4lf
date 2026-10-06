@@ -2,8 +2,9 @@ import enum
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from src.item import ItemRarity  # ruff:ignore[typing-only-first-party-import]
+from src.game_data import ItemRarity, SigilRules
 from src.profiles.validation.normalization import _normalize_rarities, _normalize_tribute_names
+from src.type_aliases import JsonObject  # ruff:ignore[typing-only-first-party-import]
 
 
 class SigilPriority(enum.StrEnum):
@@ -18,7 +19,7 @@ class SigilConditionModel(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def parse_data(cls, data: str | list[str] | dict[str, object]) -> dict[str, object]:
+    def parse_data(cls, data: str | list[str] | JsonObject) -> JsonObject:
         if isinstance(data, dict):
             return data
         if isinstance(data, str):
@@ -39,9 +40,6 @@ class SigilConditionModel(BaseModel):
     @field_validator("condition", "name")
     @classmethod
     def name_must_exist(cls, names_in: str | list[str]) -> str | list[str]:
-        # This on module level would be a circular import, so we do it lazy for now
-        from src.item import SigilRules  # ruff:ignore[import-outside-top-level]
-
         names = [names_in] if isinstance(names_in, str) else names_in
         sigil_rules = SigilRules.default()
         errors = [name for name in names if not sigil_rules.target(name).known]

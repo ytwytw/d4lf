@@ -1,4 +1,4 @@
-from typing import override
+from typing import TYPE_CHECKING, cast, override
 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import (
@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QListWidgetItem,
     QScrollArea,
     QStackedWidget,
     QVBoxLayout,
@@ -16,15 +17,23 @@ from PyQt6.QtWidgets import (
 )
 
 from src.settings import CATEGORY_KEY, CATEGORY_ORDER, HIDE_FROM_GUI_KEY, IS_HOTKEY_KEY, SettingsCategory
+from src.settings.localization import category_group_title, category_label, field_description, field_title
 from src.settings.reset import ConfigResetMixin
 from src.settings.store import SettingsStore
 from src.settings.tab_mixin import ConfigTabMixin
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from pydantic import BaseModel
+
+    from src.settings.types import SettingValue
 
 CONFIG_TABNAME = "config"
 
 
 class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
-    def __init__(self, theme_changed_callback=None):
+    def __init__(self, theme_changed_callback: Callable[[], None] | None = None) -> None:
         self._initializing = True
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -40,7 +49,9 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
         search_hbox = QHBoxLayout(search_container)
         search_hbox.setContentsMargins(10, 0, 10, 0)
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("🔍 Search settings...")
+        from src.localization import translate  # ruff:ignore[import-outside-top-level]
+
+        self.search_input.setPlaceholderText(translate("settings.search"))
         self.search_input.textChanged.connect(self._filter_settings)
         search_hbox.addWidget(self.search_input)
         layout.addWidget(search_container)
@@ -79,10 +90,10 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
         self.setLayout(layout)
         QTimer.singleShot(0, self._finish_init)
 
-    def _finish_init(self):
+    def _finish_init(self) -> None:
         self._initializing = False
 
-    def _build_sections(self):
+    def _build_sections(self) -> None:
         models = self._settings_store.models_with_sections()
         # 1. Bucket settings by category using model metadata
         categories_map = {}
@@ -111,14 +122,7 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
                 continue
             page = self._create_page(cat_name)
             layout = page.findChild(QVBoxLayout)
-            # Determine a nice title for the group box
-            if cat_name == SettingsCategory.HOTKEYS:
-                gb_title = "Key Bindings"
-            elif cat_name == SettingsCategory.ADVANCED:
-                gb_title = "Technical Settings"
-            else:
-                gb_title = str(cat_name).replace("&", "&&")
-            gb = QGroupBox(gb_title)
+            gb = QGroupBox(category_group_title(cat_name).replace("&", "&&"))
             grid = QGridLayout(gb)
             grid.setColumnStretch(0, 1)
             grid.setColumnStretch(2, 1)
@@ -126,8 +130,15 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
                 self._add_setting_row(grid, grid.rowCount(), model, section, key, val)
             layout.addWidget(gb)
             self._group_boxes[cat_name] = gb
+        advanced = self._settings_store.model_for_section("advanced_options")
+        if bool(getattr(advanced, "show_diagnostics_page", False)):
+            from src.diagnostics.widget import DiagnosticCaptureWidget  # ruff:ignore[import-outside-top-level]
 
-    def _create_page(self, name: str) -> QWidget:
+            page = self._create_page(SettingsCategory.DIAGNOSTICS)
+            page_layout = page.findChild(QVBoxLayout)
+            page_layout.addWidget(DiagnosticCaptureWidget(parent=page))
+
+    def _create_page(self, name: SettingsCategory) -> QWidget:
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QFrame.Shape.NoFrame)
@@ -136,16 +147,22 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
         layout.setContentsMargins(10, 20, 10, 10)
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         scroll.setWidget(container)
-        self.nav_list.addItem(name)
+        nav_item = QListWidgetItem(category_label(name))
+        nav_item.setData(Qt.ItemDataRole.UserRole, name)
+        self.nav_list.addItem(nav_item)
         self.stacked_widget.addWidget(scroll)
         return container
 
     @override
-    def _add_setting_row(self, grid, row, model, section, key, val):
+    def _add_setting_row(
+        self, grid: QGridLayout, row: int, model: BaseModel, section: str, key: str, val: SettingValue
+    ) -> None:
         meta = model.model_json_schema()["properties"].get(key, {})
         if meta.get(HIDE_FROM_GUI_KEY):
             return
-        human_label = meta.get("title") or key.replace("_", " ").title()
+        default_label = meta.get("title") or key.replace("_", " ").title()
+        human_label = field_title(section, key, default_label)
+        description = field_description(section, key, meta.get("description", ""))
         label_container = QWidget()
         label_vbox = QVBoxLayout(label_container)
         label_vbox.setContentsMargins(0, 0, 10, 0)
@@ -153,7 +170,7 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
         title_lbl = QLabel(human_label)
         title_lbl.setObjectName("setting-title")
         title_lbl.setWordWrap(True)
-        desc_lbl = QLabel(meta.get("description", ""))
+        desc_lbl = QLabel(description)
         desc_lbl.setObjectName("description-label")
         desc_lbl.setWordWrap(True)
         label_vbox.addWidget(title_lbl)
@@ -162,4 +179,10 @@ class ConfigTab(ConfigTabMixin, ConfigResetMixin, QWidget):
         self.model_to_parameter_value_map[f"{section}.{key}"] = control
         grid.addWidget(label_container, row, 0, Qt.AlignmentFlag.AlignTop)
         grid.addWidget(control, row, 2, Qt.AlignmentFlag.AlignTop)
-        self._all_rows.append((human_label, meta.get("description", ""), label_container, control, grid.parentWidget()))
+        self._all_rows.append((
+            human_label,
+            meta.get("description", ""),
+            label_container,
+            control,
+            cast("QGroupBox", grid.parentWidget()),
+        ))

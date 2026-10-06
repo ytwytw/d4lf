@@ -1,9 +1,13 @@
 import re
 from dataclasses import dataclass, field, replace
 from enum import StrEnum
-from typing import Protocol, cast
+from typing import Protocol, cast, runtime_checkable
 
 from src.profiles import ParagonPayloadModel, ProfileModel, normalize_profile_file_name
+
+
+class ImportSourceError(Exception):
+    """Expected failure raised while reading a supported import source."""
 
 
 class FilenamePart(StrEnum):
@@ -52,11 +56,11 @@ class VariantSelection:
 
     @classmethod
     def from_ids(cls, ids: VariantSelection | tuple[str, ...]) -> VariantSelection:
-        if isinstance(ids, cls):
+        if isinstance(ids, VariantSelection):
             return ids
-        return cls(cast("tuple[str, ...]", ids))
+        return cls(ids)
 
-    def __contains__(self, value: object) -> bool:
+    def __contains__(self, value: str) -> bool:
         return value in self.ids
 
     def __bool__(self) -> bool:
@@ -110,6 +114,55 @@ class ImportSource(Protocol):
     def import_build(self, request: ImportRequest) -> ImportResult: ...
 
 
+@runtime_checkable
+class ClosableImportSource(Protocol):
+    """Optional lifecycle capability implemented by stateful sources."""
+
+    def close(self) -> None: ...
+
+
+class ImportSession:
+    """Own one source instance for a complete discovery/import lifecycle.
+
+    Source adapters that do not own resources need no special support: their
+    session cleanup is a no-op. Stateful adapters can expose ``close`` and are
+    guaranteed one idempotent call when the session ends.
+    """
+
+    __slots__ = ("_closed", "_source")
+
+    def __init__(self, source: ImportSource) -> None:
+        self._source = source
+        self._closed = False
+
+    @property
+    def source(self) -> ImportSource:
+        """Exact source instance retained by this session."""
+        return self._source
+
+    @property
+    def name(self) -> str:
+        return self._source.name
+
+    @property
+    def closed(self) -> bool:
+        return self._closed
+
+    def fetch_variants(self, request: ImportRequest) -> list[VariantMetadata]:
+        return self._source.fetch_variants(request)
+
+    def import_build(self, request: ImportRequest) -> ImportResult:
+        return self._source.import_build(request)
+
+    def close(self) -> None:
+        """Release source-owned state exactly once."""
+        if self._closed:
+            return
+        self._closed = True
+        if isinstance(self._source, ClosableImportSource):
+            self._source.close()
+
+
 def assemble_profile_file_name(
     *,
     source_name: str,
@@ -143,6 +196,7 @@ def assemble_profile_file_name(
 
 _SOURCE_TITLE_SUFFIXES = {
     "d4builds": ("D4Builds", "D4 Builds"),
+    "d2core": ("D2Core", "暗黑核"),
     "infinitybuilds": ("InfinityBuilds", "Infinity Builds"),
     "maxroll": ("Maxroll",),
     "mobalytics": ("Mobalytics",),

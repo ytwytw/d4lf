@@ -1,0 +1,88 @@
+{
+    "schema_version": 1,
+    "sources": {
+        "d2core": {
+            "expected_build": "73552",
+            "files": {
+                "affix_enUS.json": {
+                    "sha256": "97a02211dda70118f3e0876e603e6538eec395e4764422f4bd4a9fbce3d3af96",
+                    "url": "https://cloudstorage.d2core.com/data/d4/73552/affix_enUS.json?env=prod&v=8"
+                },
+                "affix_zhCN.json": {
+                    "sha256": "d4f8325f16a17258007a797072c518d0c82e9b610981dd1ea83ec969b9eb9d1e",
+                    "url": "https://cloudstorage.d2core.com/data/d4/73552/affix_zhCN.json?env=prod&v=8"
+                },
+                "aspect_enUS.json": {
+                    "sha256": "39af68d6c7d85c5ccd783652dbfb40beee1ffcabaa32ad88c782c65e418203f1",
+                    "url": "https://cloudstorage.d2core.com/data/d4/73552/aspect_enUS.json?env=prod&v=8"
+                },
+                "aspect_zhCN.json": {
+                    "sha256": "e6704fb2512ff85332c422911fabe0a2c5ea7ca203eb5dcd2b18110d9f617d33",
+                    "url": "https://cloudstorage.d2core.com/data/d4/73552/aspect_zhCN.json?env=prod&v=8"
+                },
+                "talisman_enUS.json": {
+                    "sha256": "2279ffcd1a93d978beba3c7d7be9ecdbd0f62e0654c7492eec718c429de355ff",
+                    "url": "https://cloudstorage.d2core.com/data/d4/73552/talisman_enUS.json?env=prod&v=8"
+                },
+                "talisman_zhCN.json": {
+                    "sha256": "5f13c6ad41ebe6b4a2224ddca74caca1130b6c0a6a3d353ab2bbc53779ac9449",
+                    "url": "https://cloudstorage.d2core.com/data/d4/73552/talisman_zhCN.json?env=prod&v=8"
+                },
+                "uniqueItem_enUS.json": {
+                    "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                    "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                },
+                "uniqueItem_zhCN.json": {
+                    "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                    "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                }
+            },
+            "official_zhcn_reference": "https://d4.blizzard.cn/news/24295394/",
+            "role": "supplemental_licensed",
+            "site_url": "https://www.d2core.com/"
+        },
+        "d4data": {
+            "build_url": "https://raw.githubusercontent.com/DiabloTools/d4data/master/buildVersion.txt",
+            "commit": "33e0bfbb5f717d3e560d14a7fb27d5a7f17fd2c0",
+            "expected_build": "3.2.1.73552",
+            "role": "canonical_english"
+        },
+        "diablo4_companion": {
+            "commit": "a7efa39819ffec10f2dd1c06e874744d2605167f",
+            "files": {
+                "D4Companion/Data/Affixes.enUS.json": {
+                    "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31"
+                },
+                "D4Companion/Data/Affixes.zhCN.json": {
+                    "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b"
+                },
+                "D4Companion/Data/Aspects.enUS.json": {
+                    "sha256": "4ef5b2e7aa4f8285bc0566e67dcb381886429dc5405ae1f82eb62bd077d40c1c"
+                },
+                "D4Companion/Data/Aspects.zhCN.json": {
+                    "sha256": "9d1001aac46e3011356d54f69a4c2d8071baa0bdfc919d8a36fabf8aa1b34b44"
+                },
+                "D4Companion/Data/ItemTypes.enUS.json": {
+                    "sha256": "df3a042c7764eb433751bb20f18d4fb6b3057c2db9d507b1dc7c62a5759eb6f6"
+                },
+                "D4Companion/Data/ItemTypes.zhCN.json": {
+                    "sha256": "aa21f3358105d6e0004018b469c6f74108e30292e76298061f2f51d3d7bee861"
+                },
+                "D4Companion/Data/Sigils.enUS.json": {
+                    "sha256": "9debf035eba46b2dc95fda8076b04a58d771458197370bef4ceadcc942db13cb"
+                },
+                "D4Companion/Data/Sigils.zhCN.json": {
+                    "sha256": "c318c227ae34c3fcdbe8ebde21d56024136a9c325f3d33c009120794c5c0c60e"
+                },
+                "D4Companion/Data/Uniques.enUS.json": {
+                    "sha256": "04c5777f2ea5f320018fe1aeec2cc427ffdabbb1daa09accbfb46c857b5631fd"
+                },
+                "D4Companion/Data/Uniques.zhCN.json": {
+                    "sha256": "4649122ccb80166d6ca45c630973e06db2b8627536cd989e8004e52ef2ef0b56"
+                }
+            },
+            "raw_base": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/master",
+            "role": "supplemental_bilingual"
+        }
+    }
+}

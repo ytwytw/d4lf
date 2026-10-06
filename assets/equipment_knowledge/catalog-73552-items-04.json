@@ -1,0 +1,4976 @@
+{
+    "items": [
+        {
+            "canonical_name": "ahavarion_spear_of_lycander",
+            "item_type": "Staff",
+            "key": "S14_2HStaff_Unique_Generic_100",
+            "name_en": "Ahavarion, Spear of Lycander",
+            "name_zh": "阿瓦里昂，莱姗德之矛",
+            "raw_en": {
+                "affixesDesc": [
+                    "Lucky Hit: Up to a 15% Chance to Restore +22.0% Primary Resource",
+                    "{c_mythic}Gain a random Shrine effect for {c_number}20{/c} seconds after killing an Elite enemy. Can only occur once every {c_number}30{/c} seconds.{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid"
+                ],
+                "charName": "Sorcerer, Druid",
+                "damage": "2,815 Damage Per Second",
+                "damageDetails": [
+                    "[2,252 - 3,378] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "UBERUNIQUE_Lucky_Hit_Resource_Ahavarion"
+                ],
+                "flavor": "\"The angel Lycander left us a portion of her power in this spear. It is all the proof I need that she watches over us still.\"\r\n- Oracle Argoysni",
+                "icon": 595234048,
+                "id": 2646277,
+                "isMythic": true,
+                "isRuneword": false,
+                "key": "S14_2HStaff_Unique_Generic_100",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Ahavarion, Spear of Lycander",
+                "oldKey": "2HStaff_Unique_Generic_100"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "幸运一击: 最多有 15% 几率恢复 +22.0% 主要资源",
+                    "{c_mythic}消灭精英敌人后，获得一种随机圣坛效果，持续 {c_number}20{/c} 秒。每 {c_number}30{/c} 秒只能触发一次。{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid"
+                ],
+                "charName": "巫师, 德鲁伊",
+                "damage": "2,815 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[2,252 - 3,378]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "UBERUNIQUE_Lucky_Hit_Resource_Ahavarion"
+                ],
+                "flavor": "“天使莱姗德在这把长矛中为我们留下了她的一部分力量。这足以证明她仍在守护着我们。”\r\n——神谕者阿尔戈斯尼",
+                "icon": 595234048,
+                "id": 2646277,
+                "isMythic": true,
+                "isRuneword": false,
+                "key": "S14_2HStaff_Unique_Generic_100",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "阿瓦里昂，莱姗德之矛",
+                "oldKey": "2HStaff_Unique_Generic_100"
+            },
+            "sno_id": 2646277
+        },
+        {
+            "canonical_name": "greatstaff_of_the_crone",
+            "item_type": "Staff",
+            "key": "2HStaff_Unique_Druid_001",
+            "name_en": "Greatstaff of the Crone",
+            "name_zh": "巫婆巨杖",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[4 - 6] to Claw",
+                    "{c_unique}{c_important}Claw{/c} gains all Variants for free and deals {c_random}[120 - 150]%[x]{/c} increased damage.{/c}"
+                ],
+                "char": [
+                    "Druid"
+                ],
+                "charName": "Druid",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Varshan"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "S04_SkillRankBonus_Druid_Basic_Claw"
+                ],
+                "flavor": "\"She has existed in Scosglen since before Fiacla-Géar walked the land. Her purpose is a mystery to us all. However, approach her with deference; she may grant you her counsel.\"-Airidah, to Donan",
+                "icon": 445847391,
+                "id": 354700,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HStaff_Unique_Druid_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Greatstaff of the Crone"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[4 - 6] 至爪击",
+                    "{c_unique}{c_important}爪击{/c}免费获得所有变体，并且造成的伤害提高 {c_random}[120 - 150]%[x]{/c}。{/c}"
+                ],
+                "char": [
+                    "Druid"
+                ],
+                "charName": "德鲁伊",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Varshan"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "S04_SkillRankBonus_Druid_Basic_Claw"
+                ],
+                "flavor": "“在菲亚克拉·盖尔来到索格伦之前，她就已经存在于这片大地上了。她的目的对我们都是一个谜。不过见到她要保持恭敬的态度，这样她就可能会为你提供建议。”——艾蕊达，写给多南",
+                "icon": 445847391,
+                "id": 354700,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HStaff_Unique_Druid_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "巫婆巨杖"
+            },
+            "sno_id": 354700
+        },
+        {
+            "canonical_name": "the_basilisk",
+            "item_type": "Staff",
+            "key": "S05_BSK_2HStaff_Unique_Druid_001",
+            "name_en": "The Basilisk",
+            "name_zh": "蛇怪之杖",
+            "raw_en": {
+                "affixesDesc": [
+                    "x[26 - 50]% Critical Strike Damage Multiplier",
+                    "{c_unique}{c_important}Petrified{/c} enemies have a {c_random}[80 - 100]%[+]{/c} increased chance to be Critically Struck and take {c_random}[60 - 90]%[x]{/c} increased damage. Additionally, {c_important}Earth{/c} Skills {c_important}Petrify{/c} {c_important}{u}Healthy{/u}{/c} enemies for {c_number}3{/c} seconds.{/c}"
+                ],
+                "char": [
+                    "Druid"
+                ],
+                "charName": "Druid",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Grigoire"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "S04_CritDamage"
+                ],
+                "flavor": "\"Well did she feed her children, and well did her children feed her.\" -Scosglen folktale",
+                "icon": 1241072967,
+                "id": 1944544,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "S05_BSK_2HStaff_Unique_Druid_001",
+                "keywordIds": [
+                    "Keyword_Healthy"
+                ],
+                "keywordSources": {
+                    "effects": [
+                        "Keyword_Healthy"
+                    ],
+                    "implicits": []
+                },
+                "name": "The Basilisk"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "x[26 - 50]% 暴击伤害增倍",
+                    "{c_unique}{c_important}被石化{/c}的敌人被暴击的几率提高 {c_random}[80 - 100]%[+]{/c}，受到的伤害提高 {c_random}[60 - 90]%[x]{/c}。此外，{c_important}大地{/c}技能会{c_important}石化{/c}{c_important}{u}健康{/u}{/c}的敌人，持续 {c_number}3{/c} 秒。{/c}"
+                ],
+                "char": [
+                    "Druid"
+                ],
+                "charName": "德鲁伊",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Grigoire"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "S04_CritDamage"
+                ],
+                "flavor": "“她喂饱了她的孩子，她的孩子也喂饱了她。”——索格伦传说",
+                "icon": 1241072967,
+                "id": 1944544,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "S05_BSK_2HStaff_Unique_Druid_001",
+                "keywordIds": [
+                    "Keyword_Healthy"
+                ],
+                "keywordSources": {
+                    "effects": [
+                        "Keyword_Healthy"
+                    ],
+                    "implicits": []
+                },
+                "name": "蛇怪之杖"
+            },
+            "sno_id": 1944544
+        },
+        {
+            "canonical_name": "staff_of_endless_rage",
+            "item_type": "Staff",
+            "key": "2HStaff_Unique_Sorc_002",
+            "name_en": "Staff of Endless Rage",
+            "name_zh": "无尽怒火法杖",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[4 - 6] to Fireball",
+                    "{c_unique}{c_important}Fireball{/c} deals {c_random}[140 - 180]%[x]{/c} increased damage and every {c_number}3rd{/c} Cast launches {c_number}2{/c} additional projectiles.{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "Sorcerer",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Duriel"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "S04_SkillRankBonus_Sorc_Core_1_Fireball"
+                ],
+                "flavor": "\"Leaving even blackened bones for your kin to mourn is too good an end for you.\" \r\n- Josiah",
+                "icon": 595234013,
+                "id": 1063172,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HStaff_Unique_Sorc_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Staff of Endless Rage"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[4 - 6] 至火球",
+                    "{c_unique}{c_important}火球{/c}造成的伤害提高 {c_random}[140 - 180]%[x]{/c}，并且每第 {c_number}3{/c} 次施放会额外发射 {c_number}2{/c} 枚投射物。{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "巫师",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Duriel"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "S04_SkillRankBonus_Sorc_Core_1_Fireball"
+                ],
+                "flavor": "\"给你的亲人们留下一堆发黑的骨头供他们哀悼算是便宜你了。\" - 约西亚",
+                "icon": 595234013,
+                "id": 1063172,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HStaff_Unique_Sorc_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "无尽怒火法杖"
+            },
+            "sno_id": 1063172
+        },
+        {
+            "canonical_name": "staff_of_lam_esen",
+            "item_type": "Staff",
+            "key": "2HStaff_Unique_Sorc_100",
+            "name_en": "Staff of Lam Esen",
+            "name_zh": "兰姆·艾森之杖",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[4 - 6] to Charged Bolts",
+                    "{c_unique}{c_important}Charged Bolts{/c} deal {c_random}[110 - 160]%[x]{/c} increased damage, last {c_number}300%{/c} longer and seek enemies.{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "Sorcerer",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Lord Zir"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "S04_SkillRankBonus_Sorc_Core_4_ChargedBolts"
+                ],
+                "flavor": "\"Also known as the Greatstaff of the Old Religion, this powerful relic is one of only a small handful of Skatsimi artifacts that have survived to this day.\"\r\n- Barrett's Book of Implements",
+                "icon": 595234045,
+                "id": 1306311,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HStaff_Unique_Sorc_100",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Staff of Lam Esen"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[4 - 6] 至电荷弹",
+                    "{c_unique}{c_important}电荷弹{/c}造成的伤害提高 {c_random}[110 - 160]%[x]{/c}，持续时间延长 {c_number}300%{/c}，并且会追踪敌人。{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "巫师",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Lord Zir"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "S04_SkillRankBonus_Sorc_Core_4_ChargedBolts"
+                ],
+                "flavor": "“这件强大的古物也被称为旧教巨杖，它是迄今为止幸存下来的少数斯卡辛密教圣器之一。” - 巴雷特的《名器谱》",
+                "icon": 595234045,
+                "id": 1306311,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HStaff_Unique_Sorc_100",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "兰姆·艾森之杖"
+            },
+            "sno_id": 1306311
+        },
+        {
+            "canonical_name": "staff_of_zerae",
+            "item_type": "Staff",
+            "key": "2HStaff_Unique_Sorc_101_x2",
+            "name_en": "Staff of Zerae",
+            "name_zh": "泽瑞伊之杖",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[2 - 4] to Shock Skills",
+                    "{c_unique}{c_important}Unstable Currents{/c} increases your Armor and Resistances by {c_number}100%[+]{/c} and kills increase your damage by {c_random}2,000.0%[x]{/c} for the duration.{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "Sorcerer",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Butcher"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "X2_SkillRankBonus_Sorc_Category_Shock"
+                ],
+                "flavor": "\"To walk the Path of Zerae, do not seek to control the storm within. Lose yourself to it, let it leave your body and become your shroud. Then you will see yourself as its master.\" -Queen Xaera",
+                "icon": 595234045,
+                "id": 2585929,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HStaff_Unique_Sorc_101_x2",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Staff of Zerae"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[2 - 4] 至电冲技能",
+                    "{c_unique}{c_important}不稳电流{/c}使你的护甲和抗性提高 {c_number}100%[+]{/c}，且在持续期间内的击杀会使你造成的伤害提高 {c_random}2,000.0%[x]{/c}。{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "巫师",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Butcher"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "X2_SkillRankBonus_Sorc_Category_Shock"
+                ],
+                "flavor": "“要踏上泽瑞伊之道，不要试图控制内心的风暴。要让自己沉浸其中，让它离开你的身体，成为你的裹尸布。然后，你就会发现自己成为了它的主人。”——赛伊拉女王",
+                "icon": 595234045,
+                "id": 2585929,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HStaff_Unique_Sorc_101_x2",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "泽瑞伊之杖"
+            },
+            "sno_id": 2585929
+        },
+        {
+            "canonical_name": "edge",
+            "item_type": "Staff",
+            "key": "Runeword_Edge_Staff",
+            "name_en": "Edge",
+            "name_zh": "锐锋",
+            "raw_en": {
+                "affixesDesc": [
+                    "+35.0% Attack Speed",
+                    "+200.0% Damage to Demons",
+                    "Lucky Hit: Up to a 40% Chance to Deal [2,200 - 5,400] Poisoning Damage over 10 seconds",
+                    "+[206 - 248] All Stats",
+                    "+[2,289 - 3,148] Thorns",
+                    "+200.0% Damage to Undead"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "Sorcerer",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "RuneWord_AttackSpeed_17pct",
+                    "Runeword_Damage_vs_Demons",
+                    "LuckyHit_Dot_Poison",
+                    "X2_CoreStats_All",
+                    "Runeword_Thorns",
+                    "Runeword_Damage_vs_Undead"
+                ],
+                "icon": 4131558170,
+                "id": 2686213,
+                "implicits": [
+                    "Runeword_Gamble_Bonus"
+                ],
+                "implict": [
+                    "+15.0% Chance for an extra item from the Purveyor of Curiosities"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Edge_Staff",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Edge",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "Tir",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "Tal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+35.0% 攻击速度",
+                    "+200.0% 对恶魔的伤害",
+                    "幸运一击: 最多有 40% 几率在 10 秒内造成 [2,200 - 5,400] 点中毒伤害",
+                    "+[206 - 248] 点全属性",
+                    "+[2,289 - 3,148] 荆棘",
+                    "+200.0% 对亡灵的伤害"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "巫师",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "RuneWord_AttackSpeed_17pct",
+                    "Runeword_Damage_vs_Demons",
+                    "LuckyHit_Dot_Poison",
+                    "X2_CoreStats_All",
+                    "Runeword_Thorns",
+                    "Runeword_Damage_vs_Undead"
+                ],
+                "icon": 4131558170,
+                "id": 2686213,
+                "implicits": [
+                    "Runeword_Gamble_Bonus"
+                ],
+                "implict": [
+                    "+15.0% 几率从珍品商处额外获得一件物品"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Edge_Staff",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "锐锋",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "提尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "塔尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2686213
+        },
+        {
+            "canonical_name": "vox_omnium",
+            "item_type": "Staff",
+            "key": "S05_BSK_2HStaff_Unique_Sorcerer_001",
+            "name_en": "Vox Omnium",
+            "name_zh": "纷乱之声",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[2 - 4] to Basic Skills",
+                    "{c_unique}Casting a {c_important}Core{/c} Skill triggers a random equipped {c_important}Basic{/c} Skill at a random enemy which deals {c_random}[300 - 360]%[x]{/c} increased damage.{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "Sorcerer",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Beast in Ice"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "S04_SkillRankBonus_Generic_Category_Basic"
+                ],
+                "flavor": "Your incantations are echoed by a chorus of the damned. Wield their torment, their vengeance, their pain against the Hellborne that tortured them.",
+                "icon": 1241072967,
+                "id": 1944513,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "S05_BSK_2HStaff_Unique_Sorcerer_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Vox Omnium"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[2 - 4] 至基础技能",
+                    "{c_unique}施放{c_important}核心{/c}技能时会向一名随机敌人触发一个随机装备的{c_important}基础{/c}技能，造成 {c_random}[300 - 360]%[x]{/c} 额外伤害。{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "巫师",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Beast in Ice"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "S04_SkillRankBonus_Generic_Category_Basic"
+                ],
+                "flavor": "和你口中咒语交相呼应的，只有天谴者的哀嚎。用他们受到的折磨、苦痛和心中复仇的怒火来对抗蹂躏他们的魔裔吧。",
+                "icon": 1241072967,
+                "id": 1944513,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "S05_BSK_2HStaff_Unique_Sorcerer_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "纷乱之声"
+            },
+            "sno_id": 1944513
+        },
+        {
+            "canonical_name": "infinity",
+            "item_type": "Staff",
+            "key": "Runeword_Infinity_Staff",
+            "name_en": "Infinity",
+            "name_zh": "无限",
+            "raw_en": {
+                "affixChoices": [
+                    {
+                        "classNames": {
+                            "Druid": "Druid",
+                            "Sorcerer": "Sorcerer"
+                        },
+                        "family": 2955432778,
+                        "label": "One of the following",
+                        "options": [
+                            {
+                                "char": [
+                                    "Sorcerer",
+                                    "Druid"
+                                ],
+                                "desc": "x[45 - 55]% Lightning Damage Multiplier",
+                                "key": "Runeword_DamageType_Lightning"
+                            },
+                            {
+                                "char": [
+                                    "Sorcerer"
+                                ],
+                                "desc": "x[45 - 55]% Fire Damage Multiplier",
+                                "key": "Runeword_DamageType_Fire"
+                            },
+                            {
+                                "char": [
+                                    "Sorcerer"
+                                ],
+                                "desc": "x[45 - 55]% Cold Damage Multiplier",
+                                "key": "Runeword_DamageType_Cold"
+                            },
+                            {
+                                "char": [
+                                    "Druid"
+                                ],
+                                "desc": "x[45 - 55]% Poison Damage Multiplier",
+                                "key": "Runeword_DamageType_Poison"
+                            },
+                            {
+                                "char": [
+                                    "Druid"
+                                ],
+                                "desc": "x[45 - 55]% Physical Damage Multiplier",
+                                "key": "Runeword_DamageType_Physical"
+                            }
+                        ]
+                    }
+                ],
+                "affixesDesc": [
+                    "+35% Movement Speed",
+                    "+[1,622 - 2,220] Maximum Life",
+                    "+[100 - 200]% Gold Drop Rate",
+                    "{c_unique}{c_number}50%{/c} Chance to unleash a Rank {c_random}20{/c} Sorcerer {c_important}Chain Lightning{/c} when you kill an enemy. \r\nYou gain the Rank {c_random}22{/c} passive of Druid's {c_important}Cyclone Armor{/c}. \r\nClose enemies are {c_important}{u}Vulnerable{/u}{/c} and take {c_random}125%[x]{/c} more damage from you.{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid"
+                ],
+                "charName": "Sorcerer, Druid",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "Runeword_Movespeed_17pct",
+                    "X2_Life_Greater",
+                    "Unique_GoldFind"
+                ],
+                "icon": 4131558170,
+                "id": 2685831,
+                "implicits": [
+                    "Runeword_CrushingBlow_20pct"
+                ],
+                "implict": [
+                    "Lucky Hit: Up to a 40.0% Chance to deliver a Crushing Blow"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Infinity_Staff",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Infinity",
+                "runewordRecipe": [
+                    {
+                        "engName": "Ber",
+                        "icon": 2354162998,
+                        "id": 2681172,
+                        "key": "S15_Rune_Effect_Ber",
+                        "name": "Ber",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "Mal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ber",
+                        "icon": 2354162998,
+                        "id": 2681172,
+                        "key": "S15_Rune_Effect_Ber",
+                        "name": "Ber",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ist",
+                        "icon": 2354171085,
+                        "id": 2681170,
+                        "key": "S15_Rune_Effect_Ist",
+                        "name": "Ist",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixChoices": [
+                    {
+                        "classNames": {
+                            "Druid": "德鲁伊",
+                            "Sorcerer": "巫师"
+                        },
+                        "family": 2955432778,
+                        "label": "以下属性随机一种",
+                        "options": [
+                            {
+                                "char": [
+                                    "Sorcerer",
+                                    "Druid"
+                                ],
+                                "desc": "x[45 - 55]% 闪电 伤害增倍",
+                                "key": "Runeword_DamageType_Lightning"
+                            },
+                            {
+                                "char": [
+                                    "Sorcerer"
+                                ],
+                                "desc": "x[45 - 55]% 火焰 伤害增倍",
+                                "key": "Runeword_DamageType_Fire"
+                            },
+                            {
+                                "char": [
+                                    "Sorcerer"
+                                ],
+                                "desc": "x[45 - 55]% 冰霜 伤害增倍",
+                                "key": "Runeword_DamageType_Cold"
+                            },
+                            {
+                                "char": [
+                                    "Druid"
+                                ],
+                                "desc": "x[45 - 55]% 毒素 伤害增倍",
+                                "key": "Runeword_DamageType_Poison"
+                            },
+                            {
+                                "char": [
+                                    "Druid"
+                                ],
+                                "desc": "x[45 - 55]% 物理 伤害增倍",
+                                "key": "Runeword_DamageType_Physical"
+                            }
+                        ]
+                    }
+                ],
+                "affixesDesc": [
+                    "+35% 移动速度",
+                    "+[1,622 - 2,220] 生命上限",
+                    "+[100 - 200]% 金币掉落几率",
+                    "{c_unique}消灭敌人时有 {c_number}50%{/c} 几率释放一个 {c_random}20{/c} 级巫师的{c_important}连锁闪电{/c}。\r\n你获得德鲁伊{c_important}旋风甲{/c}的 {c_random}22{/c} 级被动效果。\r\n近距敌人陷入{c_important}{u}易伤{/u}{/c}状态，受到来自你的伤害提高 {c_random}125%[x]{/c}。{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid"
+                ],
+                "charName": "巫师, 德鲁伊",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "Runeword_Movespeed_17pct",
+                    "X2_Life_Greater",
+                    "Unique_GoldFind"
+                ],
+                "icon": 4131558170,
+                "id": 2685831,
+                "implicits": [
+                    "Runeword_CrushingBlow_20pct"
+                ],
+                "implict": [
+                    "幸运一击: 最多有 40.0% 几率造成粉碎一击"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Infinity_Staff",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "无限",
+                "runewordRecipe": [
+                    {
+                        "engName": "Ber",
+                        "icon": 2354162998,
+                        "id": 2681172,
+                        "key": "S15_Rune_Effect_Ber",
+                        "name": "贝",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "玛尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ber",
+                        "icon": 2354162998,
+                        "id": 2681172,
+                        "key": "S15_Rune_Effect_Ber",
+                        "name": "贝",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ist",
+                        "icon": 2354171085,
+                        "id": 2681170,
+                        "key": "S15_Rune_Effect_Ist",
+                        "name": "伊斯特",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2685831
+        },
+        {
+            "canonical_name": "insight",
+            "item_type": "Staff",
+            "key": "Runeword_Insight_2HStaff",
+            "name_en": "Insight",
+            "name_zh": "眼光",
+            "raw_en": {
+                "affixesDesc": [
+                    "+35.0% Attack Speed",
+                    "+[16.0 - 46.0]% Critical Strike Chance",
+                    "+[123 - 205] Weapon Damage",
+                    "+[206 - 248] All Stats",
+                    "x200% Critical Strike Damage Multiplier"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid"
+                ],
+                "charName": "Sorcerer, Druid",
+                "classAffixes": {
+                    "Druid": {
+                        "affixesDesc": [
+                            "+30 Spirit Regeneration"
+                        ],
+                        "charName": "Druid",
+                        "explicits": [
+                            "Runeword_RegenSpirit_Flat_15"
+                        ],
+                        "keywordIds": []
+                    },
+                    "Sorcerer": {
+                        "affixesDesc": [
+                            "+30 Mana Regeneration"
+                        ],
+                        "charName": "Sorcerer",
+                        "explicits": [
+                            "Runeword_RegenMana_Flat_15"
+                        ],
+                        "keywordIds": []
+                    }
+                },
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "RuneWord_FasterCastRate_17pct",
+                    "X2_RuneWord_CriticalStrike_8to23",
+                    "X2_Weapon_Damage_2HStaff",
+                    "X2_CoreStats_All",
+                    "Runeword_CritDamage_100pct"
+                ],
+                "icon": 4131558170,
+                "id": 2661977,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Insight_2HStaff",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Insight",
+                "runewordRecipe": [
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "Ral",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "Tir",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "Tal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Sol",
+                        "icon": 2354181835,
+                        "id": 2681164,
+                        "key": "S15_Rune_Effect_Sol",
+                        "name": "Sol",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+35.0% 攻击速度",
+                    "+[16.0 - 46.0]% 暴击几率",
+                    "+[123 - 205] 武器伤害",
+                    "+[206 - 248] 点全属性",
+                    "x200% 暴击伤害增倍"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid"
+                ],
+                "charName": "巫师, 德鲁伊",
+                "classAffixes": {
+                    "Druid": {
+                        "affixesDesc": [
+                            "+30 灵力回复"
+                        ],
+                        "charName": "德鲁伊",
+                        "explicits": [
+                            "Runeword_RegenSpirit_Flat_15"
+                        ],
+                        "keywordIds": []
+                    },
+                    "Sorcerer": {
+                        "affixesDesc": [
+                            "+30 法力回复"
+                        ],
+                        "charName": "巫师",
+                        "explicits": [
+                            "Runeword_RegenMana_Flat_15"
+                        ],
+                        "keywordIds": []
+                    }
+                },
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "RuneWord_FasterCastRate_17pct",
+                    "X2_RuneWord_CriticalStrike_8to23",
+                    "X2_Weapon_Damage_2HStaff",
+                    "X2_CoreStats_All",
+                    "Runeword_CritDamage_100pct"
+                ],
+                "icon": 4131558170,
+                "id": 2661977,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Insight_2HStaff",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "眼光",
+                "runewordRecipe": [
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "拉",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "提尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "塔尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Sol",
+                        "icon": 2354181835,
+                        "id": 2681164,
+                        "key": "S15_Rune_Effect_Sol",
+                        "name": "索",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2661977
+        },
+        {
+            "canonical_name": "leaf",
+            "item_type": "Staff",
+            "key": "Runeword_Leaf",
+            "name_en": "Leaf",
+            "name_zh": "叶子",
+            "raw_en": {
+                "affixesDesc": [
+                    "+4 Primary Resource On Kill",
+                    "+35.0% Cold Resistance",
+                    "20.0% Resource Generation"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid"
+                ],
+                "charName": "Sorcerer, Druid",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "Staff",
+                "explicits": [
+                    "Runeword_Resource_On_Kill_2",
+                    "Runeword_Resistance_Cold_17pct",
+                    "Runeword_ResourceGain_10pct"
+                ],
+                "icon": 4131558170,
+                "id": 2677232,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Leaf",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Leaf",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "Tir",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "Ral",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+4 击杀回复主要资源",
+                    "+35.0% 点冰霜抗性",
+                    "20.0% 资源生成"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid"
+                ],
+                "charName": "巫师, 德鲁伊",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "equipType": "Staff",
+                "equipTypeName": "杖",
+                "explicits": [
+                    "Runeword_Resource_On_Kill_2",
+                    "Runeword_Resistance_Cold_17pct",
+                    "Runeword_ResourceGain_10pct"
+                ],
+                "icon": 4131558170,
+                "id": 2677232,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Leaf",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "叶子",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "提尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "拉",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2677232
+        },
+        {
+            "canonical_name": "doombringer",
+            "item_type": "Sword",
+            "key": "S14_1HSword_Unique_Generic_001",
+            "name_en": "Doombringer",
+            "name_zh": "末日使者",
+            "raw_en": {
+                "affixesDesc": [
+                    "15.0% Maximum Life",
+                    "{c_mythic}{c_label}Lucky Hit:{/c} Up to a {c_number}40%{/c} chance to deal {c_number}1,500{/c} Shadow damage to surrounding enemies and reduce their damage dealt by {c_number}25%{/c} for {c_number}5{/c} seconds.{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,407 Damage Per Second",
+                "damageDetails": [
+                    "[1,023 - 1,535] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "UBERUNIQUE_LifePercent_Doombringer"
+                ],
+                "flavor": "Whenever this ancient sword has reappeared throughout history, it portends a time of great strife, as well as a devastating loss of life.",
+                "icon": 2397813516,
+                "id": 2646271,
+                "isMythic": true,
+                "isRuneword": false,
+                "key": "S14_1HSword_Unique_Generic_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Doombringer",
+                "oldKey": "1HSword_Unique_Generic_001"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "15.0% 生命上限",
+                    "{c_mythic}{c_label}幸运一击: {/c} 最多有 {c_number}40%{/c} 几率对周围敌人造成 {c_number}1,500{/c} 点暗影伤害，并使其造成的伤害降低 {c_number}25%{/c}，持续 {c_number}5{/c} 秒。{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,407 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,023 - 1,535]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "UBERUNIQUE_LifePercent_Doombringer"
+                ],
+                "flavor": "每当这把古剑重现于世，都预示着一个充满纷争的时代，以及无数生命的毁灭。",
+                "icon": 2397813516,
+                "id": 2646271,
+                "isMythic": true,
+                "isRuneword": false,
+                "key": "S14_1HSword_Unique_Generic_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "末日使者",
+                "oldKey": "1HSword_Unique_Generic_001"
+            },
+            "sno_id": 2646271
+        },
+        {
+            "canonical_name": "eldruin_sword_of_justice",
+            "item_type": "Sword",
+            "key": "S14_1HSword_Unique_Generic_002",
+            "name_en": "El'Druin, Sword of Justice",
+            "name_zh": "艾尔度因，正义之剑",
+            "raw_en": {
+                "affixesDesc": [
+                    "x[6 - 10]% All Damage Multiplier",
+                    "{c_mythic}Your attacks condemn enemies. When they become {u}{c_important}Injured{/c}{/u}, they are smote for {c_number}37,500{/c} Holy damage for each time they were condemned, up to {c_number}100{/c} times.{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,407 Damage Per Second",
+                "damageDetails": [
+                    "[1,023 - 1,535] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "S04_Damage_All"
+                ],
+                "flavor": "You hold Justice itself in your hands.",
+                "icon": 2397813553,
+                "id": 2646273,
+                "implicits": [
+                    "Indestructible"
+                ],
+                "implict": [
+                    "Indestructible"
+                ],
+                "isMythic": true,
+                "isRuneword": false,
+                "key": "S14_1HSword_Unique_Generic_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "El'Druin, Sword of Justice",
+                "oldKey": "1HSword_Unique_Generic_002"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "x[6 - 10]% 全伤害增倍",
+                    "{c_mythic}你的攻击会对敌人施加定罪。当敌人进入{u}{c_important}受伤{/c}{/u}状态时，每受到一次定罪，便会遭到重击并受到 {c_number}37,500{/c} 点神圣伤害，最多计算 {c_number}100{/c} 次。{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,407 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,023 - 1,535]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "S04_Damage_All"
+                ],
+                "flavor": "你将正义本身握在手中。",
+                "icon": 2397813553,
+                "id": 2646273,
+                "implicits": [
+                    "Indestructible"
+                ],
+                "implict": [
+                    "不可摧毁"
+                ],
+                "isMythic": true,
+                "isRuneword": false,
+                "key": "S14_1HSword_Unique_Generic_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "艾尔度因，正义之剑",
+                "oldKey": "1HSword_Unique_Generic_002"
+            },
+            "sno_id": 2646273
+        },
+        {
+            "canonical_name": "ramaladnis_magnum_opus",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Barb_101",
+            "name_en": "Ramaladni's Magnum Opus",
+            "name_zh": "拉玛兰迪的杰作",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[10 - 15] Maximum Resource",
+                    "{c_unique}Skills deal {c_random}[0.35 - 0.50]%[x]{/c} increased damage per point of Fury you have, but {c_number}7%{/c} Fury Drains per second while in combat.{/c}"
+                ],
+                "char": [
+                    "Barbarian"
+                ],
+                "charName": "Barbarian",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "Butcher"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "S04_Resource_Max_AllClasses"
+                ],
+                "flavor": "\"Without him the wine is less sweet, the hearth less warm, and our blades less keen. Our blood brother is gone, but Bul-Kathos willing, we will meet again one day.\"\r\n- Sorrowsong for Ramaladni",
+                "icon": 2397813492,
+                "id": 1304456,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Barb_101",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Ramaladni's Magnum Opus"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[10 - 15] 资源上限",
+                    "{c_unique}你每有 1 点怒气，技能造成的伤害便提高 {c_random}[0.35 - 0.50]%[x]{/c}，但在战斗期间每秒会损失 {c_number}7%{/c} 点怒气。{/c}"
+                ],
+                "char": [
+                    "Barbarian"
+                ],
+                "charName": "野蛮人",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "Butcher"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "S04_Resource_Max_AllClasses"
+                ],
+                "flavor": "“没有了他，佳酿不再甘甜，壁炉不再温暖，刀刃也不再锋利。我们的血亲走了，但是只要布尔凯索愿意，他总有一天会和我们重聚。” - 拉玛兰迪的悲歌",
+                "icon": 2397813492,
+                "id": 1304456,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Barb_101",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "拉玛兰迪的杰作"
+            },
+            "sno_id": 1304456
+        },
+        {
+            "canonical_name": "sabre_of_tsasgal",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Barb_103",
+            "name_en": "Sabre of Tsasgal",
+            "name_zh": "萨斯加尔的马刀",
+            "raw_en": {
+                "affixesDesc": [
+                    "[5.0 - 8.0]% Cooldown Reduction",
+                    "{c_unique}You gain {c_random}[3.0 - 4.0]%[x]{/c} increased damage for each damaging Skill you have equipped, and an additional {c_random}[6.0 - 8.0]%[x]{/c} for {c_number}15{/c} seconds when each of those Skills are used.{/c}"
+                ],
+                "char": [
+                    "Barbarian"
+                ],
+                "charName": "Barbarian",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "Duriel"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "S04_CooldownReductionCDR"
+                ],
+                "flavor": "A foul blizzard trapped the clans after the Battle of Nine Winters. Then came a pale stallion born of the peaks, and the storm parted before him. Tsasgal, they named him - chief of all horses.",
+                "icon": 2397813556,
+                "id": 2363572,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Barb_103",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Sabre of Tsasgal"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "[5.0 - 8.0]% 冷却时间缩减",
+                    "{c_unique}每有一个装备的伤害技能，使你造成的伤害提高 {c_random}[3.0 - 4.0]%[x]{/c}，并且在使用每一个技能时，额外提高 {c_random}[6.0 - 8.0]%[x]{/c}，持续 {c_number}15{/c} 秒。{/c}"
+                ],
+                "char": [
+                    "Barbarian"
+                ],
+                "charName": "野蛮人",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "Duriel"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "S04_CooldownReductionCDR"
+                ],
+                "flavor": "九冬之战过后，一场恶劣的暴雪令部族举步维艰。一匹苍白的公马自群峰中现身，风暴顿时消散无踪。他们称其为萨斯加尔，万马之首。",
+                "icon": 2397813556,
+                "id": 2363572,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Barb_103",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "萨斯加尔的马刀"
+            },
+            "sno_id": 2363572
+        },
+        {
+            "canonical_name": "the_third_blade",
+            "item_type": "Sword",
+            "key": "S05_BSK_1HSword_Unique_Barbarian_001",
+            "name_en": "The Third Blade",
+            "name_zh": "三重美德之锋",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[1 - 2] to Core Skills",
+                    "{c_unique}Your {c_important}Weapon Mastery{/c} Skills are now also {c_important}Core{/c} Skills that have {c_number}100%{/c} Cooldown Reduction but cost Fury, dealing {c_random}[140 - 160]%{/c} of normal damage.{/c}"
+                ],
+                "char": [
+                    "Barbarian"
+                ],
+                "charName": "Barbarian",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "Astaroth"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "S04_SkillRankBonus_Generic_Category_Core"
+                ],
+                "flavor": "\"Restraint, mercy, honor...these are shackles, forged by the weak and the conquered.\" -Hephasto, the Armorer",
+                "icon": 2397813522,
+                "id": 1944530,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "S05_BSK_1HSword_Unique_Barbarian_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "The Third Blade"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[1 - 2] 至核心技能",
+                    "{c_unique}你的{c_important}武器精通{/c}技能同时算作{c_important}核心{/c}技能，拥有 {c_number}100%{/c} 冷却时间缩减，但是会消耗怒气，造成正常伤害的 {c_random}[140 - 160]%{/c}。{/c}"
+                ],
+                "char": [
+                    "Barbarian"
+                ],
+                "charName": "野蛮人",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "Astaroth"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "S04_SkillRankBonus_Generic_Category_Core"
+                ],
+                "flavor": "“克制、仁慈、荣耀……这些美德其实都是镣铐，而铸就它们的则是弱者与被征服者的枯骨。”——防具师赫法斯托",
+                "icon": 2397813522,
+                "id": 1944530,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "S05_BSK_1HSword_Unique_Barbarian_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "三重美德之锋"
+            },
+            "sno_id": 1944530
+        },
+        {
+            "canonical_name": "supplication",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Paladin_001",
+            "name_en": "Supplication",
+            "name_zh": "祈愿",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[2 - 3] to Brandish",
+                    "{c_unique}{c_important}Brandish{/c} unleashes in all directions dealing {c_random}[120 - 160]%[x]{/c} increased damage.{/c}"
+                ],
+                "char": [
+                    "Paladin"
+                ],
+                "charName": "Paladin",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "Duriel"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "X2_SkillRankBonus_Paladin_Basic_Brandish"
+                ],
+                "flavor": "The scroll's words are known to the knight alone. He supplicates to his sworn oath, lest his faith and blade find no purchase.",
+                "icon": 2397813551,
+                "id": 2439786,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Paladin_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Supplication"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[2 - 3] 至挥舞打击",
+                    "{c_unique}{c_important}挥舞打击{/c}会向所有方向释放，造成的伤害提高 {c_random}[120 - 160]%[x]{/c}。{/c}"
+                ],
+                "char": [
+                    "Paladin"
+                ],
+                "charName": "圣骑士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "Duriel"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "X2_SkillRankBonus_Paladin_Basic_Brandish"
+                ],
+                "flavor": "卷轴上的文字只有骑士知晓。他祈求自己所立的誓言，以免他的信仰与刀刃无处安放。",
+                "icon": 2397813551,
+                "id": 2439786,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Paladin_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "祈愿"
+            },
+            "sno_id": 2439786
+        },
+        {
+            "canonical_name": "griswolds_opus",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Paladin_002",
+            "name_en": "Griswold's Opus",
+            "name_zh": "格里斯沃尔德的杰作",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[6.0 - 8.0]% Lucky Hit Chance",
+                    "{c_unique}Dealing direct damage grants {c_random}[0.80 - 1.00]%[x]{/c} increased Critical Strike Damage for each enemy hit within {c_number}10{/c} seconds, up to {c_random}[40 - 50]%[x]{/c}.\r\n\r\nAt Maximum you gain:\r\n\r\n{c_label}Lucky Hit:{/c} Critical Strikes have up to a {c_number}50%{/c} chance to deal double damage, Heal for {c_random}[130 - 150]{/c} Life, and refresh the duration of the bonus.{/c}"
+                ],
+                "char": [
+                    "Paladin"
+                ],
+                "charName": "Paladin",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "Astaroth"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "S04_Luck"
+                ],
+                "flavor": "Griswold created wonders at his anvil. But, none ever stilled his hands - for every new blade bore dissatisfaction. Though his final work was left unfinished, it was hailed as his greatest.",
+                "icon": 2397813549,
+                "id": 2476977,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Paladin_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Griswold's Opus"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[6.0 - 8.0]% 幸运一击几率",
+                    "{c_unique}造成直接伤害时，{c_number}10{/c} 秒内每击中一个敌人，暴击伤害提高 {c_random}[0.80 - 1.00]%[x]{/c}，最多提高 {c_random}[40 - 50]%[x]{/c}。\r\n\r\n达到最大值时，你将获得:\r\n\r\n{c_label}幸运一击:{/c} 暴击有最高 {c_number}50%{/c} 几率造成双倍伤害，治疗 {c_random}[130 - 150]{/c} 点生命值，并刷新加成持续时间。{/c}"
+                ],
+                "char": [
+                    "Paladin"
+                ],
+                "charName": "圣骑士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "Astaroth"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "S04_Luck"
+                ],
+                "flavor": "格里斯沃尔德在他的铁砧上创造了奇迹。但是，没有什么能让他的双手停下——因为每一把新刀刃都带着缺憾。尽管他的最后一件作品未完成，但它被誉为他最伟大的杰作。",
+                "icon": 2397813549,
+                "id": 2476977,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Paladin_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "格里斯沃尔德的杰作"
+            },
+            "sno_id": 2476977
+        },
+        {
+            "canonical_name": "misericorde",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Rogue_001_x2",
+            "name_en": "Misericorde",
+            "name_zh": "慈悲短剑",
+            "raw_en": {
+                "affixesDesc": [
+                    "[5.0 - 8.0]% Cooldown Reduction",
+                    "{c_unique}{c_label}Lucky Hit:{/c} Dealing damage to an enemy affected by a {c_important}Trap{/c} Skill has up to a {c_number}40%{/c} chance to:\r\n{icon:bullet,1.2} Reduce the active Cooldowns of your {c_important}Trap{/c} Skills by {c_number}30%{/c}\r\n{icon:bullet,1.2} Increase your {c_important}Trap{/c} Skill damage by {c_random}[9.0 - 12.0]%[x]{/c} for {c_number}10{/c} seconds, up to {c_number}[45 - 60]%[x]{/c}{/c}"
+                ],
+                "char": [
+                    "Rogue"
+                ],
+                "charName": "Rogue",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "The Infernal Hordes"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "S04_CooldownReductionCDR"
+                ],
+                "flavor": "A trapped prey only awaits a swift death. Sisters of the Sightless Eye will grant them this mercy.",
+                "icon": 2397813491,
+                "id": 2580898,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Rogue_001_x2",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Misericorde"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "[5.0 - 8.0]% 冷却时间缩减",
+                    "{c_unique}{c_label}幸运一击:{/c} 对受到{c_important}陷阱{/c}技能影响的敌人造成伤害时，最多有 {c_number}40%{/c} 几率:\r\n{icon:bullet,1.2} 使你{c_important}陷阱{/c}技能的当前冷却时间缩短 {c_number}30%{/c} \r\n{icon:bullet,1.2} 使你的{c_important}陷阱{/c}技能伤害提高 {c_random}[9.0 - 12.0]%[x]{/c}，持续 {c_number}10{/c} 秒，最多可达 {c_number}[45 - 60]%[x]{/c}{/c}"
+                ],
+                "char": [
+                    "Rogue"
+                ],
+                "charName": "游侠",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "The Infernal Hordes"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "S04_CooldownReductionCDR"
+                ],
+                "flavor": "被困的猎物只能等待速死。盲眼姐妹会将赐予他们这种慈悲。",
+                "icon": 2397813491,
+                "id": 2580898,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Rogue_001_x2",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "慈悲短剑"
+            },
+            "sno_id": 2580898
+        },
+        {
+            "canonical_name": "azurewrath",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Generic_100",
+            "name_en": "Azurewrath",
+            "name_zh": "碧蓝怒火",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[811 - 1,110] Maximum Life",
+                    "{c_unique}After {c_important}{u}Freeze{/u}{/c} expires, enemies take {c_random}[120 - 150]%{/c} of the damage you dealt to them while {c_important}{u}Frozen{/u}{/c}.{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "WorldDrop",
+                    "The Infernal Hordes"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "X2_Life_Greater"
+                ],
+                "flavor": "The ancient runeblade of the angel Izual, Azurewrath was miraculously spared the corruption that consumed its master.",
+                "icon": 2397813517,
+                "id": 359352,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Generic_100",
+                "keywordIds": [
+                    "Keyword_Freeze"
+                ],
+                "keywordSources": {
+                    "effects": [
+                        "Keyword_Freeze"
+                    ],
+                    "implicits": []
+                },
+                "name": "Azurewrath"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[811 - 1,110] 生命上限",
+                    "{c_unique}敌人的{c_important}{u}冻结{/u}{/c}效果结束后，会受到相当于其{c_important}{u}冻结{/u}{/c}期间你对其造成伤害 {c_random}[120 - 150]%{/c} 的伤害。{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "WorldDrop",
+                    "The Infernal Hordes"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "X2_Life_Greater"
+                ],
+                "flavor": "作为天使衣卒尔的古老符文剑，碧蓝怒火奇迹般地没有遭受吞噬其主人的腐化力量的影响。",
+                "icon": 2397813517,
+                "id": 359352,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Generic_100",
+                "keywordIds": [
+                    "Keyword_Freeze"
+                ],
+                "keywordSources": {
+                    "effects": [
+                        "Keyword_Freeze"
+                    ],
+                    "implicits": []
+                },
+                "name": "碧蓝怒火"
+            },
+            "sno_id": 359352
+        },
+        {
+            "canonical_name": "in-geom",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Generic_103",
+            "name_en": "In-Geom",
+            "name_zh": "寅剑",
+            "raw_en": {
+                "affixesDesc": [
+                    "[5.0 - 8.0]% Cooldown Reduction",
+                    "{c_unique}Defeating an Elite pack reduces your Skill Cooldowns by {c_random}[8 - 10]{/c} seconds for {c_number}15{/c} seconds.{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "S04_CooldownReductionCDR"
+                ],
+                "flavor": "\"Ahh, the In-Geom! The royal smiths of Xiansai folded the spirits of not one—but four tigers into the steel! Come! Put your ear to its edge. You can almost hear them... Meow!\" -Covetous Shen",
+                "icon": 2397813558,
+                "id": 2647158,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Generic_103",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "In-Geom"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "[5.0 - 8.0]% 冷却时间缩减",
+                    "{c_unique}击败一群精英怪物会使你的技能冷却时间缩短 {c_random}[8 - 10]{/c} 秒，持续 {c_number}15{/c} 秒。{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "S04_CooldownReductionCDR"
+                ],
+                "flavor": "“啊，寅剑！仙塞的御用铁匠把四只猛虎的灵魂一并锻进了钢里，可不是一只哦！来，把耳朵贴到刃口上。你几乎能听见它们……喵！”——沈老贪",
+                "icon": 2397813558,
+                "id": 2647158,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Generic_103",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "寅剑"
+            },
+            "sno_id": 2647158
+        },
+        {
+            "canonical_name": "call_to_arms",
+            "item_type": "Sword",
+            "key": "Runeword_CalltoArms_Sword",
+            "name_en": "Call to Arms",
+            "name_zh": "战斗召唤",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[200 - 250] Weapon Damage",
+                    "+1 to All Skills",
+                    "x40% All Damage Multiplier",
+                    "+5 to Shout Skills",
+                    "+40.0% Attack Speed",
+                    "{c_unique}While affected by a {c_important}Shout{/c} Skill gain:\r\n• {c_random}+5{/c} Ranks to all Skills\r\n• {c_random}+15%[+]{/c} Maximum Life\r\n• {c_random}+15%[x]{/c} Maximum Primary Resource{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "Runeword_Weapon_Damage_Flat_250",
+                    "Runeword_All_Skills_1",
+                    "RuneWord_All_Damage_40pct",
+                    "Runeword_Shout_Skills_5",
+                    "Runeword_AttackSpeed_40"
+                ],
+                "icon": 1639170345,
+                "id": 2685176,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_CalltoArms_Sword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Call to Arms",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "Ral",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "Mal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ist",
+                        "icon": 2354171085,
+                        "id": 2681170,
+                        "key": "S15_Rune_Effect_Ist",
+                        "name": "Ist",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ohm",
+                        "icon": 2231096139,
+                        "id": 1969851,
+                        "key": "Rune_Effect_Barbarian_WarCry",
+                        "name": "Ohm",
+                        "rarity": 2
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[200 - 250] 武器伤害",
+                    "+1 至所有技能",
+                    "x40% 全伤害增倍",
+                    "+5 至吼叫技能",
+                    "+40.0% 攻击速度",
+                    "{c_unique}受到{c_important}怒吼{/c}技能效果影响时，获得:\r\n• 所有技能等级 {c_random}+5{/c}\r\n• 生命上限 {c_random}+15%[+]{/c}\r\n• 主要资源上限 {c_random}+15%[x]{/c}{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "Runeword_Weapon_Damage_Flat_250",
+                    "Runeword_All_Skills_1",
+                    "RuneWord_All_Damage_40pct",
+                    "Runeword_Shout_Skills_5",
+                    "Runeword_AttackSpeed_40"
+                ],
+                "icon": 1639170345,
+                "id": 2685176,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_CalltoArms_Sword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "战斗召唤",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "拉",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "玛尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ist",
+                        "icon": 2354171085,
+                        "id": 2681170,
+                        "key": "S15_Rune_Effect_Ist",
+                        "name": "伊斯特",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ohm",
+                        "icon": 2231096139,
+                        "id": 1969851,
+                        "key": "Rune_Effect_Barbarian_WarCry",
+                        "name": "奥姆",
+                        "rarity": 2
+                    }
+                ]
+            },
+            "sno_id": 2685176
+        },
+        {
+            "canonical_name": "kings_grace",
+            "item_type": "Sword",
+            "key": "Runeword_KingsGrace_Sword",
+            "name_en": "King's Grace",
+            "name_zh": "王恩",
+            "raw_en": {
+                "affixesDesc": [
+                    "+100.0% Damage to Demons",
+                    "+100.0% Damage to Undead",
+                    "+[294 - 399] Life On Hit",
+                    "+50.0% Lucky Hit Chance",
+                    "x75% All Damage Multiplier"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "Runeword_Damage_vs_Demons",
+                    "Runeword_Damage_vs_Undead",
+                    "X2_LifePerHit_2H",
+                    "Runeword_LuckyHit_50pct",
+                    "RuneWord_All_Damage_75pct"
+                ],
+                "icon": 1639170345,
+                "id": 2685138,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_KingsGrace_Sword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "King's Grace",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "Ral",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Thul",
+                        "icon": 2231096142,
+                        "id": 1969846,
+                        "key": "Rune_Effect_Sorcerer_FrostNova",
+                        "name": "Thul",
+                        "rarity": 1
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+100.0% 对恶魔的伤害",
+                    "+100.0% 对亡灵的伤害",
+                    "+[294 - 399] 击中回复生命",
+                    "+50.0% 幸运一击几率",
+                    "x75% 全伤害增倍"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "Runeword_Damage_vs_Demons",
+                    "Runeword_Damage_vs_Undead",
+                    "X2_LifePerHit_2H",
+                    "Runeword_LuckyHit_50pct",
+                    "RuneWord_All_Damage_75pct"
+                ],
+                "icon": 1639170345,
+                "id": 2685138,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_KingsGrace_Sword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "王恩",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "拉",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Thul",
+                        "icon": 2231096142,
+                        "id": 1969846,
+                        "key": "Rune_Effect_Sorcerer_FrostNova",
+                        "name": "图",
+                        "rarity": 1
+                    }
+                ]
+            },
+            "sno_id": 2685138
+        },
+        {
+            "canonical_name": "phoenix",
+            "item_type": "Sword",
+            "key": "Runeword_Phoenix_1HSword",
+            "name_en": "Phoenix",
+            "name_zh": "凤凰",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[196 - 266] Life on Kill",
+                    "Lucky Hit: Up to a 40% Chance to Deal +[1,500 - 2,400] Fire Damage",
+                    "+20.0% Deadly Strike Chance",
+                    "x50% All Damage Multiplier",
+                    "{c_unique}When you level up, unleash a Rank {c_number}40{/c} {c_important}Ring of Fire{/c}.\r\n{c_label}Lucky Hit:{/c} Attacks have up to a {c_random}[15 - 30]%{/c} chance to unleash a Rank {c_number}22{/c} {c_important}Fire Spear{/c}.{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "Runeword_LifeOnKill_Greater",
+                    "Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Fire_Tier3",
+                    "Runeword_DeadlyStrikeChance",
+                    "RuneWord_All_Damage_50pct"
+                ],
+                "icon": 1639170345,
+                "id": 2675608,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Phoenix_1HSword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Phoenix",
+                "runewordRecipe": [
+                    {
+                        "engName": "Vex",
+                        "icon": 2231096071,
+                        "id": 2024157,
+                        "key": "Rune_Effect_BonusToAllSkills",
+                        "name": "Vex",
+                        "rarity": 2
+                    },
+                    {
+                        "engName": "Vex",
+                        "icon": 2231096071,
+                        "id": 2024157,
+                        "key": "Rune_Effect_BonusToAllSkills",
+                        "name": "Vex",
+                        "rarity": 2
+                    },
+                    {
+                        "engName": "Lo",
+                        "icon": 3064800664,
+                        "id": 2681168,
+                        "key": "S15_Rune_Effect_Lo",
+                        "name": "Lo",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Jah",
+                        "icon": 2231096106,
+                        "id": 2039543,
+                        "key": "Rune_Effect_Sorcerer_Teleport",
+                        "name": "Jah",
+                        "rarity": 2
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[196 - 266] 消灭回复生命",
+                    "幸运一击：最多有 40% 几率造成 +[1,500 - 2,400] 点火焰伤害",
+                    "+20.0% 致命打击几率",
+                    "x50% 全伤害增倍",
+                    "{c_unique}升级时，释放一个 {c_number}40{/c} 级{c_important}烈焰之环{/c}。\r\n{c_label}幸运一击:{/c} 攻击最多有 {c_random}[15 - 30]%{/c} 几率释放一个 {c_number}22{/c} 级{c_important}火焰长矛{/c}。{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "Runeword_LifeOnKill_Greater",
+                    "Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Fire_Tier3",
+                    "Runeword_DeadlyStrikeChance",
+                    "RuneWord_All_Damage_50pct"
+                ],
+                "icon": 1639170345,
+                "id": 2675608,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Phoenix_1HSword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "凤凰",
+                "runewordRecipe": [
+                    {
+                        "engName": "Vex",
+                        "icon": 2231096071,
+                        "id": 2024157,
+                        "key": "Rune_Effect_BonusToAllSkills",
+                        "name": "威克斯",
+                        "rarity": 2
+                    },
+                    {
+                        "engName": "Vex",
+                        "icon": 2231096071,
+                        "id": 2024157,
+                        "key": "Rune_Effect_BonusToAllSkills",
+                        "name": "威克斯",
+                        "rarity": 2
+                    },
+                    {
+                        "engName": "Lo",
+                        "icon": 3064800664,
+                        "id": 2681168,
+                        "key": "S15_Rune_Effect_Lo",
+                        "name": "罗",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Jah",
+                        "icon": 2231096106,
+                        "id": 2039543,
+                        "key": "Rune_Effect_Sorcerer_Teleport",
+                        "name": "扎",
+                        "rarity": 2
+                    }
+                ]
+            },
+            "sno_id": 2675608
+        },
+        {
+            "canonical_name": "spirit",
+            "item_type": "Sword",
+            "key": "Runeword_Spirit_1HSword",
+            "name_en": "Spirit",
+            "name_zh": "灵力",
+            "raw_en": {
+                "affixesDesc": [
+                    "+5 to All Skills",
+                    "+[25.0 - 35.0]% Attack Speed",
+                    "x50% All Damage Multiplier",
+                    "+[20 - 56] Maximum Resource",
+                    "50.0% Impairment Reduction"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "Runeword_All_Skills_5",
+                    "Runeword_FasterCastRate_25to35pct",
+                    "RuneWord_All_Damage_50pct",
+                    "Runeword_Resource_Max_20to56",
+                    "Runeword_CC_Duration_Reduction_50Percent"
+                ],
+                "icon": 1639170345,
+                "id": 2678632,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Spirit_1HSword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Spirit",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "Tal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Thul",
+                        "icon": 2231096142,
+                        "id": 1969846,
+                        "key": "Rune_Effect_Sorcerer_FrostNova",
+                        "name": "Thul",
+                        "rarity": 1
+                    },
+                    {
+                        "engName": "Ort",
+                        "icon": 4059424300,
+                        "id": 2681129,
+                        "key": "S15_Rune_Condition_Ort",
+                        "name": "Ort",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+5 至所有技能",
+                    "+[25.0 - 35.0]% 攻击速度",
+                    "x50% 全伤害增倍",
+                    "+[20 - 56] 资源上限",
+                    "50.0% 限制减免"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "Runeword_All_Skills_5",
+                    "Runeword_FasterCastRate_25to35pct",
+                    "RuneWord_All_Damage_50pct",
+                    "Runeword_Resource_Max_20to56",
+                    "Runeword_CC_Duration_Reduction_50Percent"
+                ],
+                "icon": 1639170345,
+                "id": 2678632,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Spirit_1HSword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "灵力",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "塔尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Thul",
+                        "icon": 2231096142,
+                        "id": 1969846,
+                        "key": "Rune_Effect_Sorcerer_FrostNova",
+                        "name": "图",
+                        "rarity": 1
+                    },
+                    {
+                        "engName": "Ort",
+                        "icon": 4059424300,
+                        "id": 2681129,
+                        "key": "S15_Rune_Condition_Ort",
+                        "name": "欧特",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2678632
+        },
+        {
+            "canonical_name": "strength",
+            "item_type": "Sword",
+            "key": "Runeword_Strength_Sword",
+            "name_en": "Strength",
+            "name_zh": "力量",
+            "raw_en": {
+                "affixesDesc": [
+                    "x50% All Damage Multiplier",
+                    "+10.0% Strength",
+                    "+[811 - 1,110] Maximum Life",
+                    "+[294 - 399] Life On Hit",
+                    "+2 Primary Resource On Kill"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "RuneWord_All_Damage_50pct",
+                    "RuneWord_Strength_10pct",
+                    "X2_Life_Greater",
+                    "X2_LifePerHit_2H",
+                    "Runeword_Resource_On_Kill_2"
+                ],
+                "icon": 1639170345,
+                "id": 2685278,
+                "implicits": [
+                    "Runeword_CrushingBlow_25pct"
+                ],
+                "implict": [
+                    "Lucky Hit: Up to a 25.0% Chance to deliver a Crushing Blow"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Strength_Sword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Strength",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "Tir",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "x50% 全伤害增倍",
+                    "+10.0% 力量",
+                    "+[811 - 1,110] 生命上限",
+                    "+[294 - 399] 击中回复生命",
+                    "+2 击杀回复主要资源"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "RuneWord_All_Damage_50pct",
+                    "RuneWord_Strength_10pct",
+                    "X2_Life_Greater",
+                    "X2_LifePerHit_2H",
+                    "Runeword_Resource_On_Kill_2"
+                ],
+                "icon": 1639170345,
+                "id": 2685278,
+                "implicits": [
+                    "Runeword_CrushingBlow_25pct"
+                ],
+                "implict": [
+                    "幸运一击: 最多有 25.0% 几率造成粉碎一击"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Strength_Sword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "力量",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "提尔",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2685278
+        },
+        {
+            "canonical_name": "shard_of_verathiel",
+            "item_type": "Sword",
+            "key": "S05_BSK_1HSword_Unique_Generic_001",
+            "name_en": "Shard of Verathiel",
+            "name_zh": "维拉瑟尔的碎片",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[1 - 2] to Basic Skills",
+                    "{c_unique}{c_important}Basic{/c} Skills deal {c_random}[70 - 100]%[x]{/c} increased damage but additionally cost {c_number}25{/c} Primary Resource.{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "WorldDrop",
+                    "Varshan"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "S04_SkillRankBonus_Generic_Category_Basic"
+                ],
+                "flavor": "This blade once bore divine purpose wielded by the angel Verathiel. Like its keeper, the sword fell to Infernal depths. Yet beneath this corruption, is a heartbeat of a past memory, holding steadfast.",
+                "icon": 2397813522,
+                "id": 1944491,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "S05_BSK_1HSword_Unique_Generic_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Shard of Verathiel"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[1 - 2] 至基础技能",
+                    "{c_unique}{c_important}基础{/c}技能造成的伤害提高 {c_random}[70 - 100]%[x]{/c}, 但额外消耗 {c_number}25{/c} 点主要资源。{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "WorldDrop",
+                    "Varshan"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "S04_SkillRankBonus_Generic_Category_Basic"
+                ],
+                "flavor": "这把剑曾是天使维拉瑟尔的佩剑，一度承载了神圣的使命。但后来，它和它的主人都堕入了地狱的深处。然而在腐化之下，过往的记忆依旧在剑身中回响，从未消退半分。",
+                "icon": 2397813522,
+                "id": 1944491,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "S05_BSK_1HSword_Unique_Generic_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "维拉瑟尔的碎片"
+            },
+            "sno_id": 1944491
+        },
+        {
+            "canonical_name": "elegy",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Warlock_001",
+            "name_en": "Elegy",
+            "name_zh": "挽歌",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[2 - 3] to Blazing Scream",
+                    "{c_unique}{c_important}Blazing Scream{/c} is now an {c_important}Archfiend{/c} Skill and deals {c_random}[30 - 50]%[x]{/c} increased damage. {c_important}Blazing Scream{/c} gains the Skull Splitter Variant for free and the Lesser Demon skulls deal the same damage as the main skull. {/c}"
+                ],
+                "char": [
+                    "Warlock"
+                ],
+                "charName": "Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "Lord Zir"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "X2_SkillRankBonus_Warlock_Core_BlazingScream"
+                ],
+                "flavor": "Weave a song from the damned. Pluck their sorrows like harp strings, for there is fuel in the tears of the profane.",
+                "icon": 2397813552,
+                "id": 2548620,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Warlock_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Elegy"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[2 - 3] 至炽焰尖啸",
+                    "{c_unique}{c_important}炽焰尖啸{/c}现在属于{c_important}高等恶魔{/c}技能，造成的伤害提高 {c_random}[30 - 50]%[x]{/c}。{c_important}炽焰尖啸{/c}免费获得凿颅者变种，且低阶恶魔头骨造成的伤害与主头骨相同。{/c}"
+                ],
+                "char": [
+                    "Warlock"
+                ],
+                "charName": "术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "Lord Zir"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "X2_SkillRankBonus_Warlock_Core_BlazingScream"
+                ],
+                "flavor": "为亡者编织一曲挽歌。像拨动琴弦般拨弄他们的哀愁，因为亵渎者的泪水即是力量之源。",
+                "icon": 2397813552,
+                "id": 2548620,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Warlock_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "挽歌"
+            },
+            "sno_id": 2548620
+        },
+        {
+            "canonical_name": "the_blade_of_sight_aflame",
+            "item_type": "Sword",
+            "key": "1HSword_Unique_Warlock_002",
+            "name_en": "The Blade of Sight Aflame",
+            "name_zh": "燃目流火之刃",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[2 - 3] to Bombardment",
+                    "{c_unique}Hitting a Lesser Demon with {c_important}Bombardment{/c} explodes it for {c_random}[400 - 600]%[x]{/c} of a {c_important}Bombardment{/c} impact if the Demon has less than {c_number}3{/c} seconds duration left. {c_important}Bombardment{/c} deals {c_random}[100 - 120]%[x]{/c} increased damage.{/c}"
+                ],
+                "char": [
+                    "Warlock"
+                ],
+                "charName": "Warlock",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[790 - 1,186] Damage per Hit",
+                    "1.10 Attacks per Second (Fast)"
+                ],
+                "dropBoss": [
+                    "Urivar"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "Sword",
+                "explicits": [
+                    "X2_SkillRankBonus_Warlock_Core_Bombardment"
+                ],
+                "flavor": "The third lord of Hashir hungered to see all beneath his rule. A Warlock obliged and bound a demon into steel. The king bore the blade and beheld how his realm was cast down before him.",
+                "icon": 2397813550,
+                "id": 2559813,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Warlock_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "The Blade of Sight Aflame"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[2 - 3] 至恶鬼轰击",
+                    "{c_unique}如果低阶恶魔的剩余持续时间少于 {c_number}3{/c} 秒，{c_important}恶鬼轰击{/c}命中它时会使其爆炸，造成相当于一次{c_important}恶鬼轰击{/c}命中伤害 {c_random}[400 - 600]%[x]{/c} 的伤害。{c_important}恶鬼轰击{/c}造成的伤害提高 {c_random}[100 - 120]%[x]{/c}。{/c}"
+                ],
+                "char": [
+                    "Warlock"
+                ],
+                "charName": "术士",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[790 - 1,186]",
+                    "每秒攻击次数(快):1.10"
+                ],
+                "dropBoss": [
+                    "Urivar"
+                ],
+                "equipType": "Sword",
+                "equipTypeName": "剑",
+                "explicits": [
+                    "X2_SkillRankBonus_Warlock_Core_Bombardment"
+                ],
+                "flavor": "哈希尔的第三任领主渴望统御万物。一名术士满足了他的心愿，将恶魔禁锢在钢铁之中。国王挥舞着那把利刃，却眼睁睁看着他的王国在面前崩塌。",
+                "icon": 2397813550,
+                "id": 2559813,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HSword_Unique_Warlock_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "燃目流火之刃"
+            },
+            "sno_id": 2559813
+        },
+        {
+            "canonical_name": "grief",
+            "item_type": "Sword_Phase_Blade",
+            "key": "Runeword_Grief_1HSword",
+            "name_en": "Grief",
+            "name_zh": "悔恨",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[750 - 1,000] Weapon Damage",
+                    "+20.0% Deadly Strike Chance",
+                    "+[30.0 - 40.0]% Attack Speed",
+                    "+100.0% Damage to Demons",
+                    "+2 Primary Resource On Kill",
+                    "{c_unique}Your direct damage inflicts {c_random}40%{/c} bonus Poisoning damage over {c_number}5{/c} seconds.{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Rogue, Necromancer, Paladin, Warlock",
+                "damage": "182 Damage Per Second",
+                "damageDetails": [
+                    "[97 - 145] Damage per Hit",
+                    "1.50 Attacks per Second (Very Fast)"
+                ],
+                "equipType": "Sword_Phase_Blade",
+                "equipTypeName": "Phase Blade",
+                "explicits": [
+                    "Runeword_Weapon_Damage_Flat",
+                    "Runeword_DeadlyStrikeChance",
+                    "Runeword_Attackspeed_30to40",
+                    "Runeword_Damage_vs_Demons",
+                    "Runeword_Resource_On_Kill_2"
+                ],
+                "icon": 2397813516,
+                "id": 2676427,
+                "implicits": [
+                    "Indestructible"
+                ],
+                "implict": [
+                    "Indestructible"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Grief_1HSword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Grief",
+                "runewordRecipe": [
+                    {
+                        "engName": "Eth",
+                        "icon": 4059413464,
+                        "id": 2681154,
+                        "key": "S15_Rune_Condition_Eth",
+                        "name": "Eth",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "Tir",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Lo",
+                        "icon": 3064800664,
+                        "id": 2681168,
+                        "key": "S15_Rune_Effect_Lo",
+                        "name": "Lo",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "Mal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "Ral",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[750 - 1,000] 武器伤害",
+                    "+20.0% 致命打击几率",
+                    "+[30.0 - 40.0]% 攻击速度",
+                    "+100.0% 对恶魔的伤害",
+                    "+2 击杀回复主要资源",
+                    "{c_unique}你的直接伤害会在 {c_number}5{/c} 秒内额外造成 {c_random}40%{/c} 点毒素伤害。{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 游侠, 死灵法师, 圣骑士, 术士",
+                "damage": "182 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[97 - 145]",
+                    "每秒攻击次数(非常快):1.50"
+                ],
+                "equipType": "Sword_Phase_Blade",
+                "equipTypeName": "相位之刃",
+                "explicits": [
+                    "Runeword_Weapon_Damage_Flat",
+                    "Runeword_DeadlyStrikeChance",
+                    "Runeword_Attackspeed_30to40",
+                    "Runeword_Damage_vs_Demons",
+                    "Runeword_Resource_On_Kill_2"
+                ],
+                "icon": 2397813516,
+                "id": 2676427,
+                "implicits": [
+                    "Indestructible"
+                ],
+                "implict": [
+                    "不可摧毁"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Grief_1HSword",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "悔恨",
+                "runewordRecipe": [
+                    {
+                        "engName": "Eth",
+                        "icon": 4059413464,
+                        "id": 2681154,
+                        "key": "S15_Rune_Condition_Eth",
+                        "name": "艾斯",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "提尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Lo",
+                        "icon": 3064800664,
+                        "id": 2681168,
+                        "key": "S15_Rune_Effect_Lo",
+                        "name": "罗",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "玛尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "拉",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2676427
+        },
+        {
+            "canonical_name": "the_grandfather",
+            "item_type": "Sword2H",
+            "key": "S14_2HSword_Unique_Generic_001",
+            "name_en": "The Grandfather",
+            "name_zh": "祖父",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[13.0 - 17.0]% Critical Strike Chance",
+                    "{c_mythic}Increases your Critical Strike Damage by {c_number}120%[x]{/c}.{/c}"
+                ],
+                "char": [
+                    "Barbarian",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Barbarian, Necromancer, Paladin, Warlock",
+                "damage": "2,815 Damage Per Second",
+                "damageDetails": [
+                    "[2,252 - 3,378] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "Two-Handed Sword",
+                "explicits": [
+                    "S04_CritChance"
+                ],
+                "flavor": "An unbroken lineage of unwavering strength.",
+                "icon": 2952066822,
+                "id": 2646279,
+                "implicits": [
+                    "Indestructible"
+                ],
+                "implict": [
+                    "Indestructible"
+                ],
+                "isMythic": true,
+                "isRuneword": false,
+                "key": "S14_2HSword_Unique_Generic_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "The Grandfather",
+                "oldKey": "2HSword_Unique_Generic_001"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[13.0 - 17.0]% 暴击几率",
+                    "{c_mythic}你的暴击伤害提高 {c_number}120%[x]{/c}。{/c}"
+                ],
+                "char": [
+                    "Barbarian",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "野蛮人, 死灵法师, 圣骑士, 术士",
+                "damage": "2,815 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[2,252 - 3,378]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "双手剑",
+                "explicits": [
+                    "S04_CritChance"
+                ],
+                "flavor": "力量不动如山，传承延绵万代。",
+                "icon": 2952066822,
+                "id": 2646279,
+                "implicits": [
+                    "Indestructible"
+                ],
+                "implict": [
+                    "不可摧毁"
+                ],
+                "isMythic": true,
+                "isRuneword": false,
+                "key": "S14_2HSword_Unique_Generic_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "祖父",
+                "oldKey": "2HSword_Unique_Generic_001"
+            },
+            "sno_id": 2646279
+        },
+        {
+            "canonical_name": "fields_of_crimson",
+            "item_type": "Sword2H",
+            "key": "2HSword_Unique_Barb_002",
+            "name_en": "Fields of Crimson",
+            "name_zh": "修罗场",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[4 - 6] to Rupture",
+                    "{c_unique}{c_important}Rupture's{/c} rip deals {c_random}[75 - 100]%{/c} of the total Bleeding damage on an enemy instantly, removing all Bleeding damage from them.{/c}"
+                ],
+                "char": [
+                    "Barbarian"
+                ],
+                "charName": "Barbarian",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Lord Zir"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "Two-Handed Sword",
+                "explicits": [
+                    "S04_SkillRankBonus_Barb_Special_Rupture"
+                ],
+                "flavor": "\"We've been fighting these flesh-eaters for so long, been soaked in so much blood, that after a while it's difficult to tell what side you're truly on.\" -Daelyr, Crane Tribe warrior",
+                "icon": 2952066818,
+                "id": 291609,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HSword_Unique_Barb_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Fields of Crimson"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[4 - 6] 至割裂",
+                    "{c_unique}{c_important}割裂{/c}的拔出效果会立即造成敌人身上总流血伤害的 {c_random}[75 - 100]%{/c}，并移除他们身上所有的流血伤害。{/c}"
+                ],
+                "char": [
+                    "Barbarian"
+                ],
+                "charName": "野蛮人",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Lord Zir"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "双手剑",
+                "explicits": [
+                    "S04_SkillRankBonus_Barb_Special_Rupture"
+                ],
+                "flavor": "“我们已经与这些肉食者战斗了很长时间，现在身上都是鲜血，再过一段时间就很难分辨出你究竟是哪一边的人了。” ——迪力尔，鹤族战士",
+                "icon": 2952066818,
+                "id": 291609,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HSword_Unique_Barb_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "修罗场"
+            },
+            "sno_id": 291609
+        },
+        {
+            "canonical_name": "edge",
+            "item_type": "Sword2H",
+            "key": "Runeword_Edge_Sword2H",
+            "name_en": "Edge",
+            "name_zh": "锐锋",
+            "raw_en": {
+                "affixesDesc": [
+                    "+35.0% Attack Speed",
+                    "+200.0% Damage to Demons",
+                    "Lucky Hit: Up to a 40% Chance to Deal [2,200 - 5,400] Poisoning Damage over 10 seconds",
+                    "+[206 - 248] All Stats",
+                    "+[2,289 - 3,148] Thorns",
+                    "+200.0% Damage to Undead"
+                ],
+                "char": [
+                    "Barbarian",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Barbarian, Necromancer, Paladin, Warlock",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "Two-Handed Sword",
+                "explicits": [
+                    "RuneWord_AttackSpeed_17pct",
+                    "Runeword_Damage_vs_Demons",
+                    "LuckyHit_Dot_Poison",
+                    "X2_CoreStats_All",
+                    "Runeword_Thorns",
+                    "Runeword_Damage_vs_Undead"
+                ],
+                "icon": 2193423679,
+                "id": 2686242,
+                "implicits": [
+                    "Runeword_Gamble_Bonus"
+                ],
+                "implict": [
+                    "+15.0% Chance for an extra item from the Purveyor of Curiosities"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Edge_Sword2H",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Edge",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "Tir",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "Tal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+35.0% 攻击速度",
+                    "+200.0% 对恶魔的伤害",
+                    "幸运一击: 最多有 40% 几率在 10 秒内造成 [2,200 - 5,400] 点中毒伤害",
+                    "+[206 - 248] 点全属性",
+                    "+[2,289 - 3,148] 荆棘",
+                    "+200.0% 对亡灵的伤害"
+                ],
+                "char": [
+                    "Barbarian",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "野蛮人, 死灵法师, 圣骑士, 术士",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "双手剑",
+                "explicits": [
+                    "RuneWord_AttackSpeed_17pct",
+                    "Runeword_Damage_vs_Demons",
+                    "LuckyHit_Dot_Poison",
+                    "X2_CoreStats_All",
+                    "Runeword_Thorns",
+                    "Runeword_Damage_vs_Undead"
+                ],
+                "icon": 2193423679,
+                "id": 2686242,
+                "implicits": [
+                    "Runeword_Gamble_Bonus"
+                ],
+                "implict": [
+                    "+15.0% 几率从珍品商处额外获得一件物品"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Edge_Sword2H",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "锐锋",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "提尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "塔尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2686242
+        },
+        {
+            "canonical_name": "infinity",
+            "item_type": "Sword2H",
+            "key": "Runeword_Infinity_Sword2H",
+            "name_en": "Infinity",
+            "name_zh": "无限",
+            "raw_en": {
+                "affixChoices": [
+                    {
+                        "classNames": {
+                            "Barbarian": "Barbarian",
+                            "Necromancer": "Necromancer",
+                            "Paladin": "Paladin",
+                            "Warlock": "Warlock"
+                        },
+                        "family": 2955432778,
+                        "label": "One of the following",
+                        "options": [
+                            {
+                                "char": [
+                                    "Barbarian",
+                                    "Warlock"
+                                ],
+                                "desc": "x[45 - 55]% Fire Damage Multiplier",
+                                "key": "Runeword_DamageType_Fire"
+                            },
+                            {
+                                "char": [
+                                    "Necromancer",
+                                    "Warlock"
+                                ],
+                                "desc": "x[45 - 55]% Shadow Damage Multiplier",
+                                "key": "Runeword_DamageType_Shadow"
+                            },
+                            {
+                                "char": [
+                                    "Necromancer"
+                                ],
+                                "desc": "x[45 - 55]% Cold Damage Multiplier",
+                                "key": "Runeword_DamageType_Cold"
+                            },
+                            {
+                                "char": [
+                                    "Barbarian",
+                                    "Necromancer",
+                                    "Paladin",
+                                    "Warlock"
+                                ],
+                                "desc": "x[45 - 55]% Physical Damage Multiplier",
+                                "key": "Runeword_DamageType_Physical"
+                            },
+                            {
+                                "char": [
+                                    "Paladin"
+                                ],
+                                "desc": "x[45 - 55]% Holy Damage Multiplier",
+                                "key": "Runeword_DamageType_Holy"
+                            }
+                        ]
+                    }
+                ],
+                "affixesDesc": [
+                    "+35% Movement Speed",
+                    "+[1,622 - 2,220] Maximum Life",
+                    "+[100 - 200]% Gold Drop Rate",
+                    "{c_unique}{c_number}50%{/c} Chance to unleash a Rank {c_random}20{/c} Sorcerer {c_important}Chain Lightning{/c} when you kill an enemy. \r\nYou gain the Rank {c_random}22{/c} passive of Druid's {c_important}Cyclone Armor{/c}. \r\nClose enemies are {c_important}{u}Vulnerable{/u}{/c} and take {c_random}125%[x]{/c} more damage from you.{/c}{/c}"
+                ],
+                "char": [
+                    "Barbarian",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "Barbarian, Necromancer, Paladin, Warlock",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "Two-Handed Sword",
+                "explicits": [
+                    "Runeword_Movespeed_17pct",
+                    "X2_Life_Greater",
+                    "Unique_GoldFind"
+                ],
+                "icon": 2193423679,
+                "id": 2685867,
+                "implicits": [
+                    "Runeword_CrushingBlow_20pct"
+                ],
+                "implict": [
+                    "Lucky Hit: Up to a 40.0% Chance to deliver a Crushing Blow"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Infinity_Sword2H",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Infinity",
+                "runewordRecipe": [
+                    {
+                        "engName": "Ber",
+                        "icon": 2354162998,
+                        "id": 2681172,
+                        "key": "S15_Rune_Effect_Ber",
+                        "name": "Ber",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "Mal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ber",
+                        "icon": 2354162998,
+                        "id": 2681172,
+                        "key": "S15_Rune_Effect_Ber",
+                        "name": "Ber",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ist",
+                        "icon": 2354171085,
+                        "id": 2681170,
+                        "key": "S15_Rune_Effect_Ist",
+                        "name": "Ist",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixChoices": [
+                    {
+                        "classNames": {
+                            "Barbarian": "野蛮人",
+                            "Necromancer": "死灵法师",
+                            "Paladin": "圣骑士",
+                            "Warlock": "术士"
+                        },
+                        "family": 2955432778,
+                        "label": "以下属性随机一种",
+                        "options": [
+                            {
+                                "char": [
+                                    "Barbarian",
+                                    "Warlock"
+                                ],
+                                "desc": "x[45 - 55]% 火焰 伤害增倍",
+                                "key": "Runeword_DamageType_Fire"
+                            },
+                            {
+                                "char": [
+                                    "Necromancer",
+                                    "Warlock"
+                                ],
+                                "desc": "x[45 - 55]% 暗影 伤害增倍",
+                                "key": "Runeword_DamageType_Shadow"
+                            },
+                            {
+                                "char": [
+                                    "Necromancer"
+                                ],
+                                "desc": "x[45 - 55]% 冰霜 伤害增倍",
+                                "key": "Runeword_DamageType_Cold"
+                            },
+                            {
+                                "char": [
+                                    "Barbarian",
+                                    "Necromancer",
+                                    "Paladin",
+                                    "Warlock"
+                                ],
+                                "desc": "x[45 - 55]% 物理 伤害增倍",
+                                "key": "Runeword_DamageType_Physical"
+                            },
+                            {
+                                "char": [
+                                    "Paladin"
+                                ],
+                                "desc": "x[45 - 55]% 神圣 伤害增倍",
+                                "key": "Runeword_DamageType_Holy"
+                            }
+                        ]
+                    }
+                ],
+                "affixesDesc": [
+                    "+35% 移动速度",
+                    "+[1,622 - 2,220] 生命上限",
+                    "+[100 - 200]% 金币掉落几率",
+                    "{c_unique}消灭敌人时有 {c_number}50%{/c} 几率释放一个 {c_random}20{/c} 级巫师的{c_important}连锁闪电{/c}。\r\n你获得德鲁伊{c_important}旋风甲{/c}的 {c_random}22{/c} 级被动效果。\r\n近距敌人陷入{c_important}{u}易伤{/u}{/c}状态，受到来自你的伤害提高 {c_random}125%[x]{/c}。{/c}{/c}"
+                ],
+                "char": [
+                    "Barbarian",
+                    "Necromancer",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "charName": "野蛮人, 死灵法师, 圣骑士, 术士",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "双手剑",
+                "explicits": [
+                    "Runeword_Movespeed_17pct",
+                    "X2_Life_Greater",
+                    "Unique_GoldFind"
+                ],
+                "icon": 2193423679,
+                "id": 2685867,
+                "implicits": [
+                    "Runeword_CrushingBlow_20pct"
+                ],
+                "implict": [
+                    "幸运一击: 最多有 40.0% 几率造成粉碎一击"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Infinity_Sword2H",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "无限",
+                "runewordRecipe": [
+                    {
+                        "engName": "Ber",
+                        "icon": 2354162998,
+                        "id": 2681172,
+                        "key": "S15_Rune_Effect_Ber",
+                        "name": "贝",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "玛尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ber",
+                        "icon": 2354162998,
+                        "id": 2681172,
+                        "key": "S15_Rune_Effect_Ber",
+                        "name": "贝",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ist",
+                        "icon": 2354171085,
+                        "id": 2681170,
+                        "key": "S15_Rune_Effect_Ist",
+                        "name": "伊斯特",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2685867
+        },
+        {
+            "canonical_name": "sanguivor_blade_of_zir",
+            "item_type": "Sword2H",
+            "key": "2HSword_Unique_Necro_100",
+            "name_en": "Sanguivor, Blade of Zir",
+            "name_zh": "殷红飨宴，齐尔的巨刃",
+            "raw_en": {
+                "affixesDesc": [
+                    "x[12 - 20]% All Damage Multiplier",
+                    "{c_unique}Your {c_important}Summons'{/c} damage afflict enemies with {c_important}{u}Vampiric Curse{/u}{/c}. Consuming a Corpse also contributes {c_number}3{/c} souls to {c_important}{u}Vampiric Curse{/u}{/c}, which can now stack up to {c_number}20{/c} souls.\r\n\r\nOnly {c_important}Army of the Dead{/c} can now unleash the souls from {c_important}{u}Vampiric Curse{/u}{/c}, causing both {c_important}Army of the Dead{/c} and the souls to deal {c_random}[40.0 - 50.0]%[x]{/c} increased damage per soul unleashed.{/c}"
+                ],
+                "char": [
+                    "Necromancer"
+                ],
+                "charName": "Necromancer",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Lord Zir"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "Two-Handed Sword",
+                "explicits": [
+                    "S04_Damage_All"
+                ],
+                "flavor": "The parched blade keens, longing to serve its master.",
+                "icon": 2952066857,
+                "id": 2081159,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HSword_Unique_Necro_100",
+                "keywordIds": [
+                    "Keyword_S02_VampCurse"
+                ],
+                "keywordSources": {
+                    "effects": [
+                        "Keyword_S02_VampCurse"
+                    ],
+                    "implicits": []
+                },
+                "name": "Sanguivor, Blade of Zir"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "x[12 - 20]% 全伤害增倍",
+                    "{c_unique}你的{c_important}召唤物{/c}在造成伤害时，还会对敌人施加{c_important}{u}吸血鬼诅咒{/u}{/c}。此外，消耗一具亡骸会向{c_important}{u}吸血鬼诅咒{/u}{/c}中存入 {c_number}3{/c} 个灵魂，最多可以储存 {c_number}20{/c} 个灵魂。\r\n\r\n现在只有{c_important}亡者大军{/c}可以释放出{c_important}{u}吸血鬼诅咒{/u}{/c}中储存的灵魂。每释放出一个灵魂，{c_important}亡者大军{/c}和灵魂造成的伤害都会提高 {c_random}[40.0 - 50.0]%[x]{/c}。{/c}"
+                ],
+                "char": [
+                    "Necromancer"
+                ],
+                "charName": "死灵法师",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Lord Zir"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "双手剑",
+                "explicits": [
+                    "S04_Damage_All"
+                ],
+                "flavor": "渴血的锋刃连声哀鸣，希望为它的主人效力。",
+                "icon": 2952066857,
+                "id": 2081159,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HSword_Unique_Necro_100",
+                "keywordIds": [
+                    "Keyword_S02_VampCurse"
+                ],
+                "keywordSources": {
+                    "effects": [
+                        "Keyword_S02_VampCurse"
+                    ],
+                    "implicits": []
+                },
+                "name": "殷红飨宴，齐尔的巨刃"
+            },
+            "sno_id": 2081159
+        },
+        {
+            "canonical_name": "red_sermon",
+            "item_type": "Sword2H",
+            "key": "2HSword_Unique_Paladin_002",
+            "name_en": "Red Sermon",
+            "name_zh": "血色布道",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[4 - 6] to Zeal",
+                    "{c_unique}{c_important}Zeal{/c} gains the {c_important}Death or Glory{/c} Variant for free and deals {c_random}[100 - 120]%[x]{/c} increased damage.{/c}"
+                ],
+                "char": [
+                    "Paladin"
+                ],
+                "charName": "Paladin",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Butcher"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "Two-Handed Sword",
+                "explicits": [
+                    "X2_SkillRankBonus_Paladin_Core_Zeal"
+                ],
+                "flavor": "\"Thus spake Que-Hegan Sankekur the righteous: when prayer fails man, let the blade be our psalm. May the blood of unbelievers be the ink which we write our faith anew.\" -Excerpt from Brother Ismail",
+                "icon": 2952066882,
+                "id": 2445950,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HSword_Unique_Paladin_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Red Sermon"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[4 - 6] 至狂热",
+                    "{c_unique}{c_important}狂热{/c}免费获得{c_important}死亡与荣耀{/c}变体，并且造成的伤害提高 {c_random}[100 - 120]%[x]{/c}。{/c}"
+                ],
+                "char": [
+                    "Paladin"
+                ],
+                "charName": "圣骑士",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Butcher"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "双手剑",
+                "explicits": [
+                    "X2_SkillRankBonus_Paladin_Core_Zeal"
+                ],
+                "flavor": "“正义的魁黑刚圣柯库如是说：当祈祷对人无效时，让刀刃成为我们的圣歌。愿不信者的鲜血成为我们重写信仰的墨水。”——摘自伊斯梅尔修士语录",
+                "icon": 2952066882,
+                "id": 2445950,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HSword_Unique_Paladin_002",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "血色布道"
+            },
+            "sno_id": 2445950
+        },
+        {
+            "canonical_name": "anathema_of_the_primes",
+            "item_type": "Sword2H",
+            "key": "2HSword_Unique_Warlock_001",
+            "name_en": "Anathema of the Primes",
+            "name_zh": "魔神绝罚",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[2 - 4] to Core Skills",
+                    "{c_unique}Hitting enemies with a {c_important}Core{/c} Skill increases the damage they take from you by {c_random}[30 - 40]%[x]{/c} per Skill, up to {c_random}[90 - 120]%[x]{/c}. {c_important}Archfiend{/c} {c_important}{u}Demonform{/u}{/c} Skill Variants are {c_important}Core{/c} Skills and cost Wrath.{/c}"
+                ],
+                "char": [
+                    "Warlock"
+                ],
+                "charName": "Warlock",
+                "damage": "2,174 Damage Per Second",
+                "damageDetails": [
+                    "[1,739 - 2,609] Damage per Hit",
+                    "1.00 Attacks per Second (Slow)"
+                ],
+                "dropBoss": [
+                    "Andariel"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "Two-Handed Sword",
+                "explicits": [
+                    "S04_SkillRankBonus_Generic_Category_Core"
+                ],
+                "flavor": "Hatred begins the first cut. Terror holds the wound. Destruction comes at last, patient and certain, to devour what remains.",
+                "icon": 2952066858,
+                "id": 2548622,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HSword_Unique_Warlock_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Anathema of the Primes"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[2 - 4] 至核心技能",
+                    "{c_unique}每用一个{c_important}核心{/c}技能击中敌人就会使其受到来自你的伤害提高 {c_random}[30 - 40]%[x]{/c}，最多提高 {c_random}[90 - 120]%[x]{/c}。{c_important}高等恶魔{/c}的{c_important}{u}恶魔形态{/u}{/c}技能变种属于{c_important}核心{/c}技能，并且消耗愤怒值。{/c}"
+                ],
+                "char": [
+                    "Warlock"
+                ],
+                "charName": "术士",
+                "damage": "2,174 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[1,739 - 2,609]",
+                    "每秒攻击次数(慢):1.00"
+                ],
+                "dropBoss": [
+                    "Andariel"
+                ],
+                "equipType": "Sword2H",
+                "equipTypeName": "双手剑",
+                "explicits": [
+                    "S04_SkillRankBonus_Generic_Category_Core"
+                ],
+                "flavor": "憎恨开启了第一道伤口，恐惧紧随其后。而毁灭，耐心且必然，最终将残余的一切吞噬。",
+                "icon": 2952066858,
+                "id": 2548622,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "2HSword_Unique_Warlock_001",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "魔神绝罚"
+            },
+            "sno_id": 2548622
+        },
+        {
+            "canonical_name": "flamescar",
+            "item_type": "Wand",
+            "key": "1HWand_Unique_Sorc_100",
+            "name_en": "Flamescar",
+            "name_zh": "焰痕",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[2 - 3] to Incinerate",
+                    "{c_unique}{c_important}Incinerate{/c} gains one final charge, irradiating the area around you and increasing damage dealt by {c_random}[200 - 300]%[x]{/c} but costing an additional {c_number}50{/c} Mana per second.{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "Sorcerer",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[725 - 1,087] Damage per Hit",
+                    "1.20 Attacks per Second (Very Fast)"
+                ],
+                "dropBoss": [
+                    "Urivar"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "Wand",
+                "explicits": [
+                    "S04_SkillRankBonus_Sorc_Core_5_Incinerate"
+                ],
+                "flavor": "The burn may heal, but the pain is eternal.",
+                "icon": 2266174600,
+                "id": 1214792,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HWand_Unique_Sorc_100",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Flamescar"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[2 - 3] 至焚烧",
+                    "{c_unique}{c_important}焚烧{/c}获得最后一次充能，可辐射你周围的区域，造成的伤害提高 {c_random}[200 - 300]%[x]{/c}，但每秒额外消耗 {c_number}50{/c} 点法力。{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "巫师",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[725 - 1,087]",
+                    "每秒攻击次数(非常快):1.20"
+                ],
+                "dropBoss": [
+                    "Urivar"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "魔杖",
+                "explicits": [
+                    "S04_SkillRankBonus_Sorc_Core_5_Incinerate"
+                ],
+                "flavor": "灼伤也许能够治愈，但痛感永远不会消失。",
+                "icon": 2266174600,
+                "id": 1214792,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HWand_Unique_Sorc_100",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "焰痕"
+            },
+            "sno_id": 1214792
+        },
+        {
+            "canonical_name": "the_oculus",
+            "item_type": "Wand",
+            "key": "1HWand_Unique_Sorc_101",
+            "name_en": "The Oculus",
+            "name_zh": "法瞳",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[2 - 3] to Teleport",
+                    "{c_unique}Each enemy hit by {c_important}Teleport{/c} increases the damage by {c_random}[10.0 - 15.0]%[x]{/c} and reduces the Cooldown by {c_number}0.50{/c} of the next Cast. Becoming {c_important}Injured{/c} will {c_important}Teleport{/c} you to a random location.{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "Sorcerer",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[725 - 1,087] Damage per Hit",
+                    "1.20 Attacks per Second (Very Fast)"
+                ],
+                "dropBoss": [
+                    "Grigoire"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "Wand",
+                "explicits": [
+                    "S04_SkillRankBonus_Sorc_Special_Teleport"
+                ],
+                "flavor": "\"The rhythm of the orb, which had pulsed steadily for five centuries, quickened as its owner took his final ragged breaths. It were as if some intelligence within reveled in the sight.\"\r\n- Master Eos",
+                "icon": 2266174607,
+                "id": 1439530,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HWand_Unique_Sorc_101",
+                "keywordIds": [
+                    "Keyword_Injured"
+                ],
+                "keywordSources": {
+                    "effects": [
+                        "Keyword_Injured"
+                    ],
+                    "implicits": []
+                },
+                "name": "The Oculus"
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[2 - 3] 至传送术",
+                    "{c_unique}{c_important}传送术{/c}每击中一名敌人，都会使你下一次施放的伤害提高 {c_random}[10.0 - 15.0]%[x]{/c} 且冷却时间缩短 {c_number}0.50{/c}。进入{c_important}受伤{/c}状态会使你{c_important}传送{/c}到随机位置。{/c}"
+                ],
+                "char": [
+                    "Sorcerer"
+                ],
+                "charName": "巫师",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[725 - 1,087]",
+                    "每秒攻击次数(非常快):1.20"
+                ],
+                "dropBoss": [
+                    "Grigoire"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "魔杖",
+                "explicits": [
+                    "S04_SkillRankBonus_Sorc_Special_Teleport"
+                ],
+                "flavor": "“这颗宝珠的韵律已经稳定跳动了五个世纪，在其主人急促地咽下最后一口气时，节奏加快了。仿佛里面有某种智慧陶醉于眼前的一幕。” - 伊奥斯大师",
+                "icon": 2266174607,
+                "id": 1439530,
+                "isMythic": false,
+                "isRuneword": false,
+                "key": "1HWand_Unique_Sorc_101",
+                "keywordIds": [
+                    "Keyword_Injured"
+                ],
+                "keywordSources": {
+                    "effects": [
+                        "Keyword_Injured"
+                    ],
+                    "implicits": []
+                },
+                "name": "法瞳"
+            },
+            "sno_id": 1439530
+        },
+        {
+            "canonical_name": "phoenix",
+            "item_type": "Wand",
+            "key": "Runeword_Phoenix_Wand",
+            "name_en": "Phoenix",
+            "name_zh": "凤凰",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[196 - 266] Life on Kill",
+                    "Lucky Hit: Up to a 40% Chance to Deal +[1,500 - 2,400] Fire Damage",
+                    "+20.0% Deadly Strike Chance",
+                    "x50% All Damage Multiplier",
+                    "{c_unique}When you level up, unleash a Rank {c_number}40{/c} {c_important}Ring of Fire{/c}.\r\n{c_label}Lucky Hit:{/c} Attacks have up to a {c_random}[15 - 30]%{/c} chance to unleash a Rank {c_number}22{/c} {c_important}Fire Spear{/c}.{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Necromancer"
+                ],
+                "charName": "Sorcerer, Druid, Barbarian, Necromancer",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[725 - 1,087] Damage per Hit",
+                    "1.20 Attacks per Second (Very Fast)"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "Wand",
+                "explicits": [
+                    "Runeword_LifeOnKill_Greater",
+                    "Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Fire_Tier3",
+                    "Runeword_DeadlyStrikeChance",
+                    "RuneWord_All_Damage_50pct"
+                ],
+                "icon": 1507531467,
+                "id": 2686572,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Phoenix_Wand",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Phoenix",
+                "runewordRecipe": [
+                    {
+                        "engName": "Vex",
+                        "icon": 2231096071,
+                        "id": 2024157,
+                        "key": "Rune_Effect_BonusToAllSkills",
+                        "name": "Vex",
+                        "rarity": 2
+                    },
+                    {
+                        "engName": "Vex",
+                        "icon": 2231096071,
+                        "id": 2024157,
+                        "key": "Rune_Effect_BonusToAllSkills",
+                        "name": "Vex",
+                        "rarity": 2
+                    },
+                    {
+                        "engName": "Lo",
+                        "icon": 3064800664,
+                        "id": 2681168,
+                        "key": "S15_Rune_Effect_Lo",
+                        "name": "Lo",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Jah",
+                        "icon": 2231096106,
+                        "id": 2039543,
+                        "key": "Rune_Effect_Sorcerer_Teleport",
+                        "name": "Jah",
+                        "rarity": 2
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[196 - 266] 消灭回复生命",
+                    "幸运一击：最多有 40% 几率造成 +[1,500 - 2,400] 点火焰伤害",
+                    "+20.0% 致命打击几率",
+                    "x50% 全伤害增倍",
+                    "{c_unique}升级时，释放一个 {c_number}40{/c} 级{c_important}烈焰之环{/c}。\r\n{c_label}幸运一击:{/c} 攻击最多有 {c_random}[15 - 30]%{/c} 几率释放一个 {c_number}22{/c} 级{c_important}火焰长矛{/c}。{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Necromancer"
+                ],
+                "charName": "巫师, 德鲁伊, 野蛮人, 死灵法师",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[725 - 1,087]",
+                    "每秒攻击次数(非常快):1.20"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "魔杖",
+                "explicits": [
+                    "Runeword_LifeOnKill_Greater",
+                    "Tempered_Generic_LuckyHit_FlatDamage_ElementalSurge_Fire_Tier3",
+                    "Runeword_DeadlyStrikeChance",
+                    "RuneWord_All_Damage_50pct"
+                ],
+                "icon": 1507531467,
+                "id": 2686572,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Phoenix_Wand",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "凤凰",
+                "runewordRecipe": [
+                    {
+                        "engName": "Vex",
+                        "icon": 2231096071,
+                        "id": 2024157,
+                        "key": "Rune_Effect_BonusToAllSkills",
+                        "name": "威克斯",
+                        "rarity": 2
+                    },
+                    {
+                        "engName": "Vex",
+                        "icon": 2231096071,
+                        "id": 2024157,
+                        "key": "Rune_Effect_BonusToAllSkills",
+                        "name": "威克斯",
+                        "rarity": 2
+                    },
+                    {
+                        "engName": "Lo",
+                        "icon": 3064800664,
+                        "id": 2681168,
+                        "key": "S15_Rune_Effect_Lo",
+                        "name": "罗",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Jah",
+                        "icon": 2231096106,
+                        "id": 2039543,
+                        "key": "Rune_Effect_Sorcerer_Teleport",
+                        "name": "扎",
+                        "rarity": 2
+                    }
+                ]
+            },
+            "sno_id": 2686572
+        },
+        {
+            "canonical_name": "call_to_arms",
+            "item_type": "Wand",
+            "key": "Runeword_CalltoArms_Wand",
+            "name_en": "Call to Arms",
+            "name_zh": "战斗召唤",
+            "raw_en": {
+                "affixesDesc": [
+                    "+[200 - 250] Weapon Damage",
+                    "+1 to All Skills",
+                    "x40% All Damage Multiplier",
+                    "+5 to Shout Skills",
+                    "+40.0% Attack Speed",
+                    "{c_unique}While affected by a {c_important}Shout{/c} Skill gain:\r\n• {c_random}+5{/c} Ranks to all Skills\r\n• {c_random}+15%[+]{/c} Maximum Life\r\n• {c_random}+15%[x]{/c} Maximum Primary Resource{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Necromancer"
+                ],
+                "charName": "Sorcerer, Necromancer",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[725 - 1,087] Damage per Hit",
+                    "1.20 Attacks per Second (Very Fast)"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "Wand",
+                "explicits": [
+                    "Runeword_Weapon_Damage_Flat_250",
+                    "Runeword_All_Skills_1",
+                    "RuneWord_All_Damage_40pct",
+                    "Runeword_Shout_Skills_5",
+                    "Runeword_AttackSpeed_40"
+                ],
+                "icon": 1507531467,
+                "id": 2685191,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_CalltoArms_Wand",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Call to Arms",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "Ral",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "Mal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ist",
+                        "icon": 2354171085,
+                        "id": 2681170,
+                        "key": "S15_Rune_Effect_Ist",
+                        "name": "Ist",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ohm",
+                        "icon": 2231096139,
+                        "id": 1969851,
+                        "key": "Rune_Effect_Barbarian_WarCry",
+                        "name": "Ohm",
+                        "rarity": 2
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+[200 - 250] 武器伤害",
+                    "+1 至所有技能",
+                    "x40% 全伤害增倍",
+                    "+5 至吼叫技能",
+                    "+40.0% 攻击速度",
+                    "{c_unique}受到{c_important}怒吼{/c}技能效果影响时，获得:\r\n• 所有技能等级 {c_random}+5{/c}\r\n• 生命上限 {c_random}+15%[+]{/c}\r\n• 主要资源上限 {c_random}+15%[x]{/c}{/c}{/c}"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Necromancer"
+                ],
+                "charName": "巫师, 死灵法师",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[725 - 1,087]",
+                    "每秒攻击次数(非常快):1.20"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "魔杖",
+                "explicits": [
+                    "Runeword_Weapon_Damage_Flat_250",
+                    "Runeword_All_Skills_1",
+                    "RuneWord_All_Damage_40pct",
+                    "Runeword_Shout_Skills_5",
+                    "Runeword_AttackSpeed_40"
+                ],
+                "icon": 1507531467,
+                "id": 2685191,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_CalltoArms_Wand",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "战斗召唤",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ral",
+                        "icon": 2354180284,
+                        "id": 2681162,
+                        "key": "S15_Rune_Effect_Ral",
+                        "name": "拉",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Mal",
+                        "icon": 4059421553,
+                        "id": 2681160,
+                        "key": "S15_Rune_Condition_Mal",
+                        "name": "玛尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ist",
+                        "icon": 2354171085,
+                        "id": 2681170,
+                        "key": "S15_Rune_Effect_Ist",
+                        "name": "伊斯特",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Ohm",
+                        "icon": 2231096139,
+                        "id": 1969851,
+                        "key": "Rune_Effect_Barbarian_WarCry",
+                        "name": "奥姆",
+                        "rarity": 2
+                    }
+                ]
+            },
+            "sno_id": 2685191
+        },
+        {
+            "canonical_name": "spirit",
+            "item_type": "Wand",
+            "key": "Runeword_Spirit_Wand",
+            "name_en": "Spirit",
+            "name_zh": "灵力",
+            "raw_en": {
+                "affixesDesc": [
+                    "+5 to All Skills",
+                    "+[25.0 - 35.0]% Attack Speed",
+                    "x50% All Damage Multiplier",
+                    "+[20 - 56] Maximum Resource",
+                    "50.0% Impairment Reduction"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Necromancer"
+                ],
+                "charName": "Sorcerer, Necromancer",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[725 - 1,087] Damage per Hit",
+                    "1.20 Attacks per Second (Very Fast)"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "Wand",
+                "explicits": [
+                    "Runeword_All_Skills_5",
+                    "Runeword_FasterCastRate_25to35pct",
+                    "RuneWord_All_Damage_50pct",
+                    "Runeword_Resource_Max_20to56",
+                    "Runeword_CC_Duration_Reduction_50Percent"
+                ],
+                "icon": 1507531467,
+                "id": 2685723,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Spirit_Wand",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Spirit",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "Tal",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Thul",
+                        "icon": 2231096142,
+                        "id": 1969846,
+                        "key": "Rune_Effect_Sorcerer_FrostNova",
+                        "name": "Thul",
+                        "rarity": 1
+                    },
+                    {
+                        "engName": "Ort",
+                        "icon": 4059424300,
+                        "id": 2681129,
+                        "key": "S15_Rune_Condition_Ort",
+                        "name": "Ort",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "+5 至所有技能",
+                    "+[25.0 - 35.0]% 攻击速度",
+                    "x50% 全伤害增倍",
+                    "+[20 - 56] 资源上限",
+                    "50.0% 限制减免"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Necromancer"
+                ],
+                "charName": "巫师, 死灵法师",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[725 - 1,087]",
+                    "每秒攻击次数(非常快):1.20"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "魔杖",
+                "explicits": [
+                    "Runeword_All_Skills_5",
+                    "Runeword_FasterCastRate_25to35pct",
+                    "RuneWord_All_Damage_50pct",
+                    "Runeword_Resource_Max_20to56",
+                    "Runeword_CC_Duration_Reduction_50Percent"
+                ],
+                "icon": 1507531467,
+                "id": 2685723,
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Spirit_Wand",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "灵力",
+                "runewordRecipe": [
+                    {
+                        "engName": "Tal",
+                        "icon": 4059429176,
+                        "id": 2681111,
+                        "key": "S15_Rune_Condition_Tal",
+                        "name": "塔尔",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Thul",
+                        "icon": 2231096142,
+                        "id": 1969846,
+                        "key": "Rune_Effect_Sorcerer_FrostNova",
+                        "name": "图",
+                        "rarity": 1
+                    },
+                    {
+                        "engName": "Ort",
+                        "icon": 4059424300,
+                        "id": 2681129,
+                        "key": "S15_Rune_Condition_Ort",
+                        "name": "欧特",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2685723
+        },
+        {
+            "canonical_name": "strength",
+            "item_type": "Wand",
+            "key": "Runeword_Strength_Wand",
+            "name_en": "Strength",
+            "name_zh": "力量",
+            "raw_en": {
+                "affixesDesc": [
+                    "x50% All Damage Multiplier",
+                    "+10.0% Strength",
+                    "+[811 - 1,110] Maximum Life",
+                    "+[294 - 399] Life On Hit",
+                    "+2 Primary Resource On Kill"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Necromancer"
+                ],
+                "charName": "Sorcerer, Necromancer",
+                "damage": "1,087 Damage Per Second",
+                "damageDetails": [
+                    "[725 - 1,087] Damage per Hit",
+                    "1.20 Attacks per Second (Very Fast)"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "Wand",
+                "explicits": [
+                    "RuneWord_All_Damage_50pct",
+                    "RuneWord_Strength_10pct",
+                    "X2_Life_Greater",
+                    "X2_LifePerHit_2H",
+                    "Runeword_Resource_On_Kill_2"
+                ],
+                "icon": 1507531467,
+                "id": 2685301,
+                "implicits": [
+                    "Runeword_CrushingBlow_25pct"
+                ],
+                "implict": [
+                    "Lucky Hit: Up to a 25.0% Chance to deliver a Crushing Blow"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Strength_Wand",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "Strength",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "Amn",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "Tir",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "raw_zh": {
+                "affixesDesc": [
+                    "x50% 全伤害增倍",
+                    "+10.0% 力量",
+                    "+[811 - 1,110] 生命上限",
+                    "+[294 - 399] 击中回复生命",
+                    "+2 击杀回复主要资源"
+                ],
+                "char": [
+                    "Sorcerer",
+                    "Necromancer"
+                ],
+                "charName": "巫师, 死灵法师",
+                "damage": "1,087 每秒伤害",
+                "damageDetails": [
+                    "每次命中伤害[725 - 1,087]",
+                    "每秒攻击次数(非常快):1.20"
+                ],
+                "equipType": "Wand",
+                "equipTypeName": "魔杖",
+                "explicits": [
+                    "RuneWord_All_Damage_50pct",
+                    "RuneWord_Strength_10pct",
+                    "X2_Life_Greater",
+                    "X2_LifePerHit_2H",
+                    "Runeword_Resource_On_Kill_2"
+                ],
+                "icon": 1507531467,
+                "id": 2685301,
+                "implicits": [
+                    "Runeword_CrushingBlow_25pct"
+                ],
+                "implict": [
+                    "幸运一击: 最多有 25.0% 几率造成粉碎一击"
+                ],
+                "isMythic": false,
+                "isRuneword": true,
+                "key": "Runeword_Strength_Wand",
+                "keywordIds": [],
+                "keywordSources": {
+                    "effects": [],
+                    "implicits": []
+                },
+                "name": "力量",
+                "runewordRecipe": [
+                    {
+                        "engName": "Amn",
+                        "icon": 4059408883,
+                        "id": 2681156,
+                        "key": "S15_Rune_Condition_Amn",
+                        "name": "安姆",
+                        "rarity": 3
+                    },
+                    {
+                        "engName": "Tir",
+                        "icon": 2354182732,
+                        "id": 2681166,
+                        "key": "S15_Rune_Effect_Tir",
+                        "name": "提尔",
+                        "rarity": 3
+                    }
+                ]
+            },
+            "sno_id": 2685301
+        }
+    ]
+}

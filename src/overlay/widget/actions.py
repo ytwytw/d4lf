@@ -1,5 +1,6 @@
 import tkinter as tk
 
+from src.localization import translate
 from src.overlay.settings import save_settings as save_info_settings
 from src.overlay.statistics import SessionStats
 from src.overlay.widget.shared import ACTIVE_GREEN, LOGGER, OverlayContract
@@ -7,40 +8,46 @@ from src.perception import monitor_to_window
 
 
 class _OverlayActions(OverlayContract):
-    def _close_all_submenus(self):
+    def _close_overlay(self) -> None:
+        """Close the overlay from its own UI without importing lifecycle code."""
+        self._destroy_settings_popup()
+        self._close_all_submenus()
+        self.destroy()
+
+    def _close_all_submenus(self) -> None:
         for key, existing_popup in list(self._open_submenus.items()):
             if existing_popup.winfo_exists():
                 existing_popup.destroy()
             del self._open_submenus[key]
 
-    def _toggle_lock(self):
+    def _toggle_lock(self) -> None:
         self.locked = not self.locked
         self._on_lock_changed()
         self._save_settings()
 
-    def _on_lock_changed(self):
+    def _on_lock_changed(self) -> None:
         if self.locked:
             self.config(cursor="")
 
-    def _reset_gold_stats(self):
+    def _reset_gold_stats(self) -> None:
         SessionStats().reset_gold()
         self._gold_initialized = False
         self.update_stats(gph=0, total_gained=0)
         self._repack()
 
-    def _change_font_family(self, new_font_family):
+    def _change_font_family(self, new_font_family: str) -> None:
         self.font_family = new_font_family
         for lbl in self.labels_to_resize:
             lbl.config(font=(self.font_family, self.font_size, "bold"))
         self._save_settings()
 
-    def _reset_exp_stats(self):
+    def _reset_exp_stats(self) -> None:
         SessionStats().reset_exp()
         self._exp_initialized = False
         self.update_stats(eph=0, total_exp=0, t2l="-")
         self._repack()
 
-    def _pick_exp_bar_pos(self):
+    def _pick_exp_bar_pos(self) -> None:
         """Show a fullscreen overlay to capture the experience bar position via drag."""
         picker = tk.Toplevel(self)
         picker.attributes("-fullscreen", 1)
@@ -51,7 +58,7 @@ class _OverlayActions(OverlayContract):
         canvas = tk.Canvas(picker, bg="black", highlightthickness=0)
         canvas.pack(fill="both", expand=True)
 
-        msg = "DRAG ACROSS YOUR EXPERIENCE BAR\n(Escape to cancel)"
+        msg = translate("info.exp_bar.capture_instruction")
         canvas.create_text(
             picker.winfo_screenwidth() // 2,
             picker.winfo_screenheight() // 2,
@@ -88,7 +95,7 @@ class _OverlayActions(OverlayContract):
         picker.bind("<ButtonRelease-1>", on_release)
         picker.bind("<Escape>", lambda _: picker.destroy())
 
-    def _reset_exp_bar_pos(self):
+    def _reset_exp_bar_pos(self) -> None:
         """Reset the custom experience bar position to default."""
         save_info_settings({"exp_bar_pos": "None"})
         self.settings["exp_bar_pos"] = None
@@ -100,7 +107,7 @@ class _OverlayActions(OverlayContract):
         if popup is not None and popup.winfo_exists():
             popup.destroy()
 
-    def _bind_events(self):
+    def _bind_events(self) -> None:
         self._recursive_bind_drag(self)
 
     def _recursive_bind_drag(self, widget: tk.Misc) -> None:
@@ -118,7 +125,7 @@ class _OverlayActions(OverlayContract):
             lbl.config(font=(self.font_family, self.font_size, "bold"))
         self._save_settings()
 
-    def _start_drag(self, event):
+    def _start_drag(self, event: tk.Event) -> None:
         if self.locked:
             return
         self._is_dragging = True
@@ -127,7 +134,7 @@ class _OverlayActions(OverlayContract):
         self._drag_offset_x = event.x_root - self.winfo_x()
         self._drag_offset_y = event.y_root - self.winfo_y()
 
-    def _do_drag(self, event):
+    def _do_drag(self, event: tk.Event) -> None:
         if self.locked or not hasattr(self, "_drag_offset_x"):
             return
         # Set the geometry based on current mouse position minus the original offset
@@ -135,7 +142,7 @@ class _OverlayActions(OverlayContract):
         y = int(event.y_root - self._drag_offset_y)
         self.geometry(f"+{x}+{y}")
 
-    def _stop_drag(self, event):
+    def _stop_drag(self, event: tk.Event) -> None:
         self._is_dragging = False
         self.config(cursor="")
         self._save_settings()

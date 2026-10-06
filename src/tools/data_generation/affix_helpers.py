@@ -1,9 +1,15 @@
 """Affix placeholder and localization helpers."""
 
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from src.tools.data_generation.common import AffixGenerationContext, get_first_gbid_name, get_power_id, string_list_map
+from src.tools.data_generation.common import (
+    AffixGenerationContext,
+    get_first_gbid_name,
+    get_power_id,
+    load_json_file,
+    string_list_map,
+)
 from src.tools.data_generation.constants import (
     CROWD_CONTROL_LOCALISATION_IDS,
     CROWD_CONTROL_TYPES,
@@ -29,6 +35,21 @@ from src.tools.data_generation.constants import (
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+
+def power_index(core_toc: dict[str, dict[str, str] | dict[str, list[str]]], d4data_dir: Path) -> dict[int, str]:
+    indexed_powers = core_toc.get("29")
+    if indexed_powers:
+        powers = {int(sno): name for sno, name in indexed_powers.items() if isinstance(name, str)}
+        if powers:
+            return powers
+    return {
+        int(power_data["__snoID__"]): str(power_data["__fileName__"])
+        for power_data in (
+            cast("dict[str, str | int]", load_json_file(power_file))
+            for power_file in sorted((d4data_dir / "json/base/meta/Power").glob("*.json"))
+        )
+    }
 
 
 def update_affix_localisation_id(

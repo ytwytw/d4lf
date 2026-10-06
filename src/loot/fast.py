@@ -8,10 +8,15 @@ from typing import Literal
 
 import src.perception
 from src.desktop import call_on_ui_thread, create_overlay_toplevel, get_root
-from src.item import ASPECT_UPGRADES_LABEL, MYTHICS_ALWAYS_KEPT_LABEL, Filter, ItemRarity, MatchedFilter
+from src.diagnostics import capture_latest_failure
+from src.game_data import ItemRarity
+from src.item import ASPECT_UPGRADES_LABEL, MYTHICS_ALWAYS_KEPT_LABEL, FilterResult, Item, MatchedFilter
+from src.item.filter import Filter
+from src.localization import translate
 from src.loot.colors import get_filter_colors, is_ignored_item
 from src.loot.singleton import singleton
-from src.perception import Publisher, capture, screenshot
+from src.loot.text import affix_text, match_profile_text
+from src.perception import Publisher, capture
 from src.settings import get_settings, get_ui_coordinates
 
 LOGGER = logging.getLogger(__name__)
@@ -23,7 +28,7 @@ type FastVisionTask = tuple[Literal["clear"]] | tuple[Literal["text"], str, str]
 
 @singleton
 class VisionModeFast:
-    def __init__(self):
+    def __init__(self) -> None:
         self.root: tk.Toplevel
         self.canvas: tk.Canvas
         self.textbox: tk.Text | None = None
@@ -42,7 +47,7 @@ class VisionModeFast:
         # shared UI thread, not whichever thread constructs this singleton.
         call_on_ui_thread(_build_ui)
 
-    def adjust_textbox_size(self):
+    def adjust_textbox_size(self) -> None:
         textbox = self.textbox
         if textbox is None:
             return
@@ -62,13 +67,13 @@ class VisionModeFast:
 
         textbox.config(state=tk.DISABLED)
 
-    def clear_textbox(self):
+    def clear_textbox(self) -> None:
         textbox = self.textbox
         if textbox is not None:
             textbox.destroy()
             self.textbox = None
 
-    def create_textbox(self):
+    def create_textbox(self) -> None:
         self.clear_textbox()
         minimum_font_size = get_settings().general.minimum_overlay_font_size
         minimum_font = Font(family="Courier New", size=minimum_font_size)
@@ -86,7 +91,7 @@ class VisionModeFast:
         self.textbox.place(x=x, y=y)
         self.textbox.config(state=tk.DISABLED)
 
-    def draw_from_queue(self):
+    def draw_from_queue(self) -> None:
         try:
             task = self.queue.get_nowait()
             if task[0] == "text":
@@ -110,39 +115,38 @@ class VisionModeFast:
         self.refresh_clear_timer()
         textbox.config(state=tk.DISABLED)
 
-    def refresh_clear_timer(self):
+    def refresh_clear_timer(self) -> None:
         if self.clear_timer_id is not None:
             self.root.after_cancel(self.clear_timer_id)
 
         self.clear_timer_id = self.root.after(5000, self.clear_textbox)
 
-    def request_clear(self):
+    def request_clear(self) -> None:
         self.queue.put(("clear",))
 
-    def request_draw(self, text, color):
+    def request_draw(self, text: str, color: str) -> None:
         self.queue.put(("text", text, color))
 
-    def on_tts(self, _):
+    def on_tts(self, data: list[str]) -> None:
         try:
             item_descr = None
             try:
-                item_descr = src.perception.read_latest_item()
+                item_descr = src.perception.parse_item_text(data)
                 LOGGER.debug(f"Parsed item based on TTS: {item_descr}")
-            except Exception:
+            except Exception as error:
+                self.request_clear()
                 img = capture()
-                screenshot("tts_error", img=img)
+                capture_latest_failure(reason="fast-overlay-item-parse", image=img, error=error)
                 LOGGER.exception(f"Error in TTS read_descr. {src.perception.latest_item_lines()=}")
+                return None
             if item_descr is None:
+                self.request_clear()
                 return None
 
             ignored_item = is_ignored_item(item_descr)
             if ignored_item:
                 self.request_clear()
                 return None
-
-            if item_descr is None:
-                LOGGER.info("Unknown Item")
-                return self.request_draw("Unknown item", "#ce7e00")
 
             feedback = fast_feedback(item_descr, Filter().should_keep(item_descr))
             if feedback is None:
@@ -151,47 +155,48 @@ class VisionModeFast:
             text, color = feedback
             return self.request_draw(text, color)
         except Exception:
+            self.request_clear()
             LOGGER.exception("Error in vision mode. Please create a bug report")
 
-    def start(self):
+    def start(self) -> None:
         LOGGER.info("Starting Vision Mode")
         Publisher().subscribe_item(self.on_tts)
         self.is_running = True
 
-    def stop(self):
+    def stop(self) -> None:
         LOGGER.info("Stopping Vision Mode")
         self.request_clear()
         Publisher().unsubscribe_item(self.on_tts)
         self.is_running = False
 
-    def running(self):
+    def running(self) -> bool:
         return self.is_running
 
 
 def create_match_text(matches: Iterable[MatchedFilter]) -> list[str]:
     result: list[str] = []
     for match in matches:
-        match_list = [f"  - {ma.name}" for ma in match.matched_affixes]
+        match_list = [f"  - {affix_text(ma.name)}" for ma in match.matched_affixes]
         if match.aspect_match and match.profile != MYTHICS_ALWAYS_KEPT_LABEL:
-            match_list.append("  - Aspect")
+            match_list.append(f"  - {translate('loot.match.aspect')}")
         if match.set_match:
-            match_list.append("  - Set")
-        result.append("\n".join([match.profile, *match_list]))
+            match_list.append(f"  - {translate('loot.match.set')}")
+        result.append("\n".join([match_profile_text(match.profile), *match_list]))
 
     return result
 
 
-def fast_feedback(item_descr, filter_result) -> tuple[str, str] | None:
+def fast_feedback(item_descr: Item, filter_result: FilterResult) -> tuple[str, str] | None:
     """Return the immediate tooltip feedback for a parsed item and its result."""
     colors = get_filter_colors()
-    if not filter_result.keep:
+    if filter_result.skipped or not filter_result.keep:
         return None
 
     if not filter_result.matched:
         if item_descr.rarity == ItemRarity.Unique:
-            text = ["Unique"]
+            text = [translate("loot.item.unique")]
         elif item_descr.rarity == ItemRarity.Mythic:
-            text = ["Mythic (Always Kept)"]
+            text = [translate("loot.item.mythic_always_kept")]
         else:
             text = []
         return "\n".join(text), colors.matched

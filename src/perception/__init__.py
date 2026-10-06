@@ -1,13 +1,14 @@
-from typing import TYPE_CHECKING, Protocol, cast
-
-from . import listener as _listener
-from .parser.item import parse_item_text
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     import numpy as np
 
-    from .matching.models import SearchResult, TemplateReferences
+    from src.item import Item
 
+from . import listener as _listener
+from .capture.core import Cam
 from .geometry import (
     BulletMatchDiagnostics,
     DiagnosticLocatorResult,
@@ -18,8 +19,11 @@ from .geometry import (
     locate_affix_markers,
     locate_affix_markers_with_diagnostics,
 )
-from .matching import SearchResult, TemplateMatch
+from .image import alpha_to_mask, compare_histograms, crop
+from .matching import SearchArgs, SearchResult, TemplateMatch, search
+from .parser.item import parse_item_text
 from .polling import run_until_condition
+from .roi import get_center, to_grid
 from .screenshot import screenshot
 from .text import (
     clean_str,
@@ -33,13 +37,24 @@ from .text import (
 from .tooltip import DescrDetection, find_descr, find_descr_with_diagnostics, get_separator_match_in_crop
 
 Publisher = _listener.Publisher
+RawTtsEvent = _listener.RawTtsEvent
+ItemTraceSnapshot = _listener.ItemTraceSnapshot
+complete_item_snapshot = _listener.get_complete_item_snapshot
+latest_raw_sequence = _listener.latest_raw_sequence
 filter_data = _listener.filter_data
 find_item_start = _listener.find_item_start
 fix_data = _listener.fix_data
 
 
-def read_latest_item():
-    return parse_item_text(list(_listener.LAST_ITEM))
+def latest_item_sequence() -> int:
+    return _listener.get_latest_item_snapshot()[0]
+
+
+def read_latest_item(*, after_sequence: int | None = None) -> Item | None:
+    sequence, lines = _listener.get_latest_item_snapshot()
+    if after_sequence is not None and sequence <= after_sequence:
+        return None
+    return parse_item_text(lines)
 
 
 def latest_item_lines() -> list[str]:
@@ -54,128 +69,63 @@ def start_connection() -> None:
     _listener.start_connection()
 
 
-class TemplateQuery(Protocol):
-    ref: TemplateReferences
-    mode: str
-
-    def detect(self, img: np.ndarray | None = None) -> SearchResult: ...
-
-    def is_visible(self, img: np.ndarray | None = None) -> bool: ...
-
-
-def capture(force_new: bool = False):
-    from .capture.core import Cam  # ruff:ignore[import-outside-top-level]
-
+def capture(force_new: bool = False) -> np.ndarray:
     return Cam().grab(force_new=force_new)
 
 
 def game_window_ready() -> bool:
-    from .capture.core import Cam  # ruff:ignore[import-outside-top-level]
-
     return Cam().is_offset_set()
 
 
 def game_window_roi() -> dict[str, int]:
-    from .capture.core import Cam  # ruff:ignore[import-outside-top-level]
+    roi = Cam().window_roi
+    return {"top": roi["top"], "left": roi["left"], "width": roi["width"], "height": roi["height"]}
 
-    return cast("dict[str, int]", dict(Cam().window_roi))
 
-
-def monitor_to_window(coordinate):
-    from .capture.core import Cam  # ruff:ignore[import-outside-top-level]
-
+def monitor_to_window(coordinate: Sequence[int | float] | np.ndarray) -> np.ndarray:
     return Cam().monitor_to_window(coordinate)
 
 
-def window_to_monitor(coordinate):
-    from .capture.core import Cam  # ruff:ignore[import-outside-top-level]
-
+def window_to_monitor(coordinate: Sequence[int | float] | np.ndarray) -> np.ndarray:
     return Cam().window_to_monitor(coordinate)
 
 
-def abs_window_to_monitor(coordinate):
-    from .capture.core import Cam  # ruff:ignore[import-outside-top-level]
-
+def abs_window_to_monitor(coordinate: Sequence[int | float] | np.ndarray) -> np.ndarray:
     return Cam().abs_window_to_monitor(coordinate)
 
 
 def update_window_position(offset_x: int, offset_y: int, width: int, height: int) -> None:
-    from .capture.core import Cam  # ruff:ignore[import-outside-top-level]
-
     Cam().update_window_pos(offset_x, offset_y, width, height)
 
 
 def reset_window_position() -> None:
-    from .capture.core import Cam  # ruff:ignore[import-outside-top-level]
-
     Cam().reset_window_position()
-
-
-def create_template_query(**kwargs) -> TemplateQuery:
-    from .matching.models import SearchArgs  # ruff:ignore[import-outside-top-level]
-
-    return SearchArgs(**kwargs)
-
-
-def search_templates(*args, **kwargs):
-    from .matching.engine import search  # ruff:ignore[import-outside-top-level]
-
-    return search(*args, **kwargs)
-
-
-def crop_image(image, roi):
-    from .image import crop  # ruff:ignore[import-outside-top-level]
-
-    return crop(image, roi)
-
-
-def alpha_mask(image):
-    from .image import alpha_to_mask  # ruff:ignore[import-outside-top-level]
-
-    return alpha_to_mask(image)
-
-
-def compare_image_histograms(image_a, image_b):
-    from .image import compare_histograms  # ruff:ignore[import-outside-top-level]
-
-    return compare_histograms(image_a, image_b)
-
-
-def center_of_roi(roi):
-    from .roi import get_center  # ruff:ignore[import-outside-top-level]
-
-    return get_center(roi)
-
-
-def grid_rois(roi, rows: int, columns: int):
-    from .roi import to_grid  # ruff:ignore[import-outside-top-level]
-
-    return to_grid(roi, rows, columns)
 
 
 __all__ = [
     "BulletMatchDiagnostics",
     "DescrDetection",
     "DiagnosticLocatorResult",
+    "ItemTraceSnapshot",
     "LocatedMarker",
     "LocatorDiagnostics",
     "LocatorResult",
     "Publisher",
+    "RawTtsEvent",
+    "SearchArgs",
     "SearchResult",
     "TemplateMatch",
     "TemplateMatchTrace",
-    "TemplateQuery",
     "abs_window_to_monitor",
-    "alpha_mask",
+    "alpha_to_mask",
     "capture",
-    "center_of_roi",
     "clean_str",
     "closest_match",
     "closest_to",
-    "compare_image_histograms",
+    "compare_histograms",
+    "complete_item_snapshot",
     "correct_name",
-    "create_template_query",
-    "crop_image",
+    "crop",
     "filter_data",
     "find_descr",
     "find_descr_with_diagnostics",
@@ -184,11 +134,13 @@ __all__ = [
     "fix_data",
     "game_window_ready",
     "game_window_roi",
+    "get_center",
     "get_separator_match_in_crop",
-    "grid_rois",
     "is_connected",
     "keep_letters_and_spaces",
     "latest_item_lines",
+    "latest_item_sequence",
+    "latest_raw_sequence",
     "locate_affix_markers",
     "locate_affix_markers_with_diagnostics",
     "monitor_to_window",
@@ -198,8 +150,9 @@ __all__ = [
     "reset_window_position",
     "run_until_condition",
     "screenshot",
-    "search_templates",
+    "search",
     "start_connection",
+    "to_grid",
     "update_window_position",
     "window_to_monitor",
 ]

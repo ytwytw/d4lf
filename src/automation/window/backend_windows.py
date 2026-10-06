@@ -88,7 +88,10 @@ def stop_detecting_window() -> None:
     global DETECTION_WINDOW_FLAG, DETECT_WINDOW_THREAD
     DETECTION_WINDOW_FLAG = False
     if DETECT_WINDOW_THREAD:
-        DETECT_WINDOW_THREAD.join()
+        DETECT_WINDOW_THREAD.join(timeout=2)
+        if DETECT_WINDOW_THREAD.is_alive():
+            LOGGER.warning("Window detection is still finishing after cancellation")
+            return
     DETECT_WINDOW_THREAD = None
 
 
@@ -103,6 +106,8 @@ def is_window_foreground(window_spec: WindowSpecLike) -> bool:
     hwnd = get_window_spec_id(window_spec)
     if hwnd is not None:
         active_window_handle = ctypes.windll.user32.GetForegroundWindow()
+        if not isinstance(active_window_handle, int):
+            return False
         return active_window_handle == hwnd
     return False
 

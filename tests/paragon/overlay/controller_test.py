@@ -1,9 +1,15 @@
+from typing import TYPE_CHECKING, cast
+
 import src.paragon.overlay.controller as overlay_module
-from src.paragon import format_board_display_text, load_builds_from_path, request_close
+import src.paragon.overlay.state as overlay_state
+from src.paragon.overlay import format_board_display_text, load_builds_from_path, request_close
 from src.profiles import ParagonPayloadModel
 
+if TYPE_CHECKING:
+    from src.paragon.overlay.controller import ParagonOverlay
 
-def test_load_builds_from_path_uses_typed_paragon_payloads(monkeypatch):
+
+def test_load_builds_from_path_uses_typed_paragon_payloads(monkeypatch) -> None:
     payload = ParagonPayloadModel.model_validate({
         "Name": "Build Name",
         "ParagonBoardsList": [
@@ -12,7 +18,7 @@ def test_load_builds_from_path_uses_typed_paragon_payloads(monkeypatch):
         ],
     })
 
-    monkeypatch.setattr("src.item.Filter.get_paragon_filters", lambda _self: {"profile_name": payload})
+    monkeypatch.setattr("src.item.filter.Filter.get_paragon_filters", lambda _self: {"profile_name": payload})
 
     builds = load_builds_from_path()
 
@@ -24,16 +30,16 @@ def test_load_builds_from_path_uses_typed_paragon_payloads(monkeypatch):
     )
 
 
-def test_request_close_dispatches_to_overlay_ui_thread(monkeypatch):
+def test_request_close_dispatches_to_overlay_ui_thread(monkeypatch) -> None:
     class FakeOverlay:
         closed = False
 
-        def close(self):
+        def close(self) -> None:
             self.closed = True
 
     overlay = FakeOverlay()
     callbacks = []
-    monkeypatch.setattr(overlay_module, "_CURRENT_OVERLAY", overlay)
+    overlay_state.set_overlay(cast("ParagonOverlay", overlay))
     monkeypatch.setattr(overlay_module, "is_alive", lambda value: value is overlay)
     monkeypatch.setattr(overlay_module, "post_to_ui_thread", callbacks.append)
 
@@ -42,12 +48,13 @@ def test_request_close_dispatches_to_overlay_ui_thread(monkeypatch):
     assert len(callbacks) == 1
     callbacks[0]()
     assert overlay.closed
-    overlay_module._CLOSE_REQUESTED.clear()
+    overlay_state.close_requested().clear()
+    overlay_state.clear_overlay(cast("ParagonOverlay", overlay))
 
 
-def test_request_close_without_an_open_overlay_is_a_no_op(monkeypatch):
+def test_request_close_without_an_open_overlay_is_a_no_op(monkeypatch) -> None:
     callbacks = []
-    monkeypatch.setattr(overlay_module, "_CURRENT_OVERLAY", None)
+    overlay_state.clear_overlay()
     monkeypatch.setattr(overlay_module, "post_to_ui_thread", callbacks.append)
 
     request_close()

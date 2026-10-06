@@ -1,5 +1,5 @@
 import sys
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, cast, override
 
 from PyQt6.QtCore import QSignalBlocker, Qt
 from PyQt6.QtGui import QKeySequence
@@ -16,21 +16,23 @@ from PyQt6.QtWidgets import (
 )
 
 from src.desktop.widgets import CheckmarkCheckBox
-from src.settings.hotkeys import validate_hotkey
+from src.settings.binding import validate_hotkey
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from pydantic import BaseModel
     from PyQt6.QtGui import QKeyEvent, QWheelEvent
 
-    from src.settings import MoveItemsType
+    from src.settings import GeneralModel, MoveItemsType
+    from src.settings.types import SettingValue
 CONFIG_TABNAME = "config"
 
 
 class MultiSegmentedControl(QWidget):
     def __init__(
         self, items_map: dict[str, MoveItemsType], current_values: list[MoveItemsType], callback: Callable[[str], None]
-    ):
+    ) -> None:
         super().__init__()
         self.callback = callback
         self.items_map = items_map
@@ -50,7 +52,7 @@ class MultiSegmentedControl(QWidget):
             layout.addWidget(btn)
             self.buttons[label] = btn
 
-    def _on_btn_clicked(self):
+    def _on_btn_clicked(self) -> None:
         selected = [self.items_map[label] for label, btn in self.buttons.items() if btn.isChecked()]
         val_str = ",".join([v.name for v in selected])
         self.callback(val_str)
@@ -68,7 +70,13 @@ class MultiSegmentedControl(QWidget):
 
 
 class SegmentedControl(QWidget):
-    def __init__(self, items, current_value, callback):
+    def __init__(
+        self,
+        items: list[SettingValue],
+        current_value: SettingValue,
+        callback: Callable[[str], None],
+        labels: dict[str, str] | None = None,
+    ) -> None:
         super().__init__()
         self.callback = callback
         self.setObjectName("segmented-container")
@@ -77,23 +85,25 @@ class SegmentedControl(QWidget):
         layout.setSpacing(2)
         self.group = QButtonGroup(self)
         self.buttons = {}
-        for text in items:
-            btn = QPushButton(str(text))
+        for item in items:
+            value = str(item)
+            btn = QPushButton(labels.get(value, value) if labels else value)
             btn.setObjectName("segment-btn")
+            btn.setProperty("setting-value", value)
             btn.setCheckable(True)
             btn.setFlat(True)
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-            if text == current_value:
+            if item == current_value or value == str(current_value):
                 btn.setChecked(True)
             self.group.addButton(btn)
             layout.addWidget(btn)
-            self.buttons[str(text)] = btn
+            self.buttons[value] = btn
         self.group.buttonClicked.connect(self._on_btn_clicked)
 
-    def _on_btn_clicked(self, btn):
-        self.callback(btn.text())
+    def _on_btn_clicked(self, btn: QPushButton) -> None:
+        self.callback(str(btn.property("setting-value")))
 
-    def reset_values(self, value):
+    def reset_values(self, value: SettingValue) -> None:
         val_str = str(value)
         if val_str in self.buttons:
             self.buttons[val_str].setChecked(True)
@@ -106,7 +116,7 @@ class SegmentedControl(QWidget):
 
 
 class IgnoreScrollWheelComboBox(QComboBox):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
@@ -118,13 +128,24 @@ class IgnoreScrollWheelComboBox(QComboBox):
         if e is not None:
             e.ignore()
 
-    def reset_values(self, value):
+    def reset_values(self, value: SettingValue) -> None:
         with QSignalBlocker(self):
-            self.setCurrentText(str(value))
+            value_index = self.findData(str(value))
+            if value_index >= 0:
+                self.setCurrentIndex(value_index)
+            else:
+                self.setCurrentText(str(value))
 
 
 class QChestTabWidget(QWidget):
-    def __init__(self, model, section_header, config_key, chest_tab_config: list[int], save_setting_value):
+    def __init__(
+        self,
+        model: BaseModel,
+        section_header: str,
+        config_key: str,
+        chest_tab_config: list[int],
+        save_setting_value: Callable[..., bool],
+    ) -> None:
         super().__init__()
         self.model = model
         self.section_header = section_header
@@ -135,13 +156,13 @@ class QChestTabWidget(QWidget):
         self._layout.setContentsMargins(0, 0, 0, 0)
         self.reset_values(chest_tab_config)
 
-    def reset_values(self, chest_tab_config: list[int]):
+    def reset_values(self, chest_tab_config: list[int]) -> None:
         # Clear existing checkboxes
         while self.all_checkboxes:
             cb = self.all_checkboxes.pop()
             self._layout.removeWidget(cb)
             cb.deleteLater()
-        max_tabs = self.model.max_stash_tabs
+        max_tabs = cast("GeneralModel", self.model).max_stash_tabs
         for x in range(max_tabs):
             stash_checkbox = CheckmarkCheckBox(self)
             stash_checkbox.setText(str(x + 1))
@@ -153,10 +174,10 @@ class QChestTabWidget(QWidget):
             )
             self._layout.addWidget(stash_checkbox)
 
-    def _save_changes_on_box_change(self, model, section_header, config_key):
+    def _save_changes_on_box_change(self, model: BaseModel, section_header: str, config_key: str) -> None:
         active_tabs = [check_box.text() for check_box in self.all_checkboxes if check_box.isChecked()]
 
-        def reset_chest_tabs(value: object) -> None:
+        def reset_chest_tabs(value: SettingValue) -> None:
             if not isinstance(value, list):
                 return
             tabs: list[int] = []
@@ -170,7 +191,14 @@ class QChestTabWidget(QWidget):
 
 
 class QHotkeyWidget(QWidget):
-    def __init__(self, model, section_header, config_key, current_value, save_setting_value):
+    def __init__(
+        self,
+        model: BaseModel,
+        section_header: str,
+        config_key: str,
+        current_value: SettingValue,
+        save_setting_value: Callable[..., bool],
+    ) -> None:
         super().__init__()
         self._save_setting_value = save_setting_value
         layout = QHBoxLayout()
@@ -184,10 +212,10 @@ class QHotkeyWidget(QWidget):
         layout.addWidget(self.open_picker_button)
         self.setLayout(layout)
 
-    def reset_values(self, current_value):
+    def reset_values(self, current_value: SettingValue) -> None:
         self.open_picker_button.setText(str(current_value))
 
-    def _launch_hotkey_dialog(self, model, section_header, config_key, current_value):
+    def _launch_hotkey_dialog(self, model: BaseModel, section_header: str, config_key: str, current_value: str) -> None:
         hotkey_dialog = HotkeyListenerDialog(self, current_value)
         if hotkey_dialog.exec():
             new_hotkey = hotkey_dialog.get_hotkey()
@@ -196,13 +224,15 @@ class QHotkeyWidget(QWidget):
 
 
 class HotkeyListenerDialog(QDialog):
-    def __init__(self, parent=None, hotkey=""):
+    def __init__(self, parent: QWidget | None = None, hotkey: str = "") -> None:
         super().__init__(parent)
-        self.setWindowTitle("Set Hotkey")
+        from src.localization import translate  # ruff:ignore[import-outside-top-level]
+
+        self.setWindowTitle(translate("settings.hotkey.title"))
         self.setModal(True)
         self.setFixedSize(320, 180)
         main_layout = QVBoxLayout(self)
-        self.label = QLabel("Press the key or combination of keys you\nwant to use as a hotkey, then click save.", self)
+        self.label = QLabel(translate("settings.hotkey.instructions"), self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.label)
         self.hotkey_label = QLabel(hotkey, self)
@@ -210,18 +240,18 @@ class HotkeyListenerDialog(QDialog):
         self.hotkey_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.hotkey_label)
         self.button_layout = QHBoxLayout()
-        self.save_button = QPushButton("Save", self)
+        self.save_button = QPushButton(translate("common.save"), self)
         self.save_button.setEnabled(False)
         self.save_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.save_button.clicked.connect(self.accept)
-        self.cancel_button = QPushButton("Cancel", self)
+        self.cancel_button = QPushButton(translate("common.cancel"), self)
         self.cancel_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.cancel_button.clicked.connect(self.reject)
         self.button_layout.addStretch()
         self.button_layout.addWidget(self.save_button)
         self.button_layout.addWidget(self.cancel_button)
         main_layout.addLayout(self.button_layout)
-        self.hotkey = hotkey
+        self.hotkey: str = hotkey
 
     @override
     def keyPressEvent(self, a0: QKeyEvent | None) -> None:
@@ -258,5 +288,5 @@ class HotkeyListenerDialog(QDialog):
             self.save_button.setEnabled(False)
         self.hotkey_label.setText(self.hotkey)
 
-    def get_hotkey(self):
+    def get_hotkey(self) -> str:
         return self.hotkey

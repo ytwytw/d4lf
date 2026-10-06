@@ -14,7 +14,7 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from src.item import ItemRarity, ItemType
+from src.game_data import ItemRarity, ItemType
 from src.profiles import (
     AffixFilterCountModel,
     AffixFilterModel,
@@ -49,6 +49,17 @@ class TestItemFilterModel:
             affix_pool=[AffixFilterCountModel(count=[AffixFilterModel(name="critical_strike_damage")])],
         )
         assert model.item_type == [ItemType.ChestArmor]
+
+    def test_item_type_parse_catalog_label(self) -> None:
+        model = ItemFilterModel(
+            item_type="custom type incense",
+            affix_pool=[AffixFilterCountModel(count=[AffixFilterModel(name="critical_strike_damage")])],
+        )
+        assert model.item_type == [ItemType.Incense]
+
+    def test_item_type_parse_enum_name(self) -> None:
+        model = ItemFilterModel(item_type="Helm")
+        assert model.item_type == [ItemType.Helm]
 
     def test_item_type_parse_list(self) -> None:
         """Test item_type parsing from list (line 188, 17-19)."""

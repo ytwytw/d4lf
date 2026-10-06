@@ -2,12 +2,12 @@ from pydantic import Field, field_validator, model_validator
 
 from src.settings.models.core import (
     CATEGORY_KEY,
-    HIDE_FROM_GUI_KEY,
     LIVE_RELOAD_GROUP_KEY,
     MODULE_LOGGER,
     AspectFilterType,
     BrowserType,
     CosmeticFilterType,
+    LanguageType,
     MoveItemsType,
     SettingsCategory,
     ThemeType,
@@ -15,12 +15,17 @@ from src.settings.models.core import (
     VisionModeType,
     _IniBaseModel,
 )
+from src.settings.types import SettingInput  # ruff:ignore[typing-only-first-party-import]
+
+FILTER_OVERRIDE_DESCRIPTION = (
+    "When disabled, all {category} are skipped, including Mythic items. When enabled, Mythic items are always kept."
+)
 
 
 class GeneralModel(_IniBaseModel):
     @model_validator(mode="before")
     @classmethod
-    def check_move_items_deprecation(cls, data: object) -> object:
+    def check_move_items_deprecation(cls, data: SettingInput) -> SettingInput:
         if not isinstance(data, dict):
             return data
         migrated_data = dict(data)
@@ -62,6 +67,36 @@ class GeneralModel(_IniBaseModel):
         title="Protective Ancestral Filter",
         json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
     )
+    filter_equipment: bool = Field(
+        default=True,
+        description=FILTER_OVERRIDE_DESCRIPTION.format(category="equipment"),
+        title="Filter Equipment",
+        json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
+    )
+    filter_sigils: bool = Field(
+        default=True,
+        description=FILTER_OVERRIDE_DESCRIPTION.format(category="sigils"),
+        title="Filter Sigils",
+        json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
+    )
+    filter_tributes: bool = Field(
+        default=True,
+        description=FILTER_OVERRIDE_DESCRIPTION.format(category="tributes"),
+        title="Filter Tributes",
+        json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
+    )
+    filter_seals: bool = Field(
+        default=True,
+        description=FILTER_OVERRIDE_DESCRIPTION.format(category="seals"),
+        title="Filter Seals",
+        json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
+    )
+    filter_charms: bool = Field(
+        default=True,
+        description=FILTER_OVERRIDE_DESCRIPTION.format(category="charms"),
+        title="Filter Charms",
+        json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
+    )
     full_dump: bool = Field(
         default=False,
         description="When using the import build feature, whether to use the full dump (e.g. contains all filter items) or not",
@@ -75,7 +110,7 @@ class GeneralModel(_IniBaseModel):
     )
     handle_uniques: UnfilteredUniquesType = Field(
         default=UnfilteredUniquesType.favorite,
-        description="What should be done with uniques that do not match any profile. Mythics are always favorited. If mark_as_favorite is unchecked then uniques that match a profile will not be favorited.",
+        description="How to handle uniques that match no profile. Disabling a category skips all its items. Mythics are always kept when their category is enabled, but only favorited when mark_as_favorite is enabled.",
         title="Unfiltered Unique Behavior",
         json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
     )
@@ -91,15 +126,11 @@ class GeneralModel(_IniBaseModel):
         title="Aspect Upgrade Handling",
         json_schema_extra={CATEGORY_KEY: SettingsCategory.LOOT},
     )
-    language: str = Field(
-        default="enUS",
-        description="Do not change. Only English is supported at this time",
-        title="Language",
-        json_schema_extra={
-            HIDE_FROM_GUI_KEY: "True",
-            LIVE_RELOAD_GROUP_KEY: "language",
-            CATEGORY_KEY: SettingsCategory.SYSTEM,
-        },
+    language: LanguageType = Field(
+        default=LanguageType.EN_US,
+        description="Switches both the App interface and the Diablo IV item text/parser language.",
+        title="Interface and Game Language",
+        json_schema_extra={LIVE_RELOAD_GROUP_KEY: "language", CATEGORY_KEY: SettingsCategory.SYSTEM},
     )
     mark_as_favorite: bool = Field(
         default=True,
@@ -164,7 +195,7 @@ class GeneralModel(_IniBaseModel):
 
     @field_validator("check_chest_tabs", mode="before")
     @classmethod
-    def check_chest_tabs_index(cls, v: object) -> list[int]:
+    def check_chest_tabs_index(cls, v: SettingInput) -> list[int]:
         if isinstance(v, str):
             return sorted([int(x.strip()) - 1 for x in v.split(",") if x.strip()])
         if isinstance(v, list):
@@ -200,7 +231,7 @@ class GeneralModel(_IniBaseModel):
 
     @field_validator("profiles", mode="before")
     @classmethod
-    def check_profiles_is_list(cls, v: object) -> list[str]:
+    def check_profiles_is_list(cls, v: SettingInput) -> list[str]:
         if isinstance(v, str):
             values = v.split(",")
         elif isinstance(v, list):
@@ -214,14 +245,6 @@ class GeneralModel(_IniBaseModel):
         profile_names = [item.strip() for item in values if isinstance(item, str)]
         return [profile_name for profile_name in profile_names if profile_name]
 
-    @field_validator("language")
-    @classmethod
-    def language_must_exist(cls, v: str) -> str:
-        if v != "enUS":
-            msg = "language not supported"
-            raise ValueError(msg)
-        return v
-
     @field_validator("minimum_overlay_font_size")
     @classmethod
     def font_size_in_range(cls, v: int) -> int:
@@ -232,7 +255,7 @@ class GeneralModel(_IniBaseModel):
 
     @field_validator("move_to_inv_item_type", "move_to_stash_item_type", mode="before")
     @classmethod
-    def convert_move_item_type(cls, v: object) -> list[MoveItemsType]:
+    def convert_move_item_type(cls, v: SettingInput) -> list[MoveItemsType]:
         if isinstance(v, str):
             values = v.split(",")
         elif isinstance(v, list):

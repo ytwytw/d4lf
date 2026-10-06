@@ -4,6 +4,7 @@
     "Axe2H": "two-handed axe",
     "Boots": "boots",
     "Bow": "bow",
+    "Charm": "charm",
     "ChestArmor": "chest armor",
     "Crossbow2H": "crossbow",
     "Dagger": "dagger",
@@ -13,6 +14,7 @@
     "Glaive": "glaive",
     "Gloves": "gloves",
     "Helm": "helm",
+    "HoradricSeal": "horadric seal",
     "Incense": "custom type incense",
     "Legs": "pants",
     "Mace": "mace",
@@ -31,5 +33,6 @@
     "Sword2H": "two-handed sword",
     "TemperManual": "temper manual",
     "Tome": "tome",
+    "Tribute": "tribute",
     "Wand": "wand"
 }

@@ -6,9 +6,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
+from src.game_data import ItemType
 from src.importing.d4builds import constants as d4builds_constants
 from src.importing.d4builds import extraction as _d4builds_helpers
-from src.item import ItemType
 
 if typing.TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -152,7 +152,7 @@ class _FakePaperdollItem(WebElement):
         self._icon = icon
 
     @override
-    def find_elements(self, by: str = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | By = By.ID, value: str | None = None) -> list[WebElement]:
         if value is None:
             value = str(by)
         if value == d4builds_constants.PAPERDOLL_ITEM_SLOT_CSS:
@@ -190,7 +190,7 @@ def test_get_weapon_paperdoll_icons_maps_slot_to_icon_without_hovering(mocker: M
             pass
 
         @override
-        def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
+        def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
             if value is None:
                 value = str(by)
             assert value == d4builds_constants.PAPERDOLL_WEAPON_ITEM_CSS
@@ -212,7 +212,7 @@ def test_get_weapon_paperdoll_icons_renames_2h_weapon_slot() -> None:
             pass
 
         @override
-        def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
+        def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
             if value is None:
                 value = str(by)
                 assert value == d4builds_constants.PAPERDOLL_WEAPON_ITEM_CSS
@@ -236,7 +236,7 @@ def test_get_weapon_type_from_paperdoll_tooltip_hovers_given_icon(mocker: Mocker
     assert result == ItemType.Bow
 
 
-def test_match_d4builds_tooltip_affix_uses_guessed_charm_set_for_seal_affixes() -> None:
+def test_match_d4builds_tooltip_affix_uses_guessed_charm_set_for_seal_affixes(mock_ini_loader) -> None:
     affix_name = _d4builds_helpers._match_d4builds_tooltip_affix(
         text="Maximum Resolve", item_type=ItemType.HoradricSeal, guessed_set_name="arms_of_arreat"
     )

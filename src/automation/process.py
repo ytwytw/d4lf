@@ -1,16 +1,19 @@
 import ctypes
 import logging
 import os
-import time
-
-import psutil
+from typing import TYPE_CHECKING
 
 from src.automation.window.core import get_window_spec_id
+
+if TYPE_CHECKING:
+    import threading
+
+    from src.automation.window.backend import WindowSpecLike
 
 LOGGER = logging.getLogger(__name__)
 
 
-def kill_thread(thread):
+def kill_thread(thread: threading.Thread) -> None:
     thread_id = thread.ident
     res = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, ctypes.py_object(SystemExit))
     if res > 1:
@@ -18,45 +21,12 @@ def kill_thread(thread):
         LOGGER.error("Exception raise failure")
 
 
-def safe_exit(error_code=0):
-    """Shutdown ALL D4LF instances."""
-    # Find and terminate all D4LF processes
-    current_pid = os.getpid()
-    processes_to_kill = []
-
-    try:
-        for proc in psutil.process_iter(["pid", "name", "cmdline"]):
-            try:
-                if not proc.info["cmdline"]:
-                    continue
-
-                cmdline_str = " ".join(proc.info["cmdline"])
-
-                # Look for python processes with d4lf or main.py
-                if (
-                    "python" in proc.info["name"].lower()
-                    and ("main.py" in cmdline_str or "d4lf" in cmdline_str.lower())
-                    and proc.pid != current_pid
-                ):
-                    processes_to_kill.append(proc)
-            except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-                LOGGER.debug(f"Error accessing process: {e}")
-    except psutil.Error as e:
-        LOGGER.debug(f"Error iterating processes: {e}")
-
-    # Kill all processes silently
-    for proc in processes_to_kill:
-        try:
-            proc.kill()
-            proc.wait(timeout=2)
-        except psutil.Error as e:
-            LOGGER.debug(f"Error killing process {proc.pid}: {e}")
-
-    time.sleep(0.3)
+def safe_exit(error_code: int = 0) -> None:
+    """Emergency-stop this instance and its threads, never unrelated Python processes."""
     os._exit(error_code)
 
 
-def set_process_name(name, window_spec):
+def set_process_name(name: str, window_spec: WindowSpecLike) -> None:
     try:
         hwnd = get_window_spec_id(window_spec)
         kernel32 = ctypes.WinDLL("kernel32")
