@@ -1,4 +1,5 @@
 import enum
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -115,12 +116,15 @@ class ConfigTabMixin:
             self._restart_application()
 
     def _restart_application(self) -> None:
-        command = [sys.executable, *sys.argv[1:]] if getattr(sys, "frozen", False) else [sys.executable, *sys.argv]
+        frozen = getattr(sys, "frozen", False)
+        command = [sys.executable, *sys.argv[1:]] if frozen else [sys.executable, *sys.argv]
+        # A onefile restart must unpack independently before the old parent cleans its resources.
+        environment = {**os.environ, "PYINSTALLER_RESET_ENVIRONMENT": "1"} if frozen else None
         creationflags = 0
         if sys.platform == "win32":
             creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
         try:
-            subprocess.Popen(command, cwd=Path.cwd(), creationflags=creationflags)
+            subprocess.Popen(command, cwd=Path.cwd(), creationflags=creationflags, env=environment)
         except OSError:
             msg = QMessageBox(cast("QWidget", self))
             msg.setIcon(QMessageBox.Icon.Critical)

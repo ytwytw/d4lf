@@ -3,7 +3,7 @@
     "files": [
         {
             "path": "affixes.json",
-            "sha256": "6c8cf64184fca6e541ee0da0f85e74c83d37bc0085645f8cb5affd0410358354"
+            "sha256": "055dd3aa710fe855b2599d02c61c6899e2480f0f3e53506b4e347f1660d13afa"
         },
         {
             "path": "aspects.json",
@@ -35,7 +35,7 @@
         },
         {
             "path": "sigils.json",
-            "sha256": "1bcb21a2d8aeaf6fcc9b39ff501256314b361a1650c70cb8ff51edf250eb7c39"
+            "sha256": "d9d00ca98df76105bb2c2702692d0f1e99bd645ecc4c8849be0db822aa26c706"
         },
         {
             "path": "tooltips.json",
@@ -43,17 +43,17 @@
         },
         {
             "path": "tributes.json",
-            "sha256": "d54daa9774774c0ae37c223c1d675aa475ea32289a1db2ede2cf7e8f1b4d6ebe"
+            "sha256": "575ebbd8467b06c7acc10cbdaddd1fd9d1d25e5aee98d4a2bc25743d63ac58b1"
         },
         {
             "path": "uniques.json",
-            "sha256": "c2a25c57f8a5d36983322d41b031e3e5c9d24a5724f3d94e0a78d7276191a995"
+            "sha256": "1ddf1de77742ee57aeeeda48288026d35886c1e663b45a9147c63aa8f1613774"
         }
     ],
     "locale": "zhCN",
     "readiness_blockers": [
-        "12 tribute records have no verified Simplified Chinese translation; see quality-report.json unresolved.",
-        "The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; runtime rejects it instead of guessing."
+        "The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; full same-tooltip effect disambiguation still requires live-game acceptance.",
+        "The Chinese tribute label 巨人贡品 is ambiguous between tribute_of_heritage and tribute_of_titans; full same-tooltip effect disambiguation still requires live-game acceptance."
     ],
     "records": [
         {
@@ -24849,6 +24849,34 @@
             }
         },
         {
+            "metadata_source": {
+                "field": "item_types",
+                "provider": "d2core",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "0a6d3e51d0f821097446a28b81ab31658f694b3f3b607cf503ed4363876aacff",
+                        "english_record_sha256": "242a4ddbdb3ade3bf1970178f4cbc9d9cf9266c5915b0d23c1e379fc46ed2378",
+                        "id": 356745,
+                        "key": "2HAxe_Unique_Barb_001",
+                        "runtime_item_type": "Axe2H",
+                        "source_item_type": "Axe2H",
+                        "source_item_type_en": "Two-Handed Axe",
+                        "source_item_type_zh": "双手斧"
+                    }
+                ],
+                "value_sha256": "98039a7217a7ade2b2d0f6ad1bd8e078cfc0c4db412eaec706b563144fc81c9f"
+            },
             "source_sha256": "9a91d2ab6935f625b427df21130181e0193d7ef40f6678cc604043ae80f9e972",
             "stable_id": "uniques:ancients_oath",
             "text": "先祖之誓",
@@ -27858,11 +27886,2219 @@
                 "source_id": "uniques:yens_blessing",
                 "translation_sha256": "a4ba0317f0b4439999d4935f3964344cb6d351531bcde96b35e416e4bd51f45e"
             }
+        },
+        {
+            "source_sha256": "dcb073f6b31ed979ef4d0b95322469d9edc6ac4f3fdf1dccd2ed0c1ebfbd35d6",
+            "stable_id": "tributes:minor_tribute_of_andariel",
+            "text": "安达莉尔的小型贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.262164+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "bbd530fb342418f1038be8f521f129ec4b9f447969ce10f772a78ca95574ea2b",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/minor-tribute-of-andariel-2447394"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:minor_tribute_of_andariel",
+                "source_item_id": 2447394,
+                "source_item_key": "S11_Undercity_TributeKeySigil_Andariel_1",
+                "source_string_id": 2447393,
+                "translation_sha256": "384934a7ccb1f6fc16e90e0b5bb6e545258261553856395b676d1c2e4fde316e"
+            }
+        },
+        {
+            "source_sha256": "4895335fa3b4fc5d831ec2bf9d44bb9c6f858388a46d0c6fa32efd144b68d72d",
+            "stable_id": "tributes:tribute_of_andariel",
+            "text": "安达莉尔的贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.264194+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "4bc326cb0114b98887099afc777830327ee9b11e89f6c82f2cf1ff57eb538c97",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/tribute-of-andariel-2485144"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:tribute_of_andariel",
+                "source_item_id": 2485144,
+                "source_item_key": "S11_Undercity_TributeKeySigil_Andariel_2",
+                "source_string_id": 2485143,
+                "translation_sha256": "16e28ad3fb67fd171bfdb46ac058c1a3f19843718a717d93ed28518c828b3cde"
+            }
+        },
+        {
+            "source_sha256": "6ebc3aba94f52f7e1e89f3d536b5591f9e63702a671e5d3ef68089188167e131",
+            "stable_id": "tributes:major_tribute_of_andariel",
+            "text": "安达莉尔的大型贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.264763+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "289dc327d07f26ea122012dcf2e26b498fe4dbf14146b0c43533abd287f9ad04",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/major-tribute-of-andariel-2485152"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:major_tribute_of_andariel",
+                "source_item_id": 2485152,
+                "source_item_key": "S11_Undercity_TributeKeySigil_Andariel_3",
+                "source_string_id": 2485151,
+                "translation_sha256": "55a46a54f18e72310c70d45ad87a7dc8f626e0e5614c821cffe3ff6d2584b0a7"
+            }
+        },
+        {
+            "source_sha256": "c44dbcd8911c5247f5e9e83c9a7b8398b1312c3e6023ebe7133c80260b8bb12b",
+            "stable_id": "tributes:tribute_of_heritage",
+            "text": "巨人贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.569067+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "acdfaef9946d3e48d60aef106dc9055847831ad14556193f925749020d4f3f69",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/tribute-of-heritage-2077993"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:tribute_of_heritage",
+                "source_item_id": 2077993,
+                "source_item_key": "X1_Undercity_TributeKeySigil_ClassUniques",
+                "source_string_id": 2077992,
+                "translation_sha256": "ad7c09bba55aeb6bbb985d4e3f7ba9a85182bed920fc901bea5d47e6a6b23c92"
+            }
+        },
+        {
+            "source_sha256": "8ffb404abbdd28bf3003dbdb2f72df51c42f8013750c13296ae060adc536eeb2",
+            "stable_id": "tributes:greater_tribute_of_armaments",
+            "text": "强效军械贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.610590+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "b17f0c8adcffecacd42238f2e303ec16821ef9e77b7341d0b53f8b7f9dcbeb1f",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/greater-tribute-of-armaments-2125047"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:greater_tribute_of_armaments",
+                "source_item_id": 2125047,
+                "source_item_key": "X1_Undercity_TributeKeySigil_GreaterAffixes_Party",
+                "source_string_id": 2125046,
+                "translation_sha256": "fe3d5b3ce6575160fdf59d9e855d9645a277d71470d9fc9f8773c696fdd8b997"
+            }
+        },
+        {
+            "source_sha256": "ea97c27229f9afbd7ab622fccfaa89126048729aa7ec9e695b8617055fa3a5af",
+            "stable_id": "tributes:lesser_tribute",
+            "text": "小型贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.705692+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "51a6975a3eff4f8bff88f4d153299bc0ef0edb2c3c71fcdb3f97ffe4dde5dd01",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/lesser-tribute-2625218"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:lesser_tribute",
+                "source_item_id": 2625218,
+                "source_item_key": "X1_Undercity_TributeKeySigil_RandomMagic",
+                "source_string_id": 2625217,
+                "translation_sha256": "a726ac765614d5c1e9ce69a21576a888df102db050764cda98d4d6070d3adbeb"
+            }
+        },
+        {
+            "source_sha256": "f7ce67c0d98cf587225a11066bc2043ab2a88bd04badda6c877462b94e2404af",
+            "stable_id": "tributes:tribute_of_the_horadrim",
+            "text": "赫拉迪姆的贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.787828+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "d1943ce86b8b38b51270f91a47adee9576970d66e956c30a7955e4605a517712",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/tribute-of-the-horadrim-2326828"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:tribute_of_the_horadrim",
+                "source_item_id": 2326828,
+                "source_item_key": "X1_Undercity_TributeKeySigil_Talisman",
+                "source_string_id": 2326827,
+                "translation_sha256": "637d4575910e30ac32e04a5e647eea4143808c803500602423e6f75300357c21"
+            }
+        },
+        {
+            "source_sha256": "79706c2ec0750b5d48bc816e6f3ac69c4cd15979d94507b9395e5c1a0c80a557",
+            "stable_id": "tributes:greater_tribute_of_ingenuity",
+            "text": "强效巧思贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.811336+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "ba535656e3dd1334e84bb6f07b8a640c44b6b4dc05164c1758c6dc89a8e0c389",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/greater-tribute-of-ingenuity-2580967"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:greater_tribute_of_ingenuity",
+                "source_item_id": 2580967,
+                "source_item_key": "X2_Undercity_TributeKeySigil_CraftingMaterials_Cube_Greater",
+                "source_string_id": 2580966,
+                "translation_sha256": "fa9acd297834c64843ce7d9a2d5105abf9795428d44de004004a0b506c7eb9d3"
+            }
+        },
+        {
+            "source_sha256": "b6778cb0a0ba861ea83ac49f5058a45bcc1aff3e9cd0473dc48b71466506813f",
+            "stable_id": "tributes:lesser_tribute_of_ingenuity",
+            "text": "次级巧思贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.882707+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "13d1e14dfedd74013db6db532276afb9cf49eb33f4da98c467131f12cdd072cc",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/lesser-tribute-of-ingenuity-2581866"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:lesser_tribute_of_ingenuity",
+                "source_item_id": 2581866,
+                "source_item_key": "X2_Undercity_TributeKeySigil_CraftingMaterials_Cube_Lesser",
+                "source_string_id": 2581865,
+                "translation_sha256": "d39ea5cb1cf1538d7cc65be681203a8ae4f419b3b3f639400504e56229e7386e"
+            }
+        },
+        {
+            "source_sha256": "02e2ce3752f34806b88f9824e4ea8cbac39047cc54f00df02b266d3208ed0b02",
+            "stable_id": "tributes:greater_tribute_of_harmony",
+            "text": "强效和谐贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:34.988628+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f3af6dbdb33bc41aef779809b43fb84f8b0ec852729c092c27358d62ecf30bd6",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/greater-tribute-of-harmony-2581879"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:greater_tribute_of_harmony",
+                "source_item_id": 2581879,
+                "source_item_key": "X2_Undercity_TributeKeySigil_Runes_Greater",
+                "source_string_id": 2581878,
+                "translation_sha256": "447e8219fa352cd02d772a1255da55abe2be6c09b74c5b677d0ef9d5a3a75c1d"
+            }
+        },
+        {
+            "source_sha256": "d4e78c0ec8a594bf220393c90effcc5e3351f2f6f51579569a6c40787a8af95f",
+            "stable_id": "tributes:greater_tribute_of_the_horadrim",
+            "text": "大型赫拉迪姆的贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:35.013135+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "ebc2df7f993d497f926677a64515ad1aea31fb782df9fa5d16329e578e368164",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/greater-tribute-of-the-horadrim-2580937"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:greater_tribute_of_the_horadrim",
+                "source_item_id": 2580937,
+                "source_item_key": "X2_Undercity_TributeKeySigil_Talisman_Greater",
+                "source_string_id": 2580936,
+                "translation_sha256": "68fb81e5facc6132168a6dfd7d5d586f3131bc30e9ad4d0d424c3f87aee09c3f"
+            }
+        },
+        {
+            "source_sha256": "3995e2e4bb842bbc71f555306405936c2432056bc929b9f064e37baa9642f8cb",
+            "stable_id": "tributes:lesser_tribute_of_the_horadrim",
+            "text": "小型赫拉迪姆的贡品",
+            "translation_source": {
+                "fetched_at_utc": "2026-10-06T04:34:35.147405+00:00",
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "500bf34d7756128d0763b2711a3a76ff23f88679891f7341c062c3cbfdfea082",
+                        "url": "https://www.wowhead.com/diablo-4/cn/item/lesser-tribute-of-the-horadrim-2580953"
+                    }
+                ],
+                "reference_provider": "wowhead",
+                "scope": "identity_matched_database_name; not live_game_verified",
+                "source_data_version": "3.0.2",
+                "source_id": "tributes:lesser_tribute_of_the_horadrim",
+                "source_item_id": 2580953,
+                "source_item_key": "X2_Undercity_TributeKeySigil_Talisman_Lesser",
+                "source_string_id": 2580952,
+                "translation_sha256": "20321c2ea67b6dcc75d831a5dc31e42871ed19395c67f945463b1e6aee078ae7"
+            }
+        },
+        {
+            "metadata_source": {
+                "field": "item_types",
+                "provider": "d2core",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "025f355c572e52a9058eee8183754f1ef698531f8ff3a49b35c8a46a3f35a76a",
+                        "english_record_sha256": "38a65bfc763d798c64652613312281f2bc428c670cc5c289cb79dfaf85139230",
+                        "id": 2678605,
+                        "key": "Runeword_Ancients_Pledge_Shield",
+                        "runtime_item_type": "Shield",
+                        "source_item_type": "Shield",
+                        "source_item_type_en": "Shield",
+                        "source_item_type_zh": "盾"
+                    },
+                    {
+                        "chinese_record_sha256": "d2d78d334685ded281d5e293e3b0f801b497c242ac6410b692d7d6576629a13f",
+                        "english_record_sha256": "2917c910cde1f0778068bce7252cf3b70fff4ef12b858aaa272b2c3b2f03fb56",
+                        "id": 2685416,
+                        "key": "Runeword_Ancients_Pledge_FocusBookOffHand",
+                        "runtime_item_type": "Focus",
+                        "source_item_type": "Focus",
+                        "source_item_type_en": "Focus",
+                        "source_item_type_zh": "聚能器"
+                    },
+                    {
+                        "chinese_record_sha256": "912d8ecd8a13aa4e63504f89e62281403da341e5f455c235dce9483cda05c430",
+                        "english_record_sha256": "c0614591aead629bf3c28739c60ad00bc67bfe95a470d21dab3e09989d2fa881",
+                        "id": 2685430,
+                        "key": "Runeword_Ancients_Pledge_OffHandTotem",
+                        "runtime_item_type": "OffHandTotem",
+                        "source_item_type": "DruidOffhand",
+                        "source_item_type_en": "Totem",
+                        "source_item_type_zh": "图腾"
+                    }
+                ],
+                "value_sha256": "4048ec0d3e11b1ace1e4ccc830389d35116246c3e8b5252fbb2ac9e7675e6ba2"
+            },
+            "source_sha256": "0a698f3353a7ca841044f84fbf0b715047e2891b64bb36d091d8d97029ce5263",
+            "stable_id": "uniques:ancients_pledge",
+            "text": "先祖之誓",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "025f355c572e52a9058eee8183754f1ef698531f8ff3a49b35c8a46a3f35a76a",
+                        "chinese_text": "先祖之誓",
+                        "english_record_sha256": "38a65bfc763d798c64652613312281f2bc428c670cc5c289cb79dfaf85139230",
+                        "english_text": "Ancient's Pledge",
+                        "field": "name",
+                        "id": 2678605,
+                        "key": "Runeword_Ancients_Pledge_Shield"
+                    },
+                    {
+                        "chinese_record_sha256": "d2d78d334685ded281d5e293e3b0f801b497c242ac6410b692d7d6576629a13f",
+                        "chinese_text": "先祖之誓",
+                        "english_record_sha256": "2917c910cde1f0778068bce7252cf3b70fff4ef12b858aaa272b2c3b2f03fb56",
+                        "english_text": "Ancient's Pledge",
+                        "field": "name",
+                        "id": 2685416,
+                        "key": "Runeword_Ancients_Pledge_FocusBookOffHand"
+                    },
+                    {
+                        "chinese_record_sha256": "912d8ecd8a13aa4e63504f89e62281403da341e5f455c235dce9483cda05c430",
+                        "chinese_text": "先祖之誓",
+                        "english_record_sha256": "c0614591aead629bf3c28739c60ad00bc67bfe95a470d21dab3e09989d2fa881",
+                        "english_text": "Ancient's Pledge",
+                        "field": "name",
+                        "id": 2685430,
+                        "key": "Runeword_Ancients_Pledge_OffHandTotem"
+                    }
+                ],
+                "source_id": "uniques:ancients_pledge",
+                "transform": "exact_name",
+                "translation_sha256": "e602a46a72cec2831f06c3fa1101595e36d37b17fc0be019eb250a959db27639"
+            }
+        },
+        {
+            "source_sha256": "27f2218dd6e65fe3ebbad30857cbdee6f8c758e12f25727734f20f2958bd04a1",
+            "stable_id": "uniques:annihilus",
+            "text": "毁灭",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "4007436273e167f79c67be5f55589a86ead40fe1e9d6f5e9c05fc28a6b25e5c1",
+                        "chinese_text": "毁灭",
+                        "english_record_sha256": "6fff24576757d481c004b4f003c6ab270be6c55e289fd80b6e94c64f462c80b5",
+                        "english_text": "Annihilus",
+                        "field": "name",
+                        "id": 2684354,
+                        "key": "S15_Charm_Unique_Annihilus"
+                    }
+                ],
+                "source_id": "uniques:annihilus",
+                "transform": "exact_name",
+                "translation_sha256": "85a571920059f062d0e13199fab752ce6fbf3b91d5a18d05759085533e5a25d4"
+            }
+        },
+        {
+            "source_sha256": "5efe33e1dabc72481d7d6c4a337a8641449c57a4d6a9d63028138a6131135fe5",
+            "stable_id": "uniques:bell_of_the_bovine",
+            "text": "魔牛之铃",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "c8e6b4220a1614bb6e4d4312ac1ad110fe9beeb8b2497874964487ee46fb1e36",
+                        "chinese_text": "魔牛之铃",
+                        "english_record_sha256": "ac3036fc436901d6885ceb64c0bf35a9b49283753bdce9376474bd4af7ca94d1",
+                        "english_text": "Bell of the Bovine",
+                        "field": "name",
+                        "id": 2677115,
+                        "key": "OPAL_Amulet_Unique_Generic_100"
+                    }
+                ],
+                "source_id": "uniques:bell_of_the_bovine",
+                "transform": "exact_name",
+                "translation_sha256": "8d80141fa286e16441c0cd6edbe4a7ed2e39d381a9fd8abfdc3adb8bef20de70"
+            }
+        },
+        {
+            "source_sha256": "77158d42d43aff685e8a28a26c04eaa7f4d3fd7ab91ddb3ab26df39e1612f681",
+            "stable_id": "uniques:call_to_arms",
+            "text": "战斗召唤",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "647b5c2d7af76fdb29ef10df7774bc57e13d88b2408ff9390e8862c774a53d59",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "c896bccf756381bac01c764668f3144cbe7766e28c24fb875ba5186ef5e46247",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2683403,
+                        "key": "Runeword_CalltoArms"
+                    },
+                    {
+                        "chinese_record_sha256": "56e6e6fa1fff4c882b49560cd6c813746315ed643c70d14fb9a6c488d3af9493",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "cc4703b95bf4b480e5a0f4b3e9338a1bfd31a86f24c2cd3c1fbcf0a49930fb82",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2685174,
+                        "key": "Runeword_CalltoArms_Flail"
+                    },
+                    {
+                        "chinese_record_sha256": "d165ae2ae819bdc9ab4dc8dc276c56dc834508ed896f809f049e19118ea26a42",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "024af9b82f9e7c40d955d54f58dcb36062b211679e4af317c38df15371904896",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2685176,
+                        "key": "Runeword_CalltoArms_Sword"
+                    },
+                    {
+                        "chinese_record_sha256": "bd139c91a98de75b81e63b8cad9d5592435cdd40bcb35c4e50ab7e514fa1fbc0",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "2d8a883f83aa311332c46752d77acdaad9b76862a5e6699fe455860611134787",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2685181,
+                        "key": "Runeword_CalltoArms_Dagger"
+                    },
+                    {
+                        "chinese_record_sha256": "74bfbd6f16bf7df730b30ab73d33450904a005765446743fc22cc0101e3c50f6",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "e81e593fdab0bc316c08bc907f485584714ce9af61d05f416c4696cddce7aa2e",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2685183,
+                        "key": "Runeword_CalltoArms_Focus"
+                    },
+                    {
+                        "chinese_record_sha256": "b90400742c6ae97bc61d609e4626900a46ce52a24a72edd6031fe8aa631666dd",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "d43a77513da38cbf2fea05d55a3e352d8c12a0dd86b7379dd88a32cc2f84d157",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2685185,
+                        "key": "Runeword_CalltoArms_Mace"
+                    },
+                    {
+                        "chinese_record_sha256": "3018942aaa288f309083c3d5224da80fc5a93345a41959904defc43da3880cf3",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "ee13c682f7b4a978bb7ca331daa42a9d4eb9ed9d59fc703ffa9edf68e3c39d67",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2685187,
+                        "key": "Runeword_CalltoArms_Scythe"
+                    },
+                    {
+                        "chinese_record_sha256": "6786c81b8eec177805620c51fe165f1eebd4bdcf78d0abc0977572413b3c8a7e",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "36874df45c6d2c36446ec43db2eea9d47c49798d8565ad1fe03c5c61e1854933",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2685189,
+                        "key": "Runeword_CalltoArms_OffHandTotem"
+                    },
+                    {
+                        "chinese_record_sha256": "e8cf2b95ffaf551c7f6c8454b0935cb72578268abdb38061831fb418c5cb4936",
+                        "chinese_text": "战斗召唤",
+                        "english_record_sha256": "cbe60e19096dafb40fb0f9816048d8fa78a3679fb14fb4d1e3f8cf9a79029ea3",
+                        "english_text": "Call to Arms",
+                        "field": "name",
+                        "id": 2685191,
+                        "key": "Runeword_CalltoArms_Wand"
+                    }
+                ],
+                "source_id": "uniques:call_to_arms",
+                "transform": "exact_name",
+                "translation_sha256": "17b491340e5e983dbb0f1287c59fd3f000e7a5ced9af2358ef2107b162851978"
+            }
+        },
+        {
+            "source_sha256": "a1cb100f57e971cacf269e7c26e4630a25a8e9d4bdd35e32df1a80b66b896254",
+            "stable_id": "uniques:edge",
+            "text": "锐锋",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "53dc603a5c90ebe0fbcf23d6efc502d292f0cb891ed2651622c4e22f8b51f12f",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "d9d430f3211d350a765f9be423db6269e4a586d35365b0ad90807613e9675328",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2678427,
+                        "key": "Runeword_Edge_2HBow"
+                    },
+                    {
+                        "chinese_record_sha256": "f08fed3401024faa7298d80f91d7b22bc08cbe9132aaf17cfb72dbfd1f8104d8",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "9300cca5bd8c39f09b2e58c964e030f18e71b93e6d4c5cb8d61c1c9f17285a67",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686213,
+                        "key": "Runeword_Edge_Staff"
+                    },
+                    {
+                        "chinese_record_sha256": "1808137ac6db5ad928c5affb4366e95d138789da70bc0171a423ede4b008c2a1",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "b7ec6300c9ffe36e0d2dbdea5577a5ef986428bb1cb070631df1983438ebf237",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686217,
+                        "key": "Runeword_Edge_Crossbow2H"
+                    },
+                    {
+                        "chinese_record_sha256": "4fe0e6c077341f3854497c26db51db594e3d9ee02696aad67151ab384f962e6e",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "bbd31b7a82bd8db471ddbc3e821acac42cabd1fcc559dea87b8f697fac7c7054",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686219,
+                        "key": "Runeword_Edge_Polearm"
+                    },
+                    {
+                        "chinese_record_sha256": "abea31bd5e350e68a462161ff0e89b7c9019cd98ac482752acc10b66961a08b8",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "c8479e674c8e27c07e6580633f875534d675755d10e6b0497c7ca11415f8d2fd",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686221,
+                        "key": "Runeword_Edge_Glaive"
+                    },
+                    {
+                        "chinese_record_sha256": "d29b3524ba0547bce4fc5ecde4c30bf827c3934944b67c02a3e5b8daa0c6ca07",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "b60d95c220a80274b82578b1e48b54239983825f4ac854c262c479fc630cae15",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686223,
+                        "key": "Runeword_Edge_Quarterstaff"
+                    },
+                    {
+                        "chinese_record_sha256": "f744f75f757a952c18ef0a181f58414175d1696d2391da69753f36ebac6fef95",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "5b7a569bec382b5c0f1ac5eabf6e72b50e8f7a1f2b7bb6a944a117be8d001f34",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686225,
+                        "key": "Runeword_Edge_Scythe2H"
+                    },
+                    {
+                        "chinese_record_sha256": "248e66d82d4d03e5425d62937a3d5c952d97702a42a1254cad394ac7a44db957",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "3ed01c1f8b978fdbae064ee00bdaec38bbc0ca5d6baa568988f7cf27f7749547",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686237,
+                        "key": "Runeword_Edge_Axe2H"
+                    },
+                    {
+                        "chinese_record_sha256": "292b02e889f99db3648e6e4ba60223803b661253f7309b0b0c72424a07deea2c",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "f66c6f1b6a62e8f3a74a980b1676736ea44329d54e97297b84ec87944fb0ed7f",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686239,
+                        "key": "Runeword_Edge_Mace2H"
+                    },
+                    {
+                        "chinese_record_sha256": "b709acd36292e68bf21df6f1be90956eff77021be0da72fdd26ca642acf79d4c",
+                        "chinese_text": "锐锋",
+                        "english_record_sha256": "cfe895cc1c5934367a749807d99ee5f0e8fdc350ab8272f6ee3f770427d2e570",
+                        "english_text": "Edge",
+                        "field": "name",
+                        "id": 2686242,
+                        "key": "Runeword_Edge_Sword2H"
+                    }
+                ],
+                "source_id": "uniques:edge",
+                "transform": "exact_name",
+                "translation_sha256": "1498fcec44fcc4df011a472e9770b2d7d41067dbf99c38a3b8b3578eec39e499"
+            }
+        },
+        {
+            "source_sha256": "67a4f45f0d1d9bc606486fc42dc4941668e71d34ee500735fe9b7ea4625c687c",
+            "stable_id": "uniques:enigma",
+            "text": "谜团",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "269548b1bf4f5020e80972db9d1c5e08fc3e6847015a27a40095512e0a2ba30f",
+                        "chinese_text": "谜团",
+                        "english_record_sha256": "079a43f73ae5015968561fb676562c12327d348ff6b260d9e092d3297ae3034b",
+                        "english_text": "Enigma",
+                        "field": "name",
+                        "id": 2676290,
+                        "key": "Runeword_Enigma"
+                    }
+                ],
+                "source_id": "uniques:enigma",
+                "transform": "exact_name",
+                "translation_sha256": "d09768175e73190f1ff157a2756921f9423b161a911020dc2069450fd233e45a"
+            }
+        },
+        {
+            "source_sha256": "63145a8fb4f0d932429064a38b6a17e1ccc89ffe6440ed957b470c22a6cc9d8c",
+            "stable_id": "uniques:grief",
+            "text": "悔恨",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "5887812e3b4ca4247712fd88e5b00a8f274f863c3412eb81fde76f60ee7b34fd",
+                        "chinese_text": "悔恨",
+                        "english_record_sha256": "2f5d49039b4d82c73fc28d746c89723b03f399c04f95fa46525cfaab671696dc",
+                        "english_text": "Grief",
+                        "field": "name",
+                        "id": 2676427,
+                        "key": "Runeword_Grief_1HSword"
+                    },
+                    {
+                        "chinese_record_sha256": "bae24cf9c3118ef85c1c3e8a74ee9872f9199baf62023cbc217402719fb66a41",
+                        "chinese_text": "悔恨",
+                        "english_record_sha256": "f49390d41c045d0475702a9e448c98c13a81353da1daf3499afc5b508f6fd03d",
+                        "english_text": "Grief",
+                        "field": "name",
+                        "id": 2686548,
+                        "key": "Runeword_Grief_Axe"
+                    }
+                ],
+                "source_id": "uniques:grief",
+                "transform": "exact_name",
+                "translation_sha256": "c3986e16dec139a17aecc84ebacd92092bc3a0cc92a7fda671895c184f47b5e5"
+            }
+        },
+        {
+            "source_sha256": "95542a24b5c632262de64c58eb1ade8d2df62d8116a65b0cfc7ddb3ee4f34cb5",
+            "stable_id": "uniques:hellfire_torch",
+            "text": "地狱火炬",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "2279ffcd1a93d978beba3c7d7be9ecdbd0f62e0654c7492eec718c429de355ff",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/talisman_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "5f13c6ad41ebe6b4a2224ddca74caca1130b6c0a6a3d353ab2bbc53779ac9449",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/talisman_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "5afca037297c6363010b1d3e10cc20dc7401ebf09fb0138a6910f4045d85ae14",
+                        "chinese_text": "地狱火炬",
+                        "english_record_sha256": "d43014e47a793c9a69fa3f6ef0ef3ece9ff63ad47a53ba409d5f0da0ec055784",
+                        "english_text": "Hellfire Torch",
+                        "field": "name",
+                        "id": 2684195,
+                        "key": "S15_Charm_Unique_HellfireTorch"
+                    }
+                ],
+                "source_id": "uniques:hellfire_torch",
+                "transform": "exact_name",
+                "translation_sha256": "491ae21adc2230bf9538e77df4a4ac585d80bea1cd8189125d6c3cef0844c435"
+            }
+        },
+        {
+            "source_sha256": "8c758061c094d467a25bbe7e138270e7d86c198224dbac06a2be285d4a828d5f",
+            "stable_id": "uniques:holy_thunder",
+            "text": "圣雷",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "c894451202b01e25b2dedcea68af612211b569e7d0233ed38997551ffd5d34bc",
+                        "chinese_text": "圣雷",
+                        "english_record_sha256": "88af994289e11f9263803977e5c182de4020a91fbcdd70baefa7d396356d32d7",
+                        "english_text": "Holy Thunder",
+                        "field": "name",
+                        "id": 2683361,
+                        "key": "Runeword_HolyThunder"
+                    },
+                    {
+                        "chinese_record_sha256": "d83cc35744b02c952ccfdcfdcfab33647a715808767619d3a0b709f052e1ba69",
+                        "chinese_text": "圣雷",
+                        "english_record_sha256": "07a89dd40d4a075c2bec4c15a09f6c8c864e4f65d70f9fc88df9c4c42fcdf015",
+                        "english_text": "Holy Thunder",
+                        "field": "name",
+                        "id": 2685124,
+                        "key": "Runeword_HolyThunder_Flail"
+                    }
+                ],
+                "source_id": "uniques:holy_thunder",
+                "transform": "exact_name",
+                "translation_sha256": "7375b4e6f07767c22ce1020b29cd7976d7d75876e74252aad4482be8c6b28722"
+            }
+        },
+        {
+            "source_sha256": "d79987051a2552ac1895e06b97d12d8cfe5924872f61dba59c15552bcc832f9e",
+            "stable_id": "uniques:infinity",
+            "text": "无限",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "f7d6ade01516562f954ca7b21cc756240f085800ea78a10c722ce019ce094694",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "390a60aecd445c0dc011c5df14c7821d4bf6d03676bf10e5583be8eb146e79bb",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2677736,
+                        "key": "Runeword_Infinity_2HScythe"
+                    },
+                    {
+                        "chinese_record_sha256": "41fda62ec610d475fb2e1da272b76a0db706717102bd28ac9407779ce3ed1b39",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "046f1b4ef7b2b7a7ba4b8554bd8cacd3b5053a73c065ee70cdb9b54db3209919",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685831,
+                        "key": "Runeword_Infinity_Staff"
+                    },
+                    {
+                        "chinese_record_sha256": "e2ddd248533fe4b3848938f811d42abe3f70255b5f0c8d9e48d876500538a63e",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "50d2e2a4418b5f19f77ace59634983267b571da874604afe519e85ba337f5174",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685859,
+                        "key": "Runeword_Infinity_Axe2H"
+                    },
+                    {
+                        "chinese_record_sha256": "02af8ee5d27cbe5efc615eede4aa6f79b8e9017364b4cb7033c77bba857d6cb2",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "56f4a61644e646c5b470c05204bb6fdf7ad8071dffdf2d74988a107fa7e65bed",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685861,
+                        "key": "Runeword_Infinity_Crossbow2H"
+                    },
+                    {
+                        "chinese_record_sha256": "22ba9978d9a89bc2ff4c2412dd416257b5a6cf699cbd8f96cadeb6c970e4e5b7",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "80984d5553f776c314ed7aeb5bf1f261e7b245f14d37158d4da1da346383d893",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685863,
+                        "key": "Runeword_Infinity_Mace2H"
+                    },
+                    {
+                        "chinese_record_sha256": "a0f93acf4c1faf89d77426518732fad575e99ff2869ca62735407bb47bec4eb8",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "3815e81c639ba7eeae4a2c77ecf881b0858e5301d3c052a9490d267f56c21884",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685867,
+                        "key": "Runeword_Infinity_Sword2H"
+                    },
+                    {
+                        "chinese_record_sha256": "34d92d0ff5c61a33b35a3a9c085b93afe765bf6f175164a92183ec9f7731988e",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "29c80e4352ae0618b8ea1a47563bd2a389f29533d112bcbbf7f4f0f26aca399c",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685869,
+                        "key": "Runeword_Infinity_Polearm"
+                    },
+                    {
+                        "chinese_record_sha256": "532732cdde0075035fec4473d6aaa3fd2a2ceee560492933eaaa1fb814edc0cd",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "7b61a6a58b40e7cd4ae0b66ad25aeac08112774d03e5d8f5f2e957a04d2c2f3f",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685871,
+                        "key": "Runeword_Infinity_Glaive"
+                    },
+                    {
+                        "chinese_record_sha256": "b9724d8e166110f8b0e4d79e05019d2e686a4156e80d70b9d8e99c4440469d05",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "0c56eb9caf2d5f7f9d01cbb4726048072117a4f80d3808a324b22b54a2929035",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685873,
+                        "key": "Runeword_Infinity_Quarterstaff"
+                    },
+                    {
+                        "chinese_record_sha256": "1543d065af58627d42f5f09e1adce2074d4879d3db5e9e5631318aa12517937f",
+                        "chinese_text": "无限",
+                        "english_record_sha256": "ab447c04a8674b8cf124394b99b5b187b97ae54813e93ef40b4b70bf10a0a29f",
+                        "english_text": "Infinity",
+                        "field": "name",
+                        "id": 2685875,
+                        "key": "Runeword_Infinity_Bow"
+                    }
+                ],
+                "source_id": "uniques:infinity",
+                "transform": "exact_name",
+                "translation_sha256": "8651f50cc42532e3543e36a01dc906cff39c5474ff8f6427f1902841910c717e"
+            }
+        },
+        {
+            "source_sha256": "e43ba08557cbb4f19ed7684fe3cdbf5426fa2c145b8baced5e4fcec410c4e46c",
+            "stable_id": "uniques:insight",
+            "text": "眼光",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "950b31d83af3c88254b7571ff5f48c8d907065f3d3b228704b8068f3173958a8",
+                        "chinese_text": "眼光",
+                        "english_record_sha256": "c49c914a0e0e5a9af5dbc97b1c58dd3a3b68d75990fa2a77d0e66886b11f49a5",
+                        "english_text": "Insight",
+                        "field": "name",
+                        "id": 2661977,
+                        "key": "Runeword_Insight_2HStaff"
+                    },
+                    {
+                        "chinese_record_sha256": "cd3c5b7fa241f609b6fc3e06c5430d5ad53ae00d4d122b39dca992029c716c4e",
+                        "chinese_text": "眼光",
+                        "english_record_sha256": "9a7a160d34abe09e28d8e53bee4f130e130f89a877ffa6859d789badc12cbae9",
+                        "english_text": "Insight",
+                        "field": "name",
+                        "id": 2686137,
+                        "key": "Runeword_Insight_Bow"
+                    },
+                    {
+                        "chinese_record_sha256": "b8350961f21e897994901c1dca7cf86f60195ac571e19b7af6437b793efc212e",
+                        "chinese_text": "眼光",
+                        "english_record_sha256": "6110192b0024a218bc26d2a6c93430eed6ff0a765999529b5adedceeca56cff7",
+                        "english_text": "Insight",
+                        "field": "name",
+                        "id": 2686141,
+                        "key": "Runeword_Insight_Crossbow2H"
+                    },
+                    {
+                        "chinese_record_sha256": "021a00606a579afc4180921f872b5e7da3ddf20c516f96640f0788f42ea4dd72",
+                        "chinese_text": "眼光",
+                        "english_record_sha256": "65da55667a04888105ff12c4ae18427f1b1616c7ca3c73915f1c7867f242a252",
+                        "english_text": "Insight",
+                        "field": "name",
+                        "id": 2686143,
+                        "key": "Runeword_Insight_Polearm"
+                    },
+                    {
+                        "chinese_record_sha256": "45d60cfdb1d6ae925a302d3b58584390883f6ada6f2fe49b836419ca285b56ef",
+                        "chinese_text": "眼光",
+                        "english_record_sha256": "5adc88e7bd9d7253725864f7e652732c25141c226e839bc6e6e67afa80931202",
+                        "english_text": "Insight",
+                        "field": "name",
+                        "id": 2686145,
+                        "key": "Runeword_Insight_Glaive"
+                    },
+                    {
+                        "chinese_record_sha256": "c8a2ed5fce014453af1e5581cfc534cc191df23dfccfbe776f6d33090605f327",
+                        "chinese_text": "眼光",
+                        "english_record_sha256": "0f5ad9b80e9dc8d9cb4d2fad37016f30ba0059f53663e1f66ec9d6f8386d80ce",
+                        "english_text": "Insight",
+                        "field": "name",
+                        "id": 2686147,
+                        "key": "Runeword_Insight_Quarterstaff"
+                    },
+                    {
+                        "chinese_record_sha256": "c53e313420d2fee2e6aecbc8842c273b4a2ebbdf166c2127303b0a52f4f4f055",
+                        "chinese_text": "眼光",
+                        "english_record_sha256": "c1cc8959790185e404da01b1ff87606efb0b51c07446b8189715a2d1360839f4",
+                        "english_text": "Insight",
+                        "field": "name",
+                        "id": 2686149,
+                        "key": "Runeword_Insight_Scythe2H"
+                    }
+                ],
+                "source_id": "uniques:insight",
+                "transform": "exact_name",
+                "translation_sha256": "11109486bc0b739d49f0178b5defc49d7f62b107673474eace9483ff5eed7100"
+            }
+        },
+        {
+            "source_sha256": "2d912fb4f9e234342ae2ae9c34f2f11219c68940e02c9033c31aac0e87d946cb",
+            "stable_id": "uniques:kings_grace",
+            "text": "王恩",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "dec29db104182d41ebeb49a823d86437fd215217daf257bf42b8f3060388d427",
+                        "chinese_text": "王恩",
+                        "english_record_sha256": "86dec016f58c5e4988a461924393241eeafdf78aea734711bebe6510b1f1a0fe",
+                        "english_text": "King's Grace",
+                        "field": "name",
+                        "id": 2683379,
+                        "key": "Runeword_KingsGrace"
+                    },
+                    {
+                        "chinese_record_sha256": "8ee67959655087cb065def15586720dfd3f3943009112cfeb7d3e8ebece6db9c",
+                        "chinese_text": "王恩",
+                        "english_record_sha256": "f22713c9e6cdc16418aab345ecd43adda25e0b5b71815fbc8f11ccb7734ad0f8",
+                        "english_text": "King's Grace",
+                        "field": "name",
+                        "id": 2685138,
+                        "key": "Runeword_KingsGrace_Sword"
+                    },
+                    {
+                        "chinese_record_sha256": "8badae0171f7b464ded77ac78aa8f2441e2bc3b2f62bc245fe58cd9c65c543b2",
+                        "chinese_text": "王恩",
+                        "english_record_sha256": "6196470efc09d5e6fe9eb76171a43190f7e14202c3041058ae36129d792469fc",
+                        "english_text": "King's Grace",
+                        "field": "name",
+                        "id": 2685140,
+                        "key": "Runeword_KingsGrace_Flail"
+                    }
+                ],
+                "source_id": "uniques:kings_grace",
+                "transform": "exact_name",
+                "translation_sha256": "b83bc0780891f6630e5e16fade0315d709be658a7f441b7a60fdd0620732a596"
+            }
+        },
+        {
+            "source_sha256": "9f91161f43433e49a6de6db680d79f60159f2e4ac9172621a12846428158440b",
+            "stable_id": "uniques:leaf",
+            "text": "叶子",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "90e455452cc12eac151be8e44bd0445fb05ab21b8db864f76cbde5453ca9abb8",
+                        "chinese_text": "叶子",
+                        "english_record_sha256": "72a161cb6738c284defbbb517d40a33a6f1d848d849fe7a4915fe18623473b7d",
+                        "english_text": "Leaf",
+                        "field": "name",
+                        "id": 2677232,
+                        "key": "Runeword_Leaf"
+                    }
+                ],
+                "source_id": "uniques:leaf",
+                "transform": "exact_name",
+                "translation_sha256": "c6dfb2b17bb07929bce5597b975a0b65ab30b86fffc78d422a983e5f7e4fb381"
+            }
+        },
+        {
+            "source_sha256": "3983ac6f3719198591653c66b3411aa4534543b7307b42b5e04d946cc1475603",
+            "stable_id": "uniques:leorics_crown",
+            "text": "李奥瑞克的王冠",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "a5f0cc6cc39f0745af49bf7e2da22f8ea1bec968ed16ae7b6f613817e3799ad9",
+                        "chinese_text": "李奥瑞克的王冠",
+                        "english_record_sha256": "c496113672d8b33cf45c6ebc7c6a300a23d5dd92e1b40e41f9a8961410eb0996",
+                        "english_text": "Leoric's Crown",
+                        "field": "name",
+                        "id": 2647147,
+                        "key": "Helm_Unique_Generic_005"
+                    }
+                ],
+                "source_id": "uniques:leorics_crown",
+                "transform": "exact_name",
+                "translation_sha256": "00a6169dc778fda87a0da9e954a8586b93daa4ad4beece8cfc53142c132881b0"
+            }
+        },
+        {
+            "source_sha256": "b6598e838f350a97cb734eca208ce0cdc602dd60afbf65a3b8b65195cbd1a7fe",
+            "stable_id": "uniques:lore",
+            "text": "学识",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "e6a7e520863f7bdf91c1a0bdf0f585bfd8242bc62ad15abbcfffaba725005592",
+                        "chinese_text": "学识",
+                        "english_record_sha256": "3589d2327eb345f4bac4636a9ff37f0658b95e7b05fb654933d27f8dce18cd08",
+                        "english_text": "Lore",
+                        "field": "name",
+                        "id": 2678590,
+                        "key": "Runeword_Lore"
+                    }
+                ],
+                "source_id": "uniques:lore",
+                "transform": "exact_name",
+                "translation_sha256": "bbc972c0f450945433693e00ba716ce8a2bc4a3a3694810c15eccaff3f51b28e"
+            }
+        },
+        {
+            "source_sha256": "71de62c7af4809f8313665270553a3899cec0a0bfff6110f00479ae2aec748d8",
+            "stable_id": "uniques:messerschmidts_reaver",
+            "text": "梅塞施密特的劫掠者",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "e42ddada3eff2add9136124a6a9e623d186ffcc9e020619b9eb01c7e0f7b99fc",
+                        "chinese_text": "梅塞施密特的劫掠者",
+                        "english_record_sha256": "d9b2ed0fa32c93519f7bb08880457649d02ad4f29d8a606e3c7d57262ba56108",
+                        "english_text": "Messerschmidt's Reaver",
+                        "field": "name",
+                        "id": 2647156,
+                        "key": "2HAxe_Unique_Generic_001"
+                    }
+                ],
+                "source_id": "uniques:messerschmidts_reaver",
+                "transform": "exact_name",
+                "translation_sha256": "6aea9022bc7b5824289318f8fd83a20f455c2ac201f4e3d8a1b5fd7a94bf61dc"
+            }
+        },
+        {
+            "source_sha256": "1fd38d5cbd2a997b91f725cb1cb0a710849db30dac491ee42e92443fd8e3c1a2",
+            "stable_id": "uniques:pattern",
+            "text": "典范",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "5ddb41072fe71a7843621923781690c67c836ca52646a708ef8c8366e92a458e",
+                        "chinese_text": "典范",
+                        "english_record_sha256": "8466d197d4140ae5bda854414a7a660a67806eb2fe2f7695db30b74b3afff8fd",
+                        "english_text": "Pattern",
+                        "field": "name",
+                        "id": 2679472,
+                        "key": "Runeword_Pattern"
+                    }
+                ],
+                "source_id": "uniques:pattern",
+                "transform": "exact_name",
+                "translation_sha256": "e79d684092466acb64406186b1841cac2b00839a0e70986f10521fba099a5b79"
+            }
+        },
+        {
+            "source_sha256": "03a8f0dd8edb33781a836ac497800b5f9c5c47c2ddbfd0f89581140589725a85",
+            "stable_id": "uniques:phoenix",
+            "text": "凤凰",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "613ec67e0069722af96584dcc105df2c6807bd7f048f86e83810cae497508b33",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "96d3394c769fdbe06aa0d722ead60812103ca0b15e6145ecc93e22ac741a67c6",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2675606,
+                        "key": "Runeword_Phoenix_1HShield"
+                    },
+                    {
+                        "chinese_record_sha256": "396c2ea8c1a912c87aacea322cedaef3d393907c54de231ef8f866ca90204c0b",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "431a2ffbde29680d670a78964e48569018219118c2b0a4fe79d55f0065ff7c0d",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2675608,
+                        "key": "Runeword_Phoenix_1HSword"
+                    },
+                    {
+                        "chinese_record_sha256": "e34c90f615e767289981bfd0ed716633cc43f6dbf81b6ad3ff3208fddf90a6aa",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "8bc6380bb069eee64329b5700df765c4b33f74286835fe342fe7272725a9b70a",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2675610,
+                        "key": "Runeword_Phoenix_1HAxe"
+                    },
+                    {
+                        "chinese_record_sha256": "d20f0ec6e3f780ac76e687d69b24db43c04bb0c42eb7b9ec9b2197651eb1433c",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "03d85e93215bc7750b3b7c8866a17574972adfc6ca421eb3bb132c12473dd93f",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2675612,
+                        "key": "Runeword_Phoenix_1HFocus"
+                    },
+                    {
+                        "chinese_record_sha256": "f18185e247941e5a3dbdbaab94f5d218d5a7d7bbe7423d5f3e837f35f6f4ff82",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "bdcb8bbaa9d53cb0b371844c741e3a299a26dd3c752598baad7250cdc107f523",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2675615,
+                        "key": "Runeword_Phoenix_1HScythe"
+                    },
+                    {
+                        "chinese_record_sha256": "0e7e9c862ed13c52b972b32cbcecfe810cb082e3c25e7d9350e72d04ed99db09",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "ff1b9c5cca4be57766b2bf59d4aa3e124807c2473c2922619c90c4242d9a1104",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2675617,
+                        "key": "Runeword_Phoenix_1HDagger"
+                    },
+                    {
+                        "chinese_record_sha256": "430ef0240544e4f9e646fc1237ecacff60c0f6088890c64c4d066c67c9072f7c",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "886d3474700f749b5c3a9c9a7fcd92625fe28731cbdda090f6396f8c005a7a39",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2675619,
+                        "key": "Runeword_Phoenix_1HMace"
+                    },
+                    {
+                        "chinese_record_sha256": "d8947e15494c65508d83cbf4fd00f5eaf75094d19c30f99c070099a2f4c118e9",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "d67daa1c3345e3cdf5957fca6413f5fba690a7d7f6e870f3147bbd775735f858",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2676285,
+                        "key": "Runeword_Phoenix_1HTotem"
+                    },
+                    {
+                        "chinese_record_sha256": "593fd973dd329259864ae035e5bb05fec75772057dedc09fdbe822ad0aebc850",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "29e659302dbd680ad51546f14bffb068a14baa4ae0c9cdee0e9cbe0df262c6fb",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2676287,
+                        "key": "Runeword_Phoenix_1HFlail"
+                    },
+                    {
+                        "chinese_record_sha256": "9e02ab967541b10d47fa66fce08acf2756ebd25ff7cdf49596149c7880f4b3b1",
+                        "chinese_text": "凤凰",
+                        "english_record_sha256": "fa5ff6254295f005fed510be8913bb46aae0633b25ea9cd429b50abedc29c4d3",
+                        "english_text": "Phoenix",
+                        "field": "name",
+                        "id": 2686572,
+                        "key": "Runeword_Phoenix_Wand"
+                    }
+                ],
+                "source_id": "uniques:phoenix",
+                "transform": "exact_name",
+                "translation_sha256": "4dcefb1d667a62e76b50c48f696a16053db931adbcaf98e0ef97ee30bfb515d3"
+            }
+        },
+        {
+            "source_sha256": "9cd153c28c6f5a5b8204e1fd60b9e015e8df00001530e611c900f2e887833867",
+            "stable_id": "uniques:prudence",
+            "text": "谨慎",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "54b0bf0eb20e6a3cd3a4c4553fc564d4ca3cdae6a072364878b84f3dd826a8f0",
+                        "chinese_text": "谨慎",
+                        "english_record_sha256": "3aa7ffae92864738a93ed80758f1840cf00754efd396d03dbcf5276eb974fd07",
+                        "english_text": "Prudence",
+                        "field": "name",
+                        "id": 2683369,
+                        "key": "Runeword_Prudence"
+                    }
+                ],
+                "source_id": "uniques:prudence",
+                "transform": "exact_name",
+                "translation_sha256": "37dd4c91d1c5b6d94680715dc5254f12a54a1a5c0bea50d4a1a360c6868e1794"
+            }
+        },
+        {
+            "source_sha256": "319b44c570a417ff3444896cd4aa77f052b6781773fc2f9aa1f1180ac745005c",
+            "stable_id": "uniques:rain",
+            "text": "暴雨",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "b1806ca17cff9fc2704020247e0c2961eb21c8b4e26690ae395ef2c3ffcaf785",
+                        "chinese_text": "暴雨",
+                        "english_record_sha256": "0c9c8d484e7eb975d4e33efd8bc1da5d788c0447a500174cd1b640796c644b29",
+                        "english_text": "Rain",
+                        "field": "name",
+                        "id": 2683409,
+                        "key": "Runeword_Rain"
+                    }
+                ],
+                "source_id": "uniques:rain",
+                "transform": "exact_name",
+                "translation_sha256": "4a780cb165464af31e08c0b01a9524617049b2f3c8c7757bab3fd61638ef9f6b"
+            }
+        },
+        {
+            "source_sha256": "a68999add325ba9952ddf20a853ab998393e4488b8229c0fb7fc9dbc5be26ae8",
+            "stable_id": "uniques:spirit",
+            "text": "灵力",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "14fbc0dedcd79c151892e2e65e66debdb4407a0515f9b730b95dc1d16263ad7f",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "7aaece14f262d32cce188b591aaa7b8eea0949a4bc986f4d0b378ff5fc526431",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2678632,
+                        "key": "Runeword_Spirit_1HSword"
+                    },
+                    {
+                        "chinese_record_sha256": "624ee3fef3fb8eda37f33b4d508b88904eb314717adc1289553866dd5f589cc5",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "05a09da39bfe6f0790fd16a6decd0ccf08eccb50fb57c894cb54f2df3a7931af",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685699,
+                        "key": "Runeword_Spirit_Dagger"
+                    },
+                    {
+                        "chinese_record_sha256": "a8e63a1cfcf5e69c80e57d93ebc62151aa12b27f740efd99566158cf34c307d6",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "5b5fd744d7a2329eeaa1c50dbfd29964a01b4ddd711873e1199f29fe8eaabd68",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685703,
+                        "key": "Runeword_Spirit_Axe"
+                    },
+                    {
+                        "chinese_record_sha256": "e8b2797ab94655500ab58ce1e691cb128d10ca4f23d73dcccb13389e67f3413b",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "61082dedf9caef96815673969e92b1515a0230bad41fc53618ea25788321aca0",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685705,
+                        "key": "Runeword_Spirit_FocusBookOffHand"
+                    },
+                    {
+                        "chinese_record_sha256": "a7cff4a60d2f98c387dcbece05811bc872de4f0480da28596a4745a01472782b",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "96d088887cf22181456a253e82413a08c746b8985f5fc52373ced57c5b7b07d4",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685707,
+                        "key": "Runeword_Spirit_OffHandTotem"
+                    },
+                    {
+                        "chinese_record_sha256": "04e392f8faafe7cbacfaa19e955f5db3a6d5e8d69f6d10e9017a42a3a587750d",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "635ca97f4a64848c0fe1c8092dfad31b586cf9d0e793767845b75ebe8469760b",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685709,
+                        "key": "Runeword_Spirit_Shield"
+                    },
+                    {
+                        "chinese_record_sha256": "9cfdf535f85139e6c3095f6025d82209ace0e2d92249c91b15d96647bcaf37a6",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "f00a4a9334b743913913982f845f33f6a3e319a27b4c54279b12705c5cf6f6cb",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685711,
+                        "key": "Runeword_Spirit_Flail"
+                    },
+                    {
+                        "chinese_record_sha256": "1763724659fd3b423088d7d8cb57bb830ca461421b90ea463789dcb5ba7b1248",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "d26c3bbd061d9b017b0431d0c5810990fda41dadcb2cf1ba354a6da1d91dc2c8",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685713,
+                        "key": "Runeword_Spirit_Mace"
+                    },
+                    {
+                        "chinese_record_sha256": "5c3bead973f5ea89a4c9bdde41f07da7b73f2841631c597f68bc70f179ea8448",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "359509187e07d0849ce1df0437f8e5cad1954e3d5e6ccbf84e7802d2ca76fb2a",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685719,
+                        "key": "Runeword_Spirit_Scythe"
+                    },
+                    {
+                        "chinese_record_sha256": "d06d06d80d82fe90da63eb5e0f318eb0e68d028cf9293ddbbaf66bbf20ae2fba",
+                        "chinese_text": "灵力",
+                        "english_record_sha256": "5d23d432079ea58bb1ae58515ad68cd538ec69656c4ddc16d8abba743c2db736",
+                        "english_text": "Spirit",
+                        "field": "name",
+                        "id": 2685723,
+                        "key": "Runeword_Spirit_Wand"
+                    }
+                ],
+                "source_id": "uniques:spirit",
+                "transform": "exact_name",
+                "translation_sha256": "807130e1d318a20a3a8d562cef66e0ca276e0d5cb28b7bf6f40fc288c7f1f64e"
+            }
+        },
+        {
+            "source_sha256": "2d998cb471a020c0c58428d556cb5125365cac15eba3508faf2301e94bd88429",
+            "stable_id": "uniques:stealth",
+            "text": "潜行",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "fb20ffd10a090170314c0febbb350e7271be9b878a5549273b2a59f34e817b83",
+                        "chinese_text": "潜行",
+                        "english_record_sha256": "0b5edea26cd8105185a17364d58fc67deb9656b4fa595fba7bf42a88e25349af",
+                        "english_text": "Stealth",
+                        "field": "name",
+                        "id": 2661619,
+                        "key": "Runeword_Stealth"
+                    }
+                ],
+                "source_id": "uniques:stealth",
+                "transform": "exact_name",
+                "translation_sha256": "6da1499a06e33eed982658f0d67e2379c91d3303682458fef56ac66d8775f7fe"
+            }
+        },
+        {
+            "source_sha256": "e6b88623f7209b6c11fc49805c68752941074f4bc5eddd8c33bcdffc5419420d",
+            "stable_id": "uniques:strength",
+            "text": "力量",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "01d558ff654aa44a1f1b406835162873db1f0eadae141c213e03425e957059f0",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "b56a0f842070c019f31996005f9de8831bf49b77f1aef855b49a15e71b915120",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2679331,
+                        "key": "Runeword_Strength_1HMace"
+                    },
+                    {
+                        "chinese_record_sha256": "4c2bf5be8e74eda986912022316eef7e5ca619f223ff98752277e3b0bf1a0eb7",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "a5e32584defd0914b5db9030fe852fa24be42a59a6100ebbdf696b4bcd3e2e7e",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2685276,
+                        "key": "Runeword_Strength_Flail"
+                    },
+                    {
+                        "chinese_record_sha256": "3672911633f44ce98385206c6911c0ea284f480d300d4d744de4fe837e70ad04",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "7ba8580bf8ec47e15f07a355c15b3fc173fe7757cd53a2739ff119819a053256",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2685278,
+                        "key": "Runeword_Strength_Sword"
+                    },
+                    {
+                        "chinese_record_sha256": "6c703e8d5d4668fa21ff08e0149e77df4351569caa054e5732521d245a580152",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "26560d8ad45d62e04a38c4791086fa4ace47c96390739c8974450e5d0a50ee2e",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2685280,
+                        "key": "Runeword_Strength_Axe"
+                    },
+                    {
+                        "chinese_record_sha256": "093e9d5df5f23b5bbd9b15c96775e2b0fda1a467a38bd189477e79640ef3b299",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "5815047fddda1a836ad7094fc26664fcfb12def12aa25789f7d927f431507c2a",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2685282,
+                        "key": "Runeword_Strength_Dagger"
+                    },
+                    {
+                        "chinese_record_sha256": "6d4a045245a592fcf68d28ca21195f97de9d84412dcda71f63c35021f8ffa4a8",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "dfb3e2e4247e42e3d1e04131fd950a38ad0fa75753238ec6aa713a92cb83fee6",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2685286,
+                        "key": "Runeword_Strength_Focus"
+                    },
+                    {
+                        "chinese_record_sha256": "84673dd8fd842be38606622915a827eac6dd56aad53ef68f7bcc61704234ced5",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "a59b53055656ca2152a2f02317f01b35cd6869f17e4aa6cd380340fc30adcc6e",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2685292,
+                        "key": "Runeword_Strength_Scythe"
+                    },
+                    {
+                        "chinese_record_sha256": "97d257aff7cd78917b4897b36a5c16393df0ea8d9be2b43fb14f0e6d098dc66f",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "c0cde87702dd778b66acee34bb780ef914cf1b149aeb4b4960b40f7f2c9c115b",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2685299,
+                        "key": "Runeword_Strength_OffHandTotem"
+                    },
+                    {
+                        "chinese_record_sha256": "ac340d219498e38a89277e9d19114f001e592811b56f7f35e85edfc4bc4e3d6b",
+                        "chinese_text": "力量",
+                        "english_record_sha256": "fd22ab082335eb2bcaaa2999dbe724c409faafe92801c232be5057fa69abfe59",
+                        "english_text": "Strength",
+                        "field": "name",
+                        "id": 2685301,
+                        "key": "Runeword_Strength_Wand"
+                    }
+                ],
+                "source_id": "uniques:strength",
+                "transform": "exact_name",
+                "translation_sha256": "16b7568de4799d09bbbb19f5204861c39fbcde3d70e28eb355db830db91fe450"
+            }
+        },
+        {
+            "source_sha256": "d47c40bea34483aafa4af5bd36af4f6adff17bda66d1cedbaf9c93e9bb9cf387",
+            "stable_id": "uniques:zephyr",
+            "text": "和风",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "f6f92e7444df3cc32d06f685ddc9f15443458b33f90ca1a5c1c62ec93fe50c64",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_enUS.json?env=prod&v=8"
+                    },
+                    {
+                        "sha256": "c482b1aea7c241aeeca55c831f2cd6dd9c57d0fb4c5a2f4261f20793ba01f964",
+                        "url": "https://cloudstorage.d2core.com/data/d4/73552/uniqueItem_zhCN.json?env=prod&v=8"
+                    }
+                ],
+                "reference_provider": "d2core",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "64745ea595881249c907b40663b911b513397c7b6cc45b3cabe686446df40618",
+                        "chinese_text": "和风",
+                        "english_record_sha256": "dd87de084fe326b3e124609e4a9fe816d815ef3adb7c35d2364646e6cc1e3276",
+                        "english_text": "Zephyr",
+                        "field": "name",
+                        "id": 2679449,
+                        "key": "Runeword_Zephyr_2HBow"
+                    },
+                    {
+                        "chinese_record_sha256": "28ad9e7e5836dac3d64fd592749a205949c015a7e0a18f070f6eed75b628bfb1",
+                        "chinese_text": "和风",
+                        "english_record_sha256": "f474aed671c964203a6234f14cd7a59733937ed937845c2a54459580b27aecee",
+                        "english_text": "Zephyr",
+                        "field": "name",
+                        "id": 2686458,
+                        "key": "Runeword_Zephyr_Crossbow"
+                    }
+                ],
+                "source_id": "uniques:zephyr",
+                "transform": "exact_name",
+                "translation_sha256": "393380426f00dce9415af811a3bab3ebb57cbe2c634880929b11c5ff8f8854ea"
+            }
+        },
+        {
+            "source_sha256": "0e4e968963613d112ea9bf4881701c26e7680cb4e176fd2cc27158eb08e265c4",
+            "stable_id": "affixes:bonus_experience",
+            "text": "奖励经验值",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "68278a0a31e51a78b7622e90a8e25a7191f1844221f221a7eb245d9b9c3cb3a3",
+                        "chinese_text": "奖励经验值",
+                        "english_record_sha256": "85c376fd62339909f6d7ce19b2a2458bba41b5dc2c04a7c1994f9c100cd68c26",
+                        "english_text": "Bonus Experience",
+                        "field": "DescriptionClean",
+                        "id": "2684356",
+                        "key": "S15_Annihilus_ExperienceBonus"
+                    }
+                ],
+                "source_id": "affixes:bonus_experience",
+                "transform": "exact_clean_description",
+                "translation_sha256": "075030d257044d4a178642a6f22c778f7349b656caca49b81b3db332b132336d"
+            }
+        },
+        {
+            "source_sha256": "e82feaac2ee1de74904602751d4d5708eb4ffb52ffbfa2a980f1cc9b8c46b0b5",
+            "stable_id": "affixes:can_equip_more_unique_charm",
+            "text": "可额外装备 个暗金神符",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "26015770c9a89b32dc78556294d7b4d92909c781e8e279c2014e1d1caf04f7de",
+                        "chinese_text": "可额外装备 个暗金神符",
+                        "english_record_sha256": "59e51fc0a4eb96dc55a53368b9d0637e76a18986d847d30b9ad896823ac05739",
+                        "english_text": "Can equip more Unique Charm",
+                        "field": "DescriptionClean",
+                        "id": "2684336",
+                        "key": "HellfireTorch_ExtraUnique"
+                    }
+                ],
+                "source_id": "affixes:can_equip_more_unique_charm",
+                "transform": "exact_clean_description",
+                "translation_sha256": "c5cf6372a82e71c1d5a05ae2972578e3d30dbc3f7d511fbd0b63b224a3b3a77b"
+            }
+        },
+        {
+            "source_sha256": "0422842cdb62bd10e10b694d40cc90d3d78e15d65040f014e77e03d1ef943d9f",
+            "stable_id": "affixes:chance_for_an_extra_item_from_the_purveyor_of_curiosities",
+            "text": "几率从珍品商处额外获得一件物品",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "613f442b319c13730bc1878ed73adee3eabc1117bf40597e150726faf2a101fd",
+                        "chinese_text": "几率从珍品商处额外获得一件物品",
+                        "english_record_sha256": "a4596872898111c05f7435b79f73a7edaacfb911b2e993687875fc71125175bc",
+                        "english_text": "Chance for an extra item from the Purveyor of Curiosities",
+                        "field": "DescriptionClean",
+                        "id": "2678490",
+                        "key": "Runeword_Gamble_Bonus"
+                    }
+                ],
+                "source_id": "affixes:chance_for_an_extra_item_from_the_purveyor_of_curiosities",
+                "transform": "exact_clean_description",
+                "translation_sha256": "6cce23f49c73ddb3bc7e4bb6df4b0d2dd1f4e179fedc9e2d4ad82f82823abe6d"
+            }
+        },
+        {
+            "source_sha256": "266e205e48c8b466f6da2da928855dd73107ac7573ea91534350b6472dcbcf40",
+            "stable_id": "affixes:deadly_strike_chance",
+            "text": "致命打击几率",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "262fbf7d0e8bfa50b717fbe2d8a2b36ede4028a7303a05d89c8132461e71c564",
+                        "chinese_text": "致命打击几率",
+                        "english_record_sha256": "a6bf0d7b7cb5d7baf46e5c294201af51c845b7f041c2a1e779bcd142662d9630",
+                        "english_text": "Deadly Strike Chance",
+                        "field": "DescriptionClean",
+                        "id": "2675623",
+                        "key": "Runeword_DeadlyStrikeChance"
+                    }
+                ],
+                "source_id": "affixes:deadly_strike_chance",
+                "transform": "exact_clean_description",
+                "translation_sha256": "1b7ddc90ae77d3e02486044c0d2312e468462f19a97d8dbfc690708d319e6731"
+            }
+        },
+        {
+            "source_sha256": "f4cf0f7ccb1dbd3ad958880a60602c816486b40833cc17824169eb26e118a1c8",
+            "stable_id": "affixes:faster_cast_rate",
+            "text": "更快施法速度",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "de61756caf71590c5076aad671a0ad078ba526fab71897927178662501f999ab",
+                        "chinese_text": "更快施法速度",
+                        "english_record_sha256": "5ee22268bdc1ef8628684134d0f55a993a7ba26fe23366ebdde1932f8a1f054e",
+                        "english_text": "Faster Cast Rate",
+                        "field": "DescriptionClean",
+                        "id": "2665343",
+                        "key": "X2_Runeword_CastSpeed_15Percent"
+                    }
+                ],
+                "source_id": "affixes:faster_cast_rate",
+                "transform": "exact_clean_description",
+                "translation_sha256": "34fab2d28537b73b0e7fbbc5a083ffeda73bede1a4518c6348c3918ef0a47b68"
+            }
+        },
+        {
+            "source_sha256": "a4f4af76ff5d2c09f5009fa1f0e5e9558fa10456cf2ce9bc58c5eec66708962d",
+            "stable_id": "affixes:lucky_hit_up_to_a_chance_to_deliver_a_crushing_blow",
+            "text": "幸运一击: 最多有 几率造成粉碎一击",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "86730ab97e1a86081f5327a5ab820edc9f25646b6da8764d578f104196ad31e8",
+                        "chinese_text": "幸运一击: 最多有 几率造成粉碎一击",
+                        "english_record_sha256": "aeb142dd646b4bcb11d0ae4850affa9c1865a0a5a0290e3ae9f69d2982e33d9b",
+                        "english_text": "Lucky Hit: Up to a Chance to deliver a Crushing Blow",
+                        "field": "DescriptionClean",
+                        "id": "2679332;2679489",
+                        "key": "Runeword_CrushingBlow_20pct;Runeword_CrushingBlow_25pct"
+                    }
+                ],
+                "source_id": "affixes:lucky_hit_up_to_a_chance_to_deliver_a_crushing_blow",
+                "transform": "exact_clean_description",
+                "translation_sha256": "7cf9be8d6dda4fe3b6b3293e5992b8c70e2439e5660e7e00bb5b51d078fcb478"
+            }
+        },
+        {
+            "source_sha256": "a46d6675b731b052eebf3ad4be33328a2d542f23664a99f481900e1c7a609cb2",
+            "stable_id": "affixes:mondays_now_count_as_tuesdays",
+            "text": "现在星期一也算作星期二",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "5ac546fa792b8b321217818db1d3aa04c62fedc773eec69e9058fc49c903cd09",
+                        "chinese_text": "现在星期一也算作星期二",
+                        "english_record_sha256": "c6429be596c869c5bd012d7fbf81fb6fb0b09935ba107ad78b96faed28fea291",
+                        "english_text": "Mondays now count as Tuesdays",
+                        "field": "DescriptionClean",
+                        "id": "2677305",
+                        "key": "OPAL_INHERENT_Mondays"
+                    }
+                ],
+                "source_id": "affixes:mondays_now_count_as_tuesdays",
+                "transform": "exact_clean_description",
+                "translation_sha256": "22bc090c671464a99b50ceadfb31b8270e019cb9cdfbb20163c6ac9973584647"
+            }
+        },
+        {
+            "source_sha256": "2755d7c5cc2f0d4cd53e1bdfb5c34c45ebdaf0ddd4f722be2f76cc0e7b2e7b83",
+            "stable_id": "affixes:primary_resource_on_kill",
+            "text": "击杀回复主要资源",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "a041617f2ec533f5ee2370fda13f45bf1288c49d44a42d4d7d4ce93b931ef326",
+                        "chinese_text": "击杀回复主要资源",
+                        "english_record_sha256": "59ce5c8b9f3be4ca5881283223ff9294aede80d1a1408ca14aede6be6e56ef13",
+                        "english_text": "Primary Resource On Kill",
+                        "field": "DescriptionClean",
+                        "id": "2686425",
+                        "key": "Runeword_Resource_On_Kill_2"
+                    }
+                ],
+                "source_id": "affixes:primary_resource_on_kill",
+                "transform": "exact_clean_description",
+                "translation_sha256": "d1cb4f6deb69e0a9edfa2c2c786f3406abee5622809d4e58852482f100919161"
+            }
+        },
+        {
+            "source_sha256": "0ec52f0659bd8dd8fc9223dfb47feebbf109b8b541946f792e77db954eaba8fd",
+            "stable_id": "affixes:to_shout_skills",
+            "text": "至吼叫技能",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "fdc2db083aa28538c0b63413dc2a9ad9e2c2ad789eff714f9a28cfff7f56fe31",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.enUS.json"
+                    },
+                    {
+                        "sha256": "12fa6467f199221ed6216ccdf9a3b2166ce6677ad3b1dd16db5698c6acefd45b",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Affixes.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "8724384f0d709aaaae324f0f7eeedf2ddfe87e12c4755b8f234cd7a395e6e3c1",
+                        "chinese_text": "至吼叫技能",
+                        "english_record_sha256": "a3b1c95509f239d7f1eb99daf9ba4457f53871d0e5683454bf1e9ab93262aab9",
+                        "english_text": "to Shout Skills",
+                        "field": "DescriptionClean",
+                        "id": "2683405",
+                        "key": "Runeword_Shout_Skills_5"
+                    }
+                ],
+                "source_id": "affixes:to_shout_skills",
+                "transform": "exact_clean_description",
+                "translation_sha256": "7ec5adb222d6f627d4758ff69152d3a3fb401731964c9e2a99c7d75e7eb37934"
+            }
+        },
+        {
+            "source_sha256": "55e60352c4e4c3bcdc5261a73ab6f7979d5a3b48d813d02c33e5ef2443516445",
+            "stable_id": "sigils:dungeons:a_journey_through_the_past",
+            "text": "往昔之旅",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "9debf035eba46b2dc95fda8076b04a58d771458197370bef4ceadcc942db13cb",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Sigils.enUS.json"
+                    },
+                    {
+                        "sha256": "c318c227ae34c3fcdbe8ebde21d56024136a9c325f3d33c009120794c5c0c60e",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Sigils.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_record_sha256": "68fd3b071239d2a1fd0231eda11f32cd176d7dd125c63aebcf48b5bd5faa69fe",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "4c774938313aef32dd8152fe533e28c738070d294e09a0853cfec96b90ba661b",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2628613,
+                        "key": "World_DGN_Jakarta_04"
+                    },
+                    {
+                        "chinese_record_sha256": "eecb4bfc139d813c3c61bc357b05dc98870eda876f011ba00a3b1280b023a005",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "e256fb8f63a28588a6f630513ebaec54e6b8fd4111ded4416615ccea53da2734",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2625722,
+                        "key": "World_DGN_Jakarta_01"
+                    },
+                    {
+                        "chinese_record_sha256": "e1dd4eaff75c3b9bba3dcace18c2f47feba686a7aaa2ec71cd025306857bcf75",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "0135abdf1fddb85b3b19ac99ac3ae74f158d7100a450cc4ab4801a15aa7ba59a",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2640409,
+                        "key": "World_DGN_Jakarta_01_HallsOfDeception"
+                    },
+                    {
+                        "chinese_record_sha256": "5cdf626b7d1b185d530f2f0c77738dec56be7a52cb1170c6eb3b305f279d5e3c",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "a0c54b44828d004be643623ccce1d21a1fd31b930b3d22aad4de5b6bb817ebb0",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2626494,
+                        "key": "World_DGN_Jakarta_02"
+                    },
+                    {
+                        "chinese_record_sha256": "cfc70ba7a2b9a03710d0f664b7f07fdcca73c5cc2acafd942515e60a8467a783",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "d502966879238375e42a034818a1167a0de990f2a0525dd42bad5fc4ce780cdd",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2628123,
+                        "key": "World_DGN_Jakarta_03"
+                    },
+                    {
+                        "chinese_record_sha256": "c9f610e4da27c82d59ff452080f4996c4963ced48b477be9b0326b56e4f5f34f",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "ebd11ac4059aedf25eeb0e9dc8357817d0c1fe5734acc53c85cf87dff5188ff3",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2629350,
+                        "key": "World_DGN_Jakarta_03_ThroneRoom"
+                    },
+                    {
+                        "chinese_record_sha256": "90b5fc7f30b4ca8cfc368ef478a0b1e4ee53d7370d974193a89c941450714753",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "43aabd350f476445e5f249205ee913ad8ee3824699798759e23694460b6b100f",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2629566,
+                        "key": "World_DGN_Jakarta_03_WorldStoneChamber"
+                    },
+                    {
+                        "chinese_record_sha256": "58a89aa93a4de2ae787e062be40e53fb884696cf7a5e73f0eb58facf144b5a9d",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "285c13442019506846bbdf3d007ac672ee25cb3117e795f1a7a4435a71b5c0c9",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2641818,
+                        "key": "World_DGN_Jakarta_05_Crawl"
+                    },
+                    {
+                        "chinese_record_sha256": "9726f67828cf428bd58827d6084c800e0a4867063df2c8fcdf79c550afa28429",
+                        "chinese_text": "往昔之旅",
+                        "english_record_sha256": "4eb29825a712e611bb7ef17c998cab5c7f7e48f09e9dbd92f7c1a7b4632eebfb",
+                        "english_text": "A Journey Through the Past",
+                        "field": "Name",
+                        "id": 2631414,
+                        "key": "World_DGN_Jakarta_05"
+                    }
+                ],
+                "source_id": "sigils:dungeons:a_journey_through_the_past",
+                "transform": "name_only",
+                "translation_sha256": "ff1d5d4dd9c4a1b009bfc7da5180a32ec7bfb7fa5a92e083db0bcfcd5d91d52d"
+            }
+        },
+        {
+            "source_sha256": "32d4e5c5e54ef09652efbc8e7ff04dc5ad3db0c98b788f7f5265e2245c645e96",
+            "stable_id": "sigils:positive:echo_of_pindleskin",
+            "text": "暴躁外皮的回响 暴躁外皮的回响在这座地下城中游荡，消灭它时可能掉落游戏中的任意物品。",
+            "translation_source": {
+                "provider": "reviewed_override",
+                "reference_files": [
+                    {
+                        "sha256": "9debf035eba46b2dc95fda8076b04a58d771458197370bef4ceadcc942db13cb",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Sigils.enUS.json"
+                    },
+                    {
+                        "sha256": "c318c227ae34c3fcdbe8ebde21d56024136a9c325f3d33c009120794c5c0c60e",
+                        "url": "https://raw.githubusercontent.com/josdemmers/Diablo4Companion/a7efa39819ffec10f2dd1c06e874744d2605167f/D4Companion/Data/Sigils.zhCN.json"
+                    }
+                ],
+                "reference_provider": "diablo4_companion",
+                "scope": "identity_matched_source_text; not live_game_verified",
+                "source_data_version": "3.2.1.73552",
+                "source_entries": [
+                    {
+                        "chinese_description": "暴躁外皮的回响在这座地下城中游荡，消灭它时可能掉落游戏中的任意物品。",
+                        "chinese_record_sha256": "2af40546cccf234545a398b504ab727567baddd8afcda92b80b785e36e50ecee",
+                        "chinese_text": "暴躁外皮的回响",
+                        "english_description": "The Echo of Pindleskin wanders this dungeon, and may drop any item in the game when killed.",
+                        "english_record_sha256": "66ac73c345b6cc751a3e6fb791b5c84056f48bf8914f6d905a4f6dd6369fdd71",
+                        "english_text": "Echo of Pindleskin",
+                        "field": "Name",
+                        "id": 2683344,
+                        "key": "DungeonAffix_Positive_S15_Pindleskin"
+                    }
+                ],
+                "source_id": "sigils:positive:echo_of_pindleskin",
+                "transform": "name_space_description",
+                "translation_sha256": "34313765a842a20ac76dcb40c313378c034e583f63393c7d9bd18d711b465ef9"
+            }
         }
     ],
     "reviewed_overrides": {
         "path": "../../../src/tools/data/reviewed_zhCN.json",
-        "sha256": "8127f55f04045df8e635377c8160d7453114627b63e40e47d9ecc78f84d33aff"
+        "sha256": "de2b659f997d7105538975d13fe401837cd79104dd02fe4e0bad9a77c53beea3"
     },
     "runtime_ready": false,
     "schema_version": 1,

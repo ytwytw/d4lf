@@ -124,7 +124,7 @@ def import_d4builds(request: ImportRequest, driver: WebDriver | None = None) -> 
     else:
         pages = iter(((0, _load_variant_page(url, driver, wait_for_paperdoll=True)),))
 
-    for _var_index, loaded_page in pages:
+    for var_index, loaded_page in pages:
         data = loaded_page.data
         class_name = loaded_page.class_name
         build_header = loaded_page.build_header
@@ -151,6 +151,7 @@ def import_d4builds(request: ImportRequest, driver: WebDriver | None = None) -> 
             )
         )
 
+        variants[-1].id = str(var_index) if request.options.multi_build else None
         if not request.options.multi_build:
             break
 

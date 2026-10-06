@@ -101,6 +101,11 @@ def copy_additional_resources(release_dir: Path) -> None:
         REPO_ROOT / "assets", release_dir / "assets", ignore=shutil.ignore_patterns("last_update", "__pycache__")
     )
     shutil.copy(REPO_ROOT / "tts/install_dll.cmd", release_dir)
+    for filename in ("loot-tools.zh-CN.md", "release-notes.zh-CN.md"):
+        source = REPO_ROOT / "docs" / filename
+        destination = release_dir / "docs" / filename
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(source, destination)
 
 
 def create_batch_for_consoleonly(release_dir: Path, exe_name: str) -> None:

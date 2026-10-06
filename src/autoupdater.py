@@ -54,7 +54,7 @@ class D4LFUpdater:
             releases = release_data if isinstance(release_data, list) else [release_data]
             selected = select_latest_release(release for release in releases if isinstance(release, dict))
             return cast("ReleaseData | None", selected)
-        except (httpx.HTTPError, ValueError) as e:
+        except (httpx.HTTPError, OSError, ValueError) as e:
             LOGGER.error(f"Error fetching release info: {e}")
             return None
 
@@ -70,7 +70,7 @@ class D4LFUpdater:
             LOGGER.info("Changes since last update:")
             for commit in response.json()["commits"]:
                 LOGGER.info(f"- {commit['commit']['message']}")
-        except (httpx.HTTPError, ValueError, KeyError, TypeError) as e:
+        except (httpx.HTTPError, OSError, ValueError, KeyError, TypeError) as e:
             LOGGER.error(f"Error fetching changes since last update: {e}")
 
     @staticmethod

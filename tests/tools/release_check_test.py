@@ -46,10 +46,66 @@ def test_malformed_report_blocks_publication(tmp_path) -> None:
     assert check_release_readiness(tmp_path) == ["quality-report.json: readiness report must be an object"]
 
 
+def _catalog(root: Path, sources) -> None:
+    directory = root / "assets/equipment_knowledge"
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / "catalog-12345.json").write_text(json.dumps({"sources": sources}), encoding="utf-8")
+
+
+@pytest.mark.parametrize("status", ["unverified", "private", None, True])
+def test_ready_locale_does_not_override_bundled_private_data(tmp_path, status) -> None:
+    _reports(tmp_path)
+    _catalog(tmp_path, [{"provider": "D2Core", "file": "items.json", "public_redistribution": status}])
+    assert check_release_readiness(tmp_path) == [
+        "catalog-12345.json: D2Core / items.json: public redistribution is not verified"
+    ]
+
+
+def test_verified_marker_requires_recorded_evidence(tmp_path) -> None:
+    _reports(tmp_path)
+    source = {"provider": "D2Core", "file": "items.json", "public_redistribution": "verified"}
+    _catalog(tmp_path, [source])
+    assert check_release_readiness(tmp_path) == [
+        "catalog-12345.json: D2Core / items.json: public redistribution evidence is missing"
+    ]
+    _catalog(tmp_path, [{**source, "public_redistribution_evidence": "Documented permission for this snapshot"}])
+    assert not check_release_readiness(tmp_path)
+
+
+@pytest.mark.parametrize("sources", [None, [], [None]])
+def test_bundled_catalog_without_readable_provenance_blocks_publication(tmp_path, sources) -> None:
+    _reports(tmp_path)
+    _catalog(tmp_path, sources)
+    assert check_release_readiness(tmp_path)
+
+
+def test_unbundled_research_catalog_does_not_block_publication(tmp_path) -> None:
+    _reports(tmp_path)
+    _catalog(tmp_path / ".scratch", [{"provider": "D2Core", "public_redistribution": "unverified"}])
+    assert not check_release_readiness(tmp_path)
+
+
+def test_other_bundled_sources_keep_existing_license_workflow(tmp_path) -> None:
+    _reports(tmp_path)
+    _catalog(tmp_path, [{"provider": "Community compilation", "license": "MIT"}])
+    assert not check_release_readiness(tmp_path)
+
+
+def test_shards_use_index_provenance_and_cannot_replace_a_missing_index(tmp_path) -> None:
+    _reports(tmp_path)
+    _catalog(tmp_path, [{"provider": "Community compilation", "license": "MIT"}])
+    directory = tmp_path / "assets/equipment_knowledge"
+    (directory / "catalog-12345-items-01.json").write_text('{"items": []}', encoding="utf-8")
+    assert not check_release_readiness(tmp_path)
+    (directory / "catalog-12345.json").unlink()
+    assert check_release_readiness(tmp_path) == ["equipment_knowledge: missing bundled catalog provenance"]
+
+
 def test_actual_audit_schema_matches_publication_gate() -> None:
     root = Path(__file__).resolve().parents[2]
     manifest = json.loads((root / "assets/lang/zhCN/manifest.json").read_text(encoding="utf-8"))
     quality = json.loads((root / "assets/lang/zhCN/quality-report.json").read_text(encoding="utf-8"))
+    catalog = json.loads((root / "assets/equipment_knowledge/catalog-73552.json").read_text(encoding="utf-8"))
     failures = check_release_readiness(root)
     expected_ready = (
         manifest["runtime_ready"] is True
@@ -58,5 +114,10 @@ def test_actual_audit_schema_matches_publication_gate() -> None:
         and quality["runtime_ready"] is True
         and quality["summary"]["source_quality_ok"] is True
         and not quality.get("readiness_blockers")
+        and all(
+            source.get("public_redistribution") == "verified" and source.get("public_redistribution_evidence")
+            for source in catalog["sources"]
+            if source.get("provider") == "D2Core" or "public_redistribution" in source
+        )
     )
     assert (not failures) == expected_ready

@@ -12,6 +12,7 @@
 *.yml text eol=lf
 
 # Manifest-locked JSON must have identical bytes on Windows and Linux.
+/assets/equipment_knowledge/**/*.json text eol=lf
 /assets/lang/zhCN/*.json text eol=lf
 /assets/catalog/source-lock.json text eol=lf
 /src/tools/data/reviewed_zhCN.json text eol=lf

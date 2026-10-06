@@ -153,6 +153,52 @@ def test_import_infinitybuilds_saves_one_profile_per_variant_and_resolves_gear_o
     assert profile_store.save_new.call_count == 2
 
 
+def test_import_infinitybuilds_keeps_runeword_affixes_without_unknown_unique_aspect(
+    mock_ini_loader, mocker: MockerFixture, caplog
+) -> None:
+    variants = [
+        {
+            "id": "v-1",
+            "name": "Rain of Arrows",
+            "gear": [
+                _gear_piece("mainhand", "item-runeword-spirit-dagger-itm", ["affix-damage", "affix-unsupported"]),
+                _gear_piece("offhand", "item-unique-sword", []),
+            ],
+        }
+    ]
+    driver = _ImportDriver(_page_source("rogue", variants))
+    response = mocker.Mock()
+    response.json.return_value = {
+        "dataset": {
+            "gear": {
+                "items": [
+                    {"id": "item-runeword-spirit-dagger-itm", "label": "Spirit", "rarity": "unique", "slot": "Dagger"},
+                    {"id": "item-unique-sword", "label": "Doombringer", "rarity": "mythic", "slot": "Sword"},
+                ],
+                "aspects": [],
+                "affixes": [{"id": "affix-damage", "label": "Damage", "greaterAffixEligible": False}],
+            }
+        }
+    }
+    mocker.patch("src.importing.infinitybuilds.extraction.get_with_retry", return_value=response)
+    profile_store = mocker.Mock()
+    profile_store.save_new.side_effect = lambda **kwargs: SimpleNamespace(file_name=kwargs["file_name"])
+    mocker.patch("src.profiles.ProfileDocumentStore.default", return_value=profile_store)
+
+    with caplog.at_level("WARNING", logger="src.importing.infinitybuilds.adapter"):
+        result = import_infinitybuilds(
+            request=_request(url="https://infinitybuilds.gg/en/builds/rogue-example"),
+            driver=typing.cast("WebDriver", driver),
+        )
+
+    assert result is not None
+    filters = {next(iter(entry.root)): next(iter(entry.root.values())) for entry in result.profile.affixes}
+    assert filters["Dagger"].unique_aspect == []
+    assert filters["Dagger"].affix_pool[0].count[0].name == "damage"
+    assert filters["Sword"].unique_aspect[0].name == "doombringer"
+    assert "runeword" in caplog.text.lower()
+
+
 def test_import_infinitybuilds_imports_talisman_charms_and_seal(mock_ini_loader, mocker: MockerFixture) -> None:
     GameCatalog()
     variants = [

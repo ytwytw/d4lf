@@ -7,6 +7,7 @@ from src.app.handler import ScriptHandler
 
 def test_script_shutdown_disables_callbacks_before_stopping_overlays(monkeypatch, mocker) -> None:
     handler = object.__new__(ScriptHandler)
+    handler._init_inventory_dump()
     calls = []
     handler._runtime_config_lock = RLock()
     monkeypatch.setattr(

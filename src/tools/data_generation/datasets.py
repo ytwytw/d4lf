@@ -34,20 +34,19 @@ def main(d4data_dir: Path) -> None:
     lang_arr = ["enUS"]  # "deDE", "frFR", "esES", "esMX", "itIT", "jaJP", "koKR", "plPL", "ptBR", "ruFR"
 
     for lang in lang_arr:
-        file_names = [
-            f"assets/lang/{lang}/affixes.json",
-            f"assets/lang/{lang}/seals_affixes.json",
-            f"assets/lang/{lang}/charms_affixes.json",
-            f"assets/lang/{lang}/aspects.json",
-            f"assets/lang/{lang}/sets.json",
-            f"assets/lang/{lang}/uniques.json",
-            f"assets/lang/{lang}/sigils.json",
-            f"assets/lang/{lang}/tributes.json",
-            f"assets/lang/{lang}/item_types.json",
-            f"assets/lang/{lang}/tooltips.json",
-        ]
-        for f in file_names:
-            Path(f).unlink(missing_ok=True)
+        for name in (
+            "affixes",
+            "seals_affixes",
+            "charms_affixes",
+            "aspects",
+            "sets",
+            "uniques",
+            "sigils",
+            "tributes",
+            "item_types",
+            "tooltips",
+        ):
+            Path(f"assets/lang/{lang}/{name}.json").unlink(missing_ok=True)
         Path(f"assets/lang/{lang}").mkdir(exist_ok=True, parents=True)
 
     for language in lang_arr:
@@ -77,8 +76,7 @@ def main(d4data_dir: Path) -> None:
 
         print(f"START item_types for {language}")
         started = perf_counter()
-        whitelist_types = GEAR_TYPES.copy()
-        whitelist_types.extend(["Charm", "HoradricSeal", "Elixir", "TemperManual", "Tome"])
+        whitelist_types = [*GEAR_TYPES, "Charm", "HoradricSeal", "Elixir", "TemperManual", "Tome"]
         item_typ_dict = {
             "Material": "custom type material",
             "Sigil": "custom type sigil",
@@ -93,7 +91,7 @@ def main(d4data_dir: Path) -> None:
                 name_idx = 0 if data["arStrings"][0]["szLabel"] == "Name" else 1
                 name_str: str = check_ms(data["arStrings"][name_idx]["szText"]).lower().strip()
                 if item_type in whitelist_types:
-                    item_typ_dict[item_type] = name_str
+                    item_typ_dict[item_type] = {"Axe": "axe", "Sword": "sword"}.get(item_type, name_str)
         merge_custom_data(item_typ_dict, "item_types", language)
         write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/item_types.json", item_typ_dict)
         print(f"FINISH item_types: {len(json_files)} files, elapsed={perf_counter() - started:.3f}s")
@@ -214,9 +212,11 @@ def string_list_value(data: JsonObject, label: str) -> str:
 def generate_uniques(d4data_dir: Path, language: str) -> int:
     items_to_ignore = ["halo", "pact_amulet", "wilted_potential", "mythic_unique_horadric_seal"]
     print(f"Gen Uniques for {language}")
-    unique_dict = {}
-    unique_pattern = "json/base/meta/Item/*nique*.itm.json"
-    unique_files = sorted(d4data_dir.glob(unique_pattern, case_sensitive=False))
+    unique_dict: dict[str, dict[str, int]] = {}
+    unique_files = sorted(
+        set(d4data_dir.glob("json/base/meta/Item/*nique*.itm.json", case_sensitive=False))
+        | set(d4data_dir.glob("json/base/meta/Item/Runeword_*.itm.json", case_sensitive=False))
+    )
 
     for core_unique_file in unique_files:
         if core_unique_file.name.startswith("S10_"):
@@ -227,12 +227,11 @@ def generate_uniques(d4data_dir: Path, language: str) -> int:
             item_type = (
                 unique_item_data.get("snoItemType", {}).get("name", "") if unique_item_data.get("snoItemType") else ""
             )
-            if item_type != "HoradricSeal" and (
-                "arForcedAffixes" not in unique_item_data or not unique_item_data["arForcedAffixes"]
-            ):
+            if item_type not in ("HoradricSeal", "Charm", "Seal") and not unique_item_data.get("arForcedAffixes"):
                 continue
             inherent_affixes = unique_item_data.get("arInherentAffixes", [])
-        if item_type not in GEAR_TYPES and item_type not in ("FocusBookOffHand", "HoradricSeal"):
+        base_item_type = item_type.split("_", maxsplit=1)[0]
+        if base_item_type not in GEAR_TYPES and item_type not in ("FocusBookOffHand", "HoradricSeal", "Charm", "Seal"):
             continue
         core_unique_file_id = core_unique_file.name.split(".")[0]
         string_item_file = d4data_dir / f"json/{language}_Text/meta/StringList/Item_{core_unique_file_id}.stl.json"
@@ -249,7 +248,8 @@ def generate_uniques(d4data_dir: Path, language: str) -> int:
             affix_file = d4data_dir / f"json/{inherent_affix['__targetFileName__']}.json"
             with Path(affix_file).open(encoding="utf-8") as unique_affix_file:
                 num_inherents += len(json.load(unique_affix_file)["ptItemAffixAttributes"])
-        unique_dict[name_clean] = {"num_inherents": num_inherents}
+        existing_num_inherents = unique_dict.get(name_clean, {}).get("num_inherents", 0)
+        unique_dict[name_clean] = {"num_inherents": max(num_inherents, existing_num_inherents)}
 
     merge_custom_data(unique_dict, "uniques", language)
     write_json_file(D4LF_BASE_DIR / f"assets/lang/{language}/uniques.json", unique_dict)

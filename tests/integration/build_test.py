@@ -24,6 +24,12 @@ def test_release_includes_bilingual_docs_license_and_locales_without_runtime_sta
         "LICENSE",
         "tts/saapi64.dll",
         "tts/install_dll.cmd",
+        "docs/loot-tools.zh-CN.md",
+        "docs/release-notes.zh-CN.md",
+        "docs/agents/orchestration.zh-CN.md",
+        "docs/research-notes.md",
+        "docs/release-readiness-20261005.zh-CN.md",
+        "docs/private-capture.png",
         "assets/lang/zhCN/ui.json",
         "assets/last_update",
     ):
@@ -39,10 +45,16 @@ def test_release_includes_bilingual_docs_license_and_locales_without_runtime_sta
         "LICENSE",
         "saapi64.dll",
         "install_dll.cmd",
+        "docs/loot-tools.zh-CN.md",
+        "docs/release-notes.zh-CN.md",
         "assets/lang/zhCN/ui.json",
     ):
         assert (destination / filename).is_file()
     assert not (destination / "assets/last_update").exists()
+    assert not (destination / "docs/agents/orchestration.zh-CN.md").exists()
+    assert not (destination / "docs/research-notes.md").exists()
+    assert not (destination / "docs/release-readiness-20261005.zh-CN.md").exists()
+    assert not (destination / "docs/private-capture.png").exists()
 
 
 def test_pyinstaller_paths_do_not_depend_on_spec_directory_or_current_directory(monkeypatch, tmp_path) -> None:

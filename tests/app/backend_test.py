@@ -51,7 +51,9 @@ def test_backend_starts_tts_listener_before_waiting_for_game_window(monkeypatch)
     monkeypatch.setattr(backend_module, "start_detecting_window", lambda _spec: calls.append("detect_window"))
     monkeypatch.setattr(backend_module, "game_window_ready", lambda: True)
     monkeypatch.setattr(
-        backend_module, "ScriptHandler", lambda: SimpleNamespace(shutdown=lambda: calls.append("shutdown"))
+        backend_module,
+        "ScriptHandler",
+        lambda: SimpleNamespace(shutdown=lambda: calls.append("shutdown"), cancel_inventory_dump=lambda: None),
     )
     monkeypatch.setattr(backend_module, "check_for_proper_tts_configuration", lambda: calls.append("diagnostics"))
     monkeypatch.setattr(

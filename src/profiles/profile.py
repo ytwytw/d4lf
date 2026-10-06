@@ -7,6 +7,7 @@ from src.profiles.affixes import GlobalUniqueModel  # ruff:ignore[typing-only-fi
 from src.profiles.equipment import DynamicCharmFilterModel, DynamicItemFilterModel, DynamicSealFilterModel  # ruff:ignore[typing-only-first-party-import]
 from src.profiles.paragon import ParagonPayloadModel  # ruff:ignore[typing-only-first-party-import]
 from src.profiles.sigils import SigilFilterModel, SigilPriority, TributeFilterModel
+from src.profiles.source import BuildSourceModel  # ruff:ignore[typing-only-first-party-import]
 from src.profiles.validation.normalization import _as_string_keyed_dict, _legacy_filter_values
 from src.type_aliases import YamlObject, YamlValue  # ruff:ignore[typing-only-first-party-import]
 
@@ -18,6 +19,7 @@ class ProfileModel(BaseModel):
     charms: list[DynamicCharmFilterModel] = Field(default=[], alias="Charms")
     global_uniques: list[GlobalUniqueModel] = Field(default=[], alias="GlobalUniques")
     name: str
+    source: BuildSourceModel | None = None
     seals: list[DynamicSealFilterModel] = Field(default=[], alias="Seals")
     sigils: SigilFilterModel = Field(
         default=SigilFilterModel(blacklist=[], whitelist=[], priority=SigilPriority.blacklist), alias="Sigils"

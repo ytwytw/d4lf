@@ -92,7 +92,8 @@ def test_committed_lock_matches_locale_quality_builds() -> None:
     lock = load_source_lock(root / "assets/catalog/source-lock.json")
     quality = json.loads((root / "assets/lang/zhCN/quality-report.json").read_text(encoding="utf-8"))
 
-    assert quality["source_builds"] == {"d2core": lock.d2core_build, "d4data": lock.d4data_build}
+    assert quality["source_builds"] == {"d2core": lock.d2core_build, "d4data": lock.d4data_build, "wowhead": "3.0.2"}
+    assert quality["summary"]["source_builds_match"] is False
 
 
 def test_committed_lock_tracks_season_15_source_revisions() -> None:

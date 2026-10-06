@@ -1,0 +1,3528 @@
+{
+    "_meta": {
+        "d4lootbench_build": "LootBenchDataExtract build 3.1.0.72592",
+        "description": "Diablo 4 affix SNO IDs for native loot-filter import codes.",
+        "source": "Derived from ThunderEagle/D4LootBench d4-data.json (MIT), cross-checked vs fnuecke/diablo4-loot-filter-viewer names.json."
+    },
+    "affixes": [
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAB2",
+            "keys": [
+                "armor"
+            ],
+            "name": "Armor",
+            "sno": "S04_Armor"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAB4",
+            "keys": [
+                "attack-speed"
+            ],
+            "name": "Attack Speed",
+            "sno": "S04_AttackSpeed"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAB6",
+            "keys": [
+                "impairment-reduction"
+            ],
+            "name": "Impairment Reduction",
+            "sno": "S04_CC_Duration_Reduction"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAB8",
+            "keys": [
+                "cooldown-reduction"
+            ],
+            "name": "Cooldown Reduction",
+            "sno": "S04_CooldownReductionCDR"
+        },
+        {
+            "classes": [
+                "Rogue",
+                "Spiritborn"
+            ],
+            "hash": "0x001BEABA",
+            "keys": [
+                "dexterity"
+            ],
+            "name": "Dexterity",
+            "sno": "S04_CoreStat_Dexterity"
+        },
+        {
+            "classes": [
+                "Sorcerer",
+                "Necromancer"
+            ],
+            "hash": "0x001BEABE",
+            "keys": [
+                "intelligence"
+            ],
+            "name": "Intelligence",
+            "sno": "S04_CoreStat_Intelligence"
+        },
+        {
+            "classes": [
+                "Barbarian",
+                "Paladin"
+            ],
+            "hash": "0x001BEAC2",
+            "keys": [
+                "strength"
+            ],
+            "name": "Strength",
+            "sno": "S04_CoreStat_Strength"
+        },
+        {
+            "classes": [
+                "Druid",
+                "Warlock"
+            ],
+            "hash": "0x001BEAC6",
+            "keys": [
+                "willpower"
+            ],
+            "name": "Willpower",
+            "sno": "S04_CoreStat_Willpower"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEACE",
+            "keys": [
+                "critical-strike-chance",
+                "crit-chance"
+            ],
+            "name": "Critical Strike Chance",
+            "sno": "S04_CritChance"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAD2",
+            "keys": [
+                "critical-strike-damage",
+                "crit-damage",
+                "critical-strike-damage-multiplier"
+            ],
+            "name": "Critical Strike Damage",
+            "sno": "S04_CritDamage"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAD4",
+            "keys": [
+                "all-damage",
+                "all-damage-multiplier"
+            ],
+            "name": "All Damage",
+            "sno": "S04_Damage_All"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAD6",
+            "keys": [
+                "damage-over-time",
+                "damage-over-time-multiplier"
+            ],
+            "name": "Damage Over Time",
+            "sno": "S04_Damage_DoT"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAD8",
+            "keys": [
+                "maximum-life",
+                "max-life",
+                "life"
+            ],
+            "name": "Maximum Life",
+            "sno": "S04_Life"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEADA",
+            "keys": [
+                "life-regeneration"
+            ],
+            "name": "Life Regeneration",
+            "sno": "S04_LifeRegen"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEADC",
+            "keys": [
+                "lucky-hit-chance"
+            ],
+            "name": "Lucky Hit Chance",
+            "sno": "S04_Luck"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEADE",
+            "keys": [
+                "movement-speed"
+            ],
+            "name": "Movement Speed",
+            "sno": "S04_Movement_Speed"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAE0",
+            "keys": [
+                "overpower-damage"
+            ],
+            "name": "Overpower Damage",
+            "sno": "S04_OverpowerDamage"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAE2",
+            "keys": [
+                "potion-capacity"
+            ],
+            "name": "Potion Capacity",
+            "sno": "S04_PotionCharges"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAEE",
+            "keys": [
+                "fire-resistance"
+            ],
+            "name": "Fire Resistance",
+            "sno": "S04_Resistance_Single_Fire"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAF2",
+            "keys": [
+                "lightning-resistance"
+            ],
+            "name": "Lightning Resistance",
+            "sno": "S04_Resistance_Single_Lightning"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAF4",
+            "keys": [
+                "poison-resistance"
+            ],
+            "name": "Poison Resistance",
+            "sno": "S04_Resistance_Single_Poison"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEAF6",
+            "keys": [
+                "shadow-resistance"
+            ],
+            "name": "Shadow Resistance",
+            "sno": "S04_Resistance_Single_Shadow"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEB20",
+            "keys": [
+                "generation"
+            ],
+            "name": "Generation",
+            "sno": "S04_ResourceGain"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEB22",
+            "keys": [
+                "thorns"
+            ],
+            "name": "Thorns",
+            "sno": "S04_Thorns"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BEB2E",
+            "keys": [
+                "cold-resistance"
+            ],
+            "name": "Cold Resistance",
+            "sno": "S04_Resistance_Single_Cold"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BFC79",
+            "keys": [
+                "maximum-resource",
+                "max-resource"
+            ],
+            "name": "Maximum Resource",
+            "sno": "S04_Resource_Max_AllClasses"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BFC80",
+            "keys": [
+                "vulnerable-damage",
+                "vulnerable-damage-multiplier"
+            ],
+            "name": "Vulnerable Damage",
+            "sno": "S04_Damage_to_Vulnerable"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BFC85",
+            "keys": [
+                "dodge-chance"
+            ],
+            "name": "Dodge Chance",
+            "sno": "S04_Dodge"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BFCBF",
+            "keys": [
+                "healing-received"
+            ],
+            "name": "Healing Received",
+            "sno": "S04_HealingPercent"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BFCE4",
+            "keys": [
+                "basic-skill-damage"
+            ],
+            "name": "Basic Skill Damage",
+            "sno": "S04_Damage_Category_Basics"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BFD1A",
+            "keys": [
+                "core-spender-skill-damage"
+            ],
+            "name": "Core/Spender Skill Damage",
+            "sno": "S04_Damage_Category_CoreSpenders"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001BFD38",
+            "keys": [
+                "resistance-to-all-elements",
+                "all-resistance"
+            ],
+            "name": "Resistance to All Elements",
+            "sno": "S04_Resistance_All"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C60BC",
+            "keys": [
+                "bash",
+                "ranks-to-bash"
+            ],
+            "name": "Bash",
+            "sno": "S04_SkillRankBonus_Barb_Basic_Bash"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C60C0",
+            "keys": [
+                "flay",
+                "ranks-to-flay"
+            ],
+            "name": "Flay",
+            "sno": "S04_SkillRankBonus_Barb_Basic_Flay"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C60C2",
+            "keys": [
+                "frenzy",
+                "ranks-to-frenzy"
+            ],
+            "name": "Frenzy",
+            "sno": "S04_SkillRankBonus_Barb_Basic_Frenzy"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C60C4",
+            "keys": [
+                "lunging-strike",
+                "ranks-to-lunging-strike"
+            ],
+            "name": "Lunging Strike",
+            "sno": "S04_SkillRankBonus_Barb_Basic_LungingStrike"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C68CB",
+            "keys": [
+                "hammer-of-the-ancients",
+                "ranks-to-hammer-of-the-ancients"
+            ],
+            "name": "Hammer of the Ancients",
+            "sno": "S04_SkillRankBonus_Barb_Core_HammeroftheAncients"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C68F6",
+            "keys": [
+                "rend",
+                "ranks-to-rend"
+            ],
+            "name": "Rend",
+            "sno": "S04_SkillRankBonus_Barb_Core_Rend"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6908",
+            "keys": [
+                "double-swing",
+                "ranks-to-double-swing"
+            ],
+            "name": "Double Swing",
+            "sno": "S04_SkillRankBonus_Barb_Core_DoubleSwing"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C690E",
+            "keys": [
+                "upheaval",
+                "ranks-to-upheaval"
+            ],
+            "name": "Upheaval",
+            "sno": "S04_SkillRankBonus_Barb_Core_Upheaval"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6920",
+            "keys": [
+                "whirlwind",
+                "ranks-to-whirlwind"
+            ],
+            "name": "Whirlwind",
+            "sno": "S04_SkillRankBonus_Barb_Core_Whirlwind"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C692A",
+            "keys": [
+                "challenging-shout",
+                "ranks-to-challenging-shout"
+            ],
+            "name": "Challenging Shout",
+            "sno": "S04_SkillRankBonus_Barb_Special_ChallengingShout"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C692C",
+            "keys": [
+                "charge",
+                "ranks-to-charge"
+            ],
+            "name": "Charge",
+            "sno": "S04_SkillRankBonus_Barb_Special_Charge"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C692E",
+            "keys": [
+                "death-blow",
+                "ranks-to-death-blow"
+            ],
+            "name": "Death Blow",
+            "sno": "S04_SkillRankBonus_Barb_Special_DeathBlow"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6935",
+            "keys": [
+                "ground-stomp",
+                "ranks-to-ground-stomp"
+            ],
+            "name": "Ground Stomp",
+            "sno": "S04_SkillRankBonus_Barb_Special_GroundStomp"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6938",
+            "keys": [
+                "iron-skin",
+                "ranks-to-iron-skin"
+            ],
+            "name": "Iron Skin",
+            "sno": "S04_SkillRankBonus_Barb_Special_IronSkin"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C693A",
+            "keys": [
+                "kick",
+                "ranks-to-kick"
+            ],
+            "name": "Kick",
+            "sno": "S04_SkillRankBonus_Barb_Special_Kick"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6941",
+            "keys": [
+                "leap",
+                "ranks-to-leap"
+            ],
+            "name": "Leap",
+            "sno": "S04_SkillRankBonus_Barb_Special_Leap"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6943",
+            "keys": [
+                "rallying-cry",
+                "ranks-to-rallying-cry"
+            ],
+            "name": "Rallying Cry",
+            "sno": "S04_SkillRankBonus_Barb_Special_RallyingCry"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6945",
+            "keys": [
+                "rupture",
+                "ranks-to-rupture"
+            ],
+            "name": "Rupture",
+            "sno": "S04_SkillRankBonus_Barb_Special_Rupture"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6947",
+            "keys": [
+                "steel-grasp",
+                "ranks-to-steel-grasp"
+            ],
+            "name": "Steel Grasp",
+            "sno": "S04_SkillRankBonus_Barb_Special_SteelGrasp"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001C6949",
+            "keys": [
+                "war-cry",
+                "ranks-to-war-cry"
+            ],
+            "name": "War Cry",
+            "sno": "S04_SkillRankBonus_Barb_Special_WarCry"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7E6E",
+            "keys": [
+                "bone-splinters",
+                "ranks-to-bone-splinters"
+            ],
+            "name": "Bone Splinters",
+            "sno": "S04_SkillRankBonus_Necro_Basic_BoneSplinters"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7E7D",
+            "keys": [
+                "decompose",
+                "ranks-to-decompose"
+            ],
+            "name": "Decompose",
+            "sno": "S04_SkillRankBonus_Necro_Basic_Decompose"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7E84",
+            "keys": [
+                "hemorrhage",
+                "ranks-to-hemorrhage"
+            ],
+            "name": "Hemorrhage",
+            "sno": "S04_SkillRankBonus_Necro_Basic_Hemorrhage"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7E88",
+            "keys": [
+                "reap",
+                "ranks-to-reap"
+            ],
+            "name": "Reap",
+            "sno": "S04_SkillRankBonus_Necro_Basic_Reap"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7E90",
+            "keys": [
+                "bone-spear",
+                "ranks-to-bone-spear"
+            ],
+            "name": "Bone Spear",
+            "sno": "S04_SkillRankBonus_Necro_Core_BoneSpear"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7E9A",
+            "keys": [
+                "blight",
+                "ranks-to-blight"
+            ],
+            "name": "Blight",
+            "sno": "S04_SkillRankBonus_Necro_Core_Blight"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EA1",
+            "keys": [
+                "sever",
+                "ranks-to-sever"
+            ],
+            "name": "Sever",
+            "sno": "S04_SkillRankBonus_Necro_Core_Sever"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EA8",
+            "keys": [
+                "blood-surge",
+                "ranks-to-blood-surge"
+            ],
+            "name": "Blood Surge",
+            "sno": "S04_SkillRankBonus_Necro_Core_BloodSurge"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EB0",
+            "keys": [
+                "blood-lance",
+                "ranks-to-blood-lance"
+            ],
+            "name": "Blood Lance",
+            "sno": "S04_SkillRankBonus_Necro_Core_BloodLance"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EB2",
+            "keys": [
+                "blood-mist",
+                "ranks-to-blood-mist"
+            ],
+            "name": "Blood Mist",
+            "sno": "S04_SkillRankBonus_Necro_Special_BloodMist"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EB6",
+            "keys": [
+                "bone-prison",
+                "ranks-to-bone-prison"
+            ],
+            "name": "Bone Prison",
+            "sno": "S04_SkillRankBonus_Necro_Special_BonePrison"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EB8",
+            "keys": [
+                "bone-spirit",
+                "ranks-to-bone-spirit"
+            ],
+            "name": "Bone Spirit",
+            "sno": "S04_SkillRankBonus_Necro_Special_BoneSpirit"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EBA",
+            "keys": [
+                "corpse-explosion",
+                "ranks-to-corpse-explosion"
+            ],
+            "name": "Corpse Explosion",
+            "sno": "S04_SkillRankBonus_Necro_Special_CorpseExplosion"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EBC",
+            "keys": [
+                "corpse-tendrils",
+                "ranks-to-corpse-tendrils"
+            ],
+            "name": "Corpse Tendrils",
+            "sno": "S04_SkillRankBonus_Necro_Special_CorpseTendrils"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EBE",
+            "keys": [
+                "decrepify",
+                "ranks-to-decrepify"
+            ],
+            "name": "Decrepify",
+            "sno": "S04_SkillRankBonus_Necro_Special_Decrepify"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001C7EC0",
+            "keys": [
+                "iron-maiden",
+                "ranks-to-iron-maiden"
+            ],
+            "name": "Iron Maiden",
+            "sno": "S04_SkillRankBonus_Necro_Special_IronMaiden"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C952F",
+            "keys": [
+                "heartseeker",
+                "ranks-to-heartseeker"
+            ],
+            "name": "Heartseeker",
+            "sno": "S04_SkillRankBonus_Rogue_Basic_Heartseeker"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9531",
+            "keys": [
+                "puncture",
+                "ranks-to-puncture"
+            ],
+            "name": "Puncture",
+            "sno": "S04_SkillRankBonus_Rogue_Basic_Puncture"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9533",
+            "keys": [
+                "invigorating-strike",
+                "ranks-to-invigorating-strike"
+            ],
+            "name": "Invigorating Strike",
+            "sno": "S04_SkillRankBonus_Rogue_Basic_InvigoratingStrike"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9535",
+            "keys": [
+                "forceful-arrow",
+                "ranks-to-forceful-arrow"
+            ],
+            "name": "Forceful Arrow",
+            "sno": "S04_SkillRankBonus_Rogue_Basic_ForcefulArrow"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9537",
+            "keys": [
+                "blade-shift",
+                "ranks-to-blade-shift"
+            ],
+            "name": "Blade Shift",
+            "sno": "S04_SkillRankBonus_Rogue_Basic_BladeShift"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C953B",
+            "keys": [
+                "rapid-fire",
+                "ranks-to-rapid-fire"
+            ],
+            "name": "Rapid Fire",
+            "sno": "S04_SkillRankBonus_Rogue_Core_RapidFire"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C953D",
+            "keys": [
+                "flurry",
+                "ranks-to-flurry"
+            ],
+            "name": "Flurry",
+            "sno": "S04_SkillRankBonus_Rogue_Core_Flurry"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C953F",
+            "keys": [
+                "barrage",
+                "ranks-to-barrage"
+            ],
+            "name": "Barrage",
+            "sno": "S04_SkillRankBonus_Rogue_Core_Barrage"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9541",
+            "keys": [
+                "twisting-blades",
+                "ranks-to-twisting-blades"
+            ],
+            "name": "Twisting Blades",
+            "sno": "S04_SkillRankBonus_Rogue_Core_TwistingBlades"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9543",
+            "keys": [
+                "penetrating-shot",
+                "ranks-to-penetrating-shot"
+            ],
+            "name": "Penetrating Shot",
+            "sno": "S04_SkillRankBonus_Rogue_Core_PenetratingShot"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9545",
+            "keys": [
+                "poison-imbuement",
+                "ranks-to-poison-imbuement"
+            ],
+            "name": "Poison Imbuement",
+            "sno": "S04_SkillRankBonus_Rogue_Special_PoisonImbue"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9547",
+            "keys": [
+                "caltrops",
+                "ranks-to-caltrops"
+            ],
+            "name": "Caltrops",
+            "sno": "S04_SkillRankBonus_Rogue_Special_Caltrops"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9549",
+            "keys": [
+                "cold-imbuement",
+                "ranks-to-cold-imbuement"
+            ],
+            "name": "Cold Imbuement",
+            "sno": "S04_SkillRankBonus_Rogue_Special_ColdImbue"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C954B",
+            "keys": [
+                "concealment",
+                "ranks-to-concealment"
+            ],
+            "name": "Concealment",
+            "sno": "S04_SkillRankBonus_Rogue_Special_Concealment"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C954D",
+            "keys": [
+                "dark-shroud",
+                "ranks-to-dark-shroud"
+            ],
+            "name": "Dark Shroud",
+            "sno": "S04_SkillRankBonus_Rogue_Special_DarkShroud"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C954F",
+            "keys": [
+                "dash",
+                "ranks-to-dash"
+            ],
+            "name": "Dash",
+            "sno": "S04_SkillRankBonus_Rogue_Special_Dash"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9551",
+            "keys": [
+                "poison-trap",
+                "ranks-to-poison-trap"
+            ],
+            "name": "Poison Trap",
+            "sno": "S04_SkillRankBonus_Rogue_Special_PoisonTrap"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9553",
+            "keys": [
+                "shadow-imbuement",
+                "ranks-to-shadow-imbuement"
+            ],
+            "name": "Shadow Imbuement",
+            "sno": "S04_SkillRankBonus_Rogue_Special_ShadowImbue"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9555",
+            "keys": [
+                "shadow-step",
+                "ranks-to-shadow-step"
+            ],
+            "name": "Shadow Step",
+            "sno": "S04_SkillRankBonus_Rogue_Special_ShadowStep"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001C9557",
+            "keys": [
+                "smoke-grenade",
+                "ranks-to-smoke-grenade"
+            ],
+            "name": "Smoke Grenade",
+            "sno": "S04_SkillRankBonus_Rogue_Special_SmokeBomb"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC052",
+            "keys": [
+                "earth-spike",
+                "ranks-to-earth-spike"
+            ],
+            "name": "Earth Spike",
+            "sno": "S04_SkillRankBonus_Druid_Basic_Earthspike"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC054",
+            "keys": [
+                "claw",
+                "ranks-to-claw"
+            ],
+            "name": "Claw",
+            "sno": "S04_SkillRankBonus_Druid_Basic_Claw"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC056",
+            "keys": [
+                "storm-strike",
+                "ranks-to-storm-strike"
+            ],
+            "name": "Storm Strike",
+            "sno": "S04_SkillRankBonus_Druid_Basic_StormStrike"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC058",
+            "keys": [
+                "wind-shear",
+                "ranks-to-wind-shear"
+            ],
+            "name": "Wind Shear",
+            "sno": "S04_SkillRankBonus_Druid_Basic_WindShear"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC060",
+            "keys": [
+                "maul",
+                "ranks-to-maul"
+            ],
+            "name": "Maul",
+            "sno": "S04_SkillRankBonus_Druid_Basic_Maul"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC062",
+            "keys": [
+                "landslide",
+                "ranks-to-landslide"
+            ],
+            "name": "Landslide",
+            "sno": "S04_SkillRankBonus_Druid_Core_Landslide"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC064",
+            "keys": [
+                "pulverize",
+                "ranks-to-pulverize"
+            ],
+            "name": "Pulverize",
+            "sno": "S04_SkillRankBonus_Druid_Core_Pulverize"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC066",
+            "keys": [
+                "tornado",
+                "ranks-to-tornado"
+            ],
+            "name": "Tornado",
+            "sno": "S04_SkillRankBonus_Druid_Core_Tornado"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC068",
+            "keys": [
+                "lightning-storm",
+                "ranks-to-lightning-storm"
+            ],
+            "name": "Lightning Storm",
+            "sno": "S04_SkillRankBonus_Druid_Core_LightningStorm"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC06A",
+            "keys": [
+                "shred",
+                "ranks-to-shred"
+            ],
+            "name": "Shred",
+            "sno": "S04_SkillRankBonus_Druid_Core_Shred"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC06D",
+            "keys": [
+                "blood-howl",
+                "ranks-to-blood-howl"
+            ],
+            "name": "Blood Howl",
+            "sno": "S04_SkillRankBonus_Druid_Special_BloodHowl"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC06F",
+            "keys": [
+                "boulder",
+                "ranks-to-boulder"
+            ],
+            "name": "Boulder",
+            "sno": "S04_SkillRankBonus_Druid_Special_Boulder"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC071",
+            "keys": [
+                "cyclone-armor",
+                "ranks-to-cyclone-armor"
+            ],
+            "name": "Cyclone Armor",
+            "sno": "S04_SkillRankBonus_Druid_Special_CycloneArmor"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC073",
+            "keys": [
+                "debilitating-roar",
+                "ranks-to-debilitating-roar"
+            ],
+            "name": "Debilitating Roar",
+            "sno": "S04_SkillRankBonus_Druid_Special_DebilitatingRoar"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC075",
+            "keys": [
+                "earthen-bulwark",
+                "ranks-to-earthen-bulwark"
+            ],
+            "name": "Earthen Bulwark",
+            "sno": "S04_SkillRankBonus_Druid_Special_EarthenBulwark"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC077",
+            "keys": [
+                "hurricane",
+                "ranks-to-hurricane"
+            ],
+            "name": "Hurricane",
+            "sno": "S04_SkillRankBonus_Druid_Special_Hurricane"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC183",
+            "keys": [
+                "rabies",
+                "ranks-to-rabies"
+            ],
+            "name": "Rabies",
+            "sno": "S04_SkillRankBonus_Druid_Special_Rabies"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC185",
+            "keys": [
+                "ravens",
+                "ranks-to-ravens"
+            ],
+            "name": "Ravens",
+            "sno": "S04_SkillRankBonus_Druid_Special_Ravens"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC188",
+            "keys": [
+                "trample",
+                "ranks-to-trample"
+            ],
+            "name": "Trample",
+            "sno": "S04_SkillRankBonus_Druid_Special_Trample"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC18A",
+            "keys": [
+                "poison-creeper",
+                "ranks-to-poison-creeper"
+            ],
+            "name": "Poison Creeper",
+            "sno": "S04_SkillRankBonus_Druid_Special_VineCreeper"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001CC18D",
+            "keys": [
+                "wolves",
+                "ranks-to-wolves"
+            ],
+            "name": "Wolves",
+            "sno": "S04_SkillRankBonus_Druid_Special_Wolves"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001D3A11",
+            "keys": [
+                "resource-cost-reduction"
+            ],
+            "name": "Resource Cost Reduction",
+            "sno": "S04_Resource_Cost_Reduction_AllClasses_Lesser"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001D5E13",
+            "keys": [
+                "life-on-hit"
+            ],
+            "name": "Life On Hit",
+            "sno": "S04_LifePerHit"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001D5E25",
+            "keys": [
+                "energy-on-kill"
+            ],
+            "name": "Energy On Kill",
+            "sno": "S04_Resource_On_Kill_Energy"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001D5E27",
+            "keys": [
+                "essence-on-kill"
+            ],
+            "name": "Essence On Kill",
+            "sno": "S04_Resource_On_Kill_Essence"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001D5E29",
+            "keys": [
+                "fury-on-kill"
+            ],
+            "name": "Fury On Kill",
+            "sno": "S04_Resource_On_Kill_Fury"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D5E2B",
+            "keys": [
+                "mana-on-kill"
+            ],
+            "name": "Mana On Kill",
+            "sno": "S04_Resource_On_Kill_Mana"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001D5E2D",
+            "keys": [
+                "spirit-on-kill"
+            ],
+            "name": "Spirit On Kill",
+            "sno": "S04_Resource_On_Kill_Spirit"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001D5E30",
+            "keys": [
+                "energy-regeneration"
+            ],
+            "name": "Energy Regeneration",
+            "sno": "S04_Resource_Per_Second_Energy"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001D5E33",
+            "keys": [
+                "spirit-regeneration"
+            ],
+            "name": "Spirit Regeneration",
+            "sno": "S04_Resource_Per_Second_Spirit"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D5E36",
+            "keys": [
+                "mana-regeneration"
+            ],
+            "name": "Mana Regeneration",
+            "sno": "S04_Resource_Per_Second_Mana"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001D5E38",
+            "keys": [
+                "fury-regeneration"
+            ],
+            "name": "Fury Regeneration",
+            "sno": "S04_Resource_Per_Second_Fury"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001D5E3A",
+            "keys": [
+                "essence-regeneration"
+            ],
+            "name": "Essence Regeneration",
+            "sno": "S04_Resource_Per_Second_Essence"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001D6244",
+            "keys": [
+                "lucky-hit-vulnerable-chance"
+            ],
+            "name": "Lucky Hit: Vulnerable Chance",
+            "sno": "S04_Lucky_Hit_Vulnerable"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001D62F1",
+            "keys": [
+                "lucky-hit-restore-primary-resource"
+            ],
+            "name": "Lucky Hit: Restore Primary Resource",
+            "sno": "S04_Lucky_Hit_Resource_Percent"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D673F",
+            "keys": [
+                "fireball",
+                "ranks-to-fireball"
+            ],
+            "name": "Fireball",
+            "sno": "S04_SkillRankBonus_Sorc_Core_1_Fireball"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6741",
+            "keys": [
+                "ice-shards",
+                "ranks-to-ice-shards"
+            ],
+            "name": "Ice Shards",
+            "sno": "S04_SkillRankBonus_Sorc_Core_2_IceShards"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6743",
+            "keys": [
+                "chain-lightning",
+                "ranks-to-chain-lightning"
+            ],
+            "name": "Chain Lightning",
+            "sno": "S04_SkillRankBonus_Sorc_Core_3_ChainLightning"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6745",
+            "keys": [
+                "charged-bolts",
+                "ranks-to-charged-bolts"
+            ],
+            "name": "Charged Bolts",
+            "sno": "S04_SkillRankBonus_Sorc_Core_4_ChargedBolts"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6747",
+            "keys": [
+                "incinerate",
+                "ranks-to-incinerate"
+            ],
+            "name": "Incinerate",
+            "sno": "S04_SkillRankBonus_Sorc_Core_5_Incinerate"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6749",
+            "keys": [
+                "frozen-orb",
+                "ranks-to-frozen-orb"
+            ],
+            "name": "Frozen Orb",
+            "sno": "S04_SkillRankBonus_Sorc_Core_6_FrozenOrb"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D674B",
+            "keys": [
+                "spark",
+                "ranks-to-spark"
+            ],
+            "name": "Spark",
+            "sno": "S04_SkillRankBonus_Sorc_Basic_1"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D674D",
+            "keys": [
+                "fire-bolt",
+                "ranks-to-fire-bolt"
+            ],
+            "name": "Fire Bolt",
+            "sno": "S04_SkillRankBonus_Sorc_Basic_2"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6750",
+            "keys": [
+                "frost-bolt",
+                "ranks-to-frost-bolt"
+            ],
+            "name": "Frost Bolt",
+            "sno": "S04_SkillRankBonus_Sorc_Basic_3"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6752",
+            "keys": [
+                "arc-lash",
+                "ranks-to-arc-lash"
+            ],
+            "name": "Arc Lash",
+            "sno": "S04_SkillRankBonus_Sorc_Basic_4"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6754",
+            "keys": [
+                "ball-lightning",
+                "ranks-to-ball-lightning"
+            ],
+            "name": "Ball Lightning",
+            "sno": "S04_SkillRankBonus_Sorc_Special_BallLightning"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6756",
+            "keys": [
+                "blizzard",
+                "ranks-to-blizzard"
+            ],
+            "name": "Blizzard",
+            "sno": "S04_SkillRankBonus_Sorc_Special_Blizzard"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6758",
+            "keys": [
+                "firewall",
+                "ranks-to-firewall"
+            ],
+            "name": "Firewall",
+            "sno": "S04_SkillRankBonus_Sorc_Special_Firewall"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D675A",
+            "keys": [
+                "flame-shield",
+                "ranks-to-flame-shield"
+            ],
+            "name": "Flame Shield",
+            "sno": "S04_SkillRankBonus_Sorc_Special_FlameShield"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D675C",
+            "keys": [
+                "frost-nova",
+                "ranks-to-frost-nova"
+            ],
+            "name": "Frost Nova",
+            "sno": "S04_SkillRankBonus_Sorc_Special_FrostNova"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D675E",
+            "keys": [
+                "hydra",
+                "ranks-to-hydra"
+            ],
+            "name": "Hydra",
+            "sno": "S04_SkillRankBonus_Sorc_Special_Hydra"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6760",
+            "keys": [
+                "ice-armor",
+                "ranks-to-ice-armor"
+            ],
+            "name": "Ice Armor",
+            "sno": "S04_SkillRankBonus_Sorc_Special_IceArmor"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6762",
+            "keys": [
+                "ice-blades",
+                "ranks-to-ice-blades"
+            ],
+            "name": "Ice Blades",
+            "sno": "S04_SkillRankBonus_Sorc_Special_IceBlades"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6764",
+            "keys": [
+                "lightning-spear",
+                "ranks-to-lightning-spear"
+            ],
+            "name": "Lightning Spear",
+            "sno": "S04_SkillRankBonus_Sorc_Special_LightningSpear"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6766",
+            "keys": [
+                "meteor",
+                "ranks-to-meteor"
+            ],
+            "name": "Meteor",
+            "sno": "S04_SkillRankBonus_Sorc_Special_Meteor"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6768",
+            "keys": [
+                "teleport",
+                "ranks-to-teleport"
+            ],
+            "name": "Teleport",
+            "sno": "S04_SkillRankBonus_Sorc_Special_Teleport"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001D6E25",
+            "keys": [
+                "brawling-skills",
+                "ranks-to-brawling-skills"
+            ],
+            "name": "Brawling Skills (Barbarian)",
+            "sno": "S04_SkillRankBonus_Barb_Category_Brawling"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001D6E27",
+            "keys": [
+                "weaponmastery-skills",
+                "ranks-to-weaponmastery-skills"
+            ],
+            "name": "WeaponMastery Skills (Barbarian)",
+            "sno": "S04_SkillRankBonus_Barb_Category_WeaponMastery"
+        },
+        {
+            "classes": [
+                "Sorcerer",
+                "Druid",
+                "Barbarian",
+                "Spiritborn",
+                "Warlock"
+            ],
+            "hash": "0x001D6E2B",
+            "keys": [
+                "defensive-skills",
+                "ranks-to-defensive-skills"
+            ],
+            "name": "Defensive Skills",
+            "sno": "S04_SkillRankBonus_Generic_Category_Defensive"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001D6E2D",
+            "keys": [
+                "companion-skills",
+                "ranks-to-companion-skills"
+            ],
+            "name": "Companion Skills (Druid)",
+            "sno": "S04_SkillRankBonus_Druid_Category_Companion"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001D6E2F",
+            "keys": [
+                "basic-skills",
+                "ranks-to-basic-skills"
+            ],
+            "name": "Basic Skills",
+            "sno": "S04_SkillRankBonus_Generic_Category_Basic"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001D6E31",
+            "keys": [
+                "core-skills",
+                "ranks-to-core-skills"
+            ],
+            "name": "Core Skills",
+            "sno": "S04_SkillRankBonus_Generic_Category_Core"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001D6E33",
+            "keys": [
+                "wrath-skills",
+                "ranks-to-wrath-skills"
+            ],
+            "name": "Wrath Skills (Druid)",
+            "sno": "S04_SkillRankBonus_Druid_Category_Wrath"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6E3D",
+            "keys": [
+                "conjuration-skills",
+                "ranks-to-conjuration-skills"
+            ],
+            "name": "Conjuration Skills (Sorcerer)",
+            "sno": "S04_SkillRankBonus_Sorc_Category_Conjuration"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001D6E3F",
+            "keys": [
+                "mastery-skills",
+                "ranks-to-mastery-skills"
+            ],
+            "name": "Mastery Skills (Sorcerer)",
+            "sno": "S04_SkillRankBonus_Sorc_Category_Mastery"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001D6E41",
+            "keys": [
+                "agility-skills",
+                "ranks-to-agility-skills"
+            ],
+            "name": "Agility Skills (Rogue)",
+            "sno": "S04_SkillRankBonus_Rogue_Category_Agility"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001D6E43",
+            "keys": [
+                "subterfuge-skills",
+                "ranks-to-subterfuge-skills"
+            ],
+            "name": "Subterfuge Skills (Rogue)",
+            "sno": "S04_SkillRankBonus_Rogue_Category_Subterfuge"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001D6E45",
+            "keys": [
+                "imbuements-skills",
+                "ranks-to-imbuements-skills"
+            ],
+            "name": "Imbuements Skills (Rogue)",
+            "sno": "S04_SkillRankBonus_Rogue_Category_Imbuements"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001D6E47",
+            "keys": [
+                "macabre-skills",
+                "ranks-to-macabre-skills"
+            ],
+            "name": "Macabre Skills (Necromancer)",
+            "sno": "S04_SkillRankBonus_Necro_Category_Macabre"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001D6E49",
+            "keys": [
+                "curse-skills",
+                "ranks-to-curse-skills"
+            ],
+            "name": "Curse Skills (Necromancer)",
+            "sno": "S04_SkillRankBonus_Necro_Category_Curse"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001D6E4B",
+            "keys": [
+                "corpse-skills",
+                "ranks-to-corpse-skills"
+            ],
+            "name": "Corpse Skills (Necromancer)",
+            "sno": "S04_SkillRankBonus_Necro_Category_Corpse"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001D6E4F",
+            "keys": [
+                "skeleton-warrior",
+                "ranks-to-skeleton-warrior"
+            ],
+            "name": "Skeleton Warrior",
+            "sno": "S04_SkillRankBonus_Necro_Talent_SkeletonWarrior"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001D6E51",
+            "keys": [
+                "skeleton-mage",
+                "ranks-to-skeleton-mage"
+            ],
+            "name": "Skeleton Mage",
+            "sno": "S04_SkillRankBonus_Necro_Talent_SkeletonMage"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x001D6E53",
+            "keys": [
+                "golem",
+                "ranks-to-golem"
+            ],
+            "name": "Golem",
+            "sno": "S04_SkillRankBonus_Necro_Talent_Golem"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x001D6E63",
+            "keys": [
+                "damage-reduction"
+            ],
+            "name": "Damage Reduction",
+            "sno": "S04_DamageReduction"
+        },
+        {
+            "classes": [
+                "Sorcerer",
+                "Druid",
+                "Rogue",
+                "Necromancer"
+            ],
+            "hash": "0x001D6E65",
+            "keys": [
+                "projectile-skill-damage"
+            ],
+            "name": "Projectile Skill Damage",
+            "sno": "S04_Projectiles_Skill_Generic"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x001E791E",
+            "keys": [
+                "stone-burst",
+                "ranks-to-stone-burst"
+            ],
+            "name": "Stone Burst",
+            "sno": "X1_SkillRankBonus_Druid_Core_StoneBurst"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x001E7931",
+            "keys": [
+                "dance-of-knives",
+                "ranks-to-dance-of-knives"
+            ],
+            "name": "Dance of Knives",
+            "sno": "X1_SkillRankBonus_Rogue_Special_DanceOfKnives"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x001E79A1",
+            "keys": [
+                "mighty-throw",
+                "ranks-to-mighty-throw"
+            ],
+            "name": "Mighty Throw",
+            "sno": "X1_SkillRankBonus_Barb_Special_WeaponThrow"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x001E79A8",
+            "keys": [
+                "familiar",
+                "ranks-to-familiar"
+            ],
+            "name": "Familiar",
+            "sno": "X1_SkillRankBonus_Sorc_Special_Familiar"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EB481",
+            "keys": [
+                "vigor-on-kill"
+            ],
+            "name": "Vigor On Kill",
+            "sno": "S04_Resource_On_Kill_Vigor"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EB549",
+            "keys": [
+                "vigor-regeneration"
+            ],
+            "name": "Vigor Regeneration",
+            "sno": "S04_Resource_Per_Second_Vigor"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EB8A4",
+            "keys": [
+                "rock-splitter",
+                "ranks-to-rock-splitter"
+            ],
+            "name": "Rock Splitter",
+            "sno": "X1_SkillRankBonus_Spiritborn_Basic_RockSplitter"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBBAD",
+            "keys": [
+                "thunderspike",
+                "ranks-to-thunderspike"
+            ],
+            "name": "Thunderspike",
+            "sno": "X1_SkillRankBonus_Spiritborn_Basic_Thunderspike"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBBB7",
+            "keys": [
+                "thrash",
+                "ranks-to-thrash"
+            ],
+            "name": "Thrash",
+            "sno": "X1_SkillRankBonus_Spiritborn_Basic_Thrash"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBD1B",
+            "keys": [
+                "withering-fist",
+                "ranks-to-withering-fist"
+            ],
+            "name": "Withering Fist",
+            "sno": "X1_SkillRankBonus_Spiritborn_Basic_WitheringFist"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBD36",
+            "keys": [
+                "crushing-hand",
+                "ranks-to-crushing-hand"
+            ],
+            "name": "Crushing Hand",
+            "sno": "X1_SkillRankBonus_Spiritborn_Core_CrushingHand"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBD49",
+            "keys": [
+                "quill-volley",
+                "ranks-to-quill-volley"
+            ],
+            "name": "Quill Volley",
+            "sno": "X1_SkillRankBonus_Spiritborn_Core_QuillVolley"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBD60",
+            "keys": [
+                "rake",
+                "ranks-to-rake"
+            ],
+            "name": "Rake",
+            "sno": "X1_SkillRankBonus_Spiritborn_Core_Rake"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBDB9",
+            "keys": [
+                "stinger",
+                "ranks-to-stinger"
+            ],
+            "name": "Stinger",
+            "sno": "X1_SkillRankBonus_Spiritborn_Core_Stinger"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBDFD",
+            "keys": [
+                "focus-skills",
+                "ranks-to-focus-skills"
+            ],
+            "name": "Focus Skills (Spiritborn)",
+            "sno": "X1_SkillRankBonus_Spiritborn_Category_Focus"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EBEE9",
+            "keys": [
+                "vortex",
+                "ranks-to-vortex"
+            ],
+            "name": "Vortex",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_Vortex"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EC0FE",
+            "keys": [
+                "soar",
+                "ranks-to-soar"
+            ],
+            "name": "Soar",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_Soar"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EC119",
+            "keys": [
+                "ravager",
+                "ranks-to-ravager"
+            ],
+            "name": "Ravager",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_Ravager"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EC199",
+            "keys": [
+                "toxic-skin",
+                "ranks-to-toxic-skin"
+            ],
+            "name": "Toxic Skin",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_ToxicSkin"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001EC1B8",
+            "keys": [
+                "armored-hide",
+                "ranks-to-armored-hide"
+            ],
+            "name": "Armored Hide",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_ArmoredHide"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001ED05A",
+            "keys": [
+                "concussivestormp-skills",
+                "ranks-to-concussivestormp-skills"
+            ],
+            "name": "ConcussiveStormp Skills (Spiritborn)",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_ConcussiveStormp"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001ED0CB",
+            "keys": [
+                "counterattack",
+                "ranks-to-counterattack"
+            ],
+            "name": "Counterattack",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_Counterattack"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001ED1D4",
+            "keys": [
+                "scourge",
+                "ranks-to-scourge"
+            ],
+            "name": "Scourge",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_Scourge"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001ED2C8",
+            "keys": [
+                "potency-skills",
+                "ranks-to-potency-skills"
+            ],
+            "name": "Potency Skills (Spiritborn)",
+            "sno": "X1_SkillRankBonus_Spiritborn_Category_Potency"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001ED2E9",
+            "keys": [
+                "payback",
+                "ranks-to-payback"
+            ],
+            "name": "Payback",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_Payback"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001ED2F1",
+            "keys": [
+                "razor-wings",
+                "ranks-to-razor-wings"
+            ],
+            "name": "Razor Wings",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_RazorWings"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001ED338",
+            "keys": [
+                "rushing-claw",
+                "ranks-to-rushing-claw"
+            ],
+            "name": "Rushing Claw",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_RushingClaw"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x001ED34D",
+            "keys": [
+                "touch-of-death",
+                "ranks-to-touch-of-death"
+            ],
+            "name": "Touch of Death",
+            "sno": "X1_SkillRankBonus_Spiritborn_Special_TouchOfDeath"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x0024527F",
+            "keys": [
+                "lucky-hit-restore-primary-resource"
+            ],
+            "name": "Lucky Hit Restore Primary Resource",
+            "sno": "S10_Lucky_Hit_Resource_Flat"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x0024F051",
+            "keys": [
+                "blessed-shield",
+                "ranks-to-blessed-shield"
+            ],
+            "name": "Blessed Shield",
+            "sno": "X2_SkillRankBonus_Paladin_Core_BlessedShield"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x0024F057",
+            "keys": [
+                "blessed-hammer",
+                "ranks-to-blessed-hammer"
+            ],
+            "name": "Blessed Hammer",
+            "sno": "X2_SkillRankBonus_Paladin_Core_BlessedHammer"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x0024F06A",
+            "keys": [
+                "zealot-skills",
+                "ranks-to-zealot-skills"
+            ],
+            "name": "Zealot Skills (Paladin)",
+            "sno": "X2_SkillRankBonus_Paladin_Category_Zealot"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x0025122E",
+            "keys": [
+                "shield-bash",
+                "ranks-to-shield-bash"
+            ],
+            "name": "Shield Bash",
+            "sno": "X2_SkillRankBonus_Paladin_Core_ShieldBash"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x002539AB",
+            "keys": [
+                "advance",
+                "ranks-to-advance"
+            ],
+            "name": "Advance",
+            "sno": "X2_SkillRankBonus_Paladin_Basic_Advance"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00253A6C",
+            "keys": [
+                "brandish",
+                "ranks-to-brandish"
+            ],
+            "name": "Brandish",
+            "sno": "X2_SkillRankBonus_Paladin_Basic_Brandish"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x002557E4",
+            "keys": [
+                "physical-resistance"
+            ],
+            "name": "Physical Resistance",
+            "sno": "S04_Resistance_Single_Physical"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x0025B0E2",
+            "keys": [
+                "divine-lance",
+                "ranks-to-divine-lance"
+            ],
+            "name": "Divine Lance",
+            "sno": "X2_SkillRankBonus_Paladin_Core_DivineLance"
+        },
+        {
+            "classes": [
+                "Sorcerer",
+                "Druid",
+                "Barbarian",
+                "Rogue",
+                "Necromancer",
+                "Spiritborn",
+                "Paladin"
+            ],
+            "hash": "0x0025DA8C",
+            "keys": [
+                "life-on-kill"
+            ],
+            "name": "Life On Kill",
+            "sno": "S11_LifeOnKill"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AA5",
+            "keys": [
+                "holy-bolt",
+                "ranks-to-holy-bolt"
+            ],
+            "name": "Holy Bolt",
+            "sno": "X2_SkillRankBonus_Paladin_Basic_HolyBolt"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AA7",
+            "keys": [
+                "clash",
+                "ranks-to-clash"
+            ],
+            "name": "Clash",
+            "sno": "X2_SkillRankBonus_Paladin_Basic_Clash"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261ABB",
+            "keys": [
+                "fanaticism-aura",
+                "ranks-to-fanaticism-aura"
+            ],
+            "name": "Fanaticism Aura",
+            "sno": "X2_SkillRankBonus_Paladin_Aura_FanaticismAura"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261ABD",
+            "keys": [
+                "holy-light-aura",
+                "ranks-to-holy-light-aura"
+            ],
+            "name": "Holy Light Aura",
+            "sno": "X2_SkillRankBonus_Paladin_Aura_HolyLightAura"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261ABF",
+            "keys": [
+                "defiance-aura",
+                "ranks-to-defiance-aura"
+            ],
+            "name": "Defiance Aura",
+            "sno": "X2_SkillRankBonus_Paladin_Aura_DefianceAura"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AC2",
+            "keys": [
+                "aura-skills",
+                "ranks-to-aura-skills"
+            ],
+            "name": "Aura Skills (Paladin)",
+            "sno": "X2_SkillRankBonus_Paladin_Category_Aura"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AC7",
+            "keys": [
+                "valor-skills",
+                "ranks-to-valor-skills"
+            ],
+            "name": "Valor Skills (Paladin)",
+            "sno": "X2_SkillRankBonus_Paladin_Category_Valor"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261ACC",
+            "keys": [
+                "arbiter-of-justice",
+                "ranks-to-arbiter-of-justice"
+            ],
+            "name": "Arbiter of Justice",
+            "sno": "X2_SkillRankBonus_Paladin_Category_Justice"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261ACE",
+            "keys": [
+                "aegis",
+                "ranks-to-aegis"
+            ],
+            "name": "Aegis",
+            "sno": "X2_SkillRankBonus_Paladin_Valor_Aegis"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AD8",
+            "keys": [
+                "shield-charge",
+                "ranks-to-shield-charge"
+            ],
+            "name": "Shield Charge",
+            "sno": "X2_SkillRankBonus_Paladin_Valor_ShieldCharge"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261ADD",
+            "keys": [
+                "falling-star",
+                "ranks-to-falling-star"
+            ],
+            "name": "Falling Star",
+            "sno": "X2_SkillRankBonus_Paladin_Valor_FallingStar"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AE2",
+            "keys": [
+                "rally",
+                "ranks-to-rally"
+            ],
+            "name": "Rally",
+            "sno": "X2_SkillRankBonus_Paladin_Valor_Rally"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AE4",
+            "keys": [
+                "consecration",
+                "ranks-to-consecration"
+            ],
+            "name": "Consecration",
+            "sno": "X2_SkillRankBonus_Paladin_Justice_Consecration"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AE6",
+            "keys": [
+                "purify",
+                "ranks-to-purify"
+            ],
+            "name": "Purify",
+            "sno": "X2_SkillRankBonus_Paladin_Justice_Purify"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AE8",
+            "keys": [
+                "condemn",
+                "ranks-to-condemn"
+            ],
+            "name": "Condemn",
+            "sno": "X2_SkillRankBonus_Paladin_Justice_Condemn"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00261AEA",
+            "keys": [
+                "spear-of-the-heavens",
+                "ranks-to-spear-of-the-heavens"
+            ],
+            "name": "Spear of the Heavens",
+            "sno": "X2_SkillRankBonus_Paladin_Justice_SpearOfTheHeavens"
+        },
+        {
+            "classes": [
+                "Druid",
+                "Barbarian",
+                "Rogue",
+                "Necromancer",
+                "Paladin",
+                "Warlock"
+            ],
+            "hash": "0x00266B1E",
+            "keys": [
+                "damage-while-fortified"
+            ],
+            "name": "Damage while Fortified",
+            "sno": "S11_FortifyGeneration"
+        },
+        {
+            "classes": [
+                "Sorcerer",
+                "Druid",
+                "Barbarian",
+                "Rogue",
+                "Necromancer",
+                "Spiritborn"
+            ],
+            "hash": "0x00266B22",
+            "keys": [
+                "barrier-generation"
+            ],
+            "name": "Barrier Generation",
+            "sno": "S11_BarrierGeneration"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x002674B9",
+            "keys": [
+                "faith-regeneration"
+            ],
+            "name": "Faith Regeneration",
+            "sno": "S04_Resource_Per_Second_Faith"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x002674BB",
+            "keys": [
+                "faith-on-kill"
+            ],
+            "name": "Faith On Kill",
+            "sno": "S04_Resource_On_Kill_Faith"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026A374",
+            "keys": [
+                "wrath-on-kill"
+            ],
+            "name": "Wrath On Kill",
+            "sno": "S04_Resource_On_Kill_Wrath"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026A37C",
+            "keys": [
+                "wrath-regeneration"
+            ],
+            "name": "Wrath Regeneration",
+            "sno": "S04_Resource_Per_Second_Wrath"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD42",
+            "keys": [
+                "hell-fracture",
+                "ranks-to-hell-fracture"
+            ],
+            "name": "Hell Fracture",
+            "sno": "X2_SkillRankBonus_Warlock_Core_HellFracture"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD44",
+            "keys": [
+                "umbral-chains",
+                "ranks-to-umbral-chains"
+            ],
+            "name": "Umbral Chains",
+            "sno": "X2_SkillRankBonus_Warlock_Core_UmbralChains"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD46",
+            "keys": [
+                "blazing-scream",
+                "ranks-to-blazing-scream"
+            ],
+            "name": "Blazing Scream",
+            "sno": "X2_SkillRankBonus_Warlock_Core_BlazingScream"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD48",
+            "keys": [
+                "dread-claws",
+                "ranks-to-dread-claws"
+            ],
+            "name": "Dread Claws",
+            "sno": "X2_SkillRankBonus_Warlock_Core_DreadClaws"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD4D",
+            "keys": [
+                "command-fallen",
+                "ranks-to-command-fallen"
+            ],
+            "name": "Command Fallen",
+            "sno": "X2_SkillRankBonus_Warlock_Basic_CommandFallen"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD68",
+            "keys": [
+                "molten-bomb",
+                "ranks-to-molten-bomb"
+            ],
+            "name": "Molten Bomb",
+            "sno": "X2_SkillRankBonus_Warlock_Basic_MoltenBomb"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD6A",
+            "keys": [
+                "doom",
+                "ranks-to-doom"
+            ],
+            "name": "Doom",
+            "sno": "X2_SkillRankBonus_Warlock_Basic_Doom"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD6C",
+            "keys": [
+                "hellion-sting",
+                "ranks-to-hellion-sting"
+            ],
+            "name": "Hellion Sting",
+            "sno": "X2_SkillRankBonus_Warlock_Basic_HellionSting"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD71",
+            "keys": [
+                "wall-of-agony",
+                "ranks-to-wall-of-agony"
+            ],
+            "name": "Wall of Agony",
+            "sno": "X2_SkillRankBonus_Warlock_Special_WallofAgony"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD78",
+            "keys": [
+                "tortured-wretch",
+                "ranks-to-tortured-wretch"
+            ],
+            "name": "Tortured Wretch",
+            "sno": "X2_SkillRankBonus_Warlock_Special_TorturedWretch"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD7A",
+            "keys": [
+                "dark-prison",
+                "ranks-to-dark-prison"
+            ],
+            "name": "Dark Prison",
+            "sno": "X2_SkillRankBonus_Warlock_Special_DarkPrison"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD7C",
+            "keys": [
+                "nether-step",
+                "ranks-to-nether-step"
+            ],
+            "name": "Nether Step",
+            "sno": "X2_SkillRankBonus_Warlock_Special_NetherStep"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD7E",
+            "keys": [
+                "rampage",
+                "ranks-to-rampage"
+            ],
+            "name": "Rampage",
+            "sno": "X2_SkillRankBonus_Warlock_Special_Rampage"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD80",
+            "keys": [
+                "infernal-breath",
+                "ranks-to-infernal-breath"
+            ],
+            "name": "Infernal Breath",
+            "sno": "X2_SkillRankBonus_Warlock_Special_InfernalBreath"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD83",
+            "keys": [
+                "tyrants-grasp",
+                "ranks-to-tyrants-grasp"
+            ],
+            "name": "Tyrant's Grasp",
+            "sno": "X2_SkillRankBonus_Warlock_Special_TyrantsGrasp"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD85",
+            "keys": [
+                "profane-sentinel",
+                "ranks-to-profane-sentinel"
+            ],
+            "name": "Profane Sentinel",
+            "sno": "X2_SkillRankBonus_Warlock_Special_ProfaneSentinel"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD87",
+            "keys": [
+                "sigil-of-subversion",
+                "ranks-to-sigil-of-subversion"
+            ],
+            "name": "Sigil of Subversion",
+            "sno": "X2_SkillRankBonus_Warlock_Special_SigilofSubversion"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD89",
+            "keys": [
+                "sigil-of-summons",
+                "ranks-to-sigil-of-summons"
+            ],
+            "name": "Sigil of Summons",
+            "sno": "X2_SkillRankBonus_Warlock_Special_SigilofSummons"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026AD8B",
+            "keys": [
+                "sigil-of-chaos",
+                "ranks-to-sigil-of-chaos"
+            ],
+            "name": "Sigil of Chaos",
+            "sno": "X2_SkillRankBonus_Warlock_Special_SigilofChaos"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026ADC2",
+            "keys": [
+                "occult-skills",
+                "ranks-to-occult-skills"
+            ],
+            "name": "Occult Skills (Warlock)",
+            "sno": "X2_SkillRankBonus_Warlock_Category_Occult"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026ADC4",
+            "keys": [
+                "hellfire-skills",
+                "ranks-to-hellfire-skills"
+            ],
+            "name": "Hellfire Skills (Warlock)",
+            "sno": "X2_SkillRankBonus_Warlock_Category_Hellfire"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026ADC6",
+            "keys": [
+                "abyss-skills",
+                "ranks-to-abyss-skills"
+            ],
+            "name": "Abyss Skills (Warlock)",
+            "sno": "X2_SkillRankBonus_Warlock_Category_Abyss"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026ADC8",
+            "keys": [
+                "demonology-skills",
+                "ranks-to-demonology-skills"
+            ],
+            "name": "Demonology Skills (Warlock)",
+            "sno": "X2_SkillRankBonus_Warlock_Category_Demonology"
+        },
+        {
+            "classes": [
+                "Warlock"
+            ],
+            "hash": "0x0026ADCD",
+            "keys": [
+                "bombardment",
+                "ranks-to-bombardment"
+            ],
+            "name": "Bombardment",
+            "sno": "X2_SkillRankBonus_Warlock_Core_Bombardment"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x0026C56C",
+            "keys": [
+                "attacks-reduce-evade-cooldown"
+            ],
+            "name": "Attacks Reduce Evade Cooldown",
+            "sno": "X2_Evade_Attack_Reset"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x0026C56E",
+            "keys": [
+                "maximum-evade-charge"
+            ],
+            "name": "Maximum Evade Charge",
+            "sno": "X2_Evade_Charges"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x0026C570",
+            "keys": [
+                "evade-grants-movement-speed"
+            ],
+            "name": "Evade Grants Movement Speed",
+            "sno": "X2_Evade_MovementSpeed"
+        },
+        {
+            "classes": [
+                "Druid",
+                "Barbarian",
+                "Rogue",
+                "Necromancer",
+                "Spiritborn",
+                "Paladin",
+                "Warlock"
+            ],
+            "hash": "0x00270AD0",
+            "keys": [
+                "physical-damage",
+                "physical-damage-multiplier"
+            ],
+            "name": "Physical Damage",
+            "sno": "X2_DamageType_Physical"
+        },
+        {
+            "classes": [
+                "Sorcerer",
+                "Rogue",
+                "Necromancer"
+            ],
+            "hash": "0x00270AF5",
+            "keys": [
+                "cold-damage",
+                "cold-damage-multiplier"
+            ],
+            "name": "Cold Damage",
+            "sno": "X2_DamageType_Cold"
+        },
+        {
+            "classes": [
+                "Sorcerer",
+                "Barbarian",
+                "Spiritborn",
+                "Warlock"
+            ],
+            "hash": "0x00270AF7",
+            "keys": [
+                "fire-damage",
+                "fire-damage-multiplier"
+            ],
+            "name": "Fire Damage",
+            "sno": "X2_DamageType_Fire"
+        },
+        {
+            "classes": [
+                "Rogue",
+                "Necromancer",
+                "Warlock"
+            ],
+            "hash": "0x00270AF9",
+            "keys": [
+                "shadow-damage",
+                "shadow-damage-multiplier"
+            ],
+            "name": "Shadow Damage",
+            "sno": "X2_DamageType_Shadow"
+        },
+        {
+            "classes": [
+                "Druid",
+                "Rogue",
+                "Spiritborn"
+            ],
+            "hash": "0x00270AFB",
+            "keys": [
+                "poison-damage",
+                "poison-damage-multiplier"
+            ],
+            "name": "Poison Damage",
+            "sno": "X2_DamageType_Poison"
+        },
+        {
+            "classes": [
+                "Sorcerer",
+                "Druid",
+                "Spiritborn"
+            ],
+            "hash": "0x00270AFD",
+            "keys": [
+                "lightning-damage",
+                "lightning-damage-multiplier"
+            ],
+            "name": "Lightning Damage",
+            "sno": "X2_DamageType_Lightning"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00270AFF",
+            "keys": [
+                "holy-damage",
+                "holy-damage-multiplier"
+            ],
+            "name": "Holy Damage",
+            "sno": "X2_DamageType_Holy"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x00273C0A",
+            "keys": [
+                "all-skills",
+                "ranks-to-all-skills"
+            ],
+            "name": "All Skills",
+            "sno": "X2_SkillRankBonus_AllSkills"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x002782A5",
+            "keys": [
+                "ancients-skills",
+                "ranks-to-ancients-skills"
+            ],
+            "name": "Ancients Skills (Barbarian)",
+            "sno": "X2_SkillRankBonus_Barb_Special_Ancients"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x002782A9",
+            "keys": [
+                "dust-devil",
+                "ranks-to-dust-devil"
+            ],
+            "name": "Dust Devil",
+            "sno": "X2_SkillRankBonus_Barb_Special_DustDevils"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x002782AB",
+            "keys": [
+                "earthquake",
+                "ranks-to-earthquake"
+            ],
+            "name": "Earthquake",
+            "sno": "X2_SkillRankBonus_Barb_Special_Earthquake"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x002782AF",
+            "keys": [
+                "iron-shrapnel",
+                "ranks-to-iron-shrapnel"
+            ],
+            "name": "Iron Shrapnel",
+            "sno": "X2_SkillRankBonus_Barb_Special_IronShrapnel"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x002782B1",
+            "keys": [
+                "grenade-skills",
+                "ranks-to-grenade-skills"
+            ],
+            "name": "Grenade Skills (Rogue)",
+            "sno": "X2_SkillRankBonus_Rogue_Special_Grenade"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x002782B3",
+            "keys": [
+                "shade-skills",
+                "ranks-to-shade-skills"
+            ],
+            "name": "Shade Skills (Rogue)",
+            "sno": "X2_SkillRankBonus_Rogue_Special_Shade"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x002782B5",
+            "keys": [
+                "arrow-storm",
+                "ranks-to-arrow-storm"
+            ],
+            "name": "Arrow Storm",
+            "sno": "X2_SkillRankBonus_Rogue_Special_ArrowStorm"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x002782B7",
+            "keys": [
+                "human-skills",
+                "ranks-to-human-skills"
+            ],
+            "name": "Human Skills (Druid)",
+            "sno": "X2_SkillRankBonus_Druid_Special_Human"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x002782B9",
+            "keys": [
+                "versatile-skills",
+                "ranks-to-versatile-skills"
+            ],
+            "name": "Versatile Skills (Druid)",
+            "sno": "X2_SkillRankBonus_Druid_Special_Versatile"
+        },
+        {
+            "classes": [
+                "All"
+            ],
+            "hash": "0x0027FC93",
+            "keys": [
+                "weapon-damage"
+            ],
+            "name": "Weapon Damage",
+            "sno": "X2_Fast_Weapon_Damage_1HAxe"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x00280B83",
+            "keys": [
+                "bludgeoning-skills",
+                "ranks-to-bludgeoning-skills"
+            ],
+            "name": "Bludgeoning Skills (Barbarian)",
+            "sno": "X2_SkillRankBonus_Barb_Category_Bludgeoning"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x00280B85",
+            "keys": [
+                "dualwield-skills",
+                "ranks-to-dualwield-skills"
+            ],
+            "name": "DualWield Skills (Barbarian)",
+            "sno": "X2_SkillRankBonus_Barb_Category_DualWield"
+        },
+        {
+            "classes": [
+                "Barbarian"
+            ],
+            "hash": "0x00280B87",
+            "keys": [
+                "slashing-skills",
+                "ranks-to-slashing-skills"
+            ],
+            "name": "Slashing Skills (Barbarian)",
+            "sno": "X2_SkillRankBonus_Barb_Category_Slashing"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x00280B89",
+            "keys": [
+                "earth-skills",
+                "ranks-to-earth-skills"
+            ],
+            "name": "Earth Skills (Druid)",
+            "sno": "X2_SkillRankBonus_Druid_Category_Earth"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x00280B8B",
+            "keys": [
+                "naturemagic-skills",
+                "ranks-to-naturemagic-skills"
+            ],
+            "name": "NatureMagic Skills (Druid)",
+            "sno": "X2_SkillRankBonus_Druid_Category_NatureMagic"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x00280B8D",
+            "keys": [
+                "shapeshifting-skills",
+                "ranks-to-shapeshifting-skills"
+            ],
+            "name": "Shapeshifting Skills (Druid)",
+            "sno": "X2_SkillRankBonus_Druid_Category_Shapeshifting"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x00280B8F",
+            "keys": [
+                "storm-skills",
+                "ranks-to-storm-skills"
+            ],
+            "name": "Storm Skills (Druid)",
+            "sno": "X2_SkillRankBonus_Druid_Category_Storm"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x00280B91",
+            "keys": [
+                "werebear-skills",
+                "ranks-to-werebear-skills"
+            ],
+            "name": "Werebear Skills (Druid)",
+            "sno": "X2_SkillRankBonus_Druid_Category_Werebear"
+        },
+        {
+            "classes": [
+                "Druid"
+            ],
+            "hash": "0x00280B93",
+            "keys": [
+                "werewolf-skills",
+                "ranks-to-werewolf-skills"
+            ],
+            "name": "Werewolf Skills (Druid)",
+            "sno": "X2_SkillRankBonus_Druid_Category_Werewolf"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x00280B95",
+            "keys": [
+                "blood-skills",
+                "ranks-to-blood-skills"
+            ],
+            "name": "Blood Skills (Necromancer)",
+            "sno": "X2_SkillRankBonus_Necro_Category_Blood"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x00280B97",
+            "keys": [
+                "bone-skills",
+                "ranks-to-bone-skills"
+            ],
+            "name": "Bone Skills (Necromancer)",
+            "sno": "X2_SkillRankBonus_Necro_Category_Bone"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x00280B99",
+            "keys": [
+                "darkness-skills",
+                "ranks-to-darkness-skills"
+            ],
+            "name": "Darkness Skills (Necromancer)",
+            "sno": "X2_SkillRankBonus_Necro_Category_Darkness"
+        },
+        {
+            "classes": [
+                "Necromancer"
+            ],
+            "hash": "0x00280B9B",
+            "keys": [
+                "minion-skills",
+                "ranks-to-minion-skills"
+            ],
+            "name": "Minion Skills (Necromancer)",
+            "sno": "X2_SkillRankBonus_Necro_Category_Minion"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00280B9D",
+            "keys": [
+                "disciple-skills",
+                "ranks-to-disciple-skills"
+            ],
+            "name": "Disciple Skills (Paladin)",
+            "sno": "X2_SkillRankBonus_Paladin_Category_Disciple"
+        },
+        {
+            "classes": [
+                "Paladin"
+            ],
+            "hash": "0x00280B9F",
+            "keys": [
+                "juggernaut-skills",
+                "ranks-to-juggernaut-skills"
+            ],
+            "name": "Juggernaut Skills (Paladin)",
+            "sno": "X2_SkillRankBonus_Paladin_Category_Juggernaut"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x00280BA1",
+            "keys": [
+                "cutthroat-skills",
+                "ranks-to-cutthroat-skills"
+            ],
+            "name": "Cutthroat Skills (Rogue)",
+            "sno": "X2_SkillRankBonus_Rogue_Category_Cutthroat"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x00280BA5",
+            "keys": [
+                "marksman-skills",
+                "ranks-to-marksman-skills"
+            ],
+            "name": "Marksman Skills (Rogue)",
+            "sno": "X2_SkillRankBonus_Rogue_Category_Marksman"
+        },
+        {
+            "classes": [
+                "Rogue"
+            ],
+            "hash": "0x00280BA7",
+            "keys": [
+                "trap-skills",
+                "ranks-to-trap-skills"
+            ],
+            "name": "Trap Skills (Rogue)",
+            "sno": "X2_SkillRankBonus_Rogue_Category_Trap"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x00280BA9",
+            "keys": [
+                "frost-skills",
+                "ranks-to-frost-skills"
+            ],
+            "name": "Frost Skills (Sorcerer)",
+            "sno": "X2_SkillRankBonus_Sorc_Category_Frost"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x00280BAB",
+            "keys": [
+                "pyromancy-skills",
+                "ranks-to-pyromancy-skills"
+            ],
+            "name": "Pyromancy Skills (Sorcerer)",
+            "sno": "X2_SkillRankBonus_Sorc_Category_Pyromancy"
+        },
+        {
+            "classes": [
+                "Sorcerer"
+            ],
+            "hash": "0x00280BAD",
+            "keys": [
+                "shock-skills",
+                "ranks-to-shock-skills"
+            ],
+            "name": "Shock Skills (Sorcerer)",
+            "sno": "X2_SkillRankBonus_Sorc_Category_Shock"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x00280BAF",
+            "keys": [
+                "centipede-skills",
+                "ranks-to-centipede-skills"
+            ],
+            "name": "Centipede Skills (Spiritborn)",
+            "sno": "X2_SkillRankBonus_Spiritborn_Category_Centipede"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x00280BB1",
+            "keys": [
+                "eagle-skills",
+                "ranks-to-eagle-skills"
+            ],
+            "name": "Eagle Skills (Spiritborn)",
+            "sno": "X2_SkillRankBonus_Spiritborn_Category_Eagle"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x00280BB3",
+            "keys": [
+                "gorilla-skills",
+                "ranks-to-gorilla-skills"
+            ],
+            "name": "Gorilla Skills (Spiritborn)",
+            "sno": "X2_SkillRankBonus_Spiritborn_Category_Gorilla"
+        },
+        {
+            "classes": [
+                "Spiritborn"
+            ],
+            "hash": "0x00280BB5",
+            "keys": [
+                "jaguar-skills",
+                "ranks-to-jaguar-skills"
+            ],
+            "name": "Jaguar Skills (Spiritborn)",
+            "sno": "X2_SkillRankBonus_Spiritborn_Category_Jaguar"
+        }
+    ]
+}

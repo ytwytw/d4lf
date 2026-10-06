@@ -266,5 +266,22 @@ class GameCatalog:
     def resolve_tribute(self, value: str) -> str | None:
         return self._resolve_alias(value, self._tribute_aliases)
 
-    def resolve_unique(self, value: str) -> str | None:
-        return self._resolve_alias(value, self._unique_aliases)
+    def resolve_unique(self, value: str, *, item_type: ItemType | None = None) -> str | None:
+        resolved = self._resolve_alias(value, self._unique_aliases)
+        if resolved is not None or item_type is None:
+            return resolved
+        candidates: list[str] = []
+        for canonical, metadata in self.aspect_unique_dict.items():
+            if self._resolve_alias(value, self._unique_alias_index({canonical: metadata})) is None:
+                continue
+            item_types = metadata.get("item_types")
+            # Missing type evidence cannot exclude another identity sharing this name.
+            if (
+                not isinstance(item_types, list)
+                or not item_types
+                or any(not isinstance(name, str) or name not in ItemType.__members__ for name in item_types)
+            ):
+                return None
+            if item_type.name in item_types:
+                candidates.append(canonical)
+        return candidates[0] if len(candidates) == 1 else None

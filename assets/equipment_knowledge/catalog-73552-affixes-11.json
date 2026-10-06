@@ -1,0 +1,1506 @@
+{
+    "affixes": [
+        {
+            "canonical_name": null,
+            "key": "Tempered_Resource_Gain_Generic_Tag_Basics_Tier3",
+            "name_en": "[15.0 - 25.0]% Basic Resource Generation",
+            "name_zh": "[15.0 - 25.0]% 基础资源生成量",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_25%",
+                        "id": 185,
+                        "param": -954965341
+                    }
+                ],
+                "charType": [],
+                "desc": "[15.0 - 25.0]% Basic Resource Generation",
+                "descTpl": "[{VALUE2}*100|1%|] Basic Resource Generation",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.25,
+                        "min": 0.15
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Weapon Attunement — Barbarian",
+                "id": 1859764,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_Gain_Generic_Tag_Basics_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_25%",
+                        "id": 185,
+                        "param": -954965341
+                    }
+                ],
+                "charType": [],
+                "desc": "[15.0 - 25.0]% 基础资源生成量",
+                "descTpl": "[{VALUE2}*100|1%|] 基础资源生成量",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.25,
+                        "min": 0.15
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "武器调谐：死灵法师",
+                "id": 1859764,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_Gain_Generic_Tag_Basics_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1859764
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_Resource_Gain_Generic_Tag_Basics_Tier3",
+            "name_en": "[15.0 - 25.0]% Basic Resource Generation",
+            "name_zh": "[15.0 - 25.0]% 基础资源生成量",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_25%",
+                        "id": 185,
+                        "param": -954965341
+                    }
+                ],
+                "charType": [],
+                "desc": "[15.0 - 25.0]% Basic Resource Generation",
+                "descTpl": "[{VALUE2}*100|1%|] Basic Resource Generation",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.25,
+                        "min": 0.15
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Weapon Attunement — Necromancer",
+                "id": 1859764,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_Gain_Generic_Tag_Basics_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_25%",
+                        "id": 185,
+                        "param": -954965341
+                    }
+                ],
+                "charType": [],
+                "desc": "[15.0 - 25.0]% 基础资源生成量",
+                "descTpl": "[{VALUE2}*100|1%|] 基础资源生成量",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.25,
+                        "min": 0.15
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "武器调谐：野蛮人",
+                "id": 1859764,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_Gain_Generic_Tag_Basics_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1859764
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_CDR_Tag_Barb_WeaponMastery_Tier3",
+            "name_en": "[10.0 - 12.5]% Weapon Mastery Cooldown Reduction",
+            "name_zh": "[10.0 - 12.5]% 武器精通冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_12.5%",
+                        "id": 238,
+                        "param": -2052962417
+                    }
+                ],
+                "charType": [],
+                "desc": "[10.0 - 12.5]% Weapon Mastery Cooldown Reduction",
+                "descTpl": "[{VALUE2} * 100|1%|] Weapon Mastery Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.125,
+                        "min": 0.1
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Weapon Mastery Efficiency",
+                "id": 1859748,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Tag_Barb_WeaponMastery_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_12.5%",
+                        "id": 238,
+                        "param": -2052962417
+                    }
+                ],
+                "charType": [],
+                "desc": "[10.0 - 12.5]% 武器精通冷却时间缩减",
+                "descTpl": "[{VALUE2} * 100|1%|] 武器精通冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.125,
+                        "min": 0.1
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "武器精通效能",
+                "id": 1859748,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Tag_Barb_WeaponMastery_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1859748
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_CDR_Skill_Barb_DeathBlow_Tier3",
+            "name_en": "[12.0 - 15.0]% Death Blow Cooldown Reduction",
+            "name_zh": "[12.0 - 15.0]% 死亡重击冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 323105
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% Death Blow Cooldown Reduction",
+                "descTpl": "[{VALUE2} * 100|1%|] Death Blow Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Weapon Mastery Efficiency",
+                "id": 1859745,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Barb_DeathBlow_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}Cooldown:{/c} {c_resource}15{/c} seconds",
+                        "{c_label}Lucky Hit Chance: {/c}{c_resource}50%{/c}",
+                        "Attempt a killing strike, dealing {c_number}300%{/c} damage to enemies in front of you.",
+                        "If this kills an enemy, its Cooldown is reset."
+                    ],
+                    "icon": 875227900,
+                    "id": 323105,
+                    "key": "Barbarian_DeathBlow",
+                    "keywordIds": [],
+                    "name": "Death Blow"
+                },
+                "relatedSkillId": 323105,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 323105
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% 死亡重击冷却时间缩减",
+                "descTpl": "[{VALUE2} * 100|1%|] 死亡重击冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "武器精通效能",
+                "id": 1859745,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Barb_DeathBlow_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}冷却时间: {/c} {c_resource}15{/c} 秒",
+                        "{c_label}幸运一击几率: {/c}{c_resource}50%{/c}",
+                        "试图发动一次致命攻击，对面前的敌人造成 {c_number}300%{/c} 点伤害。",
+                        "如果该技能消灭了一名敌人，则重置其冷却时间。"
+                    ],
+                    "icon": 875227900,
+                    "id": 323105,
+                    "key": "Barbarian_DeathBlow",
+                    "keywordIds": [],
+                    "name": "死亡重击"
+                },
+                "relatedSkillId": 323105,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1859745
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_CDR_Skill_Barb_Rupture_Tier3",
+            "name_en": "[12.0 - 15.0]% Rupture Cooldown Reduction",
+            "name_zh": "[12.0 - 15.0]% 割裂冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 215027
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% Rupture Cooldown Reduction",
+                "descTpl": "[{VALUE2} * 100|1%|] Rupture Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Weapon Mastery Efficiency",
+                "id": 1859743,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Barb_Rupture_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}Cooldown:{/c} {c_resource}10{/c} seconds",
+                        "{c_label}Lucky Hit Chance: {/c}{c_resource}50%{/c}",
+                        "Skewer enemies in front of you, dealing {c_number}20%{/c} damage, then rip your weapon out, inflicting {c_number}180%{/c} Bleeding damage over {c_number}5{/c} seconds. "
+                    ],
+                    "icon": 3752216763,
+                    "id": 215027,
+                    "key": "Barbarian_Rupture",
+                    "keywordIds": [],
+                    "name": "Rupture"
+                },
+                "relatedSkillId": 215027,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 215027
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% 割裂冷却时间缩减",
+                "descTpl": "[{VALUE2} * 100|1%|] 割裂冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "武器精通效能",
+                "id": 1859743,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Barb_Rupture_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}冷却时间:{/c} {c_resource}10{/c} 秒",
+                        "{c_label}幸运一击几率: {/c}{c_resource}50%{/c}",
+                        "刺穿面前的敌人，造成 {c_number}20%{/c} 点伤害，然后拔出你的武器，在 {c_number}5{/c} 秒内造成 {c_number}180%{/c} 点流血伤害。"
+                    ],
+                    "icon": 3752216763,
+                    "id": 215027,
+                    "key": "Barbarian_Rupture",
+                    "keywordIds": [],
+                    "name": "割裂"
+                },
+                "relatedSkillId": 215027,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1859743
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_CDR_Skill_Barb_SteelGrasp_Tier3",
+            "name_en": "[17.0 - 20.0]% Steel Grasp Cooldown Reduction",
+            "name_zh": "[17.0 - 20.0]% 钢铁之握冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_20%",
+                        "id": 236,
+                        "param": 964631
+                    }
+                ],
+                "charType": [],
+                "desc": "[17.0 - 20.0]% Steel Grasp Cooldown Reduction",
+                "descTpl": "[{VALUE2} * 100|1%|] Steel Grasp Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.2,
+                        "min": 0.17
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Weapon Mastery Efficiency",
+                "id": 1859247,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Barb_SteelGrasp_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}Charges:{/c} {c_resource}2{/c}",
+                        "{c_label}Charge Cooldown:{/c} {c_resource}11{/c} seconds",
+                        "{c_label}Lucky Hit Chance: {/c}{c_resource}25%{/c}",
+                        "Throw out a trio of chains that deal {c_number}100%{/c} damage and Pull In enemies."
+                    ],
+                    "icon": 4239023902,
+                    "id": 964631,
+                    "key": "Barbarian_SteelGrasp",
+                    "keywordIds": [],
+                    "name": "Steel Grasp"
+                },
+                "relatedSkillId": 964631,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_20%",
+                        "id": 236,
+                        "param": 964631
+                    }
+                ],
+                "charType": [],
+                "desc": "[17.0 - 20.0]% 钢铁之握冷却时间缩减",
+                "descTpl": "[{VALUE2} * 100|1%|] 钢铁之握冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.2,
+                        "min": 0.17
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "武器精通效能",
+                "id": 1859247,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Barb_SteelGrasp_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}使用次数:{/c} {c_resource}2{/c}",
+                        "{c_label}充能冷却时间:{/c} {c_resource}11{/c} 秒",
+                        "{c_label}幸运一击几率: {/c}{c_resource}25%{/c}",
+                        "扔出三段锁链，造成 {c_number}100%{/c} 点伤害并将敌人拉向你的位置。"
+                    ],
+                    "icon": 4239023902,
+                    "id": 964631,
+                    "key": "Barbarian_SteelGrasp",
+                    "keywordIds": [],
+                    "name": "钢铁之握"
+                },
+                "relatedSkillId": 964631,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1859247
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_Generic_ResourceGain_Tier3",
+            "name_en": "[5.0 - 8.0]% Resource Generation",
+            "name_zh": "[5.0 - 8.0]% 资源生成",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_8%",
+                        "id": 187
+                    }
+                ],
+                "charType": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Spiritborn",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "desc": "[5.0 - 8.0]% Resource Generation",
+                "descTpl": "[{VALUE}*100|1%|] Resource Generation",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.08,
+                        "min": 0.05
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Worldly Stability",
+                "id": 1862348,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Generic_ResourceGain_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_8%",
+                        "id": 187
+                    }
+                ],
+                "charType": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Spiritborn",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "desc": "[5.0 - 8.0]% 资源生成",
+                "descTpl": "[{VALUE}*100|1%|] 资源生成",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.08,
+                        "min": 0.05
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "老练稳定",
+                "id": 1862348,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Generic_ResourceGain_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1862348
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_Generic_Resource_Cost_Reduction_Tier3",
+            "name_en": "[7.0 - 10.0]% Resource Cost Reduction",
+            "name_zh": "[7.0 - 10.0]% 资源消耗减免",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_10%",
+                        "id": 176
+                    }
+                ],
+                "charType": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Spiritborn",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "desc": "[7.0 - 10.0]% Resource Cost Reduction",
+                "descTpl": "[{VALUE}*100|1%|] Resource Cost Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.1,
+                        "min": 0.07
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Worldly Stability",
+                "id": 1923261,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Generic_Resource_Cost_Reduction_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_10%",
+                        "id": 176
+                    }
+                ],
+                "charType": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Spiritborn",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "desc": "[7.0 - 10.0]% 资源消耗减免",
+                "descTpl": "[{VALUE}*100|1%|] 资源消耗减免",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.1,
+                        "min": 0.07
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "老练稳定",
+                "id": 1923261,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Generic_Resource_Cost_Reduction_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1923261
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_Generic_LuckyHit_Resource_Tier3",
+            "name_en": "Lucky Hit: Up to a 15% Chance to Restore +[5 - 12] Primary Resource",
+            "name_zh": "幸运一击: 最多有 15% 几率恢复 +[5 - 12] 主要资源",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_12",
+                        "id": 386
+                    }
+                ],
+                "charType": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Spiritborn",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "desc": "Lucky Hit: Up to a 15% Chance to Restore +[5 - 12] Primary Resource",
+                "descTpl": "Lucky Hit: Up to a 15% Chance to Restore +[{VALUE}] Primary Resource",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 12,
+                        "min": 5
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Worldly Stability",
+                "id": 1862350,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Generic_LuckyHit_Resource_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_12",
+                        "id": 386
+                    }
+                ],
+                "charType": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Spiritborn",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "desc": "幸运一击: 最多有 15% 几率恢复 +[5 - 12] 主要资源",
+                "descTpl": "幸运一击: 最多有 15% 几率恢复 +[{VALUE}] 主要资源",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 12,
+                        "min": 5
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "老练稳定",
+                "id": 1862350,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Generic_LuckyHit_Resource_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1862350
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_Generic_CDR_Tier3",
+            "name_en": "[3.0 - 6.0]% Cooldown Reduction",
+            "name_zh": "[3.0 - 6.0]% 冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_6%",
+                        "id": 237
+                    }
+                ],
+                "charType": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Spiritborn",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "desc": "[3.0 - 6.0]% Cooldown Reduction",
+                "descTpl": "[{VALUE1}*100|1%|] Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.06,
+                        "min": 0.03
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Worldly Stability",
+                "id": 2611706,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Generic_CDR_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_6%",
+                        "id": 237
+                    }
+                ],
+                "charType": [
+                    "Sorcerer",
+                    "Druid",
+                    "Barbarian",
+                    "Rogue",
+                    "Necromancer",
+                    "Spiritborn",
+                    "Paladin",
+                    "Warlock"
+                ],
+                "desc": "[3.0 - 6.0]% 冷却时间缩减",
+                "descTpl": "[{VALUE1}*100|1%|] 冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.06,
+                        "min": 0.03
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "老练稳定",
+                "id": 2611706,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Generic_CDR_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 2611706
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_CDR_Skill_Druid_Hurricane_Tier3",
+            "name_en": "[12.0 - 15.0]% Hurricane Cooldown Reduction",
+            "name_zh": "[12.0 - 15.0]% 飓风冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 258990
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% Hurricane Cooldown Reduction",
+                "descTpl": "[{VALUE2} * 100|1%|] Hurricane Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Wrath Efficiency",
+                "id": 1884734,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Druid_Hurricane_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}Cooldown: {/c}{c_resource}20{/c} seconds",
+                        "{c_label}Lucky Hit Chance: {/c}{c_resource}17%{/c}",
+                        "Form a hurricane around you that deals {c_number}360%{/c} damage to surrounding enemies over {c_number}6{/c} seconds."
+                    ],
+                    "icon": 4193897029,
+                    "id": 258990,
+                    "key": "Druid_Hurricane",
+                    "keywordIds": [],
+                    "name": "Hurricane"
+                },
+                "relatedSkillId": 258990,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 258990
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% 飓风冷却时间缩减",
+                "descTpl": "[{VALUE2} * 100|1%|] 飓风冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "愤怒效能",
+                "id": 1884734,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Druid_Hurricane_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}冷却时间: {/c}{c_resource}20{/c} 秒",
+                        "{c_label}幸运一击几率: {/c}{c_resource}17%{/c}",
+                        "在你的身边生成一道飓风，在 {c_number}6{/c} 秒内对周围的敌人造成 {c_number}360%{/c} 点伤害。"
+                    ],
+                    "icon": 4193897029,
+                    "id": 258990,
+                    "key": "Druid_Hurricane",
+                    "keywordIds": [],
+                    "name": "飓风"
+                },
+                "relatedSkillId": 258990,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1884734
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_CDR_Skill_Druid_Boulder_Tier3",
+            "name_en": "[12.0 - 15.0]% Boulder Cooldown Reduction",
+            "name_zh": "[12.0 - 15.0]% 滚石冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 238345
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% Boulder Cooldown Reduction",
+                "descTpl": "[{VALUE2} * 100|1%|] Boulder Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Wrath Efficiency",
+                "id": 1884732,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Druid_Boulder_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}Cooldown: {/c}{c_resource}10{/c} seconds",
+                        "{c_label}Lucky Hit Chance: {/c}{c_resource}4%{/c}",
+                        "Unearth a large rolling boulder that repeatedly Knocks Back enemies, dealing {c_number}60%{/c} damage with each hit."
+                    ],
+                    "icon": 4043178673,
+                    "id": 238345,
+                    "key": "Druid_Boulder",
+                    "keywordIds": [],
+                    "name": "Boulder"
+                },
+                "relatedSkillId": 238345,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 238345
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% 滚石冷却时间缩减",
+                "descTpl": "[{VALUE2} * 100|1%|] 滚石冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "愤怒效能",
+                "id": 1884732,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Druid_Boulder_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}冷却时间: {/c}{c_resource}10{/c}秒",
+                        "{c_label}幸运一击几率: {/c}{c_resource}4%{/c}",
+                        "挖出一块巨大的滚石不断击退敌人, 每次命中造成 {c_number}60%{/c} 点伤害。"
+                    ],
+                    "icon": 4043178673,
+                    "id": 238345,
+                    "key": "Druid_Boulder",
+                    "keywordIds": [],
+                    "name": "滚石"
+                },
+                "relatedSkillId": 238345,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1884732
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_CDR_Skill_Druid_Rabies_Tier3",
+            "name_en": "[12.0 - 15.0]% Rabies Cooldown Reduction",
+            "name_zh": "[12.0 - 15.0]% 狂犬撕咬冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 416337
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% Rabies Cooldown Reduction",
+                "descTpl": "[{VALUE2} * 100|1%|] Rabies Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Wrath Efficiency",
+                "id": 1884736,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Druid_Rabies_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}Cooldown:{/c} {c_resource}12{/c} seconds",
+                        "{c_label}Lucky Hit Chance: {/c}{c_resource}50%{/c}",
+                        "Perform an infectious bite against enemies in front of you, dealing {c_number}28%{/c} damage and applying an additional {c_number}300%{/c} Poisoning damage over {c_number}6.0{/c} seconds. ",
+                        "",
+                        "Infected enemies spread {c_important}Rabies{/c} to other surrounding targets."
+                    ],
+                    "icon": 1223369082,
+                    "id": 416337,
+                    "key": "Druid_Rabies",
+                    "keywordIds": [],
+                    "name": "Rabies"
+                },
+                "relatedSkillId": 416337,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_15%",
+                        "id": 236,
+                        "param": 416337
+                    }
+                ],
+                "charType": [],
+                "desc": "[12.0 - 15.0]% 狂犬撕咬冷却时间缩减",
+                "descTpl": "[{VALUE2} * 100|1%|] 狂犬撕咬冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.15,
+                        "min": 0.12
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "愤怒效能",
+                "id": 1884736,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_CDR_Skill_Druid_Rabies_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}冷却时间: {/c}{c_resource}12{/c} 秒",
+                        "{c_label}幸运一击几率: {/c}{c_resource}50%{/c}",
+                        "对目标施加感染撕咬，造成 {c_number}28%{/c} 点伤害，并在 {c_number}6.0{/c} 秒内造成 {c_number}300%{/c} 点毒素伤害。",
+                        "",
+                        "被感染的敌人会将{c_important}狂犬撕咬{/c}传染给周围的目标。"
+                    ],
+                    "icon": 1223369082,
+                    "id": 416337,
+                    "key": "Druid_Rabies",
+                    "keywordIds": [],
+                    "name": "狂犬撕咬"
+                },
+                "relatedSkillId": 416337,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 1884736
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_Resource_After_Skill_Paladin_Advance_Tier3",
+            "name_en": "[20.0 - 30.0]% Advance Resource Generation",
+            "name_zh": "[20.0 - 30.0]% 晋升资源生成量",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_30%",
+                        "id": 184,
+                        "param": 2329865
+                    }
+                ],
+                "charType": [],
+                "desc": "[20.0 - 30.0]% Advance Resource Generation",
+                "descTpl": "[{VALUE2}*100|1%|] Advance Resource Generation",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.3,
+                        "min": 0.2
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Zealot Efficiency",
+                "id": 2481505,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_After_Skill_Paladin_Advance_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}Generate Faith:{/c} {c_resource}18{/c}",
+                        "{c_label}Lucky Hit Chance: {/c}{c_resource}14%{/c}",
+                        "Advance forward with your weapon, dealing {c_number}105%{/c} damage."
+                    ],
+                    "icon": 2688815990,
+                    "id": 2329865,
+                    "key": "Paladin_Advance_lunge",
+                    "keywordIds": [],
+                    "name": "Advance"
+                },
+                "relatedSkillId": 2329865,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_30%",
+                        "id": 184,
+                        "param": 2329865
+                    }
+                ],
+                "charType": [],
+                "desc": "[20.0 - 30.0]% 晋升资源生成量",
+                "descTpl": "[{VALUE2}*100|1%|] 晋升资源生成量",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.3,
+                        "min": 0.2
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "狂热者效能",
+                "id": 2481505,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_After_Skill_Paladin_Advance_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}信念生成: {/c} {c_resource}18{/c}",
+                        "{c_label}幸运一击几率: {/c}{c_resource}14%{/c}",
+                        "向前突进并用武器攻击，造成 {c_number}105%{/c} 点伤害。"
+                    ],
+                    "icon": 2688815990,
+                    "id": 2329865,
+                    "key": "Paladin_Advance_lunge",
+                    "keywordIds": [],
+                    "name": "晋升"
+                },
+                "relatedSkillId": 2329865,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 2481505
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_Resource_After_Tag_Paladin_Valor_Tier3",
+            "name_en": "Casting Valor Skills Restores +[2 - 6] Primary Resource",
+            "name_zh": "+[2 - 6] 点施放勇气技能恢复的主要资源",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_IgnoreModifiers2to6",
+                        "id": 191,
+                        "ignoreModifiers": true,
+                        "param": -931254331
+                    }
+                ],
+                "charType": [],
+                "desc": "Casting Valor Skills Restores +[2 - 6] Primary Resource",
+                "descTpl": "Casting Valor Skills Restores +[{VALUE2}|0|] Primary Resource",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 6,
+                        "min": 2
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Zealot Efficiency",
+                "id": 2481511,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_After_Tag_Paladin_Valor_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_IgnoreModifiers2to6",
+                        "id": 191,
+                        "ignoreModifiers": true,
+                        "param": -931254331
+                    }
+                ],
+                "charType": [],
+                "desc": "+[2 - 6] 点施放勇气技能恢复的主要资源",
+                "descTpl": "+[{VALUE2}|0|] 点施放勇气技能恢复的主要资源",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 6,
+                        "min": 2
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "狂热者效能",
+                "id": 2481511,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_After_Tag_Paladin_Valor_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 2481511
+        },
+        {
+            "canonical_name": null,
+            "key": "Tempered_Resource_CDR_Paladin_Zenith_Tier3",
+            "name_en": "[17.0 - 20.0]% Zenith Cooldown Reduction",
+            "name_zh": "[17.0 - 20.0]% 天顶神剑冷却时间缩减",
+            "raw_en": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_20%",
+                        "id": 236,
+                        "param": 2302974
+                    }
+                ],
+                "charType": [],
+                "desc": "[17.0 - 20.0]% Zenith Cooldown Reduction",
+                "descTpl": "[{VALUE2} * 100|1%|] Zenith Cooldown Reduction",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.2,
+                        "min": 0.17
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "Zealot Efficiency",
+                "id": 2481519,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_CDR_Paladin_Zenith_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}Cooldown:{/c} {c_resource}25{/c} seconds",
+                        "{c_label}Lucky Hit Chance: {/c}{c_resource}28%{/c}",
+                        "Summon a divine sword that cleaves the battlefield for {c_number}550%{/c} damage. ",
+                        "",
+                        "Casting {c_important}Zenith{/c} again cuts through the battlefield for {c_number}500%{/c} damage and Knocks Down enemies for {c_number}2{/c} seconds. "
+                    ],
+                    "icon": 718084695,
+                    "id": 2302974,
+                    "key": "Paladin_Trinity",
+                    "keywordIds": [],
+                    "name": "Zenith"
+                },
+                "relatedSkillId": 2302974,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "raw_zh": {
+                "attributes": [
+                    {
+                        "formula": "TemperedAffix_20%",
+                        "id": 236,
+                        "param": 2302974
+                    }
+                ],
+                "charType": [],
+                "desc": "[17.0 - 20.0]% 天顶神剑冷却时间缩减",
+                "descTpl": "[{VALUE2} * 100|1%|] 天顶神剑冷却时间缩减",
+                "effectList": [
+                    {
+                        "ipower": 1,
+                        "max": 0.2,
+                        "min": 0.17
+                    }
+                ],
+                "group": "Resource",
+                "groupName": "狂热者效能",
+                "id": 2481519,
+                "itemType": [
+                    "Ring",
+                    "Amulet"
+                ],
+                "key": "Tempered_Resource_CDR_Paladin_Zenith_Tier3",
+                "keywordIds": [],
+                "new": true,
+                "prefix": "",
+                "relatedSkill": {
+                    "desc": [
+                        "{c_label}冷却时间:{/c} {c_resource}25{/c} 秒",
+                        "{c_label}幸运一击几率: {/c}{c_resource}28%{/c}",
+                        "召唤一把神恩之剑劈砍战场，造成 {c_number}550%{/c} 点伤害。",
+                        "",
+                        "再次施放{c_important}天顶神剑{/c}会斩切战场，造成 {c_number}500%{/c} 点伤害并将敌人击倒 {c_number}2{/c} 秒。"
+                    ],
+                    "icon": 718084695,
+                    "id": 2302974,
+                    "key": "Paladin_Trinity",
+                    "keywordIds": [],
+                    "name": "天顶神剑"
+                },
+                "relatedSkillId": 2302974,
+                "relatedSkillKeywordIds": [],
+                "skill": false,
+                "suffix": "",
+                "tempered": true,
+                "weight": 100
+            },
+            "sno_id": 2481519
+        }
+    ]
+}

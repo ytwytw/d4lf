@@ -18,6 +18,7 @@ from src.perception.parser.details import (
     _update_item_object,
 )
 from src.perception.parser.tokens import _REPLACE_COMPARE_RE, _is_affix_stop_marker
+from src.perception.parser.tributes import _resolve_tribute_from_tts
 from src.perception.text import correct_name, find_number, keep_letters_and_spaces
 
 LOGGER = logging.getLogger(__name__)
@@ -190,7 +191,7 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
         if item.rarity is None:
             return None
         tribute_text = grammar.strip_rarity(tts_item[1], item.rarity.name)
-        item.name = catalog.resolve_tribute(tts_item[0]) or catalog.resolve_tribute(tribute_text)
+        item.name = _resolve_tribute_from_tts(tts_item, tribute_text, catalog)
         if item.name is None:
             msg = f"Could not resolve tribute name: {tts_item[0]}"
             raise ValueError(msg)
@@ -249,7 +250,7 @@ def _create_base_item_from_tts(tts_item: list[str]) -> Item | None:
         return None
     raw_name = correct_name(tts_item[0]) or ""
     item.name = (
-        catalog.resolve_unique(tts_item[0]) or raw_name
+        catalog.resolve_unique(tts_item[0], item_type=item.item_type) or raw_name
         if item.rarity in [ItemRarity.Unique, ItemRarity.Mythic]
         else raw_name
     )

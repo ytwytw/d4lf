@@ -1,12 +1,20 @@
 import dataclasses
 import logging
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Protocol, TypeVar
 
 from src.importing import ImportRequest, ImportResult, assemble_profile_file_name
 from src.importing.filters import deduplicate_filters, sort_profile_filters
 from src.importing.paragon import build_paragon_profile_payload
 from src.importing.profiles import add_to_profiles
-from src.profiles import CharmFilterModel, ItemFilterModel, ProfileDocumentStore, ProfileModel, SealFilterModel
+from src.profiles import (
+    BuildSourceModel,
+    CharmFilterModel,
+    ItemFilterModel,
+    ProfileDocumentStore,
+    ProfileModel,
+    SealFilterModel,
+)
 
 if TYPE_CHECKING:
     from src.type_aliases import JsonObject
@@ -25,6 +33,7 @@ class Variant:
     aspect_upgrade_filters: list[str] = dataclasses.field(default_factory=list)
     paragon_steps: list[list[JsonObject]] | None = None
     paragon_build_name: str = ""
+    id: str | None = None
 
 
 @dataclasses.dataclass(slots=True)
@@ -80,6 +89,16 @@ class ImportPipeline:
                 Affixes=sort_profile_filters(affix_filters),
                 Charms=_enabled_category_filters(variant.charm_filters, options.import_charms),
                 Seals=_enabled_category_filters(variant.seal_filters, options.import_seals),
+                source=BuildSourceModel(
+                    provider=build.source_name,
+                    url=request.url,
+                    variant_id=variant.id,
+                    variant_name=variant.name,
+                    build_title=build.build_header,
+                    class_name=build.class_name,
+                    season=build.season_number,
+                    imported_at=datetime.now(UTC).isoformat(),
+                ),
             )
             if options.import_aspect_upgrades and variant.aspect_upgrade_filters:
                 profile.aspect_upgrades = variant.aspect_upgrade_filters

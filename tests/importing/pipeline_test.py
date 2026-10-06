@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from src.game_data import GameCatalog, ItemType
 from src.importing import FilenamePart, ImportOptions, ImportRequest
 from src.importing.pipeline import ExtractedBuild, ImportPipeline, StaticBuildGuideAdapter, Variant
-from src.profiles import CharmFilterModel, ItemFilterModel, SealFilterModel
+from src.profiles import CharmFilterModel, ItemFilterModel, ProfileDocumentStore, SealFilterModel
 
 if TYPE_CHECKING:
     from src.type_aliases import JsonValue
@@ -37,6 +37,16 @@ def _build(**overrides) -> ExtractedBuild:
 
 def _charm_filter() -> CharmFilterModel:
     return CharmFilterModel()
+
+
+def test_duplicate_variant_names_keep_distinct_source_ids(mock_ini_loader, mocker, tmp_path) -> None:
+    store = ProfileDocumentStore(profiles_dir=tmp_path, full_dump=False)
+    mocker.patch("src.profiles.ProfileDocumentStore.default", return_value=store)
+    build = _build(variants=[Variant(name="same", id="6"), Variant(name="same", id="8")])
+    result = ImportPipeline.run_result(StaticBuildGuideAdapter(url="https://example.invalid", build=build), _config())
+    sources = [store.load(tmp_path / f"{name}.yaml").profile.source for name in result.saved_file_names]
+    assert [source.variant_id for source in sources if source] == ["6", "8"]
+    assert all(source.url == "https://example.invalid/build" for source in sources if source)
 
 
 def _seal_filter() -> SealFilterModel:

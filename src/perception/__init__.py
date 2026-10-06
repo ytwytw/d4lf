@@ -37,6 +37,10 @@ from .text import (
 from .tooltip import DescrDetection, find_descr, find_descr_with_diagnostics, get_separator_match_in_crop
 
 Publisher = _listener.Publisher
+RawTtsEvent = _listener.RawTtsEvent
+ItemTraceSnapshot = _listener.ItemTraceSnapshot
+complete_item_snapshot = _listener.get_complete_item_snapshot
+latest_raw_sequence = _listener.latest_raw_sequence
 filter_data = _listener.filter_data
 find_item_start = _listener.find_item_start
 fix_data = _listener.fix_data
@@ -102,10 +106,12 @@ __all__ = [
     "BulletMatchDiagnostics",
     "DescrDetection",
     "DiagnosticLocatorResult",
+    "ItemTraceSnapshot",
     "LocatedMarker",
     "LocatorDiagnostics",
     "LocatorResult",
     "Publisher",
+    "RawTtsEvent",
     "SearchArgs",
     "SearchResult",
     "TemplateMatch",
@@ -117,6 +123,7 @@ __all__ = [
     "closest_match",
     "closest_to",
     "compare_histograms",
+    "complete_item_snapshot",
     "correct_name",
     "crop",
     "filter_data",
@@ -133,6 +140,7 @@ __all__ = [
     "keep_letters_and_spaces",
     "latest_item_lines",
     "latest_item_sequence",
+    "latest_raw_sequence",
     "locate_affix_markers",
     "locate_affix_markers_with_diagnostics",
     "monitor_to_window",

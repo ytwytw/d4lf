@@ -78,6 +78,7 @@ def normalize_build(
             import_aspect_upgrades=aspect_enabled,
             warn=warn,
         )
+        variant.id = str(index)
         if aspect_enabled and _has_base_aspect_attempt(raw_variant) and not variant.aspect_upgrade_filters:
             warn(OPTIONAL_NO_OUTPUT, name, "aspect", "")
         if talisman_enabled:

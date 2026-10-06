@@ -4,12 +4,18 @@ from src.importing.filters import (
     affix_dict_for_item_type,
     create_item_affix_pool,
     deduplicate_filters,
+    fix_weapon_type,
     is_unique_like_rarity,
     match_set_aware_seal_affix,
     unique_filter_name,
 )
 from src.item import Affix, AffixType
 from src.profiles import CharmFilterModel, ItemFilterModel, ProfileModel, to_yaml_str
+
+
+def test_weapon_type_distinguishes_crossbow_from_bow() -> None:
+    assert fix_weapon_type("Crossbow") == ItemType.Crossbow2H
+    assert fix_weapon_type("Bow") == ItemType.Bow
 
 
 def test_build_default_profile_file_name_maxroll() -> None:

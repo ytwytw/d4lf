@@ -272,17 +272,17 @@ def import_maxroll(request: ImportRequest) -> ImportResult | None:
     finished_variants: list[Variant] = []
     profiles_to_extract = select_profiles(profiles, request, build_id, build_id_is_visible_position)
 
-    for _profile_key, profile_data in profiles_to_extract:
-        finished_variants.append(
-            _extract_profile_variant(
-                profile_data=profile_data,
-                items=items,
-                mapping_data=mapping_data,
-                class_name=class_name,
-                build_header=build_header,
-                request=request,
-            )
+    for profile_key, profile_data in profiles_to_extract:
+        variant = _extract_profile_variant(
+            profile_data=profile_data,
+            items=items,
+            mapping_data=mapping_data,
+            class_name=class_name,
+            build_header=build_header,
+            request=request,
         )
+        variant.id = str(profile_key)
+        finished_variants.append(variant)
 
     return ImportPipeline.run_result(
         adapter=StaticBuildGuideAdapter(

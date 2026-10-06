@@ -185,6 +185,7 @@ def _import_mobalytics(request: ImportRequest, driver: WebDriver | None = None) 
             paragon_data=paragon_data,
             error_type=MobalyticsError,
         )
+        variant.id = vid
         extracted_variants.append(variant)
 
     if not extracted_variants:

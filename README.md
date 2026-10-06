@@ -21,13 +21,16 @@ D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和
   [暗黑核 D2Core](https://www.d2core.com/d4/planner) 导入 Build。
 - Build 来源语言与游戏语言相互独立：英文 Build 可用于中文或英文客户端，中文 D2Core
   Build 也可用于中文或英文客户端。
+- 战利品工具提供游戏过滤器生成／独立编辑、完整物品导出、装备来源与词条资料库。
+  使用方法及资料覆盖边界见[战利品工具说明](docs/loot-tools.zh-CN.md)。
 
 ## 安装
 
-以下适用于已有完整发行包；当前 `10.0.3+zhcn.1` 候选测试版本尚未发布正式下载资产。
-开发测试请使用本地构建或 Build 工作流产物，不把源码 ZIP 当作可运行包。
+当前版本为 **`10.0.7+zhcn.2` 候选版**，尚未发布下载包。正式发行包发布后可从
+[Releases](https://github.com/ytwytw/d4lf/releases) 下载；请使用包含 EXE 和资源的完整程序包。
+新功能和已知限制见[版本说明](docs/release-notes.zh-CN.md)。
 
-1. 从本仓库的 [Releases](https://github.com/ytwytw/d4lf/releases) 下载最新 ZIP 并解压。
+1. 将已核对版本的完整本地候选包解压到新目录；正式发行包仅在本仓库 [Releases](https://github.com/ytwytw/d4lf/releases) 实际发布后下载。
 1. 找到《暗黑破坏神 IV》安装目录。
 1. 先退出游戏；安装脚本会替换游戏目录中的 `saapi64.dll` 并可能关闭仍在运行的游戏。
 1. 双击 `install_dll.cmd`，按提示提供游戏目录并允许安装本地签名证书。
@@ -42,25 +45,24 @@ D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和
 
 ## 第 15 赛季版本与升级
 
-当前中文候选测试版本为 `10.0.3+zhcn.1`，基于上游 `10.0.3`。中文数据只纳入有来源的映射；
-未知词条不会自动编造译名。发布说明应区分自动回归、已执行的实机样本和未覆盖功能。
+当前版本基于上游 `10.0.7`，包含 Build 导入、中文识别与应用内重启修复。
+部分新物品可能尚未收录，名称相同但效果不同的物品需要完整说明才能识别。
+建议先用“仅视觉模式”核对结果，再启用自动标记。
 
-当前仍是部分中文支持的待发布测试版本：数据审计包含缺失翻译和有歧义的中文别名，
-不代表全部第 15 赛季物品已支持，也不承诺无人值守安全。`manifest.json` 和 `quality-report.json`
-中的就绪标记为否时，发布工作流会阻止公开发布；本地构建和 Build 工作流仍可产生测试包。
-建议保持“仅视觉模式”，逐项人工核对识别结果。
-
-2026-09-19 增量：实机证实并补入“次级和谐贡品”，当前仍有 **12 个贡品缺少可靠译文**，
-“恶毒”威能仅凭名称仍有歧义，正式发布门禁保持关闭。
-上游已更新到 `v10.0.4`，但本分支尚未合入该版本；新增条目来源与本次限定修复见
-[9 月 19 日核验报告](docs/season15-zhcn-upstream-20260919.md)。
-
-- 正式发布后应下载 `d4lf_v10.0.3+zhcn.1.zip` 这类完整发布包，而不是 GitHub 自动生成的 Source code ZIP；当前尚无该正式资产。
-- 配置和 Profile 位于 `%USERPROFILE%\.d4lf`；升级前备份此目录。V9 升 V10 建议解压到新目录并重新导入不兼容的 Profile。
+- 升级前退出 D4LF，备份整个 `%USERPROFILE%\.d4lf`，保留旧完整程序目录。
+  此目录含 `params.ini`、`profiles`、`native_filters`、`exports\inventory` 及诊断留样；自行另存的文件需另备份。
+- 将同一版本的 EXE 和 assets 一起解压到新目录；同一 Windows 账户仍读取原来的 `.d4lf`，无需将个人数据复制进程序目录。
+  首次启动核对版本、语言、热键和已启用 Profile，再用“仅视觉模式”检查识别结果。V9 升 V10 应重新导入不兼容的 Profile。
 - 从旧版本升级到此版本建议手动下载、解压到新目录；旧版 `autoupdater.bat` 的行为不会被本次修复追溯改变。
 - 本版本随附的 `autoupdater.bat` 仅检查本仓库更新，不降级，不删除安装目录中的额外文件。
   复制失败会保留 `temp_update` 供恢复；需要时从发布 ZIP 手动解压修复，不要混用不同版本的 EXE 和 assets。
 - 应用升级不会替换游戏目录中的 DLL；只有发布说明要求更新 DLL 时，才在关闭游戏后重新运行 `install_dll.cmd`。
+- 回退时先退出新版，并另备份新版运行后的 `.d4lf`，再启动保留的旧完整程序目录。
+  若旧版不能读取更新后的配置或文档，在保存两份备份后恢复升级前的 `.d4lf`；不要把新旧配置或资源混成一份。
+  自动更新器不执行降级；回退也不自动恢复游戏 DLL，应遵循所回退版本的安装说明。
+
+战利品工具的保存位置、导出状态和故障排查集中在[使用说明](docs/loot-tools.zh-CN.md)。
+物品导出以 TTS 原文为主，不会自动用截图补齐缺失字段，也不读取游戏内部状态。
 
 ## 跨语言 Build 导入
 
@@ -76,10 +78,9 @@ D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和
 
 ## 数据与致谢
 
-中文数据采用多来源聚合和稳定内部标识，不把任一第三方网站视为唯一权威来源。D2Core 数据已获许可，
-在本项目中作为补充数据和 Build 来源使用；感谢
-[暗黑核 D2Core](https://www.d2core.com/d4/planner) 提供参考与支持。游戏版本或赛季更新后，
-仍需结合实际客户端文本和其他可靠来源复核变化。
+感谢 [D4LF](https://github.com/d4lfteam/d4lf)、[暗黑核 D2Core](https://www.d2core.com/d4/planner)
+及其他社区资料项目。装备资料为离线快照，缺少译名、掉落地点或概率时显示未知。
+数据来源、版本和归属见[资料来源说明](assets/equipment_knowledge/NOTICE.md)。
 
 ## 诊断与隐私
 
@@ -90,28 +91,17 @@ D4LF 是一个 Windows 桌面装备过滤辅助工具。它通过屏幕画面和
 - 自动留样仅在识别失败时保存必要的屏幕截图、TTS 文本和清单；手动诊断录制可独立启停。
 
 截图可能包含游戏角色名、聊天或其他屏幕内容。公开报告问题前请先检查并脱敏。
+库存导出也只保存在本机。反馈问题时只提供必要且已脱敏的信息，无需分享整个 `.d4lf` 目录。
 
-## 开发
-
-项目使用 Python 3.14、[uv](https://docs.astral.sh/uv/) 和 PyQt6，运行环境为 Windows。
-
-Current functionality:
-
-- Import builds from maxroll/d4builds/mobalytics/infinitybuilds
-- Complete management of your settings through the Settings window
-- A beta version of a manual profile editor/creator
+## 界面与配置
 
 ### Main Screen
-
-(Documentation in progress)
 
 The main screen contains the log of what D4LF is doing when it is filtering items. Any errors are posted here.
 
 It contains navigation buttons to get to the Profile Importer, Settings, and Profile Editor.
 
 ### Profile Importer
-
-(Documentation in progress)
 
 Import profiles from the following popular build sites: Maxroll, Mobalytics, D4Builds, InfinityBuilds.
 
@@ -173,8 +163,6 @@ If you would like for the fast vision mode box to appear somewhere else, you can
 
 ### Profile Editor
 
-(Documentation still in progress)
-
 The Profile Editor allows you to edit your profiles. It is still in beta. The Sigils tab supports global affix rules (blacklist an affix on every sigil without picking a dungeon) and the sigil rarity gate, alongside an affix rarity picker on the Affixes tab.
 
 ## How to filter / Profiles
@@ -225,7 +213,7 @@ has a name and can filter for any combination of the following:
   See [assets/lang/enUS/item_types.json](assets/lang/enUS/item_types.json)
 - `rarity`: A single rarity or a list of rarities the rule should match. An empty/absent value matches all rarities. Values
   are case-insensitive. See [Filtering on rarity](#filtering-on-rarity) for details and the list of rarities
-  in [rarity.py](src/game_data/rarity.py)
+  in [rarity.py](https://github.com/d4lfteam/d4lf/blob/v10.0.3/src/game_data/rarity.py)
 - `minPower`: Minimum item power
 - `minGreaterAffixCount`: Minimum number of greater affixes expected on the overall item. See [Greater Affix Filtering](#greater-affix-filtering) for more information on filtering GAs.
 - `affixPool`: A list of multiple different rulesets to filter for. Each ruleset must be fulfilled or the item is
@@ -359,7 +347,7 @@ Use `rarity` to restrict an affix rule to specific item rarities.
 - If `rarity` is omitted, the rule matches all rarities.
 - `rarity` accepts one value (`rarity: rare`) or a list (`rarity: [common, magic, rare]`).
 
-The valid rarities are listed in [rarity.py](src/game_data/rarity.py).
+The valid rarities are listed in [rarity.py](https://github.com/d4lfteam/d4lf/blob/v10.0.3/src/game_data/rarity.py).
 
 <details><summary>Config Examples</summary>
 
@@ -739,7 +727,7 @@ Tributes:
   name: [harmony, ascendance_resolute]
 ```
 
-You can also filter by rarity. The valid rarities are listed in [rarity.py](src/game_data/rarity.py).
+You can also filter by rarity. The valid rarities are listed in [rarity.py](https://github.com/d4lfteam/d4lf/blob/v10.0.3/src/game_data/rarity.py).
 
 ```yaml
 # Keeps only legendary and unique tributes
@@ -760,7 +748,7 @@ Tributes:
 
 Tribute names are lower case and spaces are replaced by underscore. Parentheses are removed. Note that United and
 Resolute identifiers are part of the names in [assets/lang/enUS/tributes.json](assets/lang/enUS/tributes.json). You can find the list of item rarities
-in [rarity.py](src/game_data/rarity.py)
+in [rarity.py](https://github.com/d4lfteam/d4lf/blob/v10.0.3/src/game_data/rarity.py)
 
 ### GlobalUniques
 
@@ -901,15 +889,7 @@ Configure exp bar position as shown here. This position seems to work the best f
   - **Automatic Scanning**: If "Inv Open (Capture EXP)" is enabled in settings, the overlay will automatically move your mouse over the experience bar to scan for updates whenever you open your inventory.
   - **Cooldown**: The "EXP Capture Time" setting controls how frequently these automatic scans occur, preventing excessive mouse movements.
 
-## Future Plans
-
-- A video explaining the initial setup
-- Finish GUI documentation
-- Want something done that's not mentioned here? Leave a suggestion in the [discord](https://discord.gg/YyzaPhAN6T) or use github issues. Or, make the changes yourself and open up a PR!
-
-## Advanced User Information
-
-This information is not really relevant to anyone, but preserved here for people who want to get into the weeds of how D4LF operates.
+## 本地配置文件
 
 ### Configs
 
@@ -922,21 +902,7 @@ The config folder in `C:/Users/<WINDOWS_USER>/.d4lf` contains:
 
 It is not expected you will modify these files manually, but the location could be useful to know in case of strange errors.
 
-## Develop
-
-### Setup using uv
-
-If you intend to submit PRs, create your own fork of d4lf and clone that in the steps below.
-
-Before beginning, [install uv](https://docs.astral.sh/uv/getting-started/installation/#winget).
-
-```bash
-git clone https://github.com/ytwytw/d4lf
-cd d4lf
-uv sync
-uv run pytest . -m "not selenium" -n logical
-uvx prek run -a
-```
+## 反馈问题
 
 项目许可证见 [LICENSE](LICENSE)。问题与改进建议请使用
 [GitHub Issues](https://github.com/ytwytw/d4lf/issues)。

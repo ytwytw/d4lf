@@ -28,6 +28,8 @@ from src.app.startup import check_for_proper_tts_configuration
 if TYPE_CHECKING:
     from types import ModuleType
 
+    from src.inventory_dump import ExportFormat
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -40,6 +42,9 @@ class BackendWorker(QObject):
     """Own the game-facing runtime and expose its lifecycle to the Qt shell."""
 
     finished = pyqtSignal()
+    dump_progress = pyqtSignal(object)
+    dump_finished = pyqtSignal(object)
+    dump_failed = pyqtSignal(str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -50,6 +55,23 @@ class BackendWorker(QObject):
         """Cancel waits and stop accepting game input immediately, from any thread."""
         begin_shutdown()
         self._stop_requested.set()
+        if self.script_handler is not None:
+            self.script_handler.cancel_inventory_dump()
+
+    def start_inventory_dump(self, output_format: ExportFormat) -> None:
+        if self.script_handler is None:
+            self.dump_failed.emit("请先进入游戏角色，等待 D4LF 连接到游戏。")
+            return
+        try:
+            self.script_handler.start_inventory_dump(
+                output_format, self.dump_progress.emit, self.dump_finished.emit, self.dump_failed.emit
+            )
+        except RuntimeError as exc:
+            self.dump_failed.emit(str(exc))
+
+    def cancel_inventory_dump(self) -> None:
+        if self.script_handler is not None:
+            self.script_handler.cancel_inventory_dump()
 
     def run(self) -> None:
         if sys.platform != "win32":

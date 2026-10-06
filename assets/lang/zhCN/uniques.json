@@ -25,10 +25,26 @@
     },
     "ancients_oath": {
         "display_name": "先祖之誓",
+        "item_types": [
+            "Axe2H"
+        ],
         "num_inherents": 0
+    },
+    "ancients_pledge": {
+        "display_name": "先祖之誓",
+        "item_types": [
+            "Focus",
+            "OffHandTotem",
+            "Shield"
+        ],
+        "num_inherents": 2
     },
     "andariels_visage": {
         "display_name": "安达莉尔的仪容",
+        "num_inherents": 0
+    },
+    "annihilus": {
+        "display_name": "毁灭",
         "num_inherents": 0
     },
     "arcadia": {
@@ -99,6 +115,10 @@
         "display_name": "屠兽之靴",
         "num_inherents": 0
     },
+    "bell_of_the_bovine": {
+        "display_name": "魔牛之铃",
+        "num_inherents": 1
+    },
     "bindings_of_attrition": {
         "display_name": "损耗殆尽之缚",
         "num_inherents": 0
@@ -137,6 +157,10 @@
     },
     "cage_of_madness": {
         "display_name": "癫狂牢笼",
+        "num_inherents": 0
+    },
+    "call_to_arms": {
+        "display_name": "战斗召唤",
         "num_inherents": 0
     },
     "cassias_grace": {
@@ -259,6 +283,10 @@
         "display_name": "库瓦特里的回音",
         "num_inherents": 0
     },
+    "edge": {
+        "display_name": "锐锋",
+        "num_inherents": 1
+    },
     "eggcecutioner": {
         "display_name": "卵之处决者",
         "num_inherents": 0
@@ -285,6 +313,10 @@
     },
     "endurant_faith": {
         "display_name": "忠贞信仰",
+        "num_inherents": 0
+    },
+    "enigma": {
+        "display_name": "谜团",
         "num_inherents": 0
     },
     "esadoras_overflowing_cameo": {
@@ -427,6 +459,10 @@
         "display_name": "绿行者的玺戒",
         "num_inherents": 0
     },
+    "grief": {
+        "display_name": "悔恨",
+        "num_inherents": 1
+    },
     "griswolds_opus": {
         "display_name": "格里斯沃尔德的杰作",
         "num_inherents": 0
@@ -471,6 +507,10 @@
         "display_name": "狱印玺戒",
         "num_inherents": 0
     },
+    "hellfire_torch": {
+        "display_name": "地狱火炬",
+        "num_inherents": 0
+    },
     "hellhammer": {
         "display_name": "地狱锤",
         "num_inherents": 0
@@ -493,6 +533,10 @@
     },
     "hesha_e_kesungi": {
         "display_name": "哈夏·厄·克苏吉",
+        "num_inherents": 0
+    },
+    "holy_thunder": {
+        "display_name": "圣雷",
         "num_inherents": 0
     },
     "hooves_of_the_mountain_god": {
@@ -527,8 +571,16 @@
         "display_name": "炼狱邪胎",
         "num_inherents": 0
     },
+    "infinity": {
+        "display_name": "无限",
+        "num_inherents": 1
+    },
     "insatiable_fury": {
         "display_name": "无餍之怒",
+        "num_inherents": 0
+    },
+    "insight": {
+        "display_name": "眼光",
         "num_inherents": 0
     },
     "jacinth_shell": {
@@ -559,6 +611,18 @@
         "display_name": "黑翼幽裙",
         "num_inherents": 0
     },
+    "kings_grace": {
+        "display_name": "王恩",
+        "num_inherents": 0
+    },
+    "leaf": {
+        "display_name": "叶子",
+        "num_inherents": 0
+    },
+    "leorics_crown": {
+        "display_name": "李奥瑞克的王冠",
+        "num_inherents": 0
+    },
     "levin_grasp": {
         "display_name": "闪电之握",
         "num_inherents": 0
@@ -577,6 +641,10 @@
     },
     "locrans_talisman": {
         "display_name": "洛克兰的护身符",
+        "num_inherents": 0
+    },
+    "lore": {
+        "display_name": "学识",
         "num_inherents": 0
     },
     "loyaltys_mantle": {
@@ -617,6 +685,10 @@
     },
     "melted_heart_of_selig": {
         "display_name": "塞利格的溶解之心",
+        "num_inherents": 0
+    },
+    "messerschmidts_reaver": {
+        "display_name": "梅塞施密特的劫掠者",
         "num_inherents": 0
     },
     "might_of_qual-kehk": {
@@ -719,6 +791,10 @@
         "display_name": "塔格奥的道途",
         "num_inherents": 0
     },
+    "pattern": {
+        "display_name": "典范",
+        "num_inherents": 1
+    },
     "peacemongers_signet": {
         "display_name": "和平倡导者的玺戒",
         "num_inherents": 0
@@ -726,6 +802,10 @@
     "penitent_greaves": {
         "display_name": "悔罪护胫",
         "num_inherents": 0
+    },
+    "phoenix": {
+        "display_name": "凤凰",
+        "num_inherents": 2
     },
     "pitfighters_gull": {
         "display_name": "深坑斗士的诈术",
@@ -738,6 +818,10 @@
     "protection_of_the_prime": {
         "display_name": "先灵之佑",
         "num_inherents": 0
+    },
+    "prudence": {
+        "display_name": "谨慎",
+        "num_inherents": 1
     },
     "purified_lightbringer": {
         "display_name": "净化之光明使者",
@@ -753,6 +837,10 @@
     },
     "raiment_of_the_sea": {
         "display_name": "苍海法衣",
+        "num_inherents": 0
+    },
+    "rain": {
+        "display_name": "暴雨",
         "num_inherents": 0
     },
     "rakanoths_wake": {
@@ -951,6 +1039,10 @@
         "display_name": "塔萨迈特的脊骨",
         "num_inherents": 0
     },
+    "spirit": {
+        "display_name": "灵力",
+        "num_inherents": 2
+    },
     "squirts_blouse": {
         "display_name": "斯奎特的罩衫",
         "num_inherents": 0
@@ -971,6 +1063,10 @@
         "display_name": "星陨冠冕",
         "num_inherents": 0
     },
+    "stealth": {
+        "display_name": "潜行",
+        "num_inherents": 0
+    },
     "stone_of_jordan": {
         "display_name": "乔丹之石",
         "num_inherents": 0
@@ -982,6 +1078,10 @@
     "storms_companion": {
         "display_name": "风暴之友",
         "num_inherents": 0
+    },
+    "strength": {
+        "display_name": "力量",
+        "num_inherents": 1
     },
     "strike_of_stormhorn": {
         "display_name": "风暴利角之击",
@@ -1217,6 +1317,10 @@
     },
     "yens_blessing": {
         "display_name": "延的祝福",
+        "num_inherents": 0
+    },
+    "zephyr": {
+        "display_name": "和风",
         "num_inherents": 0
     }
 }

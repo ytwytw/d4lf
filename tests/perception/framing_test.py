@@ -100,3 +100,25 @@ def test_fix_data_removes_english_and_localized_item_prefixes() -> None:
 
     assert fix_data("[收藏物品]. 无限法衣", grammar=grammar) == "无限法衣"
     assert fix_data("[MARKED AS JUNK]. [FAVORITED ITEM]. Name", grammar=grammar) == "Name"
+
+
+def test_trace_remembers_actual_first_raw_sequence_not_only_completion() -> None:
+    grammar = LocaleGrammar.from_dict("enUS", {"labels": {"item_end_control": ["Right mouse button"]}})
+    framer = TtsFramer(grammar, _Catalog({}))
+    framer.feed("unrelated", raw_sequence=5)
+    framer.feed("TEST ITEM", raw_sequence=8)
+    assert framer.feed("Right mouse button", raw_sequence=12) == ["TEST ITEM", "Right mouse button"]
+    assert framer.last_raw_start_sequence == 8
+    assert not framer.last_item_truncated
+
+
+def test_framer_exposes_overflow_instead_of_claiming_complete_text() -> None:
+    grammar = LocaleGrammar.from_dict("enUS", {"labels": {"item_end_control": ["Right mouse button"]}})
+    framer = TtsFramer(grammar, _Catalog({}), max_lines=3)
+    framer.feed("ITEM", raw_sequence=1)
+    framer.feed("first line", raw_sequence=2)
+    framer.feed("UNEXPECTED HEADER", raw_sequence=3)
+    framer.feed("last line", raw_sequence=4)
+    assert framer.feed("Right mouse button", raw_sequence=5)
+    assert framer.last_item_truncated
+    assert framer.last_raw_start_sequence == 3

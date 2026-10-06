@@ -47,12 +47,14 @@ from src.profiles.session import (
     YamlError,
 )
 from src.profiles.sigils import SigilConditionModel, SigilFilterModel, SigilPriority, TributeFilterModel
+from src.profiles.source import BuildSourceModel
 
 __all__ = [
     "AffixAspectFilterModel",
     "AffixFilterCountModel",
     "AffixFilterModel",
     "AspectUniqueFilterModel",
+    "BuildSourceModel",
     "CharmFilterModel",
     "DynamicCharmFilterModel",
     "DynamicItemFilterModel",

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, override
 
 from PyQt6.QtCore import QEvent, QPoint, QSettings, QSize, QThread
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon
-from PyQt6.QtWidgets import QMainWindow, QMenu, QSystemTrayIcon, QTabWidget
+from PyQt6.QtWidgets import QMainWindow, QMenu, QSystemTrayIcon, QTabWidget, QWidget
 
 from src.app.assets import ICON_PATH
 from src.diagnostics.tts_capture import APP_TTS_CAPTURE
@@ -22,7 +22,7 @@ class UnifiedWindowLifecycle(QMainWindow):
     _backend_thread: QThread | None = None
     worker: BackendWorker | None = None
     _shutdown_pending = False
-    _child_windows: dict[str, QMainWindow]
+    _child_windows: dict[str, QWidget]
     activity_tab: ActivityLogWidget
     console_handler: QtLogHandler
     tabs: QTabWidget

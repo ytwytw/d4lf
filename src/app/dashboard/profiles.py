@@ -5,7 +5,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QMessageBox, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QMenu, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from src.app.dashboard.drag import DragHandleButton
 from src.desktop.widgets import CheckmarkCheckBox
@@ -75,6 +75,16 @@ class ActivityProfileRowsMixin:
                 edit_btn.setToolTip(translate("dashboard.edit_profile"))
                 edit_btn.clicked.connect(lambda _, n=name: self._edit_profile(n))
                 header_hbox.addWidget(edit_btn)
+
+                tools_btn = self._create_row_btn("工具")
+                tools_menu = QMenu(tools_btn)
+                if window := self._main_window:
+                    tools_menu.addAction("生成游戏过滤器", lambda _=False, n=name, w=window: w.open_native_filter(n))
+                    tools_menu.addAction(
+                        "装备来源与词条", lambda _=False, n=name, w=window: w.open_equipment_knowledge(n)
+                    )
+                tools_btn.setMenu(tools_menu)
+                header_hbox.addWidget(tools_btn)
 
                 delete_btn = self._create_row_btn(translate("dashboard.delete"))
                 delete_btn.setObjectName("delete-profile-btn")

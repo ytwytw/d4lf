@@ -1,0 +1,7 @@
+{
+    "build": "3.1.0.72592",
+    "revision": "a83d518545bfdb9ff3bafa6edf0051d290ced6eb",
+    "sha256": "4d4d8c27888d28d956dcd07cf212ea3b579fc0e0474b64d7d8e64790b93cc54a",
+    "url": "https://raw.githubusercontent.com/Freitag47/diablo4-lootfilter-generator/a83d518545bfdb9ff3bafa6edf0051d290ced6eb/data/affixes.json",
+    "verification": "individual key/SNO pairs checked against local d4data 3.2.1.73552"
+}

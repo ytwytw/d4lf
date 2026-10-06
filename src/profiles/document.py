@@ -219,6 +219,10 @@ def _use_block_style(d: YamlValue) -> None:
     if not isinstance(d, dict):
         return
 
+    source = d.get("source")
+    if hasattr(source, "fa"):
+        cast("_HasFlowStyle", source).fa.set_block_style()
+
     for key in ("aspect_upgrades", "AspectUpgrades"):
         value = d.get(key)
         if hasattr(value, "fa"):

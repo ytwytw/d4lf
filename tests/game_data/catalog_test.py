@@ -8,7 +8,6 @@ import pytest
 
 from src.game_data import GameCatalog, ItemType
 from src.game_data import catalog as catalog_module
-from src.game_data.localized_maps import load_string_map
 from src.item import Item, ItemJSONEncoder
 
 
@@ -54,7 +53,7 @@ def test_zhcn_catalog_loads_runtime_aliases(monkeypatch) -> None:
     catalog = _load_zhcn_catalog(monkeypatch)
 
     assert catalog.resolve_affix("闪避给予的移动速度，持续 秒") == "evade_grants_movement_speed_for_seconds"
-    assert catalog.resolve_tribute("巨人贡品") == "tribute_of_titans"
+    assert catalog.resolve_tribute("巨人贡品") is None
     assert catalog.resolve_item_type("胸甲") == "ChestArmor"
     assert catalog.item_type_from_text("胸甲") is ItemType.ChestArmor
     assert catalog.resolve_unique("命运之拳") == "fists_of_fate"
@@ -69,6 +68,48 @@ def test_shared_chinese_aspect_label_does_not_imply_equivalent_powers(monkeypatc
     assert catalog.resolve_aspect("恶毒之胸甲") is None
     assert catalog.resolve_aspect("malicious") == "malicious"
     assert catalog.resolve_aspect("virulent") == "virulent"
+
+
+@pytest.mark.parametrize(
+    ("item_type", "expected"),
+    [
+        (None, None),
+        (ItemType.Sword, None),
+        (ItemType.Axe2H, "ancients_oath"),
+        (ItemType.Focus, "ancients_pledge"),
+        (ItemType.OffHandTotem, "ancients_pledge"),
+        (ItemType.Shield, "ancients_pledge"),
+    ],
+)
+def test_shared_unique_translation_requires_verified_item_type(monkeypatch, item_type, expected) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+
+    assert catalog.resolve_unique("先祖之誓", item_type=item_type) == expected
+
+
+@pytest.mark.parametrize("canonical", ["ancients_oath", "ancients_pledge"])
+@pytest.mark.parametrize("item_types", [None, [], "Shield", ["Unknown"], ["Shield", "Unknown"], [123]])
+def test_incomplete_type_metadata_cannot_eliminate_a_shared_name_candidate(monkeypatch, canonical, item_types) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+    catalog.aspect_unique_dict[canonical]["item_types"] = item_types
+
+    assert catalog.resolve_unique("先祖之誓", item_type=ItemType.Axe2H) is None
+    assert catalog.resolve_unique("先祖之誓", item_type=ItemType.Shield) is None
+
+
+def test_overlapping_type_metadata_cannot_resolve_a_shared_unique_name(monkeypatch) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+    catalog.aspect_unique_dict["ancients_pledge"]["item_types"] = ["Axe2H", "Shield"]
+
+    assert catalog.resolve_unique("先祖之誓", item_type=ItemType.Axe2H) is None
+
+
+@pytest.mark.parametrize("canonical", ["ancients_oath", "ancients_pledge"])
+def test_shared_unique_preserves_canonical_and_english_aliases_without_type(monkeypatch, canonical) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+
+    assert catalog.resolve_unique(canonical) == canonical
+    assert catalog.resolve_unique(canonical.replace("_", " ")) == canonical
 
 
 def test_zhcn_catalog_contains_season_15_upstream_delta(monkeypatch) -> None:
@@ -142,15 +183,13 @@ def test_zhcn_manifest_matches_runtime_text_and_reports_remaining_release_gaps()
         assert quality["readiness_blockers"]
 
 
-def test_zhcn_catalog_uses_english_for_unresolved_text(monkeypatch) -> None:
+def test_zhcn_catalog_uses_reviewed_translations(monkeypatch) -> None:
     catalog = _load_zhcn_catalog(monkeypatch)
-    english = catalog_module.BASE_DIR / "assets" / "lang" / "enUS"
-    english_tributes = load_string_map(english / "tributes.json")
 
     assert catalog.affix_dict["crafting_material_drop_rate"] == "制作材料掉率"
     assert catalog.charm_affix_dict["crafting_material_drop_rate"] == "制作材料掉率"
     assert catalog.affix_sigil_dict_all["positive"]["ruptures"] == "混沌裂隙"
-    assert catalog.tribute_dict["greater_tribute_of_armaments"] == english_tributes["greater_tribute_of_armaments"]
+    assert catalog.tribute_dict["greater_tribute_of_armaments"] == "强效军械贡品"
 
 
 def test_zhcn_ambiguous_damage_aliases_use_range_precision(monkeypatch) -> None:

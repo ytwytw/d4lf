@@ -7,6 +7,7 @@ from src.automation.contracts import Inventory, StashInventory
 from src.automation.inventory import ItemSlot
 from src.automation.loot_mover import move_items_to_inventory, move_items_to_stash
 from src.automation.mouse import Mouse
+from src.automation.pointer import move_pointer_direct
 from src.automation.process import kill_thread, safe_exit, set_process_name
 from src.automation.stash import Stash
 from src.automation.vendor import Vendor
@@ -80,6 +81,7 @@ __all__ = [
     "move_items_to_inventory",
     "move_items_to_stash",
     "move_pointer",
+    "move_pointer_direct",
     "move_window_to_foreground",
     "pointer_position",
     "press_key",

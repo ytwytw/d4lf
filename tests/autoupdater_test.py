@@ -15,6 +15,29 @@ def test_normalize_version_adds_prefix_and_preserves_missing_values() -> None:
     assert D4LFUpdater.normalize_version(None) is None
 
 
+@pytest.mark.parametrize("failure", [FileNotFoundError("missing CA bundle"), PermissionError("unreadable CA bundle")])
+def test_update_notification_does_not_abort_startup_for_unavailable_ca(mocker, caplog, failure) -> None:
+    mocker.patch("src.autoupdater._should_check_for_update", return_value=True)
+    request = mocker.patch("src.autoupdater.httpx.get", side_effect=failure)
+
+    notify_if_update()
+
+    request.assert_called_once()
+    assert "Error fetching release info" in caplog.text
+    assert "skipping check for updates" in caplog.text
+
+
+def test_change_summary_read_error_does_not_abort_update_notification(mocker, caplog) -> None:
+    mocker.patch("src.autoupdater._should_check_for_update", return_value=True)
+    mocker.patch("src.autoupdater.__version__", "10.0.7+zhcn.1")
+    mocker.patch.object(D4LFUpdater, "get_latest_release", return_value={"tag_name": "v10.0.8"})
+    mocker.patch("src.autoupdater.httpx.get", side_effect=FileNotFoundError("missing CA bundle"))
+
+    notify_if_update()
+
+    assert "Error fetching changes since last update" in caplog.text
+
+
 def test_get_latest_release_includes_prereleases_for_beta_versions(monkeypatch) -> None:
     class Response:
         def raise_for_status(self) -> None:

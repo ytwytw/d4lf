@@ -43,8 +43,10 @@ def test_listener_recovers_after_one_tts_line_fails(monkeypatch, caplog) -> None
     class Framer:
         grammar = SimpleNamespace(locale="enUS")
         last_raw_item = ["good raw tts"]
+        last_raw_start_sequence = 2
+        last_item_truncated = False
 
-        def feed(self, data, *, raw_data):
+        def feed(self, data, *, raw_data, raw_sequence=0):
             assert data == "good raw tts"
             assert raw_data == "good raw tts"
             return ["good raw tts"]
@@ -76,3 +78,31 @@ def test_latest_item_snapshot_is_a_copy(monkeypatch) -> None:
     lines.clear()
     assert sequence == 7
     assert listener.LAST_ITEM == ["same item name"]
+
+
+def test_complete_snapshot_correlates_raw_and_clean_lines_atomically(monkeypatch) -> None:
+    monkeypatch.setattr(listener, "LAST_ITEM", ["clean"])
+    monkeypatch.setattr(listener, "LAST_ITEM_RAW", ["[FAVORITED ITEM]. clean"])
+    monkeypatch.setattr(listener, "_LAST_ITEM_SEQUENCE", 5)
+    monkeypatch.setattr(listener, "_LAST_ITEM_RAW_SEQUENCE", 30)
+    monkeypatch.setattr(listener, "_LAST_ITEM_RAW_START_SEQUENCE", 22)
+    snapshot = listener.get_complete_item_snapshot()
+    assert snapshot.sequence == 5
+    assert snapshot.raw_start_sequence == 22
+    assert snapshot.raw_sequence == 30
+    assert snapshot.raw_lines == ("[FAVORITED ITEM]. clean",)
+    listener.LAST_ITEM_RAW.append("later")
+    assert snapshot.raw_lines == ("[FAVORITED ITEM]. clean",)
+
+
+def test_passive_raw_subscription_preserves_unrecognized_text_and_is_detachable() -> None:
+    events = []
+    publisher = Publisher()
+    publisher.subscribe_raw(events.append)
+    try:
+        first = publisher.publish_raw("\n[MARKED AS JUNK]. 未知物品\n")
+    finally:
+        publisher.unsubscribe_raw(events.append)
+    publisher.publish_raw("later")
+    assert events == [first]
+    assert first.text == "\n[MARKED AS JUNK]. 未知物品\n"

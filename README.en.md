@@ -25,15 +25,17 @@ of upstream [D4LF](https://github.com/d4lfteam/d4lf) V10.
   [D2Core](https://www.d2core.com/d4/planner).
 - Build-source language is independent of game language: English builds work with Chinese or
   English clients, and Chinese D2Core builds work with Chinese or English clients.
+- Loot Tools provides a standalone or Profile-linked native game filter editor, full-scope inventory
+  export, and an offline equipment reference. See the [usage guide (Chinese)](docs/loot-tools.zh-CN.md).
 
 ## Installation
 
-These steps require a complete release package. The current `10.0.3+zhcn.1` test candidate has no
-published release asset yet. For development testing, use a local build or Build workflow artifact,
-not a source-code ZIP.
+The current version is **`10.0.7+zhcn.2`**, a candidate with no published download yet.
+Once released, download the complete application package, including the EXE and assets, from
+[Releases](https://github.com/ytwytw/d4lf/releases). See the [release notes (Chinese)](docs/release-notes.zh-CN.md).
 
-1. Download and extract the latest ZIP from this repository's
-   [Releases](https://github.com/ytwytw/d4lf/releases).
+1. Extract the complete, version-checked local candidate into a fresh directory. Download public packages
+   from this repository's [Releases](https://github.com/ytwytw/d4lf/releases) only after they are published.
 1. Locate the Diablo IV installation directory.
 1. Close the game first. The installer replaces `saapi64.dll` and may close a running game.
 1. Run `install_dll.cmd`, provide the game directory, and allow installation of the local signing
@@ -52,30 +54,31 @@ invalid, exit D4LF, back up and rename `%USERPROFILE%\.d4lf\params.ini`, and con
 
 ## Season 15 release and upgrades
 
-The Chinese test candidate is `10.0.3+zhcn.1`, based on upstream `10.0.3`. Only source-backed Chinese
-names are included. Unverified translations are not invented.
+This version is based on upstream `10.0.7`, with fixes for build imports, Chinese recognition, and in-app restarts.
+Some new items may not be recognized. Items with the same name but different effects need complete descriptions
+to identify them. Check recognition in Vision Mode Only before enabling automatic marking.
 
-This is a pending, partially localized test version. The audit still lists missing translations and ambiguous
-Chinese aliases; it does not establish support for every Season 15 item or readiness for unattended automation.
-The Release workflow refuses publication when `manifest.json` or `quality-report.json` reports incomplete
-readiness. Local builds and the Build workflow remain available for test artifacts. Keep Vision Mode Only enabled
-and manually verify recognition results.
-
-September 19 update: the real client confirmed Lesser Tribute of Harmony as “次级和谐贡品”.
-After that narrowly scoped fix, **12 tribute names still lack verified Chinese translations**; the ambiguous
-“恶毒” aspect name also remains unresolved, so publication stays blocked. Upstream `v10.0.4` has been
-reviewed but has not been integrated. See the [September 19 verification report](docs/season15-zhcn-upstream-20260919.md).
-
-- Once published, download the full `d4lf_v10.0.3+zhcn.1.zip` release asset, not GitHub's automatic Source code ZIP. That official asset is not available yet.
-- Back up `%USERPROFILE%\.d4lf`, which holds settings and profiles. For V9 to V10, use a fresh extraction directory
-  and reimport incompatible profiles.
+- Exit D4LF and back up all of `%USERPROFILE%\.d4lf` before upgrading. It contains `params.ini`,
+  `profiles`, `native_filters`, `exports\inventory`, and diagnostic captures. Back up files saved elsewhere separately.
+- Keep the old complete application directory, and extract the new EXE and assets together into a fresh directory.
+  The same Windows account continues to use its existing `.d4lf`; do not copy personal data into the application package.
+  Check the version, language, hotkeys, and enabled profiles, then verify recognition in Vision Mode Only.
+  For V9 to V10, reimport incompatible profiles.
 - Upgrade from older versions by manually extracting the full ZIP to a fresh directory: this release cannot change
   the behavior of an old updater already running.
 - This release's `autoupdater.bat` checks this fork only, refuses downgrades, and preserves extra local files.
   A failed copy retains `temp_update` for recovery; manually extract the full release if needed. Do not mix EXE and assets versions.
 - App updates do not replace the game's DLL. Rerun `install_dll.cmd` with the game closed only when release notes require a DLL update.
+- To roll back, exit the new version, separately back up its current `.d4lf`, and launch the preserved old application.
+  If the old version cannot read changed settings or documents, retain both backups and restore the pre-upgrade `.d4lf`.
+  Do not mix configuration or assets from different versions. The updater does not downgrade or restore the game DLL;
+  follow the older version's installation instructions if its DLL differs.
 - Disabling a loot category leaves all of its items untouched, including Mythics. In enabled categories Mythics are kept,
   and favoriting still respects `mark_as_favorite`.
+
+The [Loot Tools guide (Chinese)](docs/loot-tools.zh-CN.md) covers saved files, export statuses,
+and troubleshooting. Inventory export primarily preserves TTS text; it does not automatically fill missing fields
+from screenshots or read the game's internal state.
 
 ## Cross-language build imports
 
@@ -92,11 +95,10 @@ instead of being guessed from a fuzzy translation. Review imported results in th
 
 ## Data and acknowledgements
 
-Chinese data is aggregated from multiple sources around stable internal identifiers. No third-party
-website is treated as the sole source of truth. D2Core data is used with permission as supplemental
-data and as a build source; thanks to [D2Core](https://www.d2core.com/d4/planner) for its reference
-data and support. Changes after a game or season update still need verification against real client
-text and other reliable sources.
+Thanks to [D4LF](https://github.com/d4lfteam/d4lf), [D2Core](https://www.d2core.com/d4/planner),
+and the community data projects. Equipment references are offline snapshots; missing names, drop locations,
+and probabilities remain unknown. See the [data notice](assets/equipment_knowledge/NOTICE.md) for sources,
+versions, and attribution.
 
 ## Diagnostics and privacy
 
@@ -110,16 +112,15 @@ text and other reliable sources.
 
 Screenshots can contain character names, chat, or other screen content. Review and redact captures
 before attaching them to a public issue.
+Inventory exports also remain local. Share only the relevant, redacted information when reporting a problem;
+you do not need to share the entire `.d4lf` directory.
 
-## Development
+## Settings and profile rules
 
-The project uses Python 3.14, [uv](https://docs.astral.sh/uv/), and PyQt6, and targets Windows.
+The [detailed interface and profile guide](README.md#%E7%95%8C%E9%9D%A2%E4%B8%8E%E9%85%8D%E7%BD%AE) includes English descriptions of settings,
+filter syntax, the Paragon overlay, and the information panel.
 
-```powershell
-uv sync
-uv run pytest . -m "not selenium" -n logical
-uvx prek run -a
-```
+## Reporting problems
 
 See [LICENSE](LICENSE) for licensing. Use
 [GitHub Issues](https://github.com/ytwytw/d4lf/issues) for bug reports and improvements.

@@ -114,8 +114,8 @@
     },
     "locale": "zhCN",
     "readiness_blockers": [
-        "12 tribute records have no verified Simplified Chinese translation; see unresolved.",
-        "The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; runtime rejects it instead of guessing."
+        "The Chinese aspect label 恶毒 is ambiguous between malicious and virulent; full same-tooltip effect disambiguation still requires live-game acceptance.",
+        "The Chinese tribute label 巨人贡品 is ambiguous between tribute_of_heritage and tribute_of_titans; full same-tooltip effect disambiguation still requires live-game acceptance."
     ],
     "runtime_ready": false,
     "schema_version": 1,
@@ -161,6 +161,18 @@
                 "texts": [
                     "恶毒"
                 ]
+            },
+            {
+                "namespace": "tributes",
+                "normalized_alias": "巨人贡品",
+                "stable_ids": [
+                    "tribute_of_heritage",
+                    "tribute_of_titans"
+                ],
+                "strategy": "reject_ambiguous_input",
+                "texts": [
+                    "巨人贡品"
+                ]
             }
         ],
         "disambiguated_alias_collisions": [
@@ -195,97 +207,106 @@
                 "texts": [
                     "毒素伤害"
                 ]
+            },
+            {
+                "mapping": {
+                    "Axe2H": "ancients_oath",
+                    "Focus": "ancients_pledge",
+                    "OffHandTotem": "ancients_pledge",
+                    "Shield": "ancients_pledge"
+                },
+                "namespace": "uniques",
+                "normalized_alias": "先祖之誓",
+                "stable_ids": [
+                    "ancients_oath",
+                    "ancients_pledge"
+                ],
+                "strategy": "item_type",
+                "texts": [
+                    "先祖之誓"
+                ]
             }
         ],
         "ok": false
     },
     "source_builds": {
         "d2core": "73552",
-        "d4data": "3.2.1.73552"
+        "d4data": "3.2.1.73552",
+        "wowhead": "3.0.2"
     },
     "summary": {
-        "equipment_unresolved_records": 0,
+        "equipment_unresolved_records": 1,
         "excluded_historical_records": 0,
         "excluded_records": 5,
-        "extension_unresolved_records": 12,
-        "resolved_records": 2741,
-        "reviewed_overrides": 75,
-        "source_builds_match": true,
+        "extension_unresolved_records": 0,
+        "resolved_records": 2788,
+        "reviewed_overrides": 122,
+        "source_builds_match": false,
         "source_quality_ok": false,
-        "source_records": 2753,
+        "source_records": 2789,
         "translation_conflicts": 0,
         "translation_sources": {
             "d2core": 342,
             "diablo4_companion": 2323,
             "locale_grammar": 1,
-            "reviewed_override": 75
+            "reviewed_override": 122
         },
         "unresolved_by_kind": {
-            "tributes": 12
+            "affixes": 1
         },
-        "unresolved_records": 12
+        "unresolved_records": 1
     },
     "translation_conflicts": [],
     "unresolved": [
         {
-            "reason": "missing_translation",
-            "source_text": "greater tribute of armaments",
-            "stable_id": "tributes:greater_tribute_of_armaments"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "greater tribute of harmony",
-            "stable_id": "tributes:greater_tribute_of_harmony"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "greater tribute of ingenuity",
-            "stable_id": "tributes:greater_tribute_of_ingenuity"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "greater tribute of the horadrim",
-            "stable_id": "tributes:greater_tribute_of_the_horadrim"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "lesser tribute",
-            "stable_id": "tributes:lesser_tribute"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "lesser tribute of ingenuity",
-            "stable_id": "tributes:lesser_tribute_of_ingenuity"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "lesser tribute of the horadrim",
-            "stable_id": "tributes:lesser_tribute_of_the_horadrim"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "major tribute of andariel",
-            "stable_id": "tributes:major_tribute_of_andariel"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "minor tribute of andariel",
-            "stable_id": "tributes:minor_tribute_of_andariel"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "tribute of andariel",
-            "stable_id": "tributes:tribute_of_andariel"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "tribute of heritage",
-            "stable_id": "tributes:tribute_of_heritage"
-        },
-        {
-            "reason": "missing_translation",
-            "source_text": "tribute of the horadrim",
-            "stable_id": "tributes:tribute_of_the_horadrim"
+            "reason": "No identity-matched independent Chinese label; the English source template has an element parameter. English fallback retained.",
+            "source_text": "resistance",
+            "stable_id": "affixes:resistance"
         }
-    ]
+    ],
+    "upstream_locale_delta": {
+        "added_canonical_records": 36,
+        "merge_base": "3ecfe3b506d553fe5981e95fd2256bbbb164e8a4",
+        "resolved_records": [
+            "affixes:bonus_experience",
+            "affixes:can_equip_more_unique_charm",
+            "affixes:chance_for_an_extra_item_from_the_purveyor_of_curiosities",
+            "affixes:deadly_strike_chance",
+            "affixes:faster_cast_rate",
+            "affixes:lucky_hit_up_to_a_chance_to_deliver_a_crushing_blow",
+            "affixes:mondays_now_count_as_tuesdays",
+            "affixes:primary_resource_on_kill",
+            "affixes:to_shout_skills",
+            "sigils:dungeons:a_journey_through_the_past",
+            "sigils:positive:echo_of_pindleskin",
+            "uniques:ancients_pledge",
+            "uniques:annihilus",
+            "uniques:bell_of_the_bovine",
+            "uniques:call_to_arms",
+            "uniques:edge",
+            "uniques:enigma",
+            "uniques:grief",
+            "uniques:hellfire_torch",
+            "uniques:holy_thunder",
+            "uniques:infinity",
+            "uniques:insight",
+            "uniques:kings_grace",
+            "uniques:leaf",
+            "uniques:leorics_crown",
+            "uniques:lore",
+            "uniques:messerschmidts_reaver",
+            "uniques:pattern",
+            "uniques:phoenix",
+            "uniques:prudence",
+            "uniques:rain",
+            "uniques:spirit",
+            "uniques:stealth",
+            "uniques:strength",
+            "uniques:zephyr"
+        ],
+        "unresolved_records": [
+            "affixes:resistance"
+        ],
+        "upstream_commit": "9d75bd8047f537419b1d2b8c0fd666802805bd7c"
+    }
 }

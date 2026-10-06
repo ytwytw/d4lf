@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMenu,
     QPushButton,
     QScrollArea,
     QSplitter,
@@ -153,6 +154,16 @@ class ActivityLogWidget(ActivityProfileRowsMixin, ActivityProfileDragMixin, Acti
             btn.setFixedHeight(34)
             btn.setFixedWidth(130)
             action_layout.addWidget(btn)
+
+        self.loot_tools_btn = QPushButton("战利品工具")
+        self.loot_tools_btn.setFixedHeight(34)
+        tools_menu = QMenu(self.loot_tools_btn)
+        if window := self._main_window:
+            tools_menu.addAction("游戏过滤器生成器", lambda: window.open_native_filter())
+            tools_menu.addAction("完整物品导出", window.open_inventory_dump)
+            tools_menu.addAction("装备来源与词条", lambda: window.open_equipment_knowledge())
+        self.loot_tools_btn.setMenu(tools_menu)
+        action_layout.addWidget(self.loot_tools_btn)
 
         action_layout.addStretch()
         action_layout.addWidget(self.minimize_to_tray_cb)

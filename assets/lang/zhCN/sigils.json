@@ -1,5 +1,6 @@
 {
     "dungeons": {
+        "a_journey_through_the_past": "往昔之旅",
         "abandoned_mineworks": "废弃矿场",
         "akkhans_grasp": "阿克汉之握",
         "aldurwood": "艾尔多之林",
@@ -280,6 +281,7 @@
         "diamond_reserve": "钻石储备 这里储藏着大量钻石宝箱。",
         "dungeon_delve": "地下城探险 完成地下城可获得额外经验值和奖励。",
         "duriels_offering": "督瑞尔的供品 阿斯塔洛斯的奖励包含苦痛碎片，这是打开督瑞尔的秘宝所需的材料。",
+        "echo_of_pindleskin": "暴躁外皮的回响 暴躁外皮的回响在这座地下城中游荡，消灭它时可能掉落游戏中的任意物品。",
         "emerald_reserve": "绿宝石储备 这里储藏着大量绿宝石宝箱。",
         "equipment_delve": "深挖装备 找到赫拉迪姆神器，获取品质递增的装备宝匣。",
         "extra_resplendent_chests": "额外的精美的箱子 额外的精美的箱子将会出现在地下城中。",

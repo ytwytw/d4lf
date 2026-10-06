@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from src.game_data import GameCatalog, ItemRarity, ItemType, is_armor, is_jewelry, is_weapon
 from src.item import Affix, AffixType, Aspect
+from src.perception.parser.aspects import _reject_conflicting_shared_aspect_effects, _resolve_shared_aspect
 from src.perception.text import correct_name
 
 if TYPE_CHECKING:
@@ -100,6 +101,8 @@ def _get_aspect_or_set_from_tts_section(tts_section: list[str], item: Item, star
         if aspect_index >= len(tts_section) or _is_affix_stop_marker(tts_section[aspect_index]):
             msg = f"Missing aspect text for {item.original_name}"
             raise ValueError(msg)
+        if item.rarity == ItemRarity.Legendary:
+            _reject_conflicting_shared_aspect_effects(tts_section, aspect_index, item.name, GameCatalog())
         return tts_section[aspect_index]
     if item.rarity == ItemRarity.Set:
         for line in tts_section[start + num_affixes :]:
@@ -250,7 +253,8 @@ def _get_aspect_from_text(text: str, name: str) -> Aspect:
 
 # For legendary aspects
 def _get_aspect_from_name(text: str, name: str) -> Aspect:
-    if aspect_name := GameCatalog().resolve_aspect(name):
+    catalog = GameCatalog()
+    if aspect_name := catalog.resolve_aspect(name) or _resolve_shared_aspect(text, name, catalog):
         return Aspect(text=text, name=aspect_name)
 
     msg = f"Could not resolve legendary aspect name: {name}"

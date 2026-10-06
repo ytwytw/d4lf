@@ -20,6 +20,8 @@ def shutdown_scripts(handler: ScriptHandler) -> None:
         handler._shutting_down = True
         handler._config.unregister_change_listener(handler._on_config_changed)
         handler._clear_key_binds()
+    handler.cancel_inventory_dump()
+    handler.wait_for_inventory_dump()
     for cleanup in (handler.vision_mode.stop, request_close_paragon, request_close):
         try:
             cleanup()

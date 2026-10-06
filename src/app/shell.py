@@ -6,16 +6,7 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt, QThread, QTimer, QUrl, pyqtSignal
 from PyQt6.QtGui import QDesktopServices, QIcon
-from PyQt6.QtWidgets import (
-    QApplication,
-    QHBoxLayout,
-    QLabel,
-    QMainWindow,
-    QPushButton,
-    QSystemTrayIcon,
-    QTabWidget,
-    QWidget,
-)
+from PyQt6.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSystemTrayIcon, QTabWidget, QWidget
 
 from src import __version__
 from src.app.assets import DISCORD_ICON, GITHUB_ICON, ICON_PATH
@@ -23,6 +14,7 @@ from src.app.backend import BackendWorker, get_perception_module
 from src.app.dashboard import ActivityLogWidget
 from src.app.lifecycle import UnifiedWindowLifecycle
 from src.app.localization import UnifiedWindowLocalization
+from src.app.loot_tools import LootToolsWindows
 from src.app.startup import REPOSITORY_URL
 from src.desktop.activity import ANSIConsoleWidget, QtLogHandler
 from src.desktop.themes import DARK_THEME_TEMPLATE, LIGHT_THEME_TEMPLATE
@@ -56,7 +48,7 @@ LOGGER = logging.getLogger(__name__)
 perception_module = get_perception_module()
 
 
-class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
+class UnifiedMainWindow(LootToolsWindows, UnifiedWindowLocalization, UnifiedWindowLifecycle):
     locale_changed_signal = pyqtSignal()
     profile_load_report_signal = pyqtSignal(object)
     settings_load_error_signal = pyqtSignal(object)
@@ -65,7 +57,7 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
         super().__init__()
         self.profile_load_report_signal.connect(self._on_profile_load_report)
         self.settings_load_error_signal.connect(self._on_settings_load_error)
-        self._child_windows: dict[str, QMainWindow] = {}
+        self._child_windows: dict[str, QWidget] = {}
         self._config = get_settings()
         if ICON_PATH.exists():
             self.setWindowIcon(QIcon(str(ICON_PATH)))
@@ -238,8 +230,8 @@ class UnifiedMainWindow(UnifiedWindowLocalization, UnifiedWindowLifecycle):
             )
 
     def _show_singleton_modal[**P](
-        self, key: str, window_class: Callable[P, QMainWindow], *args: P.args, **kwargs: P.kwargs
-    ) -> QMainWindow:
+        self, key: str, window_class: Callable[P, QWidget], *args: P.args, **kwargs: P.kwargs
+    ) -> QWidget:
         existing_window = self._child_windows.get(key)
         if existing_window is not None and existing_window.isVisible():
             existing_window.raise_()

@@ -11,6 +11,7 @@ def test_helpers_module_is_importable() -> None:
 
 def test_item_type_summary_uses_catalog_labels(monkeypatch) -> None:
     catalog = GameCatalog()
-    monkeypatch.setattr(catalog, "item_types_dict", {**catalog.item_types_dict, "Helm": "Casque"})
+    # Keep the fallback case independent of the language loaded by earlier tests.
+    monkeypatch.setattr(catalog, "item_types_dict", {"Helm": "Casque"})
 
     assert _item_type_summary([ItemType.Helm, ItemType.Sword]) == "Casque, sword"

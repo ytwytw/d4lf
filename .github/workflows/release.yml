@@ -23,13 +23,13 @@ jobs:
     env:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - name: Setup env
         uses: ./.github/actions/setup_env
       - name: Scan release tree for private data
         shell: powershell
         run: uv run --frozen python -m src.tools.public_safety --tree HEAD
-      - name: Require locale publication readiness
+      - name: Require locale and bundled-source publication readiness
         shell: powershell
         run: uv run --frozen python -m src.tools.release_check
       - name: Run release checks
@@ -50,7 +50,7 @@ jobs:
           } else {
             echo "IS_BETA=false" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
           }
-      - uses: softprops/action-gh-release@v3
+      - uses: softprops/action-gh-release@v3.0.3
         id: create_release
         with:
           files: ${{ steps.build_zip.outputs.zip_path }}
@@ -62,7 +62,7 @@ jobs:
           token: "${{ secrets.RELEASE_TOKEN || github.token }}"
           fail_on_unmatched_files: true
       - name: Fetch release meta data
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9.0.0
         id: release_metadata
         with:
           github-token: ${{ secrets.RELEASE_TOKEN || github.token }}
@@ -73,7 +73,7 @@ jobs:
               tag: 'v${{ steps.build_zip.outputs.version }}',
             });
             core.setOutput('body', data.body ?? '');
-      - uses: SethCohen/github-releases-to-discord@v1.20
+      - uses: SethCohen/github-releases-to-discord@v1.20.0
         if: env.DISCORD_WEBHOOK != ''
         with:
           color: "2105893"

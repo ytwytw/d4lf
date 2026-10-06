@@ -62,14 +62,21 @@ class TtsFramer:
         self.lines: list[str] = []
         self.raw_lines: list[str] = []
         self.last_raw_item: list[str] = []
+        self.raw_sequences: list[int] = []
+        self.last_raw_start_sequence = 0
+        self.last_item_truncated = False
+        self._truncated = False
 
-    def feed(self, data: str, *, raw_data: str | None = None) -> list[str] | None:
+    def feed(self, data: str, *, raw_data: str | None = None, raw_sequence: int = 0) -> list[str] | None:
         self.lines.append(data)
         self.raw_lines.append(data if raw_data is None else raw_data)
+        self.raw_sequences.append(raw_sequence)
         if len(self.lines) > self.max_lines:
             overflow = len(self.lines) - self.max_lines
             del self.lines[:overflow]
             del self.raw_lines[:overflow]
+            del self.raw_sequences[:overflow]
+            self._truncated = True
         if not self.grammar.contains("item_end_control", data):
             return None
         start = find_item_start(self.lines, grammar=self.grammar, catalog=self.catalog)
@@ -77,8 +84,12 @@ class TtsFramer:
             return None
         item = self.lines[start:]
         self.last_raw_item = self.raw_lines[start:]
+        self.last_raw_start_sequence = self.raw_sequences[start]
+        self.last_item_truncated = self._truncated
         self.lines = []
         self.raw_lines = []
+        self.raw_sequences = []
+        self._truncated = False
         return item
 
 

@@ -41,6 +41,32 @@ def test_main_reports_stage_start_finish_counts_and_elapsed_time(tmp_path, monke
         assert b"\r" not in payload, name
 
 
+def test_main_preserves_generic_axe_and_sword_item_type_labels(tmp_path, monkeypatch) -> None:
+    d4data = tmp_path / "d4data"
+    string_list_dir = d4data / "json/enUS_Text/meta/StringList"
+    string_list_dir.mkdir(parents=True)
+    (string_list_dir / "UIToolTips.stl.json").write_text('{"arStrings": []}', encoding="utf-8")
+    for item_type, name in (
+        ("Axe", "axe"),
+        ("Axe_Berserker_Axe", "berserker axe"),
+        ("Sword", "sword"),
+        ("Sword_Phase_Blade", "phase blade"),
+    ):
+        (string_list_dir / f"ItemType_{item_type}.stl.json").write_text(
+            json.dumps({"arStrings": [{"szLabel": "Name", "szText": name}]}), encoding="utf-8"
+        )
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("src.tools.data_generation.datasets.D4LF_BASE_DIR", tmp_path)
+    for stage in ("aspects", "uniques", "sets", "sigils", "affixes"):
+        monkeypatch.setattr(f"src.tools.data_generation.datasets.generate_{stage}", lambda *_args, **_kwargs: 0)
+
+    main(d4data)
+
+    output = json.loads((tmp_path / "assets/lang/enUS/item_types.json").read_text(encoding="utf-8"))
+    assert output["Axe"] == "axe"
+    assert output["Sword"] == "sword"
+
+
 def test_affix_generation_uses_core_toc_power_index_without_parsing_power_files(tmp_path, monkeypatch) -> None:
     d4data = tmp_path / "d4data"
     string_dir = d4data / "json/enUS_Text/meta/StringList"
@@ -117,3 +143,132 @@ def test_generate_uniques_skips_placeholder_before_reading_incomplete_inherent_a
     output = json.loads((output_dir / "uniques.json").read_text(encoding="utf-8"))
     assert "[ph]_placeholder_unique" not in output
     assert output == {}
+
+
+def test_generate_uniques_counts_grandfather_inherent_affix(tmp_path, monkeypatch) -> None:
+    d4data = tmp_path / "d4data"
+    item_dir = d4data / "json/base/meta/Item"
+    affix_dir = d4data / "json/base/meta/Affix"
+    string_dir = d4data / "json/enUS_Text/meta/StringList"
+    item_dir.mkdir(parents=True)
+    affix_dir.mkdir(parents=True)
+    string_dir.mkdir(parents=True)
+    (item_dir / "2HSword_Unique_Generic_001.itm.json").write_text(
+        json.dumps({
+            "snoItemType": {"name": "Sword"},
+            "arForcedAffixes": [{"name": "2HSword_Unique_Generic_001"}],
+            "arInherentAffixes": [
+                {"name": "Indestructible", "__targetFileName__": "base/meta/Affix/Indestructible.aff"}
+            ],
+        }),
+        encoding="utf-8",
+    )
+    (affix_dir / "Indestructible.aff.json").write_text(json.dumps({"ptItemAffixAttributes": [{}]}), encoding="utf-8")
+    (string_dir / "Item_2HSword_Unique_Generic_001.stl.json").write_text(
+        json.dumps({"arStrings": [{"szLabel": "Name", "szText": "The Grandfather"}]}), encoding="utf-8"
+    )
+    (item_dir / "Talisman_Charm_Unique_2HSword_Unique_Generic_001.itm.json").write_text(
+        json.dumps({"snoItemType": {"name": "Charm"}, "arInherentAffixes": []}), encoding="utf-8"
+    )
+    (string_dir / "Item_Talisman_Charm_Unique_2HSword_Unique_Generic_001.stl.json").write_text(
+        json.dumps({"arStrings": [{"szLabel": "Name", "szText": "The Grandfather"}]}), encoding="utf-8"
+    )
+    output_dir = tmp_path / "assets/lang/enUS"
+    output_dir.mkdir(parents=True)
+    monkeypatch.setattr("src.tools.data_generation.datasets.D4LF_BASE_DIR", tmp_path)
+
+    assert generate_uniques(d4data, "enUS") == 2
+
+    output = json.loads((output_dir / "uniques.json").read_text(encoding="utf-8"))
+    assert output == {"the_grandfather": {"num_inherents": 1}}
+
+
+def test_generate_uniques_includes_runeword_items(tmp_path, monkeypatch) -> None:
+    d4data = tmp_path / "d4data"
+    item_dir = d4data / "json/base/meta/Item"
+    string_dir = d4data / "json/enUS_Text/meta/StringList"
+    item_dir.mkdir(parents=True)
+    string_dir.mkdir(parents=True)
+    (item_dir / "Runeword_Enigma.itm.json").write_text(
+        json.dumps({
+            "snoItemType": {"name": "ChestArmor"},
+            "arForcedAffixes": [{"name": "Runeword_Enigma"}],
+            "arInherentAffixes": [],
+        }),
+        encoding="utf-8",
+    )
+    (string_dir / "Item_Runeword_Enigma.stl.json").write_text(
+        json.dumps({"arStrings": [{"szLabel": "Name", "szText": "Enigma"}]}), encoding="utf-8"
+    )
+    output_dir = tmp_path / "assets/lang/enUS"
+    output_dir.mkdir(parents=True)
+    monkeypatch.setattr("src.tools.data_generation.datasets.D4LF_BASE_DIR", tmp_path)
+
+    assert generate_uniques(d4data, "enUS") == 1
+
+    output = json.loads((output_dir / "uniques.json").read_text(encoding="utf-8"))
+    assert "enigma" in output
+    assert output["enigma"] == {"num_inherents": 0}
+
+
+def test_generate_uniques_includes_runeword_with_specialized_gear_type(tmp_path, monkeypatch) -> None:
+    d4data = tmp_path / "d4data"
+    item_dir = d4data / "json/base/meta/Item"
+    affix_dir = d4data / "json/base/meta/Affix"
+    string_dir = d4data / "json/enUS_Text/meta/StringList"
+    item_dir.mkdir(parents=True)
+    affix_dir.mkdir(parents=True)
+    string_dir.mkdir(parents=True)
+    (item_dir / "Runeword_Grief.itm.json").write_text(
+        json.dumps({
+            "snoItemType": {"name": "Sword_Phase_Blade"},
+            "arForcedAffixes": [{"name": "Runeword_Grief"}],
+            "arInherentAffixes": [
+                {"name": "Indestructible", "__targetFileName__": "base/meta/Affix/Indestructible.aff"}
+            ],
+        }),
+        encoding="utf-8",
+    )
+    (affix_dir / "Indestructible.aff.json").write_text(json.dumps({"ptItemAffixAttributes": [{}]}), encoding="utf-8")
+    (string_dir / "Item_Runeword_Grief.stl.json").write_text(
+        json.dumps({"arStrings": [{"szLabel": "Name", "szText": "Grief"}]}), encoding="utf-8"
+    )
+    output_dir = tmp_path / "assets/lang/enUS"
+    output_dir.mkdir(parents=True)
+    monkeypatch.setattr("src.tools.data_generation.datasets.D4LF_BASE_DIR", tmp_path)
+
+    assert generate_uniques(d4data, "enUS") == 1
+
+    output = json.loads((output_dir / "uniques.json").read_text(encoding="utf-8"))
+    assert output == {"grief": {"num_inherents": 1}}
+
+
+def test_generate_uniques_includes_unique_charms_and_seals(tmp_path, monkeypatch) -> None:
+    d4data = tmp_path / "d4data"
+    item_dir = d4data / "json/base/meta/Item"
+    string_dir = d4data / "json/enUS_Text/meta/StringList"
+    item_dir.mkdir(parents=True)
+    string_dir.mkdir(parents=True)
+    (item_dir / "S15_Charm_Unique_Annihilus.itm.json").write_text(
+        json.dumps({"snoItemType": {"name": "HoradricSeal"}, "arInherentAffixes": []}), encoding="utf-8"
+    )
+    (string_dir / "Item_S15_Charm_Unique_Annihilus.stl.json").write_text(
+        json.dumps({"arStrings": [{"szLabel": "Name", "szText": "Annihilus"}]}), encoding="utf-8"
+    )
+    (item_dir / "S15_Charm_Unique_HellfireTorch.itm.json").write_text(
+        json.dumps({"snoItemType": {"name": "Charm"}, "arInherentAffixes": []}), encoding="utf-8"
+    )
+    (string_dir / "Item_S15_Charm_Unique_HellfireTorch.stl.json").write_text(
+        json.dumps({"arStrings": [{"szLabel": "Name", "szText": "Hellfire Torch"}]}), encoding="utf-8"
+    )
+    output_dir = tmp_path / "assets/lang/enUS"
+    output_dir.mkdir(parents=True)
+    monkeypatch.setattr("src.tools.data_generation.datasets.D4LF_BASE_DIR", tmp_path)
+
+    assert generate_uniques(d4data, "enUS") == 2
+
+    output = json.loads((output_dir / "uniques.json").read_text(encoding="utf-8"))
+    assert "annihilus" in output
+    assert output["annihilus"] == {"num_inherents": 0}
+    assert "hellfire_torch" in output
+    assert output["hellfire_torch"] == {"num_inherents": 0}
