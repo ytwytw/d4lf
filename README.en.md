@@ -17,6 +17,7 @@ Simplified Chinese and English game clients.
 - **Vision modes:** show matching results when you hover over an item, or highlight matching affixes on its tooltip.
 - **Game filters:** generate rules from a profile or create them independently, then export a code for the game.
 - **Inventory export:** save item descriptions, recognized attributes, locations, and read status as Markdown, TXT, or JSON.
+  Exported files can be given to an AI tool for analysis. D4LF only collects and exports item information; it has no built-in AI analysis.
 - **Equipment reference:** search equipment and view available drop sources, affixes, and value ranges.
 - **Overlays:** display Paragon layouts, event timers, gold, and experience information in the game.
 
