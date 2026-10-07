@@ -26,8 +26,6 @@ jobs:
           contains(github.event.pull_request.labels.*.name, 'release')
         )
     runs-on: windows-latest
-    env:
-      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -40,53 +38,56 @@ jobs:
       - name: Require locale and bundled-source publication readiness
         shell: powershell
         run: uv run --frozen python -m src.tools.release_check
+      - name: Validate release version
+        id: release_version
+        shell: powershell
+        run: uv run --frozen python -m src.tools.release_metadata github-output $env:GITHUB_OUTPUT
+      - name: Refuse an existing tag or release
+        uses: actions/github-script@v9.0.0
+        env:
+          RELEASE_TAG: ${{ steps.release_version.outputs.tag }}
+        with:
+          script: |
+            const tag = process.env.RELEASE_TAG;
+            const releases = await github.paginate(github.rest.repos.listReleases, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+            if (releases.some((release) => release.tag_name === tag)) {
+              core.setFailed(`A release or draft for ${tag} already exists; bump src/__init__.py.`);
+              return;
+            }
+            try {
+              await github.rest.git.getRef({ owner: context.repo.owner, repo: context.repo.repo, ref: `tags/${tag}` });
+              core.setFailed(`Tag ${tag} already exists; bump src/__init__.py.`);
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
       - name: Run release checks
-        uses: j178/prek-action@v2
+        uses: j178/prek-action@v3.0.0
       - name: Run regression suite (excluding Selenium)
         shell: powershell
         run: uv run --frozen pytest . -m "not selenium" -n logical
       - name: Build & Zip exe
         id: build_zip
         uses: ./.github/actions/build_zip
-      - name: Check if beta
-        id: check_beta
-        shell: powershell
-        run: |
-          $version = "${{ steps.build_zip.outputs.version }}"
-          if ($version -like "*beta*" -or $version -like "*alpha*" -or $version -like "*rc*") {
-            echo "IS_BETA=true" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
-          } else {
-            echo "IS_BETA=false" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
-          }
-      - uses: softprops/action-gh-release@v3.0.3
-        id: create_release
         with:
+          version: ${{ steps.release_version.outputs.version }}
+      - name: Render user-facing release notes
+        shell: powershell
+        env:
+          RELEASE_TAG: ${{ steps.release_version.outputs.tag }}
+        run: uv run --frozen python -m src.tools.release_metadata notes --repository $env:GITHUB_REPOSITORY --ref $env:RELEASE_TAG --output release-body.md
+      # A draft keeps generated artifacts private until a maintainer reviews the notes and publishes it.
+      - uses: softprops/action-gh-release@v3.0.3
+        with:
+          body_path: release-body.md
+          draft: true
           files: ${{ steps.build_zip.outputs.zip_path }}
-          generate_release_notes: ${{ env.IS_BETA == 'false' }}
-          name: "v${{ steps.build_zip.outputs.version }}"
-          prerelease: ${{ env.IS_BETA == 'true' }}
-          tag_name: "v${{ steps.build_zip.outputs.version }}"
+          name: "v${{ steps.release_version.outputs.version }}"
+          prerelease: ${{ steps.release_version.outputs.prerelease == 'true' }}
+          tag_name: ${{ steps.release_version.outputs.tag }}
           target_commitish: ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || github.sha }}
           token: "${{ secrets.RELEASE_TOKEN || github.token }}"
           fail_on_unmatched_files: true
-      - name: Fetch release meta data
-        uses: actions/github-script@v9.0.0
-        id: release_metadata
-        with:
-          github-token: ${{ secrets.RELEASE_TOKEN || github.token }}
-          script: |
-            const { data } = await github.rest.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag: 'v${{ steps.build_zip.outputs.version }}',
-            });
-            core.setOutput('body', data.body ?? '');
-      - uses: SethCohen/github-releases-to-discord@v1.20.0
-        if: env.DISCORD_WEBHOOK != ''
-        with:
-          color: "2105893"
-          release_body: ${{ steps.release_metadata.outputs.body }}
-          release_html_url: ${{ steps.create_release.outputs.url }}
-          release_name: "v${{ steps.build_zip.outputs.version }}"
-          username: "D4LF Release"
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}

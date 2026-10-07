@@ -1,5 +1,4 @@
 import json
-import logging
 import typing
 from types import SimpleNamespace
 from typing import cast
@@ -9,8 +8,8 @@ import pytest
 from src.game_data import GameCatalog, ItemType
 from src.importing import ImportOptions, ImportRequest, VariantSelection
 from src.importing.maxroll import extract_maxroll_paragon_steps
-from src.importing.maxroll.adapter import _extract_profile_variant, _find_item_affixes, _find_item_type, import_maxroll
-from src.importing.maxroll.planner import _resolve_visible_profile_index
+from src.importing.maxroll.adapter import _extract_profile_variant, import_maxroll
+from src.importing.maxroll.planner import _find_item_type, _resolve_visible_profile_index
 
 if typing.TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -28,9 +27,7 @@ URLS = [
 
 
 @pytest.mark.parametrize("url", URLS)
-def test_import_maxroll(url: str, mock_ini_loader: MockerFixture, mocker: MockerFixture) -> None:
-    GameCatalog()  # need to load data first or the mock will make it impossible
-    mocker.patch("builtins.open", new=mocker.mock_open())
+def test_import_maxroll(url: str, mock_ini_loader: MockerFixture, temporary_profile_store) -> None:
     request = ImportRequest(
         url=url,
         options=ImportOptions(
@@ -41,6 +38,7 @@ def test_import_maxroll(url: str, mock_ini_loader: MockerFixture, mocker: Mocker
         ),
     )
     import_maxroll(request=request)
+    assert list(temporary_profile_store.profiles_dir.glob("*.yaml"))  # written to the test store only
 
 
 def test_find_item_type_uses_fix_weapon_type_with_slot_context() -> None:
@@ -216,64 +214,6 @@ def test_import_maxroll_extracts_the_selected_profile(mock_ini_loader, mocker: M
     assert result.selected_variant == "Pit Push"
     assert result.saved_file_names == ("test",)
     assert profile_store.save_new.call_count == 1
-
-
-def test_find_item_affixes_resolves_skill_rank_category_from_affix_key() -> None:
-    mapping_data = {
-        "affixes": {
-            "X2_SkillRankBonus_Sorc_Category_Shock": {
-                "id": 1,
-                "magicType": 0,
-                "attributes": [{"id": 1155, "param": 332737186, "formula": "GearAffix_SkillRankBonus_1to2"}],
-            }
-        },
-        "skills": {},
-    }
-
-    affixes = _find_item_affixes(mapping_data=mapping_data, item_affixes=[{"nid": 1}], item_type=ItemType.Amulet)
-
-    assert [affix.name for affix in affixes] == ["to_shock_skills"]
-
-
-def test_find_item_affixes_resolves_skill_rank_category_from_related_description() -> None:
-    mapping_data = {
-        "affixes": {
-            "Unknown_SkillRankBonus": {
-                "id": 1,
-                "magicType": 0,
-                "attributes": [{"id": 1155, "param": 1856650534, "formula": "GearAffix_SkillRankBonus"}],
-            },
-            "Talisman_SealAffix_Set_Rogue_05_UltimateSkillRanks": {
-                "id": 2,
-                "magicType": 1,
-                "attributes": [{"id": 1155, "param": 1856650534, "formula": "GearAffix_SkillRankBonus"}],
-                "desc": "+{c_number}[Skill_Rank_Skill_Tag_Bonus(1856650534)||]{/c} {c_important}Ultimate{/c} Skills",
-            },
-        },
-        "skills": {},
-    }
-
-    affixes = _find_item_affixes(mapping_data=mapping_data, item_affixes=[{"nid": 1}], item_type=ItemType.Amulet)
-
-    assert [affix.name for affix in affixes] == ["to_ultimate_skills"]
-
-
-@pytest.mark.parametrize(
-    ("affix_key", "attribute"),
-    [
-        ("X2_Transfiguration_DamageTypePercent_Fire", {"id": 255, "param": 1, "formula": "SancAffix_10%"}),
-        ("X2_Transfiguration_AttackSpeed", {"id": 221, "formula": "SancAffix_10%"}),
-    ],
-)
-def test_find_item_affixes_skips_transfiguration_affixes(affix_key, attribute, caplog) -> None:
-    GameCatalog()
-    mapping_data = {"affixes": {affix_key: {"id": 1, "magicType": 0, "attributes": [attribute]}}, "skills": {}}
-
-    with caplog.at_level(logging.INFO):
-        affixes = _find_item_affixes(mapping_data=mapping_data, item_affixes=[{"nid": 1}], item_type=ItemType.Helm)
-
-    assert affixes == []
-    assert "Skipping Transfiguration affix" in caplog.messages[0]
 
 
 @pytest.mark.parametrize(("rotation", "expected_index"), [(0, 5), (1, 125), (2, 435), (3, 315)])

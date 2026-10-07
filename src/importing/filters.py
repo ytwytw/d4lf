@@ -2,14 +2,11 @@ import logging
 from enum import Enum
 from typing import TYPE_CHECKING, TypeVar, overload
 
-import rapidfuzz
-
 from src.game_data import WEAPON_TYPES, GameCatalog, ItemRarity, ItemType
+from src.importing.pools import REQUIRED_EQUIPMENT_AFFIXES, import_pool
 from src.item import Affix, AffixType
-from src.perception import closest_match
 from src.profiles import (
     AffixFilterCountModel,
-    AffixFilterModel,
     AspectUniqueFilterModel,
     CharmFilterModel,
     ItemFilterModel,
@@ -80,37 +77,17 @@ def get_class_name(input_str: str) -> str:
 
 
 def update_mingreateraffixcount(item_filter: ItemFilterModel, require_gas: bool) -> None:
-    item_filter.min_greater_affix_count = (
-        sum(affix.want_greater for affix in item_filter.affix_pool[0].count) if require_gas else 0
-    )
+    # A broadened rule has no pool and so no greater-affix requirement either.
+    pool = item_filter.affix_pool[0].count if item_filter.affix_pool else []
+    item_filter.min_greater_affix_count = sum(affix.want_greater for affix in pool) if require_gas else 0
 
 
-def affix_dict_for_item_type(item_type: ItemType | None) -> dict[str, str]:
-    if item_type == ItemType.HoradricSeal:
-        return GameCatalog().seal_affix_dict
-    if item_type == ItemType.Charm:
-        return GameCatalog().charm_affix_dict
-    return GameCatalog().affix_dict
-
-
-def match_set_aware_seal_affix(stat_clean: str, affix_dict: dict[str, str], guessed_set_name: str) -> str | None:
-    best_global_key = closest_match(stat_clean, affix_dict)
-    if best_global_key and best_global_key != "damage":
-        global_display = affix_dict[best_global_key]
-        if rapidfuzz.distance.Levenshtein.distance(stat_clean, global_display) <= 2:
-            is_set_specific = any(best_global_key.startswith(f"{set_name}_") for set_name in GameCatalog().set_list)
-            if not is_set_specific:
-                return best_global_key
-    set_affixes = {
-        key: value for key, value in GameCatalog().seal_affix_dict.items() if key.startswith(f"{guessed_set_name}_")
-    }
-    if not set_affixes:
-        return None
-    potential_match = closest_match(stat_clean, set_affixes)
-    if potential_match is None:
-        return None
-    display_name = GameCatalog().seal_affix_dict[potential_match]
-    return potential_match if rapidfuzz.fuzz.token_set_ratio(stat_clean, display_name) >= 50 else None
+def resolve_unique_name(label: str) -> str | None:
+    """Canonical unique id for a source label (as the profile model normalizes it, then catalog aliases)."""
+    normalized = label.lower().replace("'", "").replace(" ", "_").replace(",", "")
+    if normalized in GameCatalog().aspect_unique_dict:
+        return normalized
+    return GameCatalog().resolve_unique(label) if label.strip() else None
 
 
 def is_unique_like_rarity(rarity: ItemRarity | str | None) -> bool:
@@ -119,15 +96,12 @@ def is_unique_like_rarity(rarity: ItemRarity | str | None) -> bool:
     return str(rarity).strip().casefold() in {"unique", "mythic"}
 
 
-def create_item_affix_pool(affixes: list[Affix], unique_like: bool) -> list[AffixFilterCountModel]:
-    if not affixes:
-        return []
-    return [
-        AffixFilterCountModel(
-            count=[AffixFilterModel(name=a.name, want_greater=a.type == AffixType.greater) for a in affixes],
-            min_count=1 if unique_like else 3,
-        )
-    ]
+def create_item_affix_pool(
+    affixes: list[Affix], unique_like: bool, *, unresolved_count: int = 0, context: str = ""
+) -> list[AffixFilterCountModel]:
+    """Pool for an imported equipment slot; see ``import_pool`` for how unresolved affixes relax it."""
+    required = 1 if unique_like else REQUIRED_EQUIPMENT_AFFIXES
+    return import_pool(affixes, required, unresolved_count, context=context)
 
 
 @overload
@@ -137,6 +111,8 @@ def create_seal_charm_filter(
     model_type: type[SealFilterModel] = SealFilterModel,
     unique_name: str | None = None,
     set_name: str | None = None,
+    *,
+    unresolved_count: int = 0,
 ) -> SealFilterModel: ...
 
 
@@ -147,6 +123,8 @@ def create_seal_charm_filter(
     model_type: type[CharmFilterModel],
     unique_name: str | None = None,
     set_name: str | None = None,
+    *,
+    unresolved_count: int = 0,
 ) -> CharmFilterModel: ...
 
 
@@ -157,6 +135,8 @@ def create_seal_charm_filter(
     model_type: type[SealFilterModel | CharmFilterModel],
     unique_name: str | None = None,
     set_name: str | None = None,
+    *,
+    unresolved_count: int = 0,
 ) -> SealFilterModel | CharmFilterModel: ...
 
 
@@ -166,17 +146,13 @@ def create_seal_charm_filter(
     model_type: type[SealFilterModel | CharmFilterModel] = SealFilterModel,
     unique_name: str | None = None,
     set_name: str | None = None,
+    *,
+    unresolved_count: int = 0,
 ) -> SealFilterModel | CharmFilterModel:
-    affix_pool = (
-        [
-            AffixFilterCountModel(
-                count=[AffixFilterModel(name=a.name, want_greater=a.type == AffixType.greater) for a in affixes],
-                minCount=1,
-            )
-        ]
-        if affixes
-        else []
-    )
+    # Seals and charms keep a talisman with any one listed affix, so a single unresolved affix leaves no
+    # imported affix that may be required; the filter then relies on its other conditions only.
+    context = unique_name or set_name or model_type.__name__.removesuffix("FilterModel")
+    affix_pool = import_pool(affixes, 1, unresolved_count, context=context)
     result = (
         CharmFilterModel(set=[set_name] if set_name else []) if model_type is CharmFilterModel else SealFilterModel()
     )

@@ -262,3 +262,17 @@ def test_catalog_initialization_is_serialized(monkeypatch) -> None:
     assert instances[0] is instances[1]
     assert instances[0].aspect_list == ["ready"]
     assert catalog_module.GAME_CATALOG_LOCK is not None
+
+
+def test_runtime_unique_names_ship_no_ascii_placeholders() -> None:
+    uniques = json.loads((Path(__file__).parents[2] / "assets/lang/zhCN/uniques.json").read_text(encoding="utf-8"))
+    names = [entry["display_name"] for entry in uniques.values() if isinstance(entry, dict)]
+    assert names
+    assert not [name for name in names if name.isascii()]
+
+
+def test_shared_unique_label_resolves_only_with_item_type_evidence(monkeypatch) -> None:
+    catalog = _load_zhcn_catalog(monkeypatch)
+    assert catalog.resolve_unique("先祖之誓") is None
+    assert catalog.resolve_unique("先祖之誓", item_type=ItemType.Shield) == "ancients_pledge"
+    assert catalog.resolve_unique("先祖之誓", item_type=ItemType.Axe2H) == "ancients_oath"

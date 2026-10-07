@@ -10,6 +10,21 @@ class ImportSourceError(Exception):
     """Expected failure raised while reading a supported import source."""
 
 
+class UnsafeImportError(ImportSourceError):
+    """A selected variant names an item identity D4LF cannot represent; nothing was written or activated."""
+
+    def __init__(self, source_name: str, unsafe: list[tuple[str, str]]) -> None:
+        self.unsafe = tuple(unsafe)
+        details = "; ".join(f"{variant or 'default'}: {slot}" for variant, slot in unsafe)
+        super().__init__(
+            f"Import stopped: {source_name} lists items D4LF cannot identify ({details}). Without them the "
+            "profile would junk the items they protect, so no profile was written or activated. Import a "
+            "different variant, or remove or replace these items in the build and import again. / "
+            f"导入已停止：{source_name} 中有 D4LF 无法识别的物品（{details}）。缺少它们的规则会把这些物品"
+            "当作垃圾，因此没有写入或启用任何 Profile。请改为导入其他变体，或在 Build 中移除或替换这些物品后重新导入。"
+        )
+
+
 class FilenamePart(StrEnum):
     SOURCE = "source"
     SEASON = "season"

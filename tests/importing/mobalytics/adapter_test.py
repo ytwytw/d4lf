@@ -278,6 +278,7 @@ def test_import_mobalytics_returns_none_for_archived_build(mock_ini_loader) -> N
     assert result is None
 
 
+@pytest.mark.usefixtures("temporary_profile_store")
 @pytest.mark.parametrize("url", URLS)
 def test_import_mobalytics(url: str, mock_ini_loader: MockerFixture, mocker: MockerFixture) -> None:
     GameCatalog()

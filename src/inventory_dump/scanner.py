@@ -25,6 +25,8 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from threading import Event
 
+    from src.type_aliases import JsonObject
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -65,7 +67,8 @@ class Scanner:
             self.navigator.prepare()
             self._stash(document)
             self._inventory(document)
-            document.status = "partial" if document.issues or document.failed_count else "complete"
+            incomplete = document.issues or document.failed_count or document.unverified_count
+            document.status = "partial" if incomplete else "complete"
         except ScanCancelledError, GameInputCancelledError:
             document.status = "cancelled"
             document.issues.append(
@@ -103,6 +106,7 @@ class Scanner:
             document.failed_count,
             tuple(document.issues),
             document.unparsed_count,
+            document.unverified_count,
         )
         self._report(document, "finished", message=str(result.output_path))
         return result
@@ -174,19 +178,14 @@ class Scanner:
 
     def _scan_scope(self, document: ScanDocument, scope: ScopeRecord, targets: list[ScanTarget]) -> None:
         scope.status, scope.slots = "scanning", len(targets)
+        settled = {target.occupancy.get("icons_settled") for target in targets if target.occupancy is not None}
+        scope.occupancy_settled = None if not settled else all(settled)
         self.writer.save(document)
         for target in targets:
             self.navigator.check()
-            record = ItemRecord(target.location, junk=target.junk)
-            if target.favorite is not None:
-                record.favorite_evidence.append({
-                    "source": "slot_screenshot_brightness",
-                    "verification": "unverified",
-                    "value": target.favorite,
-                })
+            record = self._record(target)
             document.items.append(record)
             self._report(document, "scanning", target.location.label)
-            self.writer.save(document)
             try:
                 self.reader.read(
                     record,
@@ -195,21 +194,63 @@ class Scanner:
                     expected_occupied=target.occupied,
                 )
             finally:
-                self.writer.save(document)
-            if record.status == "empty":
-                document.items.pop()
-                scope.empty_slots += 1
-            else:
-                scope.observed_items += 1
-            self.writer.save(document)
-        scope.status = "complete"
-        if any(
+                # One durable write per item or unknown slot, before the next hover. Confirmed-empty
+                # evidence rides along with the next write; cancel/failure paths still save in run().
+                if self._settle_record(document, scope, record) != "empty":
+                    self.writer.save(document)
+        incomplete = any(
             not item.capture_complete or item.truncated
             for item in document.items
             if item.location.scope == scope.kind and item.location.page == scope.page
-        ):
-            scope.status = "partial"
+        )
+        scope.status = "partial" if incomplete else "unverified" if scope.unverified_slots else "complete"
+        if scope.unverified_slots:
+            slots = ", ".join(str(entry["slot"]) for entry in scope.unverified_slots)
+            document.issues.append(
+                f"{scope.kind}/{scope.page}: 无法确认是否为空 / occupancy not confirmed for "
+                f"{len(scope.unverified_slots)} slot(s): {slots}."
+            )
         self.writer.save(document)
+
+    @staticmethod
+    def _record(target: ScanTarget) -> ItemRecord:
+        record = ItemRecord(target.location, occupancy_evidence=target.occupancy)
+        visual = (
+            (target.favorite, "slot_screenshot_brightness", record.favorite_evidence),
+            (target.junk, "slot_screenshot_template", record.junk_evidence),
+        )
+        for value, source, evidence in visual:
+            if value is not None:
+                evidence.append({"source": source, "verification": "unverified", "value": value})
+        return record
+
+    @staticmethod
+    def _settle_record(document: ScanDocument, scope: ScopeRecord, record: ItemRecord) -> str:
+        """Move slots without item evidence out of ``items``; return the slot outcome."""
+        if record.status not in {"empty", "unverified"}:
+            if record.status != "pending":
+                scope.observed_items += 1
+            return "item"
+        if document.items and document.items[-1] is record:
+            document.items.pop()
+        evidence: JsonObject = {
+            "slot": record.location.slot,
+            "row": record.location.row,
+            "column": record.location.column,
+            "attempts": record.attempts,
+            "visual_occupancy": record.occupancy_evidence,
+            "raw_events": record.raw_events,
+        }
+        if record.status == "empty":
+            scope.empty_slots += 1
+            heard = any(event["text"] for event in record.raw_events)
+            evidence["verification"] = "settled_visual_empty_and_no_item_tts"
+            evidence["ambient_text_heard"] = heard
+            scope.empty_slot_evidence.append(evidence)
+            return "empty"
+        evidence["reason"] = record.error
+        scope.unverified_slots.append(evidence)
+        return "unverified"
 
     def _scope_error(self, document: ScanDocument, scope: ScopeRecord, error: NavigationError) -> None:
         scope.status = "failed"

@@ -71,6 +71,9 @@ class InventoryDumpDialog(QDialog):
         if self._backend is None:
             return
         self._set_running(running=True)
+        # A new scan must never offer the previous scan's file as its result.
+        self._output_path = None
+        self.open_button.setEnabled(False)
         self.details.clear()
         self.status_label.setText("正在准备扫描，接下来将切回游戏…")
         self._backend.start_inventory_dump(ExportFormat(self.format_combo.currentData()))
@@ -108,6 +111,11 @@ class InventoryDumpDialog(QDialog):
             f"{labels.get(result.status, result.status)} · {result.item_count} 件物品 · 未完整读取 {result.failed_count} 件"
         )
         self.details.append(str(result.output_path))
+        if result.unverified_count:
+            self.details.append(
+                f"{result.unverified_count} 个槽位既没有读到物品说明，也没有明确的空槽位提示，"
+                "无法确认是否为空；导出文件已列出这些位置，因此本次结果不是完整清单。"
+            )
         if result.unparsed_count:
             self.details.append(
                 f"{result.unparsed_count} 件物品的原文已完整导出，但现有词库未能解析；原始说明与直接读取的字段均已保留。"
@@ -119,6 +127,8 @@ class InventoryDumpDialog(QDialog):
 
     def _on_failed(self, message: str) -> None:
         self._set_running(running=False)
+        self._output_path = None
+        self.open_button.setEnabled(False)
         self.status_label.setText("未完成导出")
         self.details.append(message)
         if self._closing:

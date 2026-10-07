@@ -3,7 +3,7 @@
 from collections.abc import Callable, Mapping
 from typing import TYPE_CHECKING, cast
 
-from src.game_data import GameCatalog, ItemRarity
+from src.game_data import GameCatalog, ItemRarity, ItemType
 from src.importing.d2core.catalog import canonical_affix_name, canonical_catalog_name
 from src.importing.d2core.errors import OPTIONAL_ENTRY_JOIN, OPTIONAL_NO_OUTPUT
 from src.importing.filters import create_seal_charm_filter
@@ -43,7 +43,12 @@ def normalize_talismans(
     import_charms: bool,
     import_seals: bool,
     warn: Warn,
+    unsafe_charms: list[str] | None = None,
+    unsafe_seals: list[str] | None = None,
 ) -> tuple[list[CharmFilterModel], list[SealFilterModel]]:
+    """Normalize talismans; unmappable identities go to the unsafe list of their (imported) category."""
+    unsafe_charms = [] if unsafe_charms is None else unsafe_charms
+    unsafe_seals = [] if unsafe_seals is None else unsafe_seals
     charm_filters: list[CharmFilterModel] = []
     seal_filters: list[SealFilterModel] = []
     catalog = catalogs.data.get("talisman", {})
@@ -60,19 +65,35 @@ def normalize_talismans(
             is_seal = True
         else:
             warn(OPTIONAL_ENTRY_JOIN, variant_name, "talisman", source_type)
+            if import_charms or import_seals:
+                # The category is unknown, so it blocks whichever talisman category is being imported.
+                (unsafe_charms if import_charms else unsafe_seals).append(
+                    f"talisman type {source_type or 'unknown'} {source_entry.get('key', 'unknown')}"
+                )
             continue
         category = "seal" if is_seal else "charm"
         if (is_seal and not import_seals) or (not is_seal and not import_charms):
             continue
+        key = str(source_entry.get("key", "unknown"))
+        unsafe = unsafe_seals if is_seal else unsafe_charms
         category_entries = catalog.get(category, {})
         record = category_entries.get(str(source_entry.get("key"))) if isinstance(category_entries, Mapping) else None
         if not isinstance(record, Mapping):
-            warn(OPTIONAL_ENTRY_JOIN, variant_name, category, str(source_entry.get("key", "unknown")))
+            warn(OPTIONAL_ENTRY_JOIN, variant_name, category, key)
+            unsafe.append(f"{category} {key}")
             continue
         quality = str(source_entry.get("itemQuality", record.get("quality", ""))).casefold()
         set_key = source_entry.get("set") or record.get("set")
         if category == "charm" and set_key and quality in {"unique", "mythic"}:
-            warn(OPTIONAL_ENTRY_JOIN, variant_name, category, str(source_entry.get("key", "unknown")))
+            # Contradictory identity: no rule can keep both, and dropping it would junk the charm.
+            warn(OPTIONAL_ENTRY_JOIN, variant_name, category, key)
+            unsafe.append(f"{category} {key} (set and unique)")
+            continue
+        if quality in {"unique", "mythic"} and not _canonical_unique(
+            str(record.get("name", record.get("engName", "")))
+        ):
+            warn(OPTIONAL_ENTRY_JOIN, variant_name, category, key)
+            unsafe.append(f"{category} {key} unique {record.get('name', record.get('engName', 'unknown'))}")
             continue
         filter_model = _normalize_talisman(
             source_entry,
@@ -85,7 +106,7 @@ def normalize_talismans(
             warn=warn,
         )
         if filter_model is None:
-            warn(OPTIONAL_NO_OUTPUT, variant_name, category, str(source_entry.get("key", "unknown")))
+            warn(OPTIONAL_NO_OUTPUT, variant_name, category, key)
         elif is_seal:
             seal_filters.append(cast("SealFilterModel", filter_model))
         else:
@@ -121,20 +142,22 @@ def _normalize_talisman(
     affix_records = affix_records_value.get(category, {}) if isinstance(affix_records_value, Mapping) else {}
     affix_records = cast("Mapping[str, JsonValue]", affix_records) if isinstance(affix_records, Mapping) else {}
     affixes: list[Affix] = []
+    unresolved = 0
     raw_mods = raw_entry.get("mods", [])
     if isinstance(raw_mods, list):
         for raw_mod in raw_mods:
             if not isinstance(raw_mod, Mapping):
+                unresolved += 1
                 continue
             key = str(raw_mod.get("name", ""))
             raw_record = affix_records.get(key)
             record: Mapping[str, JsonValue] | None = (
                 cast("Mapping[str, JsonValue]", raw_record) if isinstance(raw_record, Mapping) else None
             )
-            mapping = GameCatalog().seal_affix_dict if category == "seal" else GameCatalog().charm_affix_dict
-            name = canonical_affix_name(record, mapping)
+            name = canonical_affix_name(record, ItemType.HoradricSeal if category == "seal" else ItemType.Charm)
             if not name:
                 warn(OPTIONAL_ENTRY_JOIN, variant_name, category, key or "unknown")
+                unresolved += 1
                 continue
             affixes.append(
                 Affix(
@@ -144,24 +167,17 @@ def _normalize_talisman(
                     else AffixType.normal,
                 )
             )
-    if not affixes and not unique_name and not set_name:
+    if not affixes and not unique_name and not (category == "charm" and set_key) and not unresolved:
+        # The source lists nothing to filter by; unreadable details would instead produce a broad rule.
         return None
-    if category == "seal":
-        result = create_seal_charm_filter(
-            affixes=affixes,
-            require_gas=require_greater_affixes,
-            model_type=SealFilterModel,
-            unique_name=unique_name,
-            set_name=set_name,
-        )
-    else:
-        result = create_seal_charm_filter(
-            affixes=affixes,
-            require_gas=require_greater_affixes,
-            model_type=CharmFilterModel,
-            unique_name=unique_name,
-            set_name=set_name,
-        )
+    result = create_seal_charm_filter(
+        affixes=affixes,
+        require_gas=require_greater_affixes,
+        model_type=SealFilterModel if category == "seal" else CharmFilterModel,
+        unique_name=unique_name,
+        set_name=set_name,
+        unresolved_count=unresolved,
+    )
     rarity = _rarity(quality)
     if rarity is not None:
         result.rarities = [rarity]

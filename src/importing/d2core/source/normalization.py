@@ -91,6 +91,8 @@ def normalize_build(
                 import_charms=request.options.import_charms,
                 import_seals=request.options.import_seals,
                 warn=warn,
+                unsafe_charms=variant.unsafe_charms,
+                unsafe_seals=variant.unsafe_seals,
             )
             variant.charm_filters = charm_filters
             variant.seal_filters = seal_filters

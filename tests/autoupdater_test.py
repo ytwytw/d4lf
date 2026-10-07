@@ -157,11 +157,24 @@ def test_bad_release_metadata_is_not_an_update(monkeypatch, content) -> None:
 
 
 def test_corrupt_update_timestamp_does_not_break_startup(monkeypatch, tmp_path) -> None:
-    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("src.autoupdater.BASE_DIR", tmp_path)
     (tmp_path / "assets").mkdir()
     (tmp_path / "assets/last_update").write_text("invalid", encoding="utf-8")
     assert _should_check_for_update()
     assert not _should_check_for_update()
+
+
+def test_update_timestamp_is_stored_in_installation_not_working_directory(monkeypatch, tmp_path) -> None:
+    install_dir = tmp_path / "install"
+    elsewhere = tmp_path / "shortcut-start-in"
+    elsewhere.mkdir()
+    monkeypatch.setattr("src.autoupdater.BASE_DIR", install_dir)
+    monkeypatch.chdir(elsewhere)
+
+    assert _should_check_for_update()
+    assert not _should_check_for_update()
+    assert (install_dir / "assets/last_update").is_file()
+    assert not (elsewhere / "assets").exists()
 
 
 def test_preprocess_selects_exact_versioned_asset(monkeypatch, tmp_path) -> None:

@@ -71,6 +71,7 @@ def test_signature_check_never_reports_untrusted_or_empty_status_as_valid(monkey
         startup._check_tts_dll_signature(Path("C:/Diablo/saapi64.dll"))
 
     assert "must be locally signed" in caplog.text
+    assert "run install_dll.cmd" in caplog.text
     assert "locally signed and valid" not in caplog.text
 
 

@@ -7,15 +7,17 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QListWidgetItem,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
     QWidget,
 )
 
-from src.game_data import GameCatalog
 from src.profiles import TributeFilterModel
+from src.profiles.editor.identity import IDENTITY_ROLE, item_identity
 from src.profiles.editor.pickers import RarityPicker, rarity_summary
+from src.profiles.labels import tribute_labels
 from src.profiles.tribute.dialogs import CreateTribute
 
 TRIBUTES_TABNAME = "Tributes"
@@ -76,9 +78,11 @@ class TributesTab(QWidget):
 
     def _reload_list_widget(self) -> None:
         self.list_widget.clear()
+        labels = tribute_labels()
         for tribute_name in self.tributes.name:
-            display_name = GameCatalog().tribute_dict.get(tribute_name, tribute_name)
-            self.list_widget.addItem(f"{_TRIBUTE_PREFIX}{display_name}")
+            item = QListWidgetItem(f"{_TRIBUTE_PREFIX}{labels.get(tribute_name, tribute_name)}")
+            item.setData(IDENTITY_ROLE, tribute_name)
+            self.list_widget.addItem(item)
 
     def _add_tribute(self) -> None:
         dialog = CreateTribute(self.tributes.name)
@@ -106,14 +110,8 @@ class TributesTab(QWidget):
 
         for row in rows:
             item = self.list_widget.item(row)
-            if item is None:
-                continue
-            text = item.text()
-            if text.startswith(_TRIBUTE_PREFIX):
-                selected_name = text.removeprefix(_TRIBUTE_PREFIX)
-                reverse_dict = {value: key for key, value in GameCatalog().tribute_dict.items()}
-                normalized_name = reverse_dict.get(selected_name, selected_name)
-                if normalized_name in self.tributes.name:
-                    self.tributes.name.remove(normalized_name)
+            tribute_name = item_identity(item) if item is not None else None
+            if tribute_name in self.tributes.name:
+                self.tributes.name.remove(tribute_name)
 
         self._reload_list_widget()

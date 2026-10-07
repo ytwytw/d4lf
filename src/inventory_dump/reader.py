@@ -7,7 +7,14 @@ from typing import TYPE_CHECKING
 
 from src.inventory_dump.exporting import serialize_item
 from src.inventory_dump.framing import extract_literal_trace
-from src.inventory_dump.observations import ambient_only, observe_favorite, observe_item_fields
+from src.inventory_dump.observations import observe_item_fields
+from src.inventory_dump.outcomes import (
+    apply_title_markers,
+    attempt_timeouts,
+    best_observation,
+    classify_without_frame,
+    restore_title,
+)
 from src.perception import Publisher, complete_item_snapshot, fix_data, latest_raw_sequence, parse_item_text
 
 if TYPE_CHECKING:
@@ -68,7 +75,9 @@ class ItemReader:
         *,
         expected_occupied: bool | None = True,
     ) -> None:
-        for attempt in range(1, 2 if expected_occupied is False else 3):
+        """Hover up to twice; without a complete frame, classify as item text, empty or unverified."""
+        observations: list[list[str]] = []
+        for attempt, timeout in enumerate(attempt_timeouts(expected_occupied), start=1):
             record.attempts = attempt
             neutral()
             self.settle()
@@ -78,12 +87,14 @@ class ItemReader:
             raw_baseline = latest_raw_sequence()
             try:
                 hover()
-                self._wait_for_trace(record, baseline, raw_baseline, 1.2 if expected_occupied is False else 2.5)
+                self._wait_for_trace(record, baseline, raw_baseline, timeout)
             finally:
                 with self._lock:
                     events = [event for event in self._events if event.sequence > raw_baseline]
+                observations.append([event.text for event in events])
                 if not record.capture_complete:
-                    record.raw_tts.extend(event.text for event in events)
+                    # A truncated frame is a subset of this attempt's events: keep one copy only.
+                    record.raw_tts = best_observation(observations)
                 record.raw_events.extend(
                     {
                         "sequence": event.sequence,
@@ -97,14 +108,7 @@ class ItemReader:
                 record.error = None
                 self._parse(record)
                 return
-            if expected_occupied is False and (not record.raw_tts or ambient_only(record.raw_tts)):
-                record.status = "empty"
-                record.error = None
-                return
-        record.status = "unparsed" if record.raw_tts else "timeout"
-        record.error = "No complete item trace after hovering; all received raw text is retained."
-        if record.truncated:
-            record.error = "Item framing exceeded its line limit; untruncated raw observation events are retained."
+        classify_without_frame(record, observations, expected_occupied)
 
     def _wait_for_trace(self, record: ItemRecord, baseline: int, raw_baseline: int, timeout: float) -> None:
         deadline = time.monotonic() + timeout
@@ -130,14 +134,12 @@ class ItemReader:
                 record.truncated = snapshot.truncated
                 record.capture_complete = not snapshot.truncated
                 record.capture_source = "shared_tts_framer"
+                restore_title(record, events, snapshot)
                 return
 
     @staticmethod
     def _parse(record: ItemRecord) -> None:
-        favorite = observe_favorite(record.raw_tts)
-        record.favorite = True if favorite is not None else None
-        if favorite is not None:
-            record.favorite_evidence.append(favorite)
+        apply_title_markers(record)
         record.observed_fields = observe_item_fields(record.raw_tts)
         try:
             item = parse_item_text(record.normalized_tts)

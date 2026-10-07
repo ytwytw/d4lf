@@ -72,6 +72,11 @@ class FilterContext:
         raise AttributeError(name)
 
 
+def required_matches(count_group: AffixFilterCountModel) -> int:
+    """A pool can never match more affixes than it lists; legacy files asking for more mean "all of them"."""
+    return min(count_group.min_count, len(count_group.count))
+
+
 class FilterMatchingMixin:
     def _check_unique_aspects_for_item(self, item: Item, unique_aspects: list[AspectUniqueFilterModel]) -> bool:
         matched_unique_aspect = None  # model enforces aspect-name uniqueness
@@ -103,6 +108,7 @@ class FilterMatchingMixin:
             for expected in count_group.count
         ]
         best_matches: list[tuple[AffixFilterModel, Affix]] = []
+        min_count = required_matches(count_group)
 
         def search(
             expected_index: int, used_item_indices: set[int], matches: list[tuple[AffixFilterModel, Affix]]
@@ -110,7 +116,7 @@ class FilterMatchingMixin:
             nonlocal best_matches
             if len(matches) > count_group.max_count:
                 return
-            if len(matches) + len(count_group.count) - expected_index < count_group.min_count:
+            if len(matches) + len(count_group.count) - expected_index < min_count:
                 return
             if len(matches) > len(best_matches):
                 best_matches = matches.copy()
@@ -137,7 +143,7 @@ class FilterMatchingMixin:
         result = []
         for count_group in expected_affixes:
             best_matches = self._match_count_group(count_group, item_affixes)
-            if len(best_matches) < count_group.min_count:
+            if len(best_matches) < required_matches(count_group):
                 return []
 
             want_greater_affixes = [a for a in count_group.count if getattr(a, "want_greater", False)]

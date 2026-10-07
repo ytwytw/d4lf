@@ -1,3 +1,4 @@
+import argparse
 import os
 import shutil
 import subprocess
@@ -6,6 +7,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from src import __version__
+from src.tools.release_archive import archive_name, create_release_archive
 
 EXE_NAME = "d4lf.exe"
 REPO_ROOT = Path(__file__).resolve().parent
@@ -116,6 +118,17 @@ def create_batch_for_consoleonly(release_dir: Path, exe_name: str) -> None:
         f.write(f'start "" "{exe_name}" --consoleonly\n')
 
 
+def exe_replace_preflight_command(exe_name: str, attempts: int = 20) -> str:
+    """PowerShell that exits 0 only when nothing holds the installed EXE, so no file is copied while it is locked."""
+    return (
+        f"$targetPath = Join-Path (Get-Location).Path '{exe_name}'; "
+        "if (-not (Test-Path -LiteralPath $targetPath)) { exit 0 }; "
+        f"for ($i = 0; $i -lt {attempts}; $i++) {{ "
+        "try { [System.IO.File]::Open($targetPath, 'Open', 'ReadWrite', 'None').Dispose(); exit 0 } "
+        "catch { Start-Sleep -Milliseconds 500 } }; exit 1"
+    )
+
+
 def create_batch_for_autoupdater(release_dir: Path, exe_name: str) -> None:
     batch_file_path = release_dir / "autoupdater.bat"
     Path(batch_file_path).write_text(
@@ -134,6 +147,13 @@ if not exist "temp_update\\d4lf\\{exe_name}" (
 echo Closing only this installation's D4LF processes
 powershell -NoProfile -NonInteractive -Command "$targetPath = Join-Path (Get-Location).Path '{exe_name}'; Get-Process -Name d4lf -ErrorAction SilentlyContinue | Where-Object {{ $_.Path -eq $targetPath }} | Stop-Process -Force -ErrorAction Stop"
 if errorlevel 1 exit /b 1
+echo Checking that {exe_name} can be replaced
+powershell -NoProfile -NonInteractive -Command "{exe_replace_preflight_command(exe_name)}"
+if errorlevel 1 (
+    echo {exe_name} is still in use or cannot be written, for example by D4LF started as administrator.
+    echo Close every D4LF window, then run autoupdater.bat again. No installed files were changed.
+    exit /b 1
+)
 echo Updating files without deleting local files
 robocopy "temp_update\\d4lf" "." /E /R:2 /W:1 /XF "autoupdater.bat" /XD "temp_update" "logs"
 if errorlevel 8 (
@@ -148,8 +168,21 @@ exit /b %ERRORLEVEL%
     )
 
 
+def release_archive_path(label: str) -> Path:
+    """Fail before the slow build when the label is unsafe or a tested archive would be replaced."""
+    archive_path = REPO_ROOT / archive_name(label)
+    if archive_path.exists():
+        message = f"Refusing to replace existing release archive: {archive_path}"
+        raise FileExistsError(message)
+    return archive_path
+
+
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Build the portable D4LF release directory and verified ZIP.")
+    parser.add_argument("--archive-version", default=__version__, help="label used in d4lf_v<label>.zip")
+    args = parser.parse_args()
     os.chdir(REPO_ROOT)
+    archive_path = release_archive_path(args.archive_version)
     print(f"Building version: {__version__}")
     clean_up()
     release_dir = prepare_release_directory()
@@ -158,3 +191,4 @@ if __name__ == "__main__":
     create_batch_for_consoleonly(release_dir=release_dir, exe_name=EXE_NAME)
     create_batch_for_autoupdater(release_dir=release_dir, exe_name=EXE_NAME)
     clean_up()
+    print(f"Created verified release archive: {create_release_archive(release_dir, archive_path)}")

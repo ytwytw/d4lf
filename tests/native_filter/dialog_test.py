@@ -85,3 +85,37 @@ def test_unavailable_catalog_shows_error_and_can_close(native_app, monkeypatch, 
     assert not hasattr(dialog, "profiles")
     assert not hasattr(dialog, "code")
     assert dialog.close()
+
+
+def test_drop_policy_respects_ancestral_protection_and_explains_scope(native_app, monkeypatch, tmp_path):
+    general = SimpleNamespace(
+        filter_equipment=True,
+        keep_aspects="upgrade",
+        handle_uniques="favorite",
+        handle_cosmetics="ignore",
+        do_not_junk_ancestral_legendaries=True,
+        profiles=["test", "other"],
+    )
+    monkeypatch.setattr(
+        "src.native_filter.dialog.get_settings", lambda: SimpleNamespace(user_dir=tmp_path, general=general)
+    )
+    profile = ProfileModel.model_construct(
+        name="test",
+        affixes=[DynamicItemFilterModel.model_construct(root={"b": ItemFilterModel.model_construct(min_power=900)})],
+    )
+    monkeypatch.setattr(
+        "src.native_filter.dialog.ProfileDocumentStore.default",
+        lambda: SimpleNamespace(load=lambda _path: SimpleNamespace(profile=profile)),
+    )
+    dialog = NativeFilterDialog()
+    dialog.profiles.addItem("test", str(tmp_path / "test.yaml"))
+    dialog.profiles.setCurrentIndex(dialog.profiles.count() - 1)
+    dialog.drop_policy.setChecked(True)
+    dialog._generate()
+    assert not dialog.saved.document.hides_items
+    policy = dialog.saved.generation_policy
+    assert policy is not None
+    assert policy.protect_ancestral_legendaries is True
+    assert any("D4LF 还启用了 other" in warning for warning in dialog.saved.warnings)
+    dialog.dirty = False
+    dialog.close()

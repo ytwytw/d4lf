@@ -4,6 +4,8 @@ import pytest
 from natsort import natsorted
 
 from src.item import FilterResult, Item
+from src.item.filter.matching import required_matches
+from src.profiles import AffixFilterCountModel, AffixFilterModel
 from src.settings import AspectFilterType, get_settings
 
 from .conftest import _create_mocked_filter, aspects, charms, filters, seals
@@ -47,3 +49,9 @@ def test_charms(_name: str, result: list[str], item: Item, mocker: MockerFixture
             assert match.set_match
         if match.profile == "seal_charm.Charms.wanted_unique_aspect":
             assert match.aspect_match
+
+
+def test_required_matches_never_exceed_the_listed_affixes() -> None:
+    affixes = [AffixFilterModel(name="willpower"), AffixFilterModel(name="maximum_life")]
+    assert required_matches(AffixFilterCountModel(count=affixes, minCount=3)) == 2
+    assert required_matches(AffixFilterCountModel(count=affixes, minCount=1)) == 1

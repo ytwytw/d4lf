@@ -9,10 +9,12 @@ from urllib.parse import urlsplit
 
 import httpx
 
+from src.importing.affix_identity import resolve_affix
 from src.importing.d2core.errors import EQUIPMENT_CATALOG, D2CoreCatalogError
-from src.perception import clean_str, correct_name
+from src.perception import correct_name
 
 if TYPE_CHECKING:
+    from src.game_data import ItemType
     from src.type_aliases import JsonObject, JsonValue
 
 LOGGER = logging.getLogger(__name__)
@@ -182,20 +184,12 @@ def canonical_catalog_name(record: Mapping[str, JsonValue] | JsonValue, mapping:
     return None
 
 
-def canonical_affix_name(record: Mapping[str, JsonValue] | JsonValue, mapping: Mapping[str, JsonValue]) -> str | None:
-    """Match a current d2core affix description to D4LF's canonical name."""
+def canonical_affix_name(record: Mapping[str, JsonValue] | JsonValue, item_type: ItemType | None) -> str | None:
+    """Match a current d2core (English) affix description exactly to D4LF's canonical name."""
     if not isinstance(record, Mapping):
         return None
     description = record.get("desc")
-    if not isinstance(description, str):
-        return None
-    normalized = correct_name(clean_str(description)) or ""
-    if normalized in mapping:
-        return normalized
-    match = next((key for key, label in mapping.items() if correct_name(str(label)) == normalized), None)
-    if match:
-        return match
-    return None
+    return resolve_affix(description, item_type) if isinstance(description, str) else None
 
 
 def _valid_paragon_class(value: JsonValue) -> bool:

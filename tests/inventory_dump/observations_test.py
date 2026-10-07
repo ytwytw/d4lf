@@ -1,6 +1,13 @@
 import pytest
 
-from src.inventory_dump.observations import ambient_only, observe_favorite, observe_item_fields
+from src.inventory_dump.observations import (
+    ambient_only,
+    item_lines,
+    observe_favorite,
+    observe_item_fields,
+    observe_junk,
+    slot_labels,
+)
 
 
 def test_observed_unknown_unique_retains_literal_fields_without_catalog_mapping() -> None:
@@ -143,3 +150,38 @@ def test_favorite_requires_explicit_current_title_marker(title) -> None:
 )
 def test_missing_ambiguous_or_other_title_favorite_evidence_remains_unknown(lines) -> None:
     assert observe_favorite(lines) is None
+
+
+@pytest.mark.parametrize(
+    "lines",
+    [
+        [],
+        ["谜团", "先祖暗金胸甲"],
+        ["[标记为垃圾] 谜团"],
+        ["[标记为垃圾]."],
+        ["[收藏物品]. [标记为垃圾]. 谜团"],
+        ["[标记为垃圾]. [收藏物品]. 谜团"],
+        ["谜团", "[标记为垃圾]. 另一物品"],
+        ["丢弃", "空格键", "标记为垃圾"],
+    ],
+)
+def test_missing_ambiguous_or_control_hint_junk_text_stays_unknown(lines) -> None:
+    assert observe_junk(lines) is None
+
+
+@pytest.mark.parametrize("title", ["[标记为垃圾]. 谜团", "[MARKED AS JUNK]. Unknown item"])
+def test_junk_requires_explicit_current_title_marker(title) -> None:
+    assert observe_junk([title, "先祖暗金胸甲"]) == {
+        "source": "raw_tts_title",
+        "verification": "explicit_marker",
+        "value": True,
+        "text": title,
+    }
+
+
+def test_only_observed_slot_labels_are_known_and_never_count_as_item_text() -> None:
+    assert slot_labels("ring_lower") == {"戒指"}
+    assert slot_labels("weapon_center_left") == {"主手", "副手"}
+    assert slot_labels("charm_bottom") == {"神符"}
+    assert slot_labels("r01c01") == frozenset()
+    assert item_lines(["神符", "电池充电中", " ", "已装备"], labels=slot_labels("charm_top")) == ["已装备"]

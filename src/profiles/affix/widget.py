@@ -8,6 +8,8 @@ from src.game_data import GameCatalog
 from src.profiles import AffixFilterModel, SealFilterModel
 from src.profiles.affix.helpers import affix_dict_for_widget, get_affixes_for_set, get_set_and_base_for_key
 from src.profiles.editor.dialogs import IgnoreScrollWheelComboBox
+from src.profiles.editor.identity import current_identity, identity_for_text, populate_identities, select_identity
+from src.profiles.labels import affix_labels
 
 AFFIXES_TABNAME = "Affixes"
 AFFIX_VALUE_MODE = "Value"
@@ -97,23 +99,19 @@ class AffixWidget(QWidget):
             target_set = None if selected_set == "(No Set Selected)" else selected_set
 
             self.filtered_affixes = get_affixes_for_set(affix_dict, GameCatalog().set_list, target_set)
-            self.name_combo.addItems(sorted(self.filtered_affixes.values()))
+            # Rows carry canonical ids, so identical localized labels can never collapse onto one affix.
+            populate_identities(self.name_combo, affix_labels(self.filtered_affixes))
 
             curr_set, _ = get_set_and_base_for_key(self.affix.name, GameCatalog().set_list)
-            if curr_set == target_set and self.affix.name in self.filtered_affixes:
-                self.name_combo.setCurrentText(self.filtered_affixes[self.affix.name])
-            else:
+            if not (curr_set == target_set and select_identity(self.name_combo, self.affix.name)):
                 if self.filtered_affixes:
-                    first_text = min(self.filtered_affixes.values())
-                    self.name_combo.setCurrentText(first_text)
+                    self.name_combo.setCurrentIndex(0)
                 else:
                     self.name_combo.setCurrentText("")
-                reverse_dict = {v: k for k, v in self.filtered_affixes.items()}
-                self.affix.name = reverse_dict.get(self.name_combo.currentText(), "")
+                self.affix.name = current_identity(self.name_combo) or ""
         else:
-            self.name_combo.addItems(sorted(affix_dict.values()))
-            if self.affix.name in affix_dict:
-                self.name_combo.setCurrentText(affix_dict[self.affix.name])
+            populate_identities(self.name_combo, affix_labels(affix_dict))
+            select_identity(self.name_combo, self.affix.name)
 
     def create_affix_name_combobox(self) -> None:
         self.name_combo = IgnoreScrollWheelComboBox()
@@ -166,17 +164,9 @@ class AffixWidget(QWidget):
         self.value_edit.textChanged.connect(self.update_value)
 
     def update_name(self, current_text: str | None = None) -> None:
-        """Update the model only when the editable combobox contains a valid affix."""
-        is_seal = self.get_parent_seal_config() is not None
-        affix_dict = self.get_affix_dict()
+        """Update the model only when the editable combobox contains a valid affix row."""
         text = current_text or self.name_combo.currentText()
-
-        if is_seal:
-            reverse_dict = {v: k for k, v in self.filtered_affixes.items()}
-            self.affix.name = reverse_dict.get(text, "")
-        else:
-            reverse_dict = {v: k for k, v in affix_dict.items()}
-            self.affix.name = reverse_dict.get(text, "")
+        self.affix.name = identity_for_text(self.name_combo, text) or ""
 
     def refresh_value_input(self) -> None:
         if self.mode_combo.currentText() == AFFIX_PERCENT_MODE:

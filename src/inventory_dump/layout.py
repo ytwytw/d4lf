@@ -1,11 +1,15 @@
 """Detect navigation controls from observed icons, not configured stash counts."""
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import cv2
 import numpy as np
 
 from src.inventory_dump.templates import icon
+
+if TYPE_CHECKING:
+    from src.automation import ItemSlot
 
 INVENTORY_PAGES = ("equipment", "talisman", "socketables", "consumables", "keys")
 REQUIRED_EQUIPMENT_SLOTS = frozenset({"head", "chest", "gloves", "legs", "boots", "amulet", "ring_upper", "ring_lower"})
@@ -156,3 +160,25 @@ def _has_slot_frame(image: np.ndarray, center: tuple[int, int]) -> bool:
     ]
     # Several lines on one edge can belong to an adjacent weapon or the character model.
     return any(x < half_w - 12 * scale for x in vertical) and any(x > half_w + 12 * scale for x in vertical)
+
+
+# Grey-level change per slot below which consecutive captures count as the same frame.
+ICON_SETTLE_TOLERANCE = 4.0
+GridSignature = dict[tuple[int, int], tuple[bool, float]]
+
+
+def grid_signature(image: np.ndarray, occupied: list[ItemSlot], empty: list[ItemSlot]) -> GridSignature:
+    """Per-slot occupancy guess and mean level, only used to see that fading icons have stopped changing."""
+    signature: GridSignature = {}
+    for slot, is_occupied in [*((slot, True) for slot in occupied), *((slot, False) for slot in empty)]:
+        x, y, w, h = slot.bounding_box
+        area = image[max(0, y) : y + h, max(0, x) : x + w]
+        signature[slot.center] = (is_occupied, float(np.mean(area)) if area.size else 0.0)
+    return signature
+
+
+def grid_settled(previous: GridSignature, current: GridSignature) -> bool:
+    return previous.keys() == current.keys() and all(
+        previous[center][0] == state and abs(previous[center][1] - level) <= ICON_SETTLE_TOLERANCE
+        for center, (state, level) in current.items()
+    )

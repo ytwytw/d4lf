@@ -1,6 +1,12 @@
+from dataclasses import replace
+from types import SimpleNamespace
+
+import pytest
+
 from src.equipment_knowledge import load_catalog
 from src.game_data import ItemRarity, ItemType
-from src.native_filter import CompilePolicy, ConditionKind, compile_profile, encode_filter
+from src.native_filter import Action, CompilePolicy, ConditionKind, compile_profile, encode_filter
+from src.native_filter.compiler import profile_scope_warnings
 from src.profiles import (
     AffixFilterCountModel,
     AffixFilterModel,
@@ -115,3 +121,64 @@ def test_multiple_count_groups_relax_extra_groups_and_thresholds():
     )
     assert any("多个词缀" in warning for warning in result.warnings)
     assert any("数值/百分比" in warning for warning in result.warnings)
+
+
+PROTECTED_PROFILE = ProfileModel.model_construct(
+    name="p",
+    affixes=[DynamicItemFilterModel.model_construct(root={"b": ItemFilterModel.model_construct(min_power=900)})],
+)
+
+
+def _general(**overrides):
+    values = {
+        "filter_equipment": True,
+        "keep_aspects": "upgrade",
+        "handle_uniques": "favorite",
+        "handle_cosmetics": "ignore",
+        "do_not_junk_ancestral_legendaries": False,
+    }
+    return SimpleNamespace(**(values | overrides))
+
+
+def _hiding(rules) -> bool:
+    return any(rule.action == Action.HIDE_LABEL and rule.enabled for rule in rules)
+
+
+@pytest.mark.parametrize("protected", [True, False])
+def test_ancestral_protection_blocks_hiding_even_with_drop_policy(protected) -> None:
+    policy = CompilePolicy.from_settings(_general(do_not_junk_ancestral_legendaries=protected))
+    assert policy.protect_ancestral_legendaries is protected
+    drop_policy = replace(policy, handle_cosmetics="junk", preserve_sanctified=False)
+    result = compile_profile(PROTECTED_PROFILE, load_catalog(), drop_policy)
+    assert _hiding(result.document.rules) is not protected
+    assert any("先祖传奇保护" in warning for warning in result.warnings) is protected
+    # No unverified "ancestral" property bit is ever guessed.
+    assert not any(c.kind == ConditionKind.PROPERTIES for r in result.document.rules for c in r.conditions)
+
+
+def test_default_policy_never_hides() -> None:
+    assert not _hiding(compile_profile(PROTECTED_PROFILE, load_catalog()).document.rules)
+
+
+@pytest.mark.parametrize(
+    ("enabled", "expected"),
+    [([], None), (["p"], None), ([" p ", ""], None), (["p", "other", "other"], "other"), (["a", "b"], "a、b")],
+)
+def test_profile_scope_warning_names_other_enabled_profiles(enabled, expected) -> None:
+    warnings = profile_scope_warnings("p", enabled)
+    assert bool(warnings) is (expected is not None)
+    if expected:
+        assert f"只编译所选 Profile「p」；D4LF 还启用了 {expected}" in warnings[0]
+
+
+def test_legacy_oversized_pool_compiles_to_all_listed_affixes() -> None:
+    group = AffixFilterCountModel.model_construct(
+        count=[
+            AffixFilterModel.model_construct(name="willpower"),
+            AffixFilterModel.model_construct(name="maximum_life"),
+        ],
+        min_count=3,
+    )
+    result = compile_profile(_profile(ItemFilterModel.model_construct(affix_pool=[group])), load_catalog())
+    required = [c for c in result.document.rules[1].conditions if c.kind == ConditionKind.REQUIRED_AFFIXES]
+    assert [condition.min_count for condition in required] == [2]

@@ -184,3 +184,25 @@ def test_complete_parser_keeps_english_unique_identities(monkeypatch, name, item
     assert item.name == canonical
     assert item.aspect is not None
     assert item.aspect.name == canonical
+
+
+STONE_OF_JORDAN = [
+    "乔丹之石",
+    "暗金戒指",
+    "824 物品强度",
+    "114 所有抗性",
+    "+78 点意力 +[69 - 83]",
+    "+986 生命上限 [741 - 1,000]",
+    "每 10 次击杀获得 +2 愤怒 +[1 - 2]",
+    "+2 至所有技能 [1 - 2]",
+    "你的各项抗性均提高至最高一项抗性的数值，并且你造成的该元素伤害提高 15%[x] [15 - 25]%。",
+    "需要等级: 65. 装备唯一. 憎恨之王物品",
+    "鼠标右键",
+]
+
+
+def test_unrecognized_chinese_unique_is_rejected_not_guessed(monkeypatch) -> None:
+    monkeypatch.setattr(GameCatalog, "_instance", _use_zhcn_catalog(monkeypatch))
+    assert parse_item_text(STONE_OF_JORDAN) is not None
+    with pytest.raises(IndexError, match="Unrecognized unique"):
+        parse_item_text(["未收录的暗金戒指", *STONE_OF_JORDAN[1:]])

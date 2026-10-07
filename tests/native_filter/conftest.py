@@ -11,7 +11,12 @@ def native_app(monkeypatch, tmp_path):
     settings = SimpleNamespace(
         user_dir=tmp_path,
         general=SimpleNamespace(
-            filter_equipment=True, keep_aspects="upgrade", handle_uniques="favorite", handle_cosmetics="ignore"
+            filter_equipment=True,
+            keep_aspects="upgrade",
+            handle_uniques="favorite",
+            handle_cosmetics="ignore",
+            do_not_junk_ancestral_legendaries=False,
+            profiles=[],
         ),
     )
     monkeypatch.setattr("src.native_filter.dialog.get_settings", lambda: settings)

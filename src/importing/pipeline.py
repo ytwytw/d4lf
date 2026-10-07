@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Protocol, TypeVar
 
 from src.importing import ImportRequest, ImportResult, assemble_profile_file_name
+from src.importing.contracts import UnsafeImportError
 from src.importing.filters import deduplicate_filters, sort_profile_filters
 from src.importing.paragon import build_paragon_profile_payload
 from src.importing.profiles import add_to_profiles
@@ -34,6 +35,10 @@ class Variant:
     paragon_steps: list[list[JsonObject]] | None = None
     paragon_build_name: str = ""
     id: str | None = None
+    # Wanted items whose identity could not be mapped; any entry in an imported category rejects the import.
+    unsafe_slots: list[str] = dataclasses.field(default_factory=list)
+    unsafe_charms: list[str] = dataclasses.field(default_factory=list)
+    unsafe_seals: list[str] = dataclasses.field(default_factory=list)
 
 
 @dataclasses.dataclass(slots=True)
@@ -74,6 +79,18 @@ class ImportPipeline:
         """Normalize, persist, and return the result of an extracted build."""
         build = adapter.extract()
         options = request.options
+        # Validate every selected variant before the first profile file is written or activated. Charm and seal
+        # entries only matter when those categories are imported; an excluded category is not a wanted slot.
+        if unsafe := [
+            (variant.name, slot)
+            for variant in build.variants
+            for slot in (
+                *variant.unsafe_slots,
+                *(variant.unsafe_charms if options.import_charms else ()),
+                *(variant.unsafe_seals if options.import_seals else ()),
+            )
+        ]:
+            raise UnsafeImportError(build.source_name, unsafe)
         saved_file_names: list[str] = []
         used_file_names: set[str] = set()
         selected_profile = ProfileModel(name="imported profile")

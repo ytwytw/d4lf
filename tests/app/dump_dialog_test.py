@@ -71,3 +71,34 @@ def test_escape_cannot_abandon_the_running_worker(app, mocker):
     assert dialog._closing
     cancel.assert_called_once()
     dialog._on_failed("cancelled fixture")
+
+
+def test_new_scan_and_failure_never_offer_the_previous_export(app, mocker, tmp_path):
+    backend = BackendWorker()
+    mocker.patch.object(backend, "start_inventory_dump")
+    dialog = InventoryDumpDialog(backend)
+    previous = tmp_path / "inventory-previous.md"
+    previous.write_text("old", encoding="utf-8")
+    dialog.start_button.click()
+    backend.dump_finished.emit(ScanResult(previous, "complete", 1, 0))
+    assert dialog.open_button.isEnabled()
+    dialog.start_button.click()
+    assert not dialog.open_button.isEnabled()
+    assert dialog._output_path is None
+    backend.dump_failed.emit("PermissionError: denied")
+    assert not dialog.open_button.isEnabled()
+    assert dialog._output_path is None
+    dialog.close()
+
+
+def test_unverified_slots_are_reported_as_an_incomplete_inventory(app, mocker, tmp_path):
+    backend = BackendWorker()
+    mocker.patch.object(backend, "start_inventory_dump")
+    dialog = InventoryDumpDialog(backend)
+    output = tmp_path / "partial.json"
+    output.write_text("{}", encoding="utf-8")
+    dialog.start_button.click()
+    backend.dump_finished.emit(ScanResult(output, "partial", 16, 0, ("equipped/talisman: seal",), 0, 1))
+    assert "1 个槽位" in dialog.details.toPlainText()
+    assert "不是完整清单" in dialog.details.toPlainText()
+    dialog.close()

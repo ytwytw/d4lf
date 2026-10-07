@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast
 
 import jsonpath
 
-from src.game_data import WEAPON_TYPES, GameCatalog, ItemType
+from src.game_data import WEAPON_TYPES, ItemType
 from src.importing.conversion import as_string_keyed_mapping_list as _as_mapping_list
 from src.importing.conversion import as_text as _as_text
 from src.importing.filters import (
@@ -14,6 +14,7 @@ from src.importing.filters import (
     fix_offhand_type,
     fix_weapon_type,
     match_to_enum,
+    resolve_unique_name,
     update_mingreateraffixcount,
     weapon_slot_name_hint,
 )
@@ -28,7 +29,6 @@ from src.importing.mobalytics.extraction import (
 )
 from src.importing.mobalytics.paragon import extract_mobalytics_paragon_steps
 from src.importing.pipeline import Variant
-from src.perception import correct_name
 from src.profiles import (
     AffixFilterCountModel,
     AffixFilterModel,
@@ -63,6 +63,8 @@ def build_variant(
     charm_filters: list[CharmFilterModel] = []
     seal_filters: list[SealFilterModel] = []
     aspect_upgrade_filters: list[str] = []
+    unsafe: list[str] = []
+    unsafe_by_type: dict[str, list[str]] = {"charms": [], "seals": []}
     guessed_set_name = None
     for item in sorted(
         items, key=lambda value: _as_text(_first_jsonpath_result(".gameEntity.type", value)) != "charms"
@@ -75,9 +77,9 @@ def build_variant(
         item_name = str(title_result[0]).strip() if title_result else ""
         if not item_name:
             slot_result = jsonpath.findall(".gameSlotSlug", item)
-            LOGGER.warning(
-                f"Skipping {slot_result[0] if slot_result else '(unknown slot)'} ({entity_type}) because it has no title."
-            )
+            slot_label = slot_result[0] if slot_result else "(unknown slot)"
+            LOGGER.warning(f"Mobalytics {slot_label} ({entity_type}) has no title, so its identity is unknown.")
+            unsafe_by_type.get(entity_type, unsafe).append(f"{slot_label} {entity_type} (no title)")
             continue
         title_weapon_type: ItemType | None = None
         if entity_type == "uniqueItems" and (weapon_slot_suffix := re.fullmatch(r"(.+?)\s+\(([^()]*)\)", item_name)):
@@ -99,7 +101,9 @@ def build_variant(
             try:
                 item_filter.unique_aspect = [AspectUniqueFilterModel(name=item_name)]
             except ValueError:
-                LOGGER.exception(f"Unexpected error adding unique aspect for {item_name}, please report a bug.")
+                LOGGER.warning("Mobalytics unique %s is not in D4LF's item data.", item_name)
+                unsafe.append(f"{slot_type} unique {item_name}")
+                continue
         if legendary_aspect := _get_legendary_aspect(item_name):
             aspect_upgrade_filters.append(legendary_aspect)
         if (
@@ -132,16 +136,20 @@ def build_variant(
             )
         elif item_type is None:
             LOGGER.warning(f"Couldn't match item_type: {slot_type}. Please edit manually")
+        unresolved: list[str] = []
         affixes = _convert_raw_to_affixes(
-            raw_affixes, request.options.import_greater_affixes, item_type, guessed_set_name=guessed_set_name
+            raw_affixes,
+            request.options.import_greater_affixes,
+            item_type,
+            guessed_set_name=guessed_set_name,
+            unresolved=unresolved,
         )
         inherents = _convert_raw_to_affixes(raw_inherents, item_type=item_type, guessed_set_name=guessed_set_name)
         if item_type in [ItemType.HoradricSeal, ItemType.Charm]:
-            unique_name = (
-                correct_name(item_name) if correct_name(item_name) in GameCatalog().aspect_unique_dict else None
-            )
+            # Mobalytics exposes no talisman rarity; a catalog alias is the only evidence of a unique.
+            unique_name = resolve_unique_name(item_name)
             set_name = _extract_mobalytics_charm_set_name(item) if item_type == ItemType.Charm else None
-            if not affixes and not unique_name and not set_name:
+            if not affixes and not unique_name and not set_name and not unresolved:
                 LOGGER.warning(f"Skipping {item_name} because it had no supported affixes, unique aspect, or set name.")
                 continue
             if item_type == ItemType.Charm:
@@ -151,6 +159,7 @@ def build_variant(
                     model_type=CharmFilterModel,
                     unique_name=unique_name,
                     set_name=set_name,
+                    unresolved_count=len(unresolved),
                 )
                 charm_filters.append(filter_model)
                 if not guessed_set_name and filter_model.set:
@@ -162,12 +171,18 @@ def build_variant(
                     model_type=SealFilterModel,
                     unique_name=unique_name,
                     set_name=set_name,
+                    unresolved_count=len(unresolved),
                 )
                 seal_filters.append(filter_model)
             continue
-        if affixes:
+        if affixes or unresolved:
             affixes = sorted(affixes, key=lambda affix: (affix.name, affix.type.value))
-            item_filter.affix_pool = create_item_affix_pool(affixes=affixes, unique_like=is_unique)
+            item_filter.affix_pool = create_item_affix_pool(
+                affixes=affixes,
+                unique_like=is_unique,
+                unresolved_count=len(unresolved),
+                context=f"Mobalytics {variant_name} {item_name}",
+            )
             update_mingreateraffixcount(item_filter, request.options.require_greater_affixes)
         item_filter.min_power = 100
         if inherents:
@@ -186,6 +201,9 @@ def build_variant(
         aspect_upgrade_filters=aspect_upgrade_filters,
         paragon_steps=extract_mobalytics_paragon_steps(dict(paragon_data)),
         paragon_build_name=build_name,
+        unsafe_slots=unsafe,
+        unsafe_charms=unsafe_by_type["charms"],
+        unsafe_seals=unsafe_by_type["seals"],
     )
 
 

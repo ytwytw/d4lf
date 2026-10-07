@@ -100,6 +100,7 @@ IMPORTER_WINDOW_LOGGERS = (
     "src.importing.maxroll",
     "src.importing.d4builds",
     "src.importing.infinitybuilds",
+    "src.importing.pools",
     "src.importing.gui.support",
     "src.importing.pipeline",
     "src.profiles",

@@ -152,7 +152,7 @@ def test_filter_skips_invalid_profile_but_keeps_valid_profiles(tmp_path, mocker:
     assert test_filter.load_failures == ("bad",)
 
 
-def test_filter_removes_profile_only_after_second_missing_check(tmp_path, mocker: MockerFixture) -> None:
+def test_filter_keeps_a_missing_profile_enabled_and_degraded(tmp_path, mocker: MockerFixture) -> None:
     settings = mocker.Mock(spec=Settings)
     settings.user_dir = tmp_path
     settings.general.profiles = ["missing"]
@@ -161,10 +161,10 @@ def test_filter_removes_profile_only_after_second_missing_check(tmp_path, mocker
     test_filter = _create_mocked_filter(mocker)
 
     test_filter.files_loaded = False
-    test_filter.load_files()
+    for _ in range(3):
+        test_filter.load_files()
     settings.save_value.assert_not_called()
-    test_filter.load_files()
-    settings.save_value.assert_called_once_with("general", "profiles", "")
+    assert test_filter.load_failures == ("missing",)
 
 
 def test_invalid_profile_edit_emits_one_report_per_file_version(tmp_path, mocker: MockerFixture) -> None:

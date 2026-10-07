@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
 from src.item import ASPECT_UPGRADES_LABEL
+from src.item.filter.pools import oversized_pools
 from src.item.filter.rules import LoadedRules
 from src.profiles import ProfileDocumentError, ProfileDocumentStore
 from src.settings import get_settings
@@ -50,6 +51,28 @@ class ProfileLoadReport:
 ProfileLoadListener = Callable[[ProfileLoadReport], None]
 
 
+def load_report_message(failures: tuple[ProfileLoadFailure, ...], *, has_rules: bool) -> str:
+    """Bilingual explanation of the degraded loot filter and how to recover."""
+    missing = ", ".join(failure.name for failure in failures if failure.reason == "missing")
+    invalid = ", ".join(failure.name for failure in failures if failure.reason == "invalid")
+    english = "; ".join(
+        part for part in (missing and f"file missing: {missing}", invalid and f"unreadable: {invalid}") if part
+    )
+    chinese = "；".join(
+        part for part in (missing and f"文件缺失：{missing}", invalid and f"无法读取：{invalid}") if part
+    )
+    message = (
+        f"Skipped enabled profiles ({english}). Until they load, the loot filter will not mark unmatched items as "
+        "junk or drop them, and refresh-with-filter keeps existing marks; matching items can still be marked as "
+        "favorites. Restore or fix the file, or turn the profile off in the Profiles panel. / "
+        f"已启用的 Profile 被跳过（{chinese}）。在它们恢复加载之前，战利品筛选不会把未匹配的物品标记为垃圾或丢弃，"
+        "带筛选的刷新会保留现有标记；匹配的物品仍可标记为收藏。请恢复或修复文件，或在 Profile 面板中停用该 Profile。"
+    )
+    if not has_rules:
+        message += " No profile rules are currently active. / 当前没有生效的 Profile 规则。"
+    return message
+
+
 @dataclass(frozen=True)
 class ProfileLoadFailure:
     name: str
@@ -80,8 +103,6 @@ class ProfileRulesRepository:
         self._last_loaded: float | None = None
         self._last_profile_list: list[str] | None = None
         self._profile_signatures: dict[Path, tuple[int, int]] = {}
-        self._missing_profile_checks: dict[str, int] = {}
-        self._missing_recheck_pending = False
         self._failure_state: tuple[ProfileLoadFailure, ...] = ()
         self._failure_listeners: list[ProfileLoadListener] = []
         self.load_failures: tuple[str, ...] = ()
@@ -141,10 +162,7 @@ class ProfileRulesRepository:
         if self._last_profile_list != current_profiles:
             LOGGER.info(f"Profile list changed: {self._last_profile_list} → {current_profiles}")
             return True
-
-        if self._missing_recheck_pending:
-            self._missing_recheck_pending = False
-            return True
+        # A missing file has no signature; restoring it changes the signature and triggers a reload.
         profiles_dir = settings.user_dir / "profiles"
         for profile_name in current_profiles:
             profile_path = _contained_profile_path(profiles_dir, profile_name)
@@ -171,10 +189,7 @@ class ProfileRulesRepository:
             self._failure_state = failure_state
             return
         self._failure_state = failure_state
-        names = ", ".join(failure.name for failure in failure_state)
-        message = f"Skipped enabled profiles: {names}."
-        if not self._rules.has_profile_rules:
-            message += " Filtering is running without profile rules."
+        message = load_report_message(failure_state, has_rules=self._rules.has_profile_rules)
         report = ProfileLoadReport(skipped=tuple(failure.name for failure in failure_state), message=message)
         LOGGER.warning(message)
         for listener in list(self._failure_listeners):
@@ -192,14 +207,12 @@ class ProfileRulesRepository:
         self._all_file_paths = ()
         self._profile_signatures = {}
         failures: list[ProfileLoadFailure] = []
-        missing_names: list[str] = []
         if not profiles:
             LOGGER.warning(
                 "No profiles are currently loaded. Please load a profile via the Importer, Settings, or Edit Profile sections to begin using the tool."
             )
             self._last_loaded = time.time()
             self._last_profile_list = []
-            self._missing_recheck_pending = False
             self._publish_rules(filters, ())
             self._emit_load_report([])
             return self._rules
@@ -210,17 +223,14 @@ class ProfileRulesRepository:
         for profile_str in profiles:
             custom_file_path = _contained_profile_path(custom_profile_path, profile_str)
             if custom_file_path is None or not custom_file_path.is_file():
+                # Kept enabled (and degraded) until the user restores the file or disables the profile.
                 LOGGER.error("Could not load profile %s. Checked: %s", profile_str, custom_file_path)
                 failures.append(ProfileLoadFailure(profile_str, "missing", None))
-                missing_names.append(profile_str)
-                self._missing_profile_checks[profile_str] = self._missing_profile_checks.get(profile_str, 0) + 1
-                self._missing_recheck_pending = self._missing_profile_checks[profile_str] < 2
                 continue
             all_file_paths.append(custom_file_path)
             signature = self.profile_signature(custom_file_path)
             if signature is not None:
                 self._profile_signatures[custom_file_path] = signature
-            self._missing_profile_checks.pop(profile_str, None)
             try:
                 data = profile_store.load(custom_file_path).profile
             except ProfileDocumentError, OSError:
@@ -228,6 +238,8 @@ class ProfileRulesRepository:
                 failures.append(ProfileLoadFailure(profile_str, "invalid", signature))
                 continue
 
+            for finding in oversized_pools(data):
+                LOGGER.warning("Profile %s: %s; it now requires all listed affixes.", profile_str, finding)
             info_str = f"Loading profile {profile_str}: "
             sections: list[str] = []
             if data.affixes:
@@ -256,13 +268,6 @@ class ProfileRulesRepository:
                 sections.append("Paragon")
             LOGGER.info((info_str + " ".join(sections)).rstrip())
 
-        if missing_names:
-            still_missing = [name for name in missing_names if self._missing_profile_checks.get(name, 0) >= 2]
-            if still_missing:
-                remaining = [name for name in profiles if name not in still_missing]
-                settings.save_value("general", "profiles", ",".join(remaining))
-                self._missing_recheck_pending = False
-                profiles = remaining
         self._last_loaded = time.time()
         self._last_profile_list = profiles.copy()
         self._publish_rules(filters, tuple(all_file_paths))

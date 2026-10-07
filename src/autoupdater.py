@@ -12,6 +12,7 @@ import src.logger
 from src import __version__
 from src.release_payload import stage_release
 from src.release_versions import is_newer_version, is_prerelease, select_latest_release
+from src.settings.constants import BASE_DIR
 
 LOGGER = logging.getLogger(__name__)
 RELEASE_REPO_OWNER = "ytwytw"
@@ -267,7 +268,7 @@ def notify_if_update() -> None:
 
 def _should_check_for_update(check_interval_hours: float = 4) -> bool:
     """Check if it's time to check for updates based on a cooldown period."""
-    check_file = Path.cwd() / "assets" / "last_update"
+    check_file = BASE_DIR / "assets" / "last_update"
     current_time = time.time()
     last_check_time = 0
 

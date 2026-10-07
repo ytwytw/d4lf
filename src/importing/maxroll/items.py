@@ -3,6 +3,7 @@ import re
 from typing import TYPE_CHECKING
 
 from src.game_data import ItemRarity, ItemType
+from src.importing.affix_identity import normalize_affix_label, resolve_affix
 from src.importing.conversion import as_string_keyed_mapping as _as_mapping
 from src.importing.conversion import as_string_keyed_mapping_list as _as_mapping_list
 from src.importing.conversion import as_text as _as_text
@@ -11,9 +12,7 @@ from src.importing.maxroll.constants import (
     SKILL_RANK_BONUS_FORMULAS,
     SKILL_RANK_DESC_LABEL_REGEX,
 )
-from src.importing.source_locale import source_affix_dict_for_item_type
 from src.item import Affix, AffixType
-from src.perception import clean_str, closest_match
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -23,7 +22,9 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.propagate = True
-SOURCE_LOCALE = "enUS"
+SET_SEAL_DESC_REGEX = re.compile(r"\{c_set\}([^{}]+)\{/c\}:?(.+)$", re.DOTALL)
+# MaxRoll spelling mistakes in set names, mapped to the in-game name.
+SET_NAME_CORRECTIONS = {"Cain's Wild Lighting": "Cain's Wild Lightning"}
 
 
 def _attribute_description_corrections(input_str: str) -> str:
@@ -62,13 +63,31 @@ def _attr_desc_special_handling(affix_id: int | str) -> str:
     return "charm slot" if affix_id == 2609197 else ""
 
 
+def _set_seal_description(affix_key: str, affix: Mapping[str, JsonValue]) -> str:
+    """MaxRoll's own "<set>: <stat>" text for a set seal affix.
+
+    Rebuilding these from attributes loses the stat (several Berserker's Crucible affixes all become
+    "to Berserking") or mislabels it ("Fire Damage" read as "Fire Damage Multiplier").
+    """
+    if "Talisman" not in affix_key or "Set" not in affix_key:
+        return ""
+    match = SET_SEAL_DESC_REGEX.search(_as_text(affix.get("desc")))
+    if not match:
+        return ""
+    set_name = SET_NAME_CORRECTIONS.get(match.group(1).strip(), match.group(1))
+    return f"{set_name} {match.group(2)}"
+
+
 def _find_item_affixes(
     mapping_data: Mapping[str, JsonValue],
     item_affixes: Sequence[Mapping[str, JsonValue]],
     item_type: ItemType,
     import_greater_affixes: bool = False,
+    unresolved: list[str] | None = None,
 ) -> list[Affix]:
+    """Resolve explicit affixes; filterable ones that cannot be resolved are appended to ``unresolved``."""
     res = []
+    missing = unresolved if unresolved is not None else []
     affix_data = _as_mapping(mapping_data.get("affixes"))
     ui_strings = _as_mapping(mapping_data.get("uiStrings"))
     damage_type_labels = _as_text_mapping(ui_strings.get("damageType"))
@@ -87,7 +106,7 @@ def _find_item_affixes(
             if affix.get("magicType") in [2, 4]:
                 break
             attributes_list = _as_mapping_list(affix.get("attributes"))
-            attr_desc = _attr_desc_special_handling(affix_value)
+            attr_desc = _attr_desc_special_handling(affix_value) or _set_seal_description(affix_key, affix)
             if not attr_desc:
                 if not attributes_list:
                     continue
@@ -109,7 +128,7 @@ def _find_item_affixes(
                     "GearAffix_Resistance_Single",
                 ]:
                     if formula in ["GearAffix_DamageType", "GearAffix_DamageType_Greater"]:
-                        param = str(attribute["param"])
+                        param = str(attribute.get("param"))
                         if param in damage_type_labels:
                             attr_desc = damage_type_labels[param] + " Damage Multiplier"
                         elif "desc" in affix:
@@ -147,31 +166,19 @@ def _find_item_affixes(
                             mapping_data=mapping_data, affix_key=affix_key, attribute=attribute
                         )
 
-                # Below is handling for seal affixes tied to a set. We attach the set to the front.
-                # If this ends up not working for some reason, a second option is to take the key
-                # like "Talisman_SealAffix_Set_Barbarian_05_AncientSkillRankBonus" and convert it to
-                # "Talisman_Barbarian_05" and then find that in the mapping data. That will also give set name.
                 if "Talisman" in affix_key and "Set" in affix_key:
-                    pattern = r"\{c_set\}([^{}]+)\{/c\}"
-                    match = re.search(pattern, _as_text(affix.get("desc"))) if "desc" in affix else None
-                    if match:
-                        attr_desc = match.group(1) + " " + attr_desc
-                    else:
-                        LOGGER.warning(
-                            f"We thought affix {attr_desc} was a seal-based affix activated by a set but we could not determine the set. The affix is skipped, please report a bug with a link to the build."
-                        )
-                        continue
+                    LOGGER.warning(
+                        f"We thought affix {attr_desc} was a seal-based affix activated by a set but we could not determine the set. The affix is skipped, please report a bug with a link to the build."
+                    )
+                    continue
 
-            clean_desc = re.sub(r"\[.*?\]|[^a-zA-Z ]", "", attr_desc)
-            clean_desc = clean_desc.replace("SecondSeconds", "seconds")
-            if not clean_desc:
+            if not normalize_affix_label(attr_desc):
                 LOGGER.warning(
                     f"We were unable to map an attribute on item type {item_type.value} to an affix. Please report a bug and include a link to the build, we are skipping that affix."
                 )
                 continue
 
-            affix_dict = source_affix_dict_for_item_type(item_type=item_type, source_locale=SOURCE_LOCALE)
-            matched_name = closest_match(clean_str(clean_desc), affix_dict)
+            matched_name = resolve_affix(attr_desc, item_type)
             if matched_name is not None:
                 affix_obj = Affix(name=matched_name)
                 if import_greater_affixes and affix_id.get("greater") is True:
@@ -185,7 +192,11 @@ def _find_item_affixes(
                 LOGGER.info("Skipping InherentAffixAnyResist_Ring")
             else:
                 LOGGER.error(f"Couldn't match {affix_id=}")
+                missing.append(str(reference_id))
             break
+        else:
+            # No mapping entry produced a decision (unknown id, or an attribute that could not be mapped).
+            missing.append(str(reference_id))
     return res
 
 

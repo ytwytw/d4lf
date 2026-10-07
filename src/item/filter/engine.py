@@ -102,6 +102,13 @@ class Filter(FilterEvaluator):
         self._repository.load_files()
         self._rules = self._repository.rules
 
+    def ensure_current(self) -> LoadedRules:
+        """Reload enabled profiles when they changed and return the published snapshot."""
+        if not self.files_loaded or self._did_files_change():
+            self.load_files()
+        self._rules = self._repository.rules
+        return self._rules
+
     def get_paragon_filters(self) -> dict[str, ParagonPayloadModel]:
         """Return the loaded Paragon payloads, reloading profiles when needed."""
         if not self.files_loaded or self._did_files_change():
@@ -111,9 +118,7 @@ class Filter(FilterEvaluator):
     @override
     def should_keep(self, item: Item) -> FilterResult:
         """Load changed profiles and evaluate an item with one settings snapshot."""
-        if not self.files_loaded or self._did_files_change():
-            self.load_files()
-        self._rules = self._repository.rules
+        self.ensure_current()
         self.evaluation_settings = EvaluationSettings.from_settings(get_settings())
         return super().should_keep(item)
 

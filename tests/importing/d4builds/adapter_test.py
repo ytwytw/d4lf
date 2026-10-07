@@ -12,6 +12,7 @@ if typing.TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
 
 
+@pytest.mark.usefixtures("temporary_profile_store")
 @pytest.mark.parametrize("url", D4BUILDS_IMPORT_URLS)
 def test_import_d4builds(url: str, mock_ini_loader: MockerFixture, mocker: MockerFixture) -> None:
     GameCatalog()  # need to load data first or the mock will make it impossible

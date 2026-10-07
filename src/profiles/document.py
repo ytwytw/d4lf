@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import logging
 import pathlib
 import re
@@ -13,6 +14,7 @@ from yaml import MappingNode, MarkedYAMLError
 
 from src import __version__
 from src.profiles.profile import ProfileModel
+from src.profiles.storage import atomic_write_text, matches_import
 from src.settings import get_settings
 
 if TYPE_CHECKING:
@@ -126,19 +128,36 @@ class ProfileDocumentStore:
         return self._write_profile(save_path=save_path, profile=profile, source=source, exclude={"name"})
 
     def save_new(self, *, file_name: str, profile: ProfileModel, source: str) -> SavedProfile:
-        normalized_file_name = normalize_profile_file_name(file_name)
-        save_path = self.profiles_dir / f"{normalized_file_name}.yaml"
-        return self._write_profile(save_path=save_path, profile=profile, source=source)
+        """Save an import without replacing a different (for example user-edited) profile of the same name."""
+        base_name = normalize_profile_file_name(file_name) or "imported"
+        body = to_yaml_str(profile, exclude_defaults=not self.full_dump, exclude={"name", "Sigils"})
+        for index in itertools.count(1):
+            name = base_name if index == 1 else f"{base_name}_{index}"
+            save_path = self.profiles_dir / f"{name}.yaml"
+            if save_path.exists() and not matches_import(save_path, body):
+                continue
+            if index > 1:
+                LOGGER.warning(
+                    "Profile %s already exists with different content; saved this import as %s instead.",
+                    base_name,
+                    name,
+                )
+            return self._write_text(save_path=save_path, source=source, body=body)
+        msg = "unreachable"
+        raise AssertionError(msg)
 
     def _write_profile(
         self, *, save_path: pathlib.Path, profile: ProfileModel, source: str, exclude: set[str] | None = None
     ) -> SavedProfile:
-        save_path.parent.mkdir(parents=True, exist_ok=True)
         exclude = exclude or {"name", "Sigils"}
-        with save_path.open("w", encoding="utf-8") as file:
-            file.write(f"# {source}\n")
-            file.write(f"# {datetime.datetime.now(tz=datetime.UTC).strftime('%Y-%m-%d %H:%M:%S')} (v{__version__})\n")
-            file.write(to_yaml_str(profile, exclude_defaults=not self.full_dump, exclude=exclude))
+        body = to_yaml_str(profile, exclude_defaults=not self.full_dump, exclude=exclude)
+        return self._write_text(save_path=save_path, source=source, body=body)
+
+    @staticmethod
+    def _write_text(*, save_path: pathlib.Path, source: str, body: str) -> SavedProfile:
+        timestamp = datetime.datetime.now(tz=datetime.UTC).strftime("%Y-%m-%d %H:%M:%S")
+        # Readers (the loot filter reloads on change) only ever see the old or the complete new file.
+        atomic_write_text(save_path, f"# {source}\n# {timestamp} (v{__version__})\n{body}")
         LOGGER.info(f"Created profile {save_path}")
         return SavedProfile(path=save_path, file_name=save_path.stem)
 

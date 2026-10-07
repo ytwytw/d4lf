@@ -8,6 +8,8 @@ from src.game_data import ItemType, is_armor, is_jewelry, is_weapon
 from src.native_filter.models import MAX_RULES, Action, CompilationResult, Condition, ConditionKind, NativeFilter, Rule
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from src.equipment_knowledge import EquipmentCatalog
     from src.profiles import ItemFilterModel, ProfileModel
     from src.settings import GeneralModel
@@ -22,6 +24,8 @@ class CompilePolicy:
     handle_uniques: str = "favorite"
     handle_cosmetics: str = "ignore"
     preserve_sanctified: bool = True
+    # The native protocol has no verified "ancestral" condition, so this protection can only block hiding.
+    protect_ancestral_legendaries: bool = False
 
     @classmethod
     def from_settings(cls, settings: GeneralModel) -> CompilePolicy:
@@ -30,7 +34,20 @@ class CompilePolicy:
             keep_aspects=str(settings.keep_aspects),
             handle_uniques=str(settings.handle_uniques),
             handle_cosmetics=str(settings.handle_cosmetics),
+            protect_ancestral_legendaries=settings.do_not_junk_ancestral_legendaries,
         )
+
+
+def profile_scope_warnings(selected: str, enabled: Iterable[str]) -> tuple[str, ...]:
+    """D4LF evaluates every enabled Profile; a native filter only ever contains the selected one."""
+    others = [name for name in dict.fromkeys(entry.strip() for entry in enabled) if name and name != selected]
+    if not others:
+        return ()
+    message = (
+        f"此游戏过滤器只编译所选 Profile「{selected}」；D4LF 还启用了 {'、'.join(others)}。"
+        "仅由这些 Profile 保留的装备不在此过滤器的保留规则中，启用隐藏时可能被隐藏。"
+    )
+    return (message,)
 
 
 def profile_digest(profile: ProfileModel) -> str:
@@ -74,9 +91,11 @@ def _compile_rule(name: str, spec: ItemFilterModel, catalog: EquipmentCatalog, w
     if spec.affix_pool:
         group = spec.affix_pool[0]
         ids = _mapped([affix.name for affix in group.count], catalog, "affix")
-        if ids and 0 < group.min_count <= len(ids):
-            conditions.append(Condition(ConditionKind.REQUIRED_AFFIXES, sno_ids=ids, min_count=group.min_count))
-        elif not ids or group.min_count > len(ids):
+        # Same rule as D4LF evaluation: a pool never requires more matches than it lists.
+        required = min(group.min_count, len(group.count))
+        if ids and 0 < required <= len(ids):
+            conditions.append(Condition(ConditionKind.REQUIRED_AFFIXES, sno_ids=ids, min_count=required))
+        elif not ids or required > len(ids):
             warnings.append(f"{name}：词缀 SNO 映射不完整，已放宽词缀要求。")
         if len(spec.affix_pool) > 1:
             warnings.append(f"{name}：存在多个词缀计数组；仅转换第一组，其余放宽以防误隐藏。")
@@ -135,6 +154,8 @@ def compile_profile(
         blockers.append("当前设置会保留未解锁外观，而原生协议没有外观解锁条件")
     if policy.preserve_sanctified:
         blockers.append("D4LF 会跳过圣化装备，尚无已核验的原生等价条件")
+    if policy.protect_ancestral_legendaries:
+        blockers.append("D4LF 已开启先祖传奇保护（不标记为垃圾），游戏过滤器没有已核验的先祖条件")
     if not equipment_ids:
         blockers.append("装备类别 SNO 映射不完整")
     if equipment_ids:

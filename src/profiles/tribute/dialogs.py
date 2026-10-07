@@ -18,9 +18,11 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from src.game_data import GameCatalog, ItemRarity
+from src.game_data import ItemRarity
 from src.profiles import TributeFilterModel
 from src.profiles.editor.dialogs import IgnoreScrollWheelComboBox
+from src.profiles.editor.identity import current_identity, populate_identities
+from src.profiles.labels import tribute_labels
 
 
 class CreateTribute(QDialog):
@@ -42,7 +44,8 @@ class CreateTribute(QDialog):
         name_completer = self.name_input.completer()
         if name_completer is not None:
             name_completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
-        self.name_input.addItems(sorted(GameCatalog().tribute_dict.values()))
+        # Rows carry canonical ids; only zhCN labels shared by two tributes get a distinguishing detail.
+        populate_identities(self.name_input, tribute_labels())
         self.form_layout.addRow(self.name_label, self.name_input)
         self.buttonLayout = QHBoxLayout()
         self.okButton = QPushButton("OK")
@@ -60,8 +63,7 @@ class CreateTribute(QDialog):
 
     @override
     def accept(self) -> None:
-        reverse_dict = {v: k for k, v in GameCatalog().tribute_dict.items()}
-        tribute_name = reverse_dict.get(self.name_input.currentText())
+        tribute_name = current_identity(self.name_input)
         if tribute_name is None:
             QMessageBox.warning(self, "Warning", "Select a valid tribute from the list.")
             return
@@ -71,8 +73,7 @@ class CreateTribute(QDialog):
         super().accept()
 
     def get_value(self) -> TributeFilterModel:
-        reverse_dict = {v: k for k, v in GameCatalog().tribute_dict.items()}
-        tribute_name = reverse_dict.get(self.name_input.currentText())
+        tribute_name = current_identity(self.name_input)
         if tribute_name is None:
             msg = "Select a valid tribute from the list."
             raise ValueError(msg)
@@ -154,8 +155,10 @@ class RemoveTribute(QDialog):
         self.groupbox_layout.addWidget(label)
 
         self.checkbox_list: list[QCheckBox] = []
+        labels = tribute_labels()
         for tribute in self.tributes:
-            checkbox = QCheckBox(str(GameCatalog().tribute_dict[tribute])) if tribute else QCheckBox("None")
+            checkbox = QCheckBox(labels.get(tribute, tribute)) if tribute else QCheckBox("None")
+            checkbox.setProperty("tribute_identity", tribute or None)
             scrollable_layout.addWidget(checkbox)
             self.checkbox_list.append(checkbox)
         scroll_widget.setLayout(scrollable_layout)
@@ -177,5 +180,4 @@ class RemoveTribute(QDialog):
         self.setLayout(self.main_layout)
 
     def get_value(self) -> list[str | None]:
-        reverse_dict = {v: k for k, v in GameCatalog().tribute_dict.items()}
-        return [reverse_dict.get(checkbox.text()) for checkbox in self.checkbox_list if checkbox.isChecked()]
+        return [checkbox.property("tribute_identity") for checkbox in self.checkbox_list if checkbox.isChecked()]

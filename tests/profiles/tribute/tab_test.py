@@ -53,7 +53,7 @@ def _button(tab: TributesTab, text: str) -> QPushButton:
 
 
 def test_add_tribute_adds_name_rule_with_expected_display_text(qapp, monkeypatch) -> None:
-    monkeypatch.setattr("src.profiles.tribute.tab.GameCatalog", _FakeLoader)
+    monkeypatch.setattr("src.profiles.tribute.tab.tribute_labels", lambda: dict(_FakeLoader.tribute_dict))
     monkeypatch.setattr(
         "src.profiles.tribute.tab.CreateTribute",
         lambda *_args, **_kwargs: _AcceptedDialog(
@@ -74,7 +74,7 @@ def test_add_tribute_adds_name_rule_with_expected_display_text(qapp, monkeypatch
 
 
 def test_edit_rarities_updates_summary_and_model(qapp, monkeypatch) -> None:
-    monkeypatch.setattr("src.profiles.tribute.tab.GameCatalog", _FakeLoader)
+    monkeypatch.setattr("src.profiles.tribute.tab.tribute_labels", lambda: dict(_FakeLoader.tribute_dict))
     monkeypatch.setattr(
         "src.profiles.tribute.tab.RarityPicker", lambda *_args, **_kwargs: _AcceptedRarityPicker([ItemRarity.Rare])
     )

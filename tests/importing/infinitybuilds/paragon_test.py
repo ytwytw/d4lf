@@ -127,6 +127,7 @@ def test_fetch_infinitybuilds_paragon_catalog_builds_label_maps_from_both_datase
     assert catalog.glyph_labels == {"glyph::rare-016-dexterity-side": "Exploit"}
 
 
+@pytest.mark.usefixtures("temporary_profile_store")
 @pytest.mark.parametrize("url", INFINITYBUILDS_IMPORT_URLS)
 def test_import_infinitybuilds(url: str, mock_ini_loader: MockerFixture, mocker: MockerFixture) -> None:
     GameCatalog()
